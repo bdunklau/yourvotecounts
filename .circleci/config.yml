@@ -15,7 +15,7 @@ jobs:
       # - image: circleci/mongo:3.4.4
 
     # do we need this?  failed with this in here
-    working_directory: ~/foo
+      - working_directory: ~/foo
 
     steps:
       - checkout
