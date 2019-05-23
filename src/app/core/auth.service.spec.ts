@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
+import {BehaviorSubject} from 'rxjs';
 
 // a stub/mock
 // FYI  https://github.com/angular/angularfire2/issues/1706#issuecomment-394212606
