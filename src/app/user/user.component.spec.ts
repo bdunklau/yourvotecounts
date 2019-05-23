@@ -6,6 +6,7 @@ import { AuthService } from '../core/auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ActivatedRoute } from '@angular/router';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import {BehaviorSubject} from 'rxjs';
 
 // a stub/mock
 // FYI  https://github.com/angular/angularfire2/issues/1706#issuecomment-394212606
