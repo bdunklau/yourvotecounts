@@ -7,6 +7,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { ActivatedRoute } from '@angular/router';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import {BehaviorSubject} from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/from';
 
 // a stub/mock
 // FYI  https://github.com/angular/angularfire2/issues/1706#issuecomment-394212606
@@ -24,10 +26,10 @@ describe('UserComponent', () => {
   let component: UserComponent;
   let fixture: ComponentFixture<UserComponent>;
 
-  const fakeActivatedRoute = {
-    data: { "mock2": "mock2", subscribe: () => {}, "url": "" },
-    snapshot: { data: { "mock1": "mock" } }
-  } as ActivatedRoute;
+  // const fakeActivatedRoute = {
+  //   data: { "mock2": "mock2", subscribe: () => {}, "url": "" },
+  //   snapshot: { data: { "mock1": "mock" } }
+  // } as ActivatedRoute;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -35,9 +37,16 @@ describe('UserComponent', () => {
       declarations: [ UserComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [AuthService,Location,
+                    { provide: AngularFireAuth, useValue: FirestoreStub },
                     { provide: LocationStrategy, useClass: PathLocationStrategy },
-                    {provide: ActivatedRoute, useValue: fakeActivatedRoute},
-                    { provide: AngularFireAuth, useValue: FirestoreStub }]
+                    {
+                      provide: ActivatedRoute,
+                      useValue: {
+                        params: Observable.from([{id: 1}]),
+                        data: { "mock2": "mock2", subscribe: () => {} }
+                      },
+                    },
+                  ]
     })
     .compileComponents();
   }));
