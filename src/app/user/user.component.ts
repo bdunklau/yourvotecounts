@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../core/auth.service';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { FirebaseUserModel } from '../core/user.model';
 
 @Component({
   selector: 'app-user',
@@ -10,20 +11,22 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class UserComponent implements OnInit {
 
+  // user: FirebaseUserModel = new FirebaseUserModel();
+
   constructor(private authService: AuthService,
     private route: ActivatedRoute,
     private location : Location) { }
 
   ngOnInit() {
     console.log("user.component.ts: ngOnInit()")
-    this.route.data.subscribe(routeData => {
-      let data = routeData['data'];
-      if (data) {
-        this.user = data;
-        console.log("user.component.ts  user: ", this.user)
-        //this.createForm(this.user.name);
-      }
-    })
+    // this.route.data.subscribe(routeData => {
+    //   let data = routeData['data'];
+    //   if (data) {
+    //     this.user = data;
+    //     console.log("user.component.ts  user: ", this.user)
+    //     //this.createForm(this.user.name);
+    //   }
+    // })
   }
 
   logout(){
