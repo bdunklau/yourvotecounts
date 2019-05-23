@@ -11,7 +11,7 @@ import { FirebaseUserModel } from '../core/user.model';
 })
 export class UserComponent implements OnInit {
 
-  // user: FirebaseUserModel = new FirebaseUserModel();
+  user: FirebaseUserModel = new FirebaseUserModel();
 
   constructor(private authService: AuthService,
     private route: ActivatedRoute,
@@ -19,14 +19,14 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
     console.log("user.component.ts: ngOnInit()")
-    // this.route.data.subscribe(routeData => {
-    //   let data = routeData['data'];
-    //   if (data) {
-    //     this.user = data;
-    //     console.log("user.component.ts  user: ", this.user)
-    //     //this.createForm(this.user.name);
-    //   }
-    // })
+    this.route.data.subscribe(routeData => {
+      let data = routeData['data'];
+      if (data) {
+        this.user = data;
+        console.log("user.component.ts  user: ", this.user)
+        //this.createForm(this.user.name);
+      }
+    })
   }
 
   logout(){
