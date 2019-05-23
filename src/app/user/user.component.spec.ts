@@ -25,7 +25,7 @@ describe('UserComponent', () => {
   let fixture: ComponentFixture<UserComponent>;
 
   const fakeActivatedRoute = {
-    data: { "mock2": "mock2", subscribe: () => {}, url: "" },
+    data: { "mock2": "mock2", subscribe: () => {}, "url": "" },
     snapshot: { data: { "mock1": "mock" } }
   } as ActivatedRoute;
 
