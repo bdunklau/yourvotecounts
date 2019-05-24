@@ -21,3 +21,4 @@ jobs:
       - checkout
       - run: npm install
       - run: npm test
+      - run: npm e2e
