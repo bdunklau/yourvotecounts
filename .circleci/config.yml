@@ -21,6 +21,8 @@ jobs:
 
     steps:
       - checkout
+      - run: npm install
+      - run: npm test
       - run: |
           sudo rm /etc/apt/sources.list
           echo "deb http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list
@@ -29,6 +31,4 @@ jobs:
           echo 'Package: *\nPin: origin "archive.debian.org"\nPin-Priority: 500' | sudo tee -a /etc/apt/preferences.d/10-archive-pin
           sudo apt-get update
           sudo apt-get install google-chrome-stable
-      - run: npm install
-      - run: npm test
-      - run: npm run e2e
+          npm run e2e
