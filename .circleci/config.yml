@@ -21,7 +21,9 @@ jobs:
 
     steps:
       - checkout
-      - ls -al /usr/bin/google-chrome
+      - run:
+          shell: /bin/sh
+          command: ls -al /usr/bin/google-chrome
       # - run: npm install
       # - run: npm test
       # - run: npm run e2e
