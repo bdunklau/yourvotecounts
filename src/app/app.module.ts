@@ -43,7 +43,6 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     FirebaseUIModule.forRoot(firebaseUiAuthConfig)
 
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

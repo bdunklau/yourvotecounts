@@ -19,6 +19,9 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
     console.log("user.component.ts: ngOnInit()")
+    console.log("user.component.ts: ngOnInit(): this.route = ", this.route)
+    console.log("user.component.ts: ngOnInit(): this.route.data = ", this.route.data)
+    console.log("user.component.ts: ngOnInit(): this.route.snapshot = ", this.route.snapshot)
     this.route.data.subscribe(routeData => {
       let data = routeData['data'];
       if (data) {
