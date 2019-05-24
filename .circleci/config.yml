@@ -29,6 +29,8 @@ jobs:
           echo "deb-src http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list
           echo "Acquire::Check-Valid-Until false;" | sudo tee -a /etc/apt/apt.conf.d/10-nocheckvalid
           echo 'Package: *\nPin: origin "archive.debian.org"\nPin-Priority: 500' | sudo tee -a /etc/apt/preferences.d/10-archive-pin
+          echo 'ps aux | grep -i chrome'
+          ps aux | grep -i chrome
           echo 'kill $(pgrep chrome)'
           kill $(pgrep chrome)
           sudo apt-get update
