@@ -21,6 +21,4 @@ jobs:
       - checkout
       - run: npm install
       - run: npm test
-      - run:
-          command: npm run e2e
-          no_output_timeout: 30s
+      - run: npm run e2e
