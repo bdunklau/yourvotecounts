@@ -22,8 +22,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Update Chromedriver
-        command: |
+          name: Update Chromedriver
+          command: |
             sudo apt-get update
             sudo apt-get install google-chrome-stable
       - run: npm install
