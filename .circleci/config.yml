@@ -31,6 +31,7 @@ jobs:
           echo 'Package: *\nPin: origin "archive.debian.org"\nPin-Priority: 500' | sudo tee -a /etc/apt/preferences.d/10-archive-pin
           sudo apt-get purge google-chrome-stable
           rm -rf ~/.config/google-chrome
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
           sudo apt-get update
           sudo apt-get install google-chrome-stable
           google-chrome --version
