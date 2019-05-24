@@ -31,7 +31,8 @@ jobs:
           echo 'Package: *\nPin: origin "archive.debian.org"\nPin-Priority: 500' | sudo tee -a /etc/apt/preferences.d/10-archive-pin
           pkill chrome
           sudo apt-get update
-          sudo apt-get install google-chrome-stable=74.0.3729
+          sudo apt-get install google-chrome-stable
           google-chrome --version
+          google-chrome-stable --version
           npm run e2e
       - run: npm run e2e
