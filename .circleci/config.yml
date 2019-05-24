@@ -8,6 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/node:9.10.1-browsers
+        command: sudo apt-get update;sudo apt-get install google-chrome-stable
         environment:
           CHROME_BIN: "/usr/bin/google-chrome"
 
@@ -21,13 +22,6 @@ jobs:
 
     steps:
       - checkout
-      - run:
-          name: Install Chrome
-          command: |
-            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-            sudo apt-get update
-            sudo apt-get install google-chrome-stable
       - run: npm install
       - run: npm test
       - run: npm run e2e
