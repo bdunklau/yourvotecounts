@@ -7,9 +7,9 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:9.10.1-browsers
-        environment:
-          CHROME_BIN: "/usr/bin/google-chrome"
+      - image: circleci/node:10-browsers
+        # environment:
+        #   CHROME_BIN: "/usr/bin/google-chrome"
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -21,19 +21,22 @@ jobs:
 
     steps:
       - checkout
+      - run:
+          name: echo versions
+          command: |
+            node --version
+            npm --version
+            yarn --version
       - run: npm install
       - run: npm test
       - run: |
-          sudo apt-get purge google-chrome-stable
-          rm -rf ~/.config/google-chrome
           sudo rm /etc/apt/sources.list
           echo "deb http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list
           echo "deb-src http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list
           echo "Acquire::Check-Valid-Until false;" | sudo tee -a /etc/apt/apt.conf.d/10-nocheckvalid
           echo 'Package: *\nPin: origin "archive.debian.org"\nPin-Priority: 500' | sudo tee -a /etc/apt/preferences.d/10-archive-pin
-          sudo sh -c "echo 'deb http://dl.google.com/linux/chrome/deb/ stable main' >> /etc/apt/sources.list"          
+          sudo sh -c "echo 'deb http://dl.google.com/linux/chrome/deb/ stable main' >> /etc/apt/sources.list"
           sudo apt-get update
           sudo apt-get install google-chrome-stable
           google-chrome --version
-          npm run e2e
       - run: npm run e2e
