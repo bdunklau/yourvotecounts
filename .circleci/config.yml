@@ -23,14 +23,13 @@ jobs:
       - checkout
       - run: npm install
       - run: npm test
-      - run: |
-          sudo rm /etc/apt/sources.list
-          echo "deb http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list
-          echo "deb-src http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list
-          echo "Acquire::Check-Valid-Until false;" | sudo tee -a /etc/apt/apt.conf.d/10-nocheckvalid
-          echo 'Package: *\nPin: origin "archive.debian.org"\nPin-Priority: 500' | sudo tee -a /etc/apt/preferences.d/10-archive-pin
-          pkill chrome
-          sudo apt-get update
-          sudo apt-get install google-chrome-stable=74.0.3729
-          google-chrome --version
-          npm run e2e
+      - run:
+        name: Install Chromedriver latest version
+        command: |
+        sudo apt-get update
+        sudo apt-get install lsb-release
+        curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 67
+        sudo dpkg -i google-chrome.deb
+        sudo sed -i ‘s|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox|g’ /opt/google/chrome/google-chrome
+        rm google-chrome.deb
+      - run: npm run e2e
