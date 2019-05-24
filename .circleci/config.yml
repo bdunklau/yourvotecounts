@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/chakracore-10.13.0
+      - image: circleci/9.10.1-browsers
         environment:
           CHROME_BIN: "/usr/bin/google-chrome"
 
