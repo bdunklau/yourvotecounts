@@ -1,6 +1,7 @@
 import { browser, by, element } from 'protractor';
 
-export class AppPage {
+// from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
+export class PublicPage {
   navigateTo() {
     // browser.sleep(5000);
     // browser.ignoreSynchronization = true;
