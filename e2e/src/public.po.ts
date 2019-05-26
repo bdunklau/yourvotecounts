@@ -9,7 +9,7 @@ export class PublicPage {
   }
 
   getTitleText() {
-    browser.sleep(1000);
+    browser.sleep(100);
     browser.ignoreSynchronization = true;
     return element(by.css('app-root h1')).getText() as Promise<string>;
   }
