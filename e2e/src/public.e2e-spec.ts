@@ -8,7 +8,7 @@ describe('yourvotecounts - Public page', () => {
     page = new PublicPage();
   });
 
-  xit('when user browses to our app he should see the default “public” screen', () => {
+  it('when user browses to our app he should see the default “public” screen', () => {
     page.navigateTo();
     expect(page.getTitleText()).toEqual('Welcome to yourvotecounts!');
   });
