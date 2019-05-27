@@ -78,7 +78,6 @@ describe('AuthGuard', () => {
     it('should return true for a logged in user', async () => {
       authService = { /*not used*/ };
       spyOn(userService, 'getCurrentUser').and.returnValue({displayName: "Bob Meader", phoneNumber: "469-555-0000"});
-      // spyOn(userService, 'getCurrentUser').and.returnValue(null);
       router = new MockRouter();
       authGuard = new AuthGuard(authService, userService, router);
       let canAct = await authGuard.canActivate()
@@ -90,7 +89,6 @@ describe('AuthGuard', () => {
     it('should navigate to home for a logged out user', async () => {
       authService = { /*not used*/ };
       router = new MockRouter();
-      // spyOn(userService, 'getCurrentUser').and.returnValue({displayName: "Bob Meader", phoneNumber: "469-555-0000"});
       spyOn(userService, 'getCurrentUser').and.returnValue(null);
       authGuard = new AuthGuard(authService, userService, router);
       spyOn(router, 'navigate');
