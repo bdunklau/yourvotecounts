@@ -41,7 +41,6 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features
     FormsModule,
     FirebaseUIModule.forRoot(firebaseUiAuthConfig)
-
   ],
   bootstrap: [AppComponent]
 })

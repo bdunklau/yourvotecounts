@@ -18,12 +18,12 @@ export class UserResolver implements Resolve<FirebaseUserModel> {
         console.log("user.resolver.ts:resolve() res = ", res);
         if(res.providerData[0].providerId == 'password'){
           user.image = 'https://via.placeholder.com/400x300';
-          user.name = res.displayName;
+          user.displayName = res.displayName;
           user.provider = res.providerData[0].providerId;
         }
         else{
           user.image = res.photoURL;
-          user.name = res.displayName;
+          user.displayName = res.displayName;
           user.provider = res.providerData[0].providerId;
         }
         if(res.phoneNumber) user.phoneNumber = res.phoneNumber;
