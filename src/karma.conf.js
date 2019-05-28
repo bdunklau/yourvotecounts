@@ -26,7 +26,7 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: true,
+    singleRun: true, // false on laptop, true on github to terminate the test at the end.  False leaves the process running indefinitely
     restartOnFileChange: true
   });
 };
