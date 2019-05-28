@@ -16,12 +16,17 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(): Promise<boolean> {
-    var user = await this.userService.getCurrentUser()
-    console.log("canActivate(): user = ", user)
-    if(user) {
-      this.router.navigate(['/user']);
-      return false
+    try {
+      var user = await this.userService.getCurrentUser()
+
+      console.log("canActivate(): user = ", user)
+      if(user) {
+        this.router.navigate(['/user']);
+        return false
+      }
+      else return true;
+    } catch(e) {
+      return true;
     }
-    else return true;
   }
 }
