@@ -13,6 +13,7 @@ import {FormsModule} from '@angular/forms';
 // - https://github.com/RaphaelJenni/FirebaseUI-Angular/issues/76
 // the plugin exposes the two libraries as well. You can use those:
 import {FirebaseUIModule, firebase, firebaseui} from 'firebaseui-angular';
+import { RegisterComponent } from './register/register.component';
 
 
 // came from here:  https://github.com/RaphaelJenni/FirebaseUI-Angular
@@ -31,7 +32,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
   declarations: [
     AppComponent,
     LoginComponent,
-    UserComponent
+    UserComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
