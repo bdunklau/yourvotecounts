@@ -33,6 +33,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     AppComponent,
     LoginComponent,
     UserComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
