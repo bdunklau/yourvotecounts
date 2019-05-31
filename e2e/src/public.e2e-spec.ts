@@ -1,7 +1,7 @@
 import { PublicPage } from './public.po';
 import { browser, logging } from 'protractor';
 
-describe('yourvotecounts - Public page', () => {
+describe('YourVoteCounts - Public page', () => {
   let page: PublicPage;
 
   beforeEach(() => {

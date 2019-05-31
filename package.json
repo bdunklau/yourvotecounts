@@ -24,7 +24,7 @@
     "@ng-bootstrap/ng-bootstrap": "^4.2.0",
     "core-js": "^2.5.4",
     "firebase": "^5.5.7",
-    "firebaseui": "^3.4.1",
+    "firebaseui": "^3.6.1",
     "firebaseui-angular": "^3.4.1",
     "rxjs": "~6.3.3",
     "rxjs-compat": "^6.5.2",
