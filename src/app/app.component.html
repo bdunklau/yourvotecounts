@@ -1,14 +1,25 @@
 <!--The content below is only a placeholder and can be replaced.-->
 
-<nav>
-    <a routerLink="/user">User</a>
-</nav>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">{{ title }}</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-</div>
+  <div class="collapse navbar-collapse" id="navbarsExample04">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" routerLink="/home"><i class="fa fa-home"></i></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/login">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/user">User</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
 <firebase-ui></firebase-ui>
 

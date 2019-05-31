@@ -22,16 +22,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'yourvotecounts'`, () => {
+  it(`should have as title 'YourVoteCounts'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('yourvotecounts');
+    expect(app.title).toEqual('YourVoteCounts');
   });
 
-  it('should render title in a h1 tag', () => {
+  it('should find title in the navbar', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to yourvotecounts!');
+    expect(compiled.querySelector('nav > a').textContent).toContain('YourVoteCounts');
   });
 });
