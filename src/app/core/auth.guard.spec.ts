@@ -82,7 +82,7 @@ describe('AuthGuard', () => {
       authGuard = new AuthGuard(authService, userService, router);
       spyOn(router, 'navigate');
       let canAct = await authGuard.canActivate()
-      expect(canAct).toBeFalsy();
+      expect(canAct).toBeTruthy();
       expect(router.navigate.calls.count()).toEqual(1)
       expect(router.navigate).toHaveBeenCalledWith(['/user']);
     });
