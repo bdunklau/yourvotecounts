@@ -2,6 +2,9 @@ import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { InjectionToken } from '@angular/core';
+import {CommonServiceModuleStub, AngularFirestoreStub} from './core/common.module'
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -12,6 +15,9 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      providers: [{provide: AngularFirestore, useClass: AngularFirestoreStub},
+      //         { provide: InjectionToken, useClass: class { inject = jasmine.createSpy("inject"); }},
+                  ],
       schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();
   }));

@@ -19,15 +19,15 @@ import { HomeComponent } from './home/home.component';  // https://ng-bootstrap.
 
 
 // came from here:  https://github.com/RaphaelJenni/FirebaseUI-Angular
-const firebaseUiAuthConfig: firebaseui.auth.Config = {
-  signInFlow: 'popup',
-  signInOptions: [
-    firebase.auth.PhoneAuthProvider.PROVIDER_ID
-  ],
-  tosUrl: '<your-tos-link>',
-  privacyPolicyUrl: '<your-privacyPolicyUrl-link>',
-  credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM
-};
+// const firebaseUiAuthConfig: firebaseui.auth.Config = {
+//   signInFlow: 'popup',
+//   signInOptions: [
+//     firebase.auth.PhoneAuthProvider.PROVIDER_ID
+//   ],
+//   tosUrl: '<your-tos-link>',
+//   privacyPolicyUrl: '<your-privacyPolicyUrl-link>',
+//   credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM
+// };
 
 
 @NgModule({
@@ -45,8 +45,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     AngularFirestoreModule, // imports firebase/firestore, only needed for database features
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features
     FormsModule, ReactiveFormsModule,
-    FirebaseUIModule.forRoot(firebaseUiAuthConfig),
-    NgbModule
+    // FirebaseUIModule.forRoot(firebaseUiAuthConfig),
+    NgbModule,
   ],
   bootstrap: [AppComponent]
 })
