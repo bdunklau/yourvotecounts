@@ -16,6 +16,12 @@ export class UserResolver implements Resolve<FirebaseUserModel> {
       this.userService.getCurrentUser()
       .then(res => {
         console.log("user.resolver.ts:resolve() res = ", res);
+        if(!res.displayName && !res.email) {
+          console.log("UserResolver:resolve: user registration not complete")
+          this.router.navigate(['/register']);
+          return resolve(user);
+        }
+
         if(res.providerData[0].providerId == 'password'){
           user.image = 'https://via.placeholder.com/400x300';
           user.displayName = res.displayName;

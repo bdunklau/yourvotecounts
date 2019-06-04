@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../core/auth.service';
-import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { FirebaseUserModel } from '../core/user.model';
 
@@ -13,9 +11,7 @@ export class UserComponent implements OnInit {
 
   user: FirebaseUserModel = new FirebaseUserModel();
 
-  constructor(private authService: AuthService,
-    private route: ActivatedRoute,
-    private location : Location) { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
     console.log("user.component.ts: ngOnInit()")
@@ -30,16 +26,6 @@ export class UserComponent implements OnInit {
         //this.createForm(this.user.name);
       }
     })
-  }
-
-  logout(){
-    this.authService.doLogout()
-    .then((res) => {
-      console.log("UserComponent.logout(): this.location.back()")
-      this.location.back();
-    }, (error) => {
-      console.log("Logout error", error);
-    });
   }
 
 }

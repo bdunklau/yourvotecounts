@@ -7,13 +7,14 @@ import { UserComponent } from './user/user.component';
 import { UserResolver } from './user/user.resolver';
 import { UserService } from './core/user.service';
 import { RegisterComponent } from './register/register.component';
+import { RegisterGuard } from './register/register.guard';
 import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
-  { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [RegisterGuard] },
   { path: 'user', component: UserComponent,  resolve: { data: UserResolver}}
 ];
 
@@ -23,6 +24,7 @@ const routes: Routes = [
   providers: [
     AuthGuard,
     AuthService,
+    RegisterGuard,
     UserService,
     UserResolver
   ]

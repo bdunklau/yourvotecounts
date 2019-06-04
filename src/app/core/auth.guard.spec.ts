@@ -33,7 +33,6 @@ const angularFirestoreStub = {
 describe('AuthGuard', () => {
   describe('canActivate', () => {
     let authGuard: AuthGuard;
-    let authService;
     let router;
     let userService: UserService;
     let db: AngularFirestore;
@@ -76,10 +75,9 @@ describe('AuthGuard', () => {
     );
 
     it('should navigate to user for a logged in user', async () => {
-      authService = { /*not used*/ };
       spyOn(userService, 'getCurrentUser').and.returnValue({displayName: "Bob Meader", phoneNumber: "469-555-0000"});
       router = new MockRouter();
-      authGuard = new AuthGuard(authService, userService, router);
+      authGuard = new AuthGuard(userService, router);
       spyOn(router, 'navigate');
       let canAct = await authGuard.canActivate()
       expect(canAct).toBeTruthy();
@@ -90,10 +88,9 @@ describe('AuthGuard', () => {
 
     // failed
     it('should return true for a logged out user', async () => {
-      authService = { /*not used*/ };
       router = new MockRouter();
       spyOn(userService, 'getCurrentUser').and.returnValue(null);
-      authGuard = new AuthGuard(authService, userService, router);
+      authGuard = new AuthGuard(userService, router);
       let res = await authGuard.canActivate();
       expect(res).toBeTruthy();
     });

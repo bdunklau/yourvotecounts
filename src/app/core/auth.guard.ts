@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, Router } from "@angular/router";
-import { AngularFireAuth } from '@angular/fire/auth';
+import { CanActivate, Router } from "@angular/router";
 import { UserService } from './user.service';
-// import {FirebaseUIModule, firebase, firebaseui} from 'firebaseui-angular';
-import {FirebaseUIModule, firebase, firebaseui} from 'firebaseui-angular';
 
 
 @Injectable()
 export class AuthGuard implements CanActivate {
 
   constructor(
-    public afAuth: AngularFireAuth, // TODO not needed
     public userService: UserService,
     private router: Router
   ) {}
@@ -20,9 +16,12 @@ export class AuthGuard implements CanActivate {
       var user = await this.userService.getCurrentUser()
 
       console.log("canActivate(): user = ", user)
-      if(user) {
+      if(user && !user.displayName && !user.email) {
+        this.router.navigate(['/register']);
+        return false
+      } else if(user) {
         this.router.navigate(['/user']);
-        return true
+        return false
       }
       else return true;
     } catch(e) {
