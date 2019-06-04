@@ -14,8 +14,7 @@ export class LoginComponent implements OnInit {
 
   ui: firebaseui.auth.AuthUI
 
-  constructor(private afAuth: AngularFireAuth,
-              private ui: firebaseui.auth.AuthUI) { }
+  constructor(private afAuth: AngularFireAuth) { }
 
   ngOnInit() {
     console.log("login.component.ts: ngOnInit()")
@@ -31,12 +30,8 @@ export class LoginComponent implements OnInit {
     }
 
     // starts the firebase ui library
-    // this.ui = firebaseui.auth.AuthUI.getInstance()// || new firebaseui.auth.AuthUI(this.afAuth.auth);
-    console.log("this.afAuth = ", this.afAuth)
-    console.log("this.afAuth.auth = ", this.afAuth.auth)
-    this.ui = Reflect.construct(this.ui, [this.afAuth.auth]); //new firebaseui.auth.AuthUI(this.afAuth.auth);
-
-    // this.ui.start('#firebaseui-auth-container', uiConfig);
+    this.ui = new firebaseui.auth.AuthUI(this.afAuth.auth);
+    this.ui.start('#firebaseui-auth-container', uiConfig);
   }
 
   onLoginSuccessful() {
