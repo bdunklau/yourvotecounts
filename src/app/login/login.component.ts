@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
     }
 
     // starts the firebase ui library
-    this.ui = new firebaseui.auth.AuthUI(this.afAuth.auth);
+    this.ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(this.afAuth.auth);
     this.ui.start('#firebaseui-auth-container', uiConfig);
   }
 
