@@ -1,7 +1,7 @@
 import { PublicPage } from './public.po';
 import { browser, logging } from 'protractor';
 
-describe('yourvotecounts - Public page', () => {
+describe('YourVoteCounts - Public page', () => {
   let page: PublicPage;
 
   beforeEach(() => {
@@ -10,7 +10,7 @@ describe('yourvotecounts - Public page', () => {
 
   it('when user browses to our app he should see the default “public” screen', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('Welcome to yourvotecounts!');
+    expect(page.getTitleText()).toEqual('home works!');
   });
 
   afterEach(async () => {

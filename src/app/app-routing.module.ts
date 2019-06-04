@@ -6,11 +6,14 @@ import { AuthService } from './core/auth.service';
 import { UserComponent } from './user/user.component';
 import { UserResolver } from './user/user.resolver';
 import { UserService } from './core/user.service';
+import { RegisterComponent } from './register/register.component';
+import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
-  // { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
   { path: 'user', component: UserComponent,  resolve: { data: UserResolver}}
 ];
 
