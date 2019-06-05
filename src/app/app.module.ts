@@ -38,7 +38,6 @@ import { AuthService } from './core/auth.service';
     UserComponent,
     RegisterComponent,
     HomeComponent,
-    AuthService
   ],
   imports: [
     BrowserModule,
