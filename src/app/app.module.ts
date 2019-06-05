@@ -16,6 +16,7 @@ import {FirebaseUIModule, firebase, firebaseui} from 'firebaseui-angular';
 import { RegisterComponent } from './register/register.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';  // https://ng-bootstrap.github.io/#/getting-started
+import { AuthService } from './core/auth.service';
 
 
 // came from here:  https://github.com/RaphaelJenni/FirebaseUI-Angular
@@ -36,7 +37,8 @@ import { HomeComponent } from './home/home.component';  // https://ng-bootstrap.
     LoginComponent,
     UserComponent,
     RegisterComponent,
-    HomeComponent
+    HomeComponent,
+    AuthService
   ],
   imports: [
     BrowserModule,

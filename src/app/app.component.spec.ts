@@ -3,20 +3,23 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { InjectionToken } from '@angular/core';
 import {CommonServiceModuleStub, AngularFirestoreStub} from './core/common.module'
+import { AuthService } from './core/auth.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        RouterTestingModule,
       ],
       declarations: [
         AppComponent
       ],
-      providers: [{provide: AngularFirestore, useClass: AngularFirestoreStub},
-      //         { provide: InjectionToken, useClass: class { inject = jasmine.createSpy("inject"); }},
+      providers: [AuthService,
+                  { provide: AngularFirestore, useClass: AngularFirestoreStub },
+                  { provide: AngularFireAuth, useClass: AngularFirestoreStub }
                   ],
       schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();
