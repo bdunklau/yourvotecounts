@@ -10,7 +10,8 @@ admin.initializeApp();
 //  response.send("Hello from Firebase!");
 // });
 
-console.log("functions.config().firebase = ", functions.config().firebase)
-
 const auth = require('./auth')
 exports.logNewUser = auth.logNewUser
+exports.recordNewUser = auth.recordNewUser
+exports.deleteUser = auth.deleteUser
+exports.logDeleteUser = auth.logDeleteUser
