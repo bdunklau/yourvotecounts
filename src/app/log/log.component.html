@@ -1,0 +1,7 @@
+<h1>Log</h1>
+
+<table>
+    <tr *ngFor="let logentry of log | async">
+        <td><pre>{{ logentry.event | json }}</pre></td>
+    </tr>
+</table>

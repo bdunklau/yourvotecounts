@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
@@ -17,6 +18,7 @@ import { RegisterComponent } from './register/register.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';  // https://ng-bootstrap.github.io/#/getting-started
 import { AuthService } from './core/auth.service';
+import { LogComponent } from './log/log.component';
 
 
 // came from here:  https://github.com/RaphaelJenni/FirebaseUI-Angular
@@ -38,6 +40,7 @@ import { AuthService } from './core/auth.service';
     UserComponent,
     RegisterComponent,
     HomeComponent,
+    LogComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,6 +50,7 @@ import { AuthService } from './core/auth.service';
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features
     FormsModule, ReactiveFormsModule,
     // FirebaseUIModule.forRoot(firebaseUiAuthConfig),
+    AngularFireDatabaseModule,
     NgbModule,
   ],
   bootstrap: [AppComponent]
