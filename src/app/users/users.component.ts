@@ -16,6 +16,8 @@ export class UsersComponent implements OnInit {
   constructor(private afs: AngularFirestore) { }
 
   ngOnInit() {
+    console.log("this.afs = ", this.afs)
+    console.log("this.afs.collection = ", this.afs.collection)
     this.ref = this.afs.collection('user', ref => ref.orderBy('date_ms'))
     this.list = this.ref.valueChanges()
   }

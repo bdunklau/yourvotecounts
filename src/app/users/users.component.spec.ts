@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { UsersComponent } from './users.component';
-import {CommonServiceModuleStub, AngularFireAuthStub} from '../core/common.module'
+// import {CommonServiceModuleStub, AngularFirestoreStub} from '../core/common.module'
 import { BehaviorSubject } from 'rxjs';
 import { of } from 'rxjs/observable/of';
 
@@ -24,7 +24,7 @@ describe('UsersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CommonServiceModuleStub],
+      // imports: [CommonServiceModuleStub],
       declarations: [ UsersComponent ],
       providers: [
                   { provide: AngularFirestore, useValue: AngularFirestoreStub }
