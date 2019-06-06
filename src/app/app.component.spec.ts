@@ -5,10 +5,29 @@ import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { InjectionToken } from '@angular/core';
-import {CommonServiceModuleStub, AngularFirestoreStub} from './core/common.module'
+import {CommonServiceModuleStub} from './core/common.module'
+// import {AngularFirestoreStub} from './core/common.module'
 import { AuthService } from './core/auth.service';
+import { BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs/observable/of';
 
 describe('AppComponent', () => {
+
+  const AngularFirestoreStub = {
+      collection: (name: string, f: (ref:any) => {}) => ({
+        doc: (_id: string) => ({
+          valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
+          set: (_d: any) => new Promise((resolve, _reject) => resolve()),
+        }),
+        valueChanges: () => of([{id: '1', event: 'event1', date: {toDate: () => new Date()}}, // 2 mock LogEntry's
+                                {id: '2', event: 'event2', date: {toDate: () => new Date()}}]) // THIS IS NOT WHAT WE WANT TO MOCK HERE.
+                                // This was taken from log.component.spec.ts
+      }),
+    };
+
+  const AngularFireAuthStub = {}
+
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -18,8 +37,8 @@ describe('AppComponent', () => {
         AppComponent
       ],
       providers: [AuthService,
-                  { provide: AngularFirestore, useClass: AngularFirestoreStub },
-                  { provide: AngularFireAuth, useClass: AngularFirestoreStub }
+                  { provide: AngularFirestore, useValue: AngularFirestoreStub },
+                  { provide: AngularFireAuth, useValue: AngularFireAuthStub }
                   ],
       schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();

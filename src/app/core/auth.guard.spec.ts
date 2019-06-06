@@ -40,13 +40,6 @@ describe('AuthGuard', () => {
 
     const authState = new FirebaseUserModel();
 
-    const AngularFirestoreStub = {
-        // I just mocked the function you need, if there are more, you can add them here.
-        collection: (someString) => {
-            // return mocked collection here
-        }
-    };
-
     const mockAngularFireAuth: any = {
       auth: jasmine.createSpyObj('auth', {
         'signInAnonymously': Promise.reject({

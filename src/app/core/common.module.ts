@@ -8,14 +8,19 @@ import { FirebaseUserModel } from './user.model'
 // This time, I created a class instead of a json.
 // It is because, your other components may require more 'mocked' functions.
 // It may be harder to maintain them within a json.
-@Injectable()
-export class AngularFirestoreStub {
-    collection(someString) {
-        // return mock collection;
-    }
+// @Injectable()
+// export class AngularFirestoreStub {
+//   collection(someString) {
+//       // return mock collection;
+//   }
+//
+//   valueChanges() {}
+// }
 
-    valueChanges() {}
+@Injectable()
+export class AngularFireAuthStub {
 }
+
 
 @Injectable()
 export class UserServiceStub {
@@ -35,7 +40,9 @@ export class UserServiceStub {
 }
 
 @NgModule({
-    providers: [{provide: AngularFirestore, useClass: AngularFirestoreStub},
-                {provide: UserService, useClass: UserServiceStub}]
+    providers: [
+                // {provide: AngularFirestore, useClass: AngularFirestoreStub},
+                {provide: UserService, useClass: UserServiceStub}
+              ]
 })
 export class CommonServiceModuleStub {}

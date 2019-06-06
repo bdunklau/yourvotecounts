@@ -5,7 +5,7 @@ import { AuthService } from '../core/auth.service'
 import { Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/auth';
-import {CommonServiceModuleStub, AngularFirestoreStub} from '../core/common.module'
+import {CommonServiceModuleStub, AngularFireAuthStub} from '../core/common.module'
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -16,7 +16,7 @@ describe('RegisterComponent', () => {
       imports: [ReactiveFormsModule, CommonServiceModuleStub],
       providers: [AuthService, FormBuilder,
                   { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); }  },
-                  { provide: AngularFireAuth, useClass: AngularFirestoreStub }
+                  { provide: AngularFireAuth, useClass: AngularFireAuthStub }
                 ],
       declarations: [ RegisterComponent ]
     })
