@@ -18,6 +18,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';  // https://ng-bootstrap.github.io/#/getting-started
 import { AuthService } from './core/auth.service';
 import { LogComponent } from './log/log.component';
+import { UsersComponent } from './users/users.component';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { LogComponent } from './log/log.component';
     RegisterComponent,
     HomeComponent,
     LogComponent,
+    UsersComponent,
   ],
   imports: [
     BrowserModule,

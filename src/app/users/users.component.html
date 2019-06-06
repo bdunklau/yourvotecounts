@@ -1,0 +1,9 @@
+<h1>Users MUST RESTRICT TO ADMINS</h1>
+
+<table border="1" cellpadding="2">
+    <tr *ngFor="let user of list | async">
+        <td>{{ user.date.toDate() }}</td>
+        <td>{{ user.phoneNumber }}</td>
+        <td>{{ user.uid }}</td>
+    </tr>
+</table>

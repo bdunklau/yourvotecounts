@@ -10,6 +10,7 @@ import { RegisterComponent } from './register/register.component';
 import { RegisterGuard } from './register/register.guard';
 import { HomeComponent } from './home/home.component';
 import { LogComponent } from './log/log.component';
+import { UsersComponent } from './users/users.component'
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -17,7 +18,8 @@ const routes: Routes = [
   { path: 'log', component: LogComponent },
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [RegisterGuard] },
-  { path: 'user', component: UserComponent,  resolve: { data: UserResolver}}
+  { path: 'user', component: UserComponent,  resolve: { data: UserResolver}},
+  { path: 'users', component: UsersComponent }
 ];
 
 @NgModule({
