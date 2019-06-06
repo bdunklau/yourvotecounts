@@ -6,7 +6,7 @@ const admin = require('firebase-admin')
 var db = admin.firestore();
 
 
-// firebase deploy --only functions:logNewUser,functions:recordNewUser,functions:deleteUser,functions:logDeleteUser
+// firebase deploy --only functions:logNewUser,functions:recordNewUser,functions:deleteUser,functions:logDeleteUser,functions:initiateDeleteUser
 
 
 exports.logNewUser = functions.auth.user().onCreate((user) => {
@@ -34,3 +34,15 @@ exports.deleteUser = functions.auth.user().onDelete(async (user) => {
 exports.logDeleteUser = functions.auth.user().onDelete((user) => {
   return db.collection('log').add({event: 'user deleted', uid: user.uid, phoneNumber: user.phoneNumber, date: admin.firestore.Timestamp.now(), date_ms: admin.firestore.Timestamp.now().toMillis()})
 });
+
+
+exports.initiateDeleteUser = functions.https.onRequest(async (req, res) => {
+  try {
+    await admin.auth().deleteUser(req.query.uid)
+    console.log('Successfully deleted user');
+  }
+  catch(error) {
+    console.log('Error deleting user:', error);
+  }
+  return res.status(200).send("ok");
+})
