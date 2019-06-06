@@ -13,6 +13,8 @@ export class AngularFirestoreStub {
     collection(someString) {
         // return mock collection;
     }
+
+    valueChanges() {}
 }
 
 @Injectable()

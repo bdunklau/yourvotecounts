@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { UsersComponent } from './users.component';
+import {CommonServiceModuleStub, AngularFirestoreStub} from '../core/common.module'
 
 describe('UsersComponent', () => {
   let component: UsersComponent;
@@ -8,7 +9,11 @@ describe('UsersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UsersComponent ]
+      imports: [CommonServiceModuleStub],
+      declarations: [ UsersComponent ],
+      providers: [
+                  { provide: AngularFirestore, useClass: AngularFirestoreStub }
+                ],
     })
     .compileComponents();
   }));
