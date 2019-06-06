@@ -19,6 +19,7 @@ import { HomeComponent } from './home/home.component';  // https://ng-bootstrap.
 import { AuthService } from './core/auth.service';
 import { LogComponent } from './log/log.component';
 import { UsersComponent } from './users/users.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { UsersComponent } from './users/users.component';
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features
     FormsModule, ReactiveFormsModule,
     NgbModule,
+    HttpClientModule
   ],
   bootstrap: [AppComponent]
 })

@@ -2,6 +2,7 @@
 
 <table border="1" cellpadding="2">
     <tr *ngFor="let user of list | async">
+        <td><a class="nav-link"  (click)="deleteUser(user.uid)">delete</a></td>
         <td>{{ user.date.toDate() }}</td>
         <td>{{ user.phoneNumber }}</td>
         <td>{{ user.uid }}</td>
