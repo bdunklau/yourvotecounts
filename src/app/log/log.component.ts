@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { LogEntry } from './logentry'
+import { Observable } from 'rxjs/Observable'
 
 @Component({
   selector: 'app-log',
@@ -9,14 +10,15 @@ import { LogEntry } from './logentry'
 })
 export class LogComponent implements OnInit {
 
-  public log: AngularFireList<any[]>;
+  logRef: AngularFirestoreCollection<LogEntry>;
+  log: Observable<LogEntry[]>;
 
-  constructor(private db: AngularFireDatabase) {}
+  constructor(private afs: AngularFirestore) { }
 
-
-  // maybe this:   https://dev.to/crazedvic/query--update-firestore-documents-in-angular-7-5fhg
+  // helpful for getting queries working:  https://www.youtube.com/watch?v=SGQGFO_zkx4&t=409s
   ngOnInit() {
-    this.db.collection('log').valueChanges().subscribe(console.log);
+    this.logRef = this.afs.collection('log', ref => ref.orderBy('date_ms'))
+    this.log = this.logRef.valueChanges()
   }
 
 }
