@@ -44,5 +44,7 @@ exports.initiateDeleteUser = functions.https.onRequest(async (req, res) => {
   catch(error) {
     console.log('Error deleting user:', error);
   }
-  return res.status(200).send("ok");
+  return res.set({ 'Access-Control-Allow-Origin': '*',
+                   'Access-Control-Allow-Methods': 'DELETE',
+                   'Access-Control-Allow-Headers': ['access-control-allow-origin', 'authorization', 'content-type'] }).status(200).send({text: "ok"});
 })

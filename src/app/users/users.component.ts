@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 import { FirebaseUserModel } from '../core/user.model'
 import { Observable } from 'rxjs/Observable'
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { UserService } from '../core/user.service'
 
 @Component({
   selector: 'app-users',
@@ -11,11 +12,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class UsersComponent implements OnInit {
 
+  respbody: String;
+  headers: String[];
   ref: AngularFirestoreCollection<FirebaseUserModel>;
   list: Observable<FirebaseUserModel[]>;
 
   constructor(private afs: AngularFirestore,
-              private http: HttpClient) { }
+              public us: UserService) { }
 
   ngOnInit() {
     console.log("this.afs = ", this.afs)
@@ -24,26 +27,11 @@ export class UsersComponent implements OnInit {
     this.list = this.ref.valueChanges()
   }
 
-  deleteUser(uid) {
-    console.log("delete this user: ", uid)
-    // example:   https://angularfirebase.com/snippets/trigger-http-cloud-functions-from-an-angular-component/
-
-    let url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/initiateDeleteUser'
-
-    let headers: HttpHeaders = new HttpHeaders();
-    headers.set('Content-Type' , 'application/json');
-    headers.set('foo' , 'bar');
-    // headers.set('Authorization' , 'secret-key');
-    // headers.set('Access-Control-Allow-Origin', '*');
-
-    // ref:  Angular HttpClient   https://angular.io/guide/http
-    // TODO really should put this in a service, not in the component.  See the ref above
-    this.http.get(url+'?uid='+uid, {
-      headers: headers
-    }).subscribe(res => resolve(res.json()));
-
+  deleteUser(uid: String) {
+    this.us.deleteUser(uid)
+    .subscribe(resp => {
+      console.log("resp: ", resp) // json formatted string
+    });
   }
-
-
 
 }
