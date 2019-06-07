@@ -29,16 +29,18 @@ export class UsersComponent implements OnInit {
     // example:   https://angularfirebase.com/snippets/trigger-http-cloud-functions-from-an-angular-component/
 
     let url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/initiateDeleteUser'
-    const httpOptions = {
-       headers: new HttpHeaders({
-         'Content-Type':  'application/json',
-         'Authorization': 'secret-key',
-         'Access-Control-Allow-Origin': '*'
-       })
-    };
+
+    let headers: HttpHeaders = new HttpHeaders();
+    headers.set('Content-Type' , 'application/json');
+    headers.set('foo' , 'bar');
+    // headers.set('Authorization' , 'secret-key');
+    // headers.set('Access-Control-Allow-Origin', '*');
+
     // ref:  Angular HttpClient   https://angular.io/guide/http
     // TODO really should put this in a service, not in the component.  See the ref above
-    return this.http.get(url+'?uid='+uid);
+    this.http.get(url+'?uid='+uid, {
+      headers: headers
+    }).subscribe(res => resolve(res.json()));
 
   }
 
