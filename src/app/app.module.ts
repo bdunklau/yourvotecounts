@@ -14,8 +14,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 // the plugin exposes the two libraries as well. You can use those:
 import {FirebaseUIModule, firebase, firebaseui} from 'firebaseui-angular';
 import { RegisterComponent } from './register/register.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { HomeComponent } from './home/home.component';  // https://ng-bootstrap.github.io/#/getting-started
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap'; // https://ng-bootstrap.github.io/#/getting-started
+import { HomeComponent } from './home/home.component';
 import { AuthService } from './core/auth.service';
 import { LogComponent } from './log/log.component';
 import { UsersComponent } from './users/users.component';
