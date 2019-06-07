@@ -1,13 +1,15 @@
 import { Injectable } from "@angular/core";
 //import 'rxjs/add/operator/toPromise';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 
 @Injectable()
 export class AuthService {
 
   constructor(
-   public afAuth: AngularFireAuth
+    public db: AngularFirestore,
+    public afAuth: AngularFireAuth
  ){}
 
   doPhoneLogin() {
@@ -87,10 +89,11 @@ export class AuthService {
   }
 
   doLogout(){
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if(firebase.auth().currentUser){
+        await this.db.collection('log').add({event: 'user logged out', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber,
+                                      date: firebase.firestore.Timestamp.now(), date_ms: firebase.firestore.Timestamp.now().toMillis()})
         this.afAuth.auth.signOut();
-        console.log("AuthService.doLogout(): this.afAuth.auth.signOut()")
         resolve();
       }
       else{
