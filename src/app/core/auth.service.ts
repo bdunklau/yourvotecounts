@@ -91,7 +91,7 @@ export class AuthService {
   doLogout(){
     return new Promise(async (resolve, reject) => {
       if(firebase.auth().currentUser){
-        await this.db.collection('log').add({event: 'user logged out', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber,
+        await this.db.collection('log').add({event: 'logout', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber,
                                       date: firebase.firestore.Timestamp.now(), date_ms: firebase.firestore.Timestamp.now().toMillis()})
         this.afAuth.auth.signOut();
         resolve();
