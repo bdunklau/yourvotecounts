@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
       var user = await this.userService.getCurrentUser()
 
       console.log("canActivate(): user = ", user)
-      if(user && !user.displayName && !user.email) {
+      if(user && !user.displayName) {
         this.router.navigate(['/register']);
         return false
       } else if(user) {

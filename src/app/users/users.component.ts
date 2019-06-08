@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { FirebaseUserModel } from '../core/user.model'
 import { Observable } from 'rxjs/Observable'
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserService } from '../core/user.service'
 
 @Component({

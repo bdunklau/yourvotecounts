@@ -7,6 +7,7 @@ import { CommonServiceModuleStub, AngularFireAuthStub } from '../core/common.mod
 import { CanActivate, Router } from "@angular/router";
 import { BehaviorSubject } from 'rxjs';
 import { of } from 'rxjs/observable/of';
+import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 
 describe('RegisterGuard', () => {
 
@@ -27,6 +28,7 @@ describe('RegisterGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [RegisterGuard, UserService,
+                { provide: HttpClient, useValue: {} },
                 { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); }  },
                 { provide: AngularFirestore, useValue: AngularFirestoreStub },
                 {provide: AngularFireAuth, useClass: AngularFireAuthStub}]

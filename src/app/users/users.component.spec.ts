@@ -1,9 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { UsersComponent } from './users.component';
 // import {CommonServiceModuleStub, AngularFirestoreStub} from '../core/common.module'
 import { BehaviorSubject } from 'rxjs';
 import { of } from 'rxjs/observable/of';
+import { UserService } from '../core/user.service'
+import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 
 
 describe('UsersComponent', () => {
@@ -26,8 +29,10 @@ describe('UsersComponent', () => {
     TestBed.configureTestingModule({
       // imports: [CommonServiceModuleStub],
       declarations: [ UsersComponent ],
-      providers: [
-                  { provide: AngularFirestore, useValue: AngularFirestoreStub }
+      providers: [ UserService,
+                  { provide: HttpClient, useValue: {} },
+                  { provide: AngularFirestore, useValue: AngularFirestoreStub },
+                  { provide: AngularFireAuth, useValue: {} }
                 ],
     })
     .compileComponents();
