@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 export class FirebaseUserModel {
   uid: string;
   image: string;
@@ -16,6 +18,7 @@ export class FirebaseUserModel {
   }
 
   isAdmin(): boolean {
-    return this.roles && this.roles["admin"] != -1
+    var idx = _.findIndex(this.roles, function(o) { return o == 'admin'; });
+    return idx != -1
   }
 }
