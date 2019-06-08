@@ -1,5 +1,5 @@
 import { AuthGuard } from './auth.guard';
-import { UserService } from './user.service';
+import { UserService } from '../user/user.service';
 import { TestBed } from '@angular/core/testing';
 // import { RouterTestingModule } from '@angular/router/testing';
 // import { Router } from "@angular/router";
@@ -9,7 +9,7 @@ import { AppComponent } from '../app.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/of';
-import { FirebaseUserModel } from './user.model';
+import { FirebaseUserModel } from '../user/user.model';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonServiceModuleStub } from './common.module';
 

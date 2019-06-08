@@ -6,7 +6,7 @@ import * as firebase from 'firebase/app';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
-import { FirebaseUserModel } from '../core/user.model';
+import { FirebaseUserModel } from '../user/user.model';
 import { take } from 'rxjs/operators';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class UserService {
 
     return new Promise<any>((resolve, reject) => {
       var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1))
-      var sub = ref.subscribe(data => {
+      var sub = ref.subscribe((data: [FirebaseUserModel]) => {
         console.log('ref.subscribe:  data = ', data)
         user.roles = data[0].roles
         resolve(user)

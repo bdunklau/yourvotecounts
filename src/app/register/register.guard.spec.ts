@@ -1,5 +1,5 @@
 import { TestBed, async, inject } from '@angular/core/testing';
-import { UserService } from '../core/user.service'
+import { UserService } from '../user/user.service'
 import { RegisterGuard } from './register.guard';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';

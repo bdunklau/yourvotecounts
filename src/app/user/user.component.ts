@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FirebaseUserModel } from '../core/user.model';
+import { FirebaseUserModel } from '../user/user.model';
 
 @Component({
   selector: 'app-user',

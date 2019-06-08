@@ -5,7 +5,7 @@ import { AuthGuard } from './core/auth.guard';
 import { AuthService } from './core/auth.service';
 import { UserComponent } from './user/user.component';
 import { UserResolver } from './user/user.resolver';
-import { UserService } from './core/user.service';
+import { UserService } from './user/user.service';
 import { RegisterComponent } from './register/register.component';
 import { RegisterGuard } from './register/register.guard';
 import { HomeComponent } from './home/home.component';

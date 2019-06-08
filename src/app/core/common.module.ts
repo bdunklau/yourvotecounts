@@ -1,8 +1,8 @@
 import { NgModule, Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { UserService } from './user.service';
-import { FirebaseUserModel } from './user.model'
+import { UserService } from '../user/user.service';
+import { FirebaseUserModel } from '../user/user.model'
 
 // I'd recommend you put this service in a subfolder.
 // This time, I created a class instead of a json.
