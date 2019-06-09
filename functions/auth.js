@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin')
+const log = require('./log')
 
 // can only call this once globally and we already do that in index.js
 //admin.initializeApp(functions.config().firebase);
@@ -10,7 +11,7 @@ var db = admin.firestore();
 
 
 exports.logNewUser = functions.auth.user().onCreate((user) => {
-  return db.collection('log').add({event: 'user created', uid: user.uid, phoneNumber: user.phoneNumber, date: admin.firestore.Timestamp.now(), date_ms: admin.firestore.Timestamp.now().toMillis()})
+  return log.i({event: 'user created', uid: user.uid, phoneNumber: user.phoneNumber})
 });
 
 
@@ -26,13 +27,13 @@ exports.deleteUser = functions.auth.user().onDelete(async (user) => {
     users.forEach(function(user) {batch.delete(user.ref)})
     return batch.commit()
   } catch(err) {
-    return db.collection('log').add({event: 'error deleting user', uid: user.uid, phoneNumber: user.phoneNumber, date: admin.firestore.Timestamp.now(), date_ms: admin.firestore.Timestamp.now().toMillis()})
+    return log.e({event: 'error deleting user', uid: user.uid, phoneNumber: user.phoneNumber})
   }
 });
 
 
 exports.logDeleteUser = functions.auth.user().onDelete((user) => {
-  return db.collection('log').add({event: 'user deleted', uid: user.uid, phoneNumber: user.phoneNumber, date: admin.firestore.Timestamp.now(), date_ms: admin.firestore.Timestamp.now().toMillis()})
+  return log.i({event: 'user deleted', uid: user.uid, phoneNumber: user.phoneNumber})
 });
 
 

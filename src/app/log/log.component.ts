@@ -17,10 +17,12 @@ export class LogComponent implements OnInit {
 
   // helpful for getting queries working:  https://www.youtube.com/watch?v=SGQGFO_zkx4&t=409s
   ngOnInit() {
-    console.log("this.afs = ", this.afs)
-    this.logRef = this.afs.collection('log', ref => ref.orderBy('date_ms'))
-    console.log("this.logRef = ", this.logRef)
+    this.logRef = this.afs.collection('log', ref => ref.orderBy('date_ms').limit(10))
     this.log = this.logRef.valueChanges()
+  }
+  
+  ngOnDestroy() {
+    // this.logRef.unsubscribe(); // we never called subscribe
   }
 
 }

@@ -1,5 +1,8 @@
 export class LogEntry {
-  id: string;
+  uid: string;
   event: string;
-  // date: Date;
+  date: Date;
+  date_ms: number;
+  phoneNumber: string;
+  level: string;
 }
