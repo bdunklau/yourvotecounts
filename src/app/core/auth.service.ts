@@ -97,6 +97,9 @@ export class AuthService {
         resolve();
       }
       else{
+        await this.db.collection('log').add({event: 'error logging out - no current user', uid: "uid n/a", phoneNumber: "ph n/a",
+                                date: firebase.firestore.Timestamp.now(), date_ms: firebase.firestore.Timestamp.now().toMillis()})
+
         reject();
       }
     });
