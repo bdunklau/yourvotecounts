@@ -81,12 +81,6 @@ export class UserService {
     return new Promise<any>((resolve, reject) => {
       var user = firebase.auth().onAuthStateChanged(function(user){
         if (user) {
-          // var ref = this.afs.collection('user').where("uid", "==", user.uid)
-          // ref.get().then(function (querySnapshot) {
-          //     querySnapshot.forEach(function (doc) {
-          //         console.log(doc.id, ' => ', doc.data());
-          //     });
-          // });
           resolve(user);
         } else {
           reject('No user logged in');
