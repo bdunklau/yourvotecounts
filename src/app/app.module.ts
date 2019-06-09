@@ -14,20 +14,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 // the plugin exposes the two libraries as well. You can use those:
 import {FirebaseUIModule, firebase, firebaseui} from 'firebaseui-angular';
 import { RegisterComponent } from './register/register.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { HomeComponent } from './home/home.component';  // https://ng-bootstrap.github.io/#/getting-started
-
-
-// came from here:  https://github.com/RaphaelJenni/FirebaseUI-Angular
-// const firebaseUiAuthConfig: firebaseui.auth.Config = {
-//   signInFlow: 'popup',
-//   signInOptions: [
-//     firebase.auth.PhoneAuthProvider.PROVIDER_ID
-//   ],
-//   tosUrl: '<your-tos-link>',
-//   privacyPolicyUrl: '<your-privacyPolicyUrl-link>',
-//   credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM
-// };
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap'; // https://ng-bootstrap.github.io/#/getting-started
+import { HomeComponent } from './home/home.component';
+import { AuthService } from './core/auth.service';
+import { LogComponent } from './log/log.component';
+import { UsersComponent } from './users/users.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -36,7 +28,9 @@ import { HomeComponent } from './home/home.component';  // https://ng-bootstrap.
     LoginComponent,
     UserComponent,
     RegisterComponent,
-    HomeComponent
+    HomeComponent,
+    LogComponent,
+    UsersComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,8 +39,8 @@ import { HomeComponent } from './home/home.component';  // https://ng-bootstrap.
     AngularFirestoreModule, // imports firebase/firestore, only needed for database features
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features
     FormsModule, ReactiveFormsModule,
-    // FirebaseUIModule.forRoot(firebaseUiAuthConfig),
     NgbModule,
+    HttpClientModule
   ],
   bootstrap: [AppComponent]
 })

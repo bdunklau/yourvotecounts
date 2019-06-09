@@ -1,5 +1,5 @@
 import { AuthGuard } from './auth.guard';
-import { UserService } from './user.service';
+import { UserService } from '../user/user.service';
 import { TestBed } from '@angular/core/testing';
 // import { RouterTestingModule } from '@angular/router/testing';
 // import { Router } from "@angular/router";
@@ -9,7 +9,7 @@ import { AppComponent } from '../app.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/of';
-import { FirebaseUserModel } from './user.model';
+import { FirebaseUserModel } from '../user/user.model';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonServiceModuleStub } from './common.module';
 
@@ -33,20 +33,12 @@ const angularFirestoreStub = {
 describe('AuthGuard', () => {
   describe('canActivate', () => {
     let authGuard: AuthGuard;
-    let authService;
     let router;
     let userService: UserService;
     let db: AngularFirestore;
     let afAuth: AngularFireAuth;
 
     const authState = new FirebaseUserModel();
-
-    const AngularFirestoreStub = {
-        // I just mocked the function you need, if there are more, you can add them here.
-        collection: (someString) => {
-            // return mocked collection here
-        }
-    };
 
     const mockAngularFireAuth: any = {
       auth: jasmine.createSpyObj('auth', {
@@ -76,10 +68,9 @@ describe('AuthGuard', () => {
     );
 
     it('should navigate to user for a logged in user', async () => {
-      authService = { /*not used*/ };
       spyOn(userService, 'getCurrentUser').and.returnValue({displayName: "Bob Meader", phoneNumber: "469-555-0000"});
       router = new MockRouter();
-      authGuard = new AuthGuard(authService, userService, router);
+      authGuard = new AuthGuard(userService, router);
       spyOn(router, 'navigate');
       let canAct = await authGuard.canActivate()
       expect(canAct).toBeFalsy();
@@ -90,10 +81,9 @@ describe('AuthGuard', () => {
 
     // failed
     it('should return true for a logged out user', async () => {
-      authService = { /*not used*/ };
       router = new MockRouter();
       spyOn(userService, 'getCurrentUser').and.returnValue(null);
-      authGuard = new AuthGuard(authService, userService, router);
+      authGuard = new AuthGuard(userService, router);
       let res = await authGuard.canActivate();
       expect(res).toBeTruthy();
     });

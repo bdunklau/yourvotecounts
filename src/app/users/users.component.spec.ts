@@ -1,19 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RegisterComponent } from './register.component';
-import { AuthService } from '../core/auth.service'
-import { Router } from '@angular/router';
-import { FormBuilder } from '@angular/forms';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore } from '@angular/fire/firestore';
-import {CommonServiceModuleStub, AngularFireAuthStub} from '../core/common.module'
+import { UsersComponent } from './users.component';
+// import {CommonServiceModuleStub, AngularFirestoreStub} from '../core/common.module'
 import { BehaviorSubject } from 'rxjs';
 import { of } from 'rxjs/observable/of';
+import { UserService } from '../user/user.service'
+import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 
-describe('RegisterComponent', () => {
-  let component: RegisterComponent;
-  let fixture: ComponentFixture<RegisterComponent>;
 
+describe('UsersComponent', () => {
+  let component: UsersComponent;
+  let fixture: ComponentFixture<UsersComponent>;
 
   const AngularFirestoreStub = {
       collection: (name: string, f: (ref:any) => {}) => ({
@@ -27,22 +25,21 @@ describe('RegisterComponent', () => {
       }),
     };
 
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, CommonServiceModuleStub],
-      providers: [AuthService, FormBuilder,
-                  { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); }  },
-                  { provide: AngularFireAuth, useValue: AngularFireAuthStub },
-                  { provide: AngularFirestore, useValue: AngularFirestoreStub }
+      // imports: [CommonServiceModuleStub],
+      declarations: [ UsersComponent ],
+      providers: [ UserService,
+                  { provide: HttpClient, useValue: {} },
+                  { provide: AngularFirestore, useValue: AngularFirestoreStub },
+                  { provide: AngularFireAuth, useValue: {} }
                 ],
-      declarations: [ RegisterComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RegisterComponent);
+    fixture = TestBed.createComponent(UsersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

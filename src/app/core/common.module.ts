@@ -1,19 +1,26 @@
 import { NgModule, Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { UserService } from './user.service';
-import { FirebaseUserModel } from './user.model'
+import { UserService } from '../user/user.service';
+import { FirebaseUserModel } from '../user/user.model'
 
 // I'd recommend you put this service in a subfolder.
 // This time, I created a class instead of a json.
 // It is because, your other components may require more 'mocked' functions.
 // It may be harder to maintain them within a json.
+// @Injectable()
+// export class AngularFirestoreStub {
+//   collection(someString) {
+//       // return mock collection;
+//   }
+//
+//   valueChanges() {}
+// }
+
 @Injectable()
-export class AngularFirestoreStub {
-    collection(someString) {
-        // return mock collection;
-    }
+export class AngularFireAuthStub {
 }
+
 
 @Injectable()
 export class UserServiceStub {
@@ -33,7 +40,9 @@ export class UserServiceStub {
 }
 
 @NgModule({
-    providers: [{provide: AngularFirestore, useClass: AngularFirestoreStub},
-                {provide: UserService, useClass: UserServiceStub}]
+    providers: [
+                // {provide: AngularFirestore, useClass: AngularFirestoreStub},
+                {provide: UserService, useClass: UserServiceStub}
+              ]
 })
 export class CommonServiceModuleStub {}
