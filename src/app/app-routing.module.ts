@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './core/auth.guard';
+import { RoleGuard } from './core/role.guard';
 import { AuthService } from './core/auth.service';
 import { UserComponent } from './user/user.component';
 import { UserResolver } from './user/user.resolver';
@@ -15,11 +16,12 @@ import { UsersComponent } from './users/users.component'
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
-  { path: 'log', component: LogComponent },
-  { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
-  { path: 'register', component: RegisterComponent, canActivate: [RegisterGuard] },
+  { path: 'log', component: LogComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
+  // TODO add guard on this route
   { path: 'user', component: UserComponent,  resolve: { data: UserResolver}},
-  { path: 'users', component: UsersComponent }
+  { path: 'users', component: UsersComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
 ];
 
 @NgModule({
