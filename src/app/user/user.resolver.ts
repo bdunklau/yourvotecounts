@@ -8,6 +8,7 @@ export class UserResolver implements Resolve<FirebaseUserModel> {
 
   constructor(public userService: UserService, private router: Router) { }
 
+  // TODO use guards instead
   resolve(route: ActivatedRouteSnapshot) : Promise<FirebaseUserModel> {
 
     let user = new FirebaseUserModel();
