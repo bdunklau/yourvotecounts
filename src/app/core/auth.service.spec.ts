@@ -3,6 +3,9 @@ import { AuthService } from './auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
+import { UserService } from '../user/user.service'
+import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
+
 
 // a stub/mock
 // FYI  https://github.com/angular/angularfire2/issues/1706#issuecomment-394212606
@@ -17,7 +20,8 @@ const FirestoreStub = {
 
 describe('AuthService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    providers: [AuthService,
+    providers: [AuthService, UserService,
+                { provide: HttpClient, useValue: {} },
                 { provide: AngularFireAuth, useValue: {} },
                 { provide: AngularFirestore, useValue: FirestoreStub }]
   }));

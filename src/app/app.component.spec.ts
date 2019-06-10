@@ -10,6 +10,10 @@ import {CommonServiceModuleStub} from './core/common.module'
 import { AuthService } from './core/auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { of } from 'rxjs/observable/of';
+import { UserService } from './user/user.service'
+import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
+
+
 
 describe('AppComponent', () => {
 
@@ -36,7 +40,8 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
-      providers: [AuthService,
+      providers: [AuthService, UserService,
+                  { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: AngularFireAuthStub }
                   ],

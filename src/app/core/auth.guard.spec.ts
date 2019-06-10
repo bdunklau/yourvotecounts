@@ -20,7 +20,7 @@ class MockRouter {
   }
 }
 
-const data = Observable.from([{image: "img1", displayName: "Brent Dunklau", provider: "", phoneNumber: "214-555-1212"}]);
+const data = Observable.from([{image: "img1", displayName: "Brent Smith", provider: "", phoneNumber: "214-555-1212"}]);
 
 const collectionStub = {
   valueChanges: jasmine.createSpy('valueChanges').and.returnValue(data)
@@ -67,25 +67,29 @@ describe('AuthGuard', () => {
         }
     );
 
-    it('should navigate to user for a logged in user', async () => {
+    it('should allow route to be accessed for a logged in user', async () => {
       spyOn(userService, 'getCurrentUser').and.returnValue({displayName: "Bob Meader", phoneNumber: "469-555-0000"});
       router = new MockRouter();
       authGuard = new AuthGuard(userService, router);
       spyOn(router, 'navigate');
       let canAct = await authGuard.canActivate()
-      expect(canAct).toBeFalsy();
-      expect(router.navigate.calls.count()).toEqual(1)
-      expect(router.navigate).toHaveBeenCalledWith(['/user']);
+      expect(canAct).toBeTruthy();
+      expect(router.navigate.calls.count()).toEqual(0)
     });
 
 
     // failed
-    it('should return true for a logged out user', async () => {
+    it('should return false for a logged out user', async () => {
       router = new MockRouter();
       spyOn(userService, 'getCurrentUser').and.returnValue(null);
       authGuard = new AuthGuard(userService, router);
+      spyOn(router, 'navigate');
       let res = await authGuard.canActivate();
-      expect(res).toBeTruthy();
+      expect(res).toBeFalsy();
+      expect(router.navigate).toBeTruthy();
+      expect(router.navigate.calls).toBeTruthy();
+      expect(router.navigate.calls.count()).toEqual(1)
+      expect(router.navigate).toHaveBeenCalledWith(['/login']);
     });
 
 
