@@ -23,4 +23,9 @@ export class TokenPage {
     browser.ignoreSynchronization = true;
     return element(by.css('h2')).getText() as Promise<string>;
   }
+
+  login(phoneNumber) {
+    this.navigateTo(phoneNumber)
+    return this.getToken()
+  }
 }
