@@ -7,7 +7,7 @@ const log = require('./log')
 var db = admin.firestore();
 
 
-// firebase deploy --only functions:logNewUser,functions:recordNewUser,functions:deleteUser,functions:logDeleteUser,functions:initiateDeleteUser
+// firebase deploy --only functions:logNewUser,functions:recordNewUser,functions:deleteUser,functions:logDeleteUser,functions:initiateDeleteUser,functions:createCustomToken
 
 
 exports.logNewUser = functions.auth.user().onCreate((user) => {
@@ -48,4 +48,16 @@ exports.initiateDeleteUser = functions.https.onRequest(async (req, res) => {
   return res.set({ 'Access-Control-Allow-Origin': '*',
                    'Access-Control-Allow-Methods': 'DELETE',
                    'Access-Control-Allow-Headers': ['access-control-allow-origin', 'authorization', 'content-type'] }).status(200).send({text: "ok"});
+})
+
+exports.createCustomToken = functions.https.onRequest((req, res) => {
+  admin.auth().createCustomToken(req.query.uid)
+  .then(function(customToken) {
+    // Send token back to client
+    return res.status(200).send({token: customToken})
+  })
+  .catch(function(error) {
+    console.log('Error creating custom token:', error);
+    return res.status(401).send({error: error})
+  });
 })
