@@ -50,14 +50,37 @@ exports.initiateDeleteUser = functions.https.onRequest(async (req, res) => {
                    'Access-Control-Allow-Headers': ['access-control-allow-origin', 'authorization', 'content-type'] }).status(200).send({text: "ok"});
 })
 
-exports.createCustomToken = functions.https.onRequest((req, res) => {
-  admin.auth().createCustomToken(req.query.uid)
-  .then(function(customToken) {
-    // Send token back to client
-    return res.status(200).send({token: customToken})
-  })
-  .catch(function(error) {
-    console.log('Error creating custom token:', error);
-    return res.status(401).send({error: error})
-  });
+// pass phoneNumber request parameter without country code and get an auth token
+exports.createCustomToken = functions.https.onRequest(async (req, res) => {
+  try {
+    var query = '+1'+req.query.phoneNumber;
+    db.collection('user').where('phoneNumber','==', query).limit(1).get().then( querySnapshot => {
+      console.log('querySnapshot.size: ', querySnapshot.size);
+      if(querySnapshot.size === 0) {
+        return res.status(401).send('<h3>error</h3><br/><h4>Phone not found: '+query+'</h4>')
+      }
+
+      return querySnapshot.forEach(function(doc) {
+        var user = doc.data();
+        console.log('user: ', user);
+        admin.auth().createCustomToken(user.uid)
+        .then(function(customToken) {
+          // Send token back to client
+          return res.status(200).send('<h3>token</h3><br/><h4>'+customToken+'</h4><br/>Phone: '+req.query.phoneNumber+'<br/>uid: '+user.uid)
+        })
+        .catch(function(error) {
+          console.log('Error creating custom token:', error);
+          return res.status(401).send('<h3>error</h3><br/><h4>'+error+'</h4>')
+        });
+      })
+    })
+    .catch(function(error) {
+      console.log('Error creating custom token:', error);
+      return res.status(401).send('<h3>error</h3><br/><h4>'+error+'</h4>')
+    });
+
+  } catch(err) {
+    return res.status(401).send('<h3>error</h3><br/><h4>'+err+'</h4>')
+  }
+
 })
