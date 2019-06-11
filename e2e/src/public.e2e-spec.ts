@@ -9,8 +9,10 @@ describe('YourVoteCounts - Public page', () => {
   });
 
   it('when user browses to our app he should see the default “public” screen', () => {
-    page.navigateTo();
+    page.navigateToHome();
     expect(page.getTitleText()).toEqual('home');
+    page.navigateToLogin()
+    page.enterPhone('5555555555')
   });
 
   afterEach(async () => {
