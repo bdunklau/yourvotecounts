@@ -16,4 +16,10 @@ export class PublicPage {
     browser.ignoreSynchronization = true;
     return element(by.css('app-root h1')).getText() as Promise<string>;
   }
+
+  getRegisterTitleText() {
+    browser.sleep(100);
+    browser.ignoreSynchronization = true;
+    return element(by.css('app-register h1')).getText() as Promise<string>;
+  }
 }
