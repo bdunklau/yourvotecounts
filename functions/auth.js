@@ -57,7 +57,7 @@ exports.createCustomToken = functions.https.onRequest(async (req, res) => {
     db.collection('user').where('phoneNumber','==', query).limit(1).get().then( querySnapshot => {
       console.log('querySnapshot.size: ', querySnapshot.size);
       if(querySnapshot.size === 0) {
-        return res.status(401).send('<h3>error</h3><br/><h4>Phone not found: '+query+'</h4>')
+        return res.status(401).send('<h3>error</h3><br/><h2>Phone not found: '+query+'</h2>')
       }
 
       return querySnapshot.forEach(function(doc) {
@@ -69,18 +69,16 @@ exports.createCustomToken = functions.https.onRequest(async (req, res) => {
           return res.status(200).send('<h3>token</h3><br/><h4>'+customToken+'</h4><br/>Phone: '+req.query.phoneNumber+'<br/>uid: '+user.uid)
         })
         .catch(function(error) {
-          console.log('Error creating custom token:', error);
-          return res.status(401).send('<h3>error</h3><br/><h4>'+error+'</h4>')
+          return res.status(401).send('<h3>error</h3><br/><h2>'+error+'</h2>')
         });
       })
     })
     .catch(function(error) {
-      console.log('Error creating custom token:', error);
-      return res.status(401).send('<h3>error</h3><br/><h4>'+error+'</h4>')
+      return res.status(401).send('<h3>error</h3><br/><h2>'+error+'</h2>')
     });
 
   } catch(err) {
-    return res.status(401).send('<h3>error</h3><br/><h4>'+err+'</h4>')
+    return res.status(401).send('<h3>error</h3><br/><h2>'+err+'</h2>')
   }
 
 })
