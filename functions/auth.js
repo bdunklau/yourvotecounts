@@ -57,7 +57,7 @@ exports.createCustomToken = functions.https.onRequest(async (req, res) => {
     db.collection('user').where('phoneNumber','==', query).limit(1).get().then( querySnapshot => {
       console.log('querySnapshot.size: ', querySnapshot.size);
       if(querySnapshot.size === 0) {
-        return res.status(401).send('<h3>error</h3><br/><h2>Phone not found: '+query+'</h2>')
+        return res.status(200).send('<h3>error</h3><br/><h2>Phone not found: '+query+'</h2>')
       }
 
       return querySnapshot.forEach(function(doc) {
