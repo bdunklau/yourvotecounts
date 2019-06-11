@@ -12,6 +12,7 @@ import { RegisterGuard } from './register/register.guard';
 import { HomeComponent } from './home/home.component';
 import { LogComponent } from './log/log.component';
 import { UsersComponent } from './users/users.component'
+import { TokenComponent } from './token/token.component'
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'log', component: LogComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
+  { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'user', component: UserComponent,  resolve: { data: UserResolver}},
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
