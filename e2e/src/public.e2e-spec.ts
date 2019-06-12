@@ -2,7 +2,7 @@ import { PublicPage } from './public.po';
 import { browser, logging } from 'protractor';
 import { TokenPage } from './token.po';
 
-describe('YourVoteCounts - Public page', () => {
+describe('Public page', () => {
   let page: PublicPage;
   let tokenPage: TokenPage;
 
