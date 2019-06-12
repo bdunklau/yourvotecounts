@@ -24,7 +24,8 @@ export class PublicPage {
   }
 
   logout() {
-    element(by.xpath('//*[@id="navbarSupportedContent"]/ul/li[3]/a')).click()
+    element(by.id('logout_menu_item')).click()
+    browser.sleep(100);
   }
 
   getUrl() {
