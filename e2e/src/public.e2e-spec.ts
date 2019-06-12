@@ -12,7 +12,7 @@ describe('YourVoteCounts - Public page', () => {
   });
 
   it('when user logs in, should be able to get to Register page', () => {
-    tokenPage.login('5555555555')
+    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
     page.navigateToHome();
     expect(page.getTitleText()).toEqual('home');
     page.navigateToRegister()
