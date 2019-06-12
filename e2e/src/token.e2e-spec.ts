@@ -34,7 +34,7 @@ describe('Token generator', () => {
   });
 
   it('should not get a token (auth_key incorrect)', async () => {
-    var data = {phoneNumber: '0000000000', auth_key: 'asdfasdfasd'}
+    var data = {phoneNumber: '5555555555', auth_key: 'asdfasdfasd'}
     page.navigateTo(data);
     expect(page.getTitleText()).toEqual('error');
     var error = await page.getError()
