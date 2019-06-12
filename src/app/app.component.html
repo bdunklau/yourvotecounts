@@ -8,25 +8,25 @@
   <div [ngbCollapse]="isNavbarCollapsed" class="navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" routerLink="/home"><i class="fa fa-home"></i></a>
+        <a id="home_menu_item" class="nav-link" routerLink="/home"><i class="fa fa-home"></i></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="/login">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" (click)="logout()">Logout</a>
+        <a id="logout_menu_item" class="nav-link" (click)="logout()">Logout</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/user">User</a>
+        <a id="user_menu_item" class="nav-link" routerLink="/user">User</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/register">Register</a>
+        <a id="register_menu_item" class="nav-link" routerLink="/register">Register</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/log">Log</a>
+        <a id="log_menu_item" class="nav-link" routerLink="/log">Log</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/users">Users</a>
+        <a id="users_menu_item" class="nav-link" routerLink="/users">Users</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="/token">Token</a>
