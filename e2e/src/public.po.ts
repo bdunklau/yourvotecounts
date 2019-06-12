@@ -4,17 +4,17 @@ import * as protractor from 'protractor'
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class PublicPage {
   clickHome() {
-    element(by.id('home_menu_item')).click()
+    element(by.id('home_link')).click()
     browser.sleep(100); // worked at 500
   }
 
   clickRegister() {
-    element(by.id('register_menu_item')).click()
+    element(by.id('register_link')).click()
     browser.sleep(1000); // lower values don't always work
   }
 
   clickUser() {
-    element(by.id('user_menu_item')).click()
+    element(by.id('user_link')).click()
   }
 
   getTitleText() {
@@ -24,7 +24,7 @@ export class PublicPage {
   }
 
   logout() {
-    element(by.id('logout_menu_item')).click()
+    element(by.id('logout_link')).click()
     browser.sleep(100);
   }
 
