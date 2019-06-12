@@ -101,8 +101,8 @@ export class AuthService {
         resolve();
       }
       else{
-        await this.log.i({event: 'error logging out - no current user', uid: "uid n/a", phoneNumber: "ph n/a"})
-        reject();
+        await this.log.i({event: 'logout - no current user', uid: "uid n/a", phoneNumber: "ph n/a"})
+        resolve();
       }
     });
   }
