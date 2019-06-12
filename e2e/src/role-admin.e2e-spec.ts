@@ -3,7 +3,7 @@ import { AdminPage } from './role-admin.po';
 import { browser, logging } from 'protractor';
 import { TokenPage } from './token.po';
 
-fdescribe('Admin page', () => {
+describe('Admin page', () => {
   // let page: PublicPage;
   let page: AdminPage;
   let tokenPage: TokenPage;
@@ -22,7 +22,7 @@ fdescribe('Admin page', () => {
     page.logout()
   });
 
-  fit('normal user should not be able to get to Users page', () => {
+  it('normal user should not be able to get to Users page', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
     page.clickHome();
     page.clickUsers();
