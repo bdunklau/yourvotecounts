@@ -16,7 +16,7 @@ describe('YourVoteCounts - Public page', () => {
     page.navigateToHome();
     expect(page.getTitleText()).toEqual('home');
     page.navigateToRegister()
-    expect(page.getRegisterTitleText()).toEqual('Complete Your Account');
+    expect(page.getTitleText()).toEqual('Complete Your Account');
   });
 
   afterEach(async () => {

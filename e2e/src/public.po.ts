@@ -8,7 +8,9 @@ export class PublicPage {
   }
 
   navigateToRegister() {
-    return browser.get(browser.baseUrl+'/register') as Promise<any>;
+    var ret = browser.get(browser.baseUrl+'/register') as Promise<any>;
+    browser.sleep(1000);
+    return ret;
   }
 
   getTitleText() {
@@ -16,10 +18,5 @@ export class PublicPage {
     browser.ignoreSynchronization = true;
     return element(by.css('app-root h1')).getText() as Promise<string>;
   }
-
-  getRegisterTitleText() {
-    browser.sleep(100);
-    browser.ignoreSynchronization = true;
-    return element(by.css('app-register h1')).getText() as Promise<string>;
-  }
+  
 }

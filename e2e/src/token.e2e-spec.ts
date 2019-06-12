@@ -9,15 +9,33 @@ describe('Token generator', () => {
   });
 
   it('should get a token', async () => {
-    page.navigateTo('5555555555');
+    var data = {phoneNumber: '5555555555', auth_key: process.env.YOURVOTECOUNTS_AUTH_KEY}
+    page.navigateTo(data);
     expect(page.getTitleText()).toEqual('token');
     var token = await page.getToken()
     expect(token).toBeTruthy();
     expect(token.length > 50).toBeTruthy();
   });
 
-  it('should not get a token', async () => {
-    page.navigateTo('0000000000');
+  it('should not get a token (unknown ph number)', async () => {
+    var data = {phoneNumber: '0000000000', auth_key: process.env.YOURVOTECOUNTS_AUTH_KEY}
+    page.navigateTo(data);
+    expect(page.getTitleText()).toEqual('error');
+    var error = await page.getError()
+    expect(error).toBeTruthy();
+  });
+
+  it('should not get a token (no auth_key supplied)', async () => {
+    var data = {phoneNumber: '5555555555'}
+    page.navigateTo(data);
+    expect(page.getTitleText()).toEqual('error');
+    var error = await page.getError()
+    expect(error).toBeTruthy();
+  });
+
+  it('should not get a token (auth_key incorrect)', async () => {
+    var data = {phoneNumber: '0000000000', auth_key: 'asdfasdfasd'}
+    page.navigateTo(data);
     expect(page.getTitleText()).toEqual('error');
     var error = await page.getError()
     expect(error).toBeTruthy();

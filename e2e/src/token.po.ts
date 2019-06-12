@@ -1,9 +1,11 @@
 import { browser, by, element } from 'protractor';
 
 export class TokenPage {
-  navigateTo(phoneNumber) {
+  navigateTo(data) {
+    var phoneNumber = data.phoneNumber
+    var auth_key = data.auth_key ? '&auth_key='+data.auth_key : '';
     browser.waitForAngularEnabled(false);
-    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber) as Promise<any>;
+    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
   }
 
   getTitleText() {
@@ -25,7 +27,12 @@ export class TokenPage {
   }
 
   login(phoneNumber) {
-    this.navigateTo(phoneNumber)
-    return this.getToken()
+    this.navigateTo({phoneNumber: phoneNumber, auth_key: process.env.YOURVOTECOUNTS_AUTH_KEY});
+    var token = this.getToken();
+    browser.get(browser.baseUrl+'/token');
+    element(by.name('token')).sendKeys(token);
+    element(by.id('submit_token')).click()
+    browser.sleep(1000);
   }
+
 }
