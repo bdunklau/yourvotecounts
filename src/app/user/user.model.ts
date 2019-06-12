@@ -17,8 +17,8 @@ export class FirebaseUserModel {
     this.roles = [];
   }
 
-  isAdmin(): boolean {
-    var idx = _.findIndex(this.roles, function(o) { return o == 'admin'; });
+  hasRole(role: string): boolean {
+    var idx = _.findIndex(this.roles, function(o) { return o == role; });
     return idx != -1
   }
 }

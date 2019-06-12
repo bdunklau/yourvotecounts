@@ -1,0 +1,52 @@
+
+<div class="container">
+  <h1>Token Login</h1>
+  <div [hidden]="submitted">
+    <form (ngSubmit)="onSubmit()" #tokenForm="ngForm">
+      <div class="form-group">
+        <label for="token">Token</label>
+        <input type="text" class="form-control" id="token" [(ngModel)]="tokenValue" name="token" #token="ngModel" required>
+        <div [hidden]="token.valid || token.pristine"
+             class="alert alert-danger">
+          token is required
+        </div>
+      </div>
+
+      <button id="submit_token" type="submit" class="btn btn-success" [disabled]="!tokenForm.form.valid">Submit</button>
+
+    </form>
+
+    <div class="row">
+      <div class="col-xs-12"><b>How to get a Token</b></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <ol>
+          <li>Get the env variable YOURVOTECOUNTS_AUTH_KEY</li>
+          <li>Choose a phone number of an existing account (don't include the +1)</li>
+          <li>Click the link below fill in the phone number and auth_key in the url<br/><a href="https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber=[phone]&auth_key=[YOURVOTECOUNTS_AUTH_KEY]" target="gettoken">https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber=[phone]&auth_key=[YOURVOTECOUNTS_AUTH_KEY]</a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div [hidden]="!submitted">
+    <h2>You submitted the following:</h2>
+    <div class="row">
+      <div class="col-xs-3">Token</div>
+    </div>
+    <div class="row">
+      <div class="col-xs-9">{{ tokenValue }}</div>
+    </div>
+    <div class="row">
+      <div class="col-xs-3">Response</div>
+    </div>
+    <div class="row">
+      <div class="col-xs-9">{{ otherStuff }}</div>
+    </div>
+    <br>
+    <button class="btn btn-primary" (click)="submitted=false">Go Back</button>
+  </div>
+
+
+</div>

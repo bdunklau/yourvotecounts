@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Location } from '@angular/common';
 import { AuthService } from './core/auth.service';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -13,14 +14,14 @@ export class AppComponent {
 
   constructor(db: AngularFirestore,
     private location : Location,
-    private authService: AuthService) {  }
+    private authService: AuthService,
+    private router: Router) {  }
 
 
   logout(){
     this.authService.doLogout()
     .then((res) => {
-      console.log("UserComponent.logout(): this.location.back()")
-      this.location.back();
+      this.router.navigate(['/']);
     }, (error) => {
       console.log("Logout error", error);
     });

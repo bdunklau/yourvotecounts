@@ -16,3 +16,4 @@ exports.recordNewUser = auth.recordNewUser
 exports.deleteUser = auth.deleteUser
 exports.logDeleteUser = auth.logDeleteUser
 exports.initiateDeleteUser = auth.initiateDeleteUser
+exports.createCustomToken = auth.createCustomToken

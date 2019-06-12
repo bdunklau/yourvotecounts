@@ -8,6 +8,7 @@ export class UserResolver implements Resolve<FirebaseUserModel> {
 
   constructor(public userService: UserService, private router: Router) { }
 
+  // TODO use guards instead
   resolve(route: ActivatedRouteSnapshot) : Promise<FirebaseUserModel> {
 
     let user = new FirebaseUserModel();
@@ -15,8 +16,6 @@ export class UserResolver implements Resolve<FirebaseUserModel> {
     return new Promise((resolve, reject) => {
       this.userService.getCurrentUser()
       .then(user => {
-        console.log("UserResolver.resolve(): user.resolver.ts:resolve() user = ", user);
-        console.log("UserResolver.resolve(): user.resolver.ts:resolve() user.isAdmin() = ", user.isAdmin());
         if(!user) {
           console.log('UserResolver.resolve(): No user object');
           this.router.navigate(['/login']);

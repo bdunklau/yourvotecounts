@@ -1,9 +1,10 @@
-<h1>Log MUST RESTRICT TO ADMINS</h1>
+<h1>Log</h1>
 
 <table class="table table-striped">
   <thead>
   <tr>
     <th scope="col">date</th>
+    <th scope="col">level</th>
     <th scope="col">event</th>
     <th scope="col">Phone</th>
     <th scope="col">User ID</th>
@@ -14,6 +15,7 @@
     <td>
       {{ logentry.date.toDate() }}
     </td>
+    <td>{{ logentry.level }}</td>
     <td>{{ logentry.event }}</td>
     <td>{{ logentry.phoneNumber }}</td>
     <td>{{ logentry.uid }}</td>

@@ -3,13 +3,17 @@ import { Injectable } from "@angular/core";
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
+import { LogService } from '../log/log.service'
+import { UserService } from '../user/user.service'
 
 @Injectable()
 export class AuthService {
 
   constructor(
     public db: AngularFirestore,
-    public afAuth: AngularFireAuth
+    public afAuth: AngularFireAuth,
+    private log: LogService,
+    private userService: UserService
  ){}
 
   doPhoneLogin() {
@@ -91,13 +95,14 @@ export class AuthService {
   doLogout(){
     return new Promise(async (resolve, reject) => {
       if(firebase.auth().currentUser){
-        await this.db.collection('log').add({event: 'logout', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber,
-                                      date: firebase.firestore.Timestamp.now(), date_ms: firebase.firestore.Timestamp.now().toMillis()})
+        await this.log.i({event: 'logout', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber})
         this.afAuth.auth.signOut();
+        this.userService.signOut();
         resolve();
       }
       else{
-        reject();
+        await this.log.i({event: 'logout - no current user', uid: "uid n/a", phoneNumber: "ph n/a"})
+        resolve();
       }
     });
   }

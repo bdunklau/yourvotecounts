@@ -8,6 +8,7 @@ import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { FirebaseUserModel } from '../user/user.model';
 import { take } from 'rxjs/operators';
+import { LogService } from '../log/log.service'
 
 @Injectable()
 export class UserService {
@@ -17,25 +18,35 @@ export class UserService {
   constructor(
     private afs: AngularFirestore,
     private http: HttpClient,
-    public afAuth: AngularFireAuth
+    public afAuth: AngularFireAuth,
+    private log: LogService
   ){}
+
+
+  signOut() {
+    this.user = null
+  }
 
 
   // query /user for the user's roles and other attributes that aren't part of firebase.user
   async getCurrentUser() : Promise<FirebaseUserModel> {
+    if(this.user) {
+      // TODO verified on 6//10/19 but not part of automated testing yet.  Need a mock/spy LogService
+      await this.log.d({event: 'get cached user', uid: this.user.uid, phoneNumber: this.user.phoneNumber})
+      return this.user
+    }
+
     var user = await this.createFirebaseUserModel()
-    console.log("UserService.getCurrentUser(): user = ", user)
 
     return new Promise<any>((resolve, reject) => {
       var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1))
       var sub = ref.subscribe((data: [FirebaseUserModel]) => {
         console.log('ref.subscribe:  data = ', data)
         user.roles = data[0].roles
-        resolve(user)
+        this.user = user
+        resolve(this.user)
       })
     })
-
-
   }
 
 
@@ -75,38 +86,11 @@ export class UserService {
     })
   }
 
-
   private getFirebaseUser() {
     // this.afs.collection('user', ref => ref.orderBy('date_ms'))
     return new Promise<any>((resolve, reject) => {
       var user = firebase.auth().onAuthStateChanged(function(user){
         if (user) {
-          // var ref = this.afs.collection('user').where("uid", "==", user.uid)
-          // ref.get().then(function (querySnapshot) {
-          //     querySnapshot.forEach(function (doc) {
-          //         console.log(doc.id, ' => ', doc.data());
-          //     });
-          // });
-          resolve(user);
-        } else {
-          reject('No user logged in');
-        }
-      })
-    })
-  }
-
-  getCurrentUserOrig() {
-    console.log("getCurrentUser(): this.afs = ", this.afs)
-    // this.afs.collection('user', ref => ref.orderBy('date_ms'))
-    return new Promise<any>((resolve, reject) => {
-      var user = firebase.auth().onAuthStateChanged(function(user){
-        if (user) {
-          // var ref = this.afs.collection('user').where("uid", "==", user.uid)
-          // ref.get().then(function (querySnapshot) {
-          //     querySnapshot.forEach(function (doc) {
-          //         console.log(doc.id, ' => ', doc.data());
-          //     });
-          // });
           resolve(user);
         } else {
           reject('No user logged in');

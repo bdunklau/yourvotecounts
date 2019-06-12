@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore } from '@angular/fire/firestore';
 // import * as firebaseui from 'firebaseui'
 // import { firebase} from 'firebase/app'
 import {firebase, firebaseui} from 'firebaseui-angular'
 import {BehaviorSubject} from 'rxjs';
+import { LogService } from '../log/log.service'
 
 @Component({
   selector: 'app-login',
@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   ui: firebaseui.auth.AuthUI
 
   constructor(private afAuth: AngularFireAuth,
-              private db: AngularFirestore) { }
+              private log: LogService) { }
 
   ngOnInit() {
     console.log("login.component.ts: ngOnInit()")
@@ -39,8 +39,7 @@ export class LoginComponent implements OnInit {
   onLoginSuccessful() {
     console.log("onLoginSuccessful()")
     if(firebase.auth().currentUser){
-      this.db.collection('log').add({event: 'login', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber,
-                                    date: firebase.firestore.Timestamp.now(), date_ms: firebase.firestore.Timestamp.now().toMillis()})
+      this.log.i({event: 'login', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber})
     }
   }
 

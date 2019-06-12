@@ -20,6 +20,7 @@ import { AuthService } from './core/auth.service';
 import { LogComponent } from './log/log.component';
 import { UsersComponent } from './users/users.component';
 import { HttpClientModule } from '@angular/common/http';
+import { TokenComponent } from './token/token.component';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { HttpClientModule } from '@angular/common/http';
     HomeComponent,
     LogComponent,
     UsersComponent,
+    TokenComponent,
   ],
   imports: [
     BrowserModule,
