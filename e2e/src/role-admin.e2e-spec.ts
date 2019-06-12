@@ -4,22 +4,44 @@ import { browser, logging } from 'protractor';
 import { TokenPage } from './token.po';
 
 describe('Admin page', () => {
-  let page: PublicPage;
-  let adminPage: AdminPage;
+  // let page: PublicPage;
+  let page: AdminPage;
   let tokenPage: TokenPage;
 
   beforeEach(() => {
-    page = new PublicPage();
-    adminPage = new AdminPage();
+    // page = new PublicPage();
+    page = new AdminPage();
     tokenPage = new TokenPage();
   });
 
-  it('when user logs in, should be able to get to Register page', () => {
+  it('normal user should not be able to get to Log page', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
     page.clickHome();
+    page.clickLog();
     expect(page.getTitleText()).toEqual('home');
-    page.clickRegister()
-    expect(page.getTitleText()).toEqual('Complete Your Account');
+    page.logout()
+  });
+
+  it('normal user should not be able to get to Users page', () => {
+    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
+    page.clickHome();
+    page.clickUsers();
+    expect(page.getTitleText()).toEqual('home');
+    page.logout()
+  });
+
+  it('when admin logs in, should be able to get to Log page', () => {
+    tokenPage.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER)
+    page.clickLog();
+    expect(page.getTitleText()).toEqual('Log');
+    page.logout()
+  });
+
+  it('when admin logs in, should be able to get to Log page', () => {
+    tokenPage.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER)
+    page.clickUsers();
+    expect(page.getTitleText()).toEqual('Users');
+    page.logout()
   });
 
   afterEach(async () => {
