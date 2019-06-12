@@ -8,8 +8,20 @@ describe('Token generator', () => {
     page = new TokenPage();
   });
 
+  it('should have env var YOURVOTECOUNTS_AUTH_KEY', () => {
+    expect(process.env.YOURVOTECOUNTS_AUTH_KEY).toBeTruthy();
+  })
+
+  it('should have env var YOURVOTECOUNTS_ADMIN_PHONE_NUMBER', () => {
+    expect(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER).toBeTruthy();
+  })
+
+  it('should have env var YOURVOTECOUNTS_NORMAL_PHONE_NUMBER', () => {
+    expect(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER).toBeTruthy();
+  })
+
   it('should get a token', async () => {
-    var data = {phoneNumber: '5555555555', auth_key: process.env.YOURVOTECOUNTS_AUTH_KEY}
+    var data = {phoneNumber: process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER, auth_key: process.env.YOURVOTECOUNTS_AUTH_KEY}
     page.navigateTo(data);
     expect(page.getTitleText()).toEqual('token');
     var token = await page.getToken()
@@ -26,7 +38,7 @@ describe('Token generator', () => {
   });
 
   it('should not get a token (no auth_key supplied)', async () => {
-    var data = {phoneNumber: '5555555555'}
+    var data = {phoneNumber: process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER}
     page.navigateTo(data);
     expect(page.getTitleText()).toEqual('error');
     var error = await page.getError()
@@ -34,7 +46,7 @@ describe('Token generator', () => {
   });
 
   it('should not get a token (auth_key incorrect)', async () => {
-    var data = {phoneNumber: '5555555555', auth_key: 'asdfasdfasd'}
+    var data = {phoneNumber: process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER, auth_key: 'asdfasdfasd'}
     page.navigateTo(data);
     expect(page.getTitleText()).toEqual('error');
     var error = await page.getError()
