@@ -32,7 +32,7 @@ export class TokenPage {
     browser.get(browser.baseUrl+'/token');
     element(by.name('token')).sendKeys(token);
     element(by.id('submit_token')).click()
-    browser.sleep(1000);
+    browser.sleep(500); // worked at 1000
   }
 
 }
