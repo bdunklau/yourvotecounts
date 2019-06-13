@@ -37,7 +37,7 @@ describe('UserComponent', () => {
       declarations: [ UserComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [AuthService,Location,
-                    { provide: AngularFireAuth, useValue: FirestoreStub },
+                    { provide: AngularFireAuth, useValue: FirestoreStub/*TODO isn't right*/ },
                     { provide: LocationStrategy, useClass: PathLocationStrategy },
                     {
                       provide: ActivatedRoute,
