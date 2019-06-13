@@ -1,8 +1,8 @@
 import { PublicPage } from './public.po';
-import { browser, logging } from 'protractor';
+import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
 
-describe('Public page', () => {
+fdescribe('Public page', () => {
   let page: PublicPage;
   let tokenPage: TokenPage;
 
@@ -29,6 +29,18 @@ describe('Public page', () => {
     page.logout();
     page.clickRegister();
     expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
+  });
+
+  // We don't want the UI to display a "Token" link.  That's only for e2e testing.
+  fit('should not display a "Token" link', async () => {
+    page.gotoBaseUrl();
+    var home_link = element(by.id('home_link')); // sanity check
+    expect(home_link.isDisplayed()).toBeTruthy();
+
+    var myText = "Token";
+    var selectedElement = element(by.xpath("//*[. = '" + myText + "']"));
+
+    expect(selectedElement.isPresent()).toBeFalsy();
   });
 
   afterEach(async () => {

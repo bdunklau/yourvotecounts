@@ -3,6 +3,12 @@ import * as protractor from 'protractor'
 
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class PublicPage {
+
+  gotoBaseUrl() {
+    return browser.get(browser.baseUrl) as Promise<any>;
+    browser.sleep(100);
+  }
+
   clickHome() {
     element(by.id('home_link')).click()
     browser.sleep(500); // worked at 500
