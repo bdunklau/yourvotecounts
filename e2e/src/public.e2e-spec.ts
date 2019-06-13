@@ -11,6 +11,21 @@ describe('Public page', () => {
     tokenPage = new TokenPage();
   });
 
+  it('when user not logged in, should see Login link', () => {
+    page.gotoBaseUrl();
+    var login_link = element(by.id('login_link'));
+    expect(login_link.isDisplayed()).toBeTruthy();
+  });
+
+  it('when user IS logged in, should see Logout link', () => {
+    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
+    page.gotoBaseUrl();
+    browser.sleep(500);
+    var logout_link = element(by.id('logout_link'));
+    expect(logout_link.isDisplayed()).toBeTruthy();
+    page.logout();
+  });
+
   it('when user logs in, should be able to get to Register page', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
     // browser.get(browser.baseUrl);

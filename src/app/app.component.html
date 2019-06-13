@@ -10,10 +10,10 @@
       <li class="nav-item active">
         <a id="home_link" class="nav-link" routerLink="/home"><i class="fa fa-home"></i></a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/login">Login</a>
+      <li [hidden]="isLoggedIn" class="nav-item">
+        <a id="login_link" class="nav-link" routerLink="/login">Login</a>
       </li>
-      <li class="nav-item">
+      <li [hidden]="!isLoggedIn" class="nav-item">
         <a id="logout_link" class="nav-link" (click)="logout()">Logout</a>
       </li>
       <li class="nav-item">
