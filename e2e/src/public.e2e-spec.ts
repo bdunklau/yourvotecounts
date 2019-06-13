@@ -2,7 +2,7 @@ import { PublicPage } from './public.po';
 import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
 
-fdescribe('Public page', () => {
+describe('Public page', () => {
   let page: PublicPage;
   let tokenPage: TokenPage;
 
@@ -32,7 +32,7 @@ fdescribe('Public page', () => {
   });
 
   // We don't want the UI to display a "Token" link.  That's only for e2e testing.
-  fit('should not display a "Token" link', async () => {
+  it('should not display a "Token" link', async () => {
     page.gotoBaseUrl();
     var home_link = element(by.id('home_link')); // sanity check
     expect(home_link.isDisplayed()).toBeTruthy();
@@ -41,6 +41,16 @@ fdescribe('Public page', () => {
     var selectedElement = element(by.xpath("//*[. = '" + myText + "']"));
 
     expect(selectedElement.isPresent()).toBeFalsy();
+  });
+
+  // We DO want to make sure we can always point the browser to /token however
+  it('should be able to point browser to /token', async () => {
+    page.gotoBaseUrl();
+    var home_link = element(by.id('home_link')); // sanity check
+    expect(home_link.isDisplayed()).toBeTruthy();
+
+    page.gotoTokenPage();
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/token');
   });
 
   afterEach(async () => {

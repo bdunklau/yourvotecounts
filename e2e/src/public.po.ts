@@ -9,6 +9,11 @@ export class PublicPage {
     browser.sleep(100);
   }
 
+  gotoTokenPage() {
+    return browser.get(browser.baseUrl+'/token') as Promise<any>;
+    browser.sleep(100);
+  }
+
   clickHome() {
     element(by.id('home_link')).click()
     browser.sleep(500); // worked at 500
