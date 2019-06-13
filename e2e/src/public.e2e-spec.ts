@@ -2,7 +2,7 @@ import { PublicPage } from './public.po';
 import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
 
-fdescribe('Public page', () => {
+describe('Public page', () => {
   let page: PublicPage;
   let tokenPage: TokenPage;
 
@@ -56,8 +56,8 @@ fdescribe('Public page', () => {
     page.clickRegister();
     expect(page.getTitleText()).toEqual('Complete Your Account');
     page.logout();
-    page.clickRegister();
-    expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
+    var login_link = element(by.id('login_link'));
+    expect(login_link.isDisplayed()).toBeTruthy();
   });
 
   // We don't want the UI to display a "Token" link.  That's only for e2e testing.
