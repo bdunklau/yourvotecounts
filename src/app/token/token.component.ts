@@ -10,7 +10,6 @@ import { UserService } from '../user/user.service';
 export class TokenComponent implements OnInit {
 
   tokenValue: string;
-  otherStuff: string;
 
   submitted = false;
 
