@@ -2,7 +2,7 @@ import { PublicPage } from './public.po';
 import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
 
-describe('Public page', () => {
+fdescribe('Public page', () => {
   let page: PublicPage;
   let tokenPage: TokenPage;
 
@@ -11,10 +11,24 @@ describe('Public page', () => {
     tokenPage = new TokenPage();
   });
 
-  it('when user not logged in, should see Login link', () => {
+  it('when not logged in, should see Login link', () => {
     page.gotoBaseUrl();
     var login_link = element(by.id('login_link'));
     expect(login_link.isDisplayed()).toBeTruthy();
+  });
+
+  it('when not logged in, /user should redirect to /login', () => {
+    page.goto('/user');
+    browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
+    browser.sleep(1000);
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
+  });
+
+  it('when not logged in, /register should redirect to /login', () => {
+    page.goto('/register');
+    browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
+    browser.sleep(1000);
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
   });
 
   it('when user IS logged in, should see Logout link', () => {

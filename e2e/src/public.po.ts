@@ -14,6 +14,11 @@ export class PublicPage {
     browser.sleep(100);
   }
 
+  goto(url) {
+    return browser.get(browser.baseUrl+url) as Promise<any>;
+    browser.sleep(100);
+  }
+
   clickHome() {
     element(by.id('home_link')).click()
     browser.sleep(500); // worked at 500
