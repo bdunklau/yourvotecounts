@@ -21,6 +21,7 @@ import { LogComponent } from './log/log.component';
 import { UsersComponent } from './users/users.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TokenComponent } from './token/token.component';
+import { MyAccountComponent } from './my-account/my-account.component';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { TokenComponent } from './token/token.component';
     LogComponent,
     UsersComponent,
     TokenComponent,
+    MyAccountComponent,
   ],
   imports: [
     BrowserModule,
