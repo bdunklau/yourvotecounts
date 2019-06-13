@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as firebase from 'firebase/app';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-token',
@@ -13,18 +14,15 @@ export class TokenComponent implements OnInit {
 
   submitted = false;
 
-  constructor() { }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.submitted = true;
     var tk = 'token: "'+this.tokenValue+'"'
-    firebase.auth().signInWithCustomToken(this.tokenValue)
-    .then(function(resp) {
-      console.log('success: ', resp)
-    })
+    let firebase_auth_user = await firebase.auth().signInWithCustomToken(this.tokenValue)
     .catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -34,6 +32,12 @@ export class TokenComponent implements OnInit {
       console.log('token...');
       console.log(tk);
     });
+
+    if(firebase_auth_user && firebase_auth_user.user) {
+      console.log('TokenComponent: firebase_auth_user.user = ', firebase_auth_user.user);
+      this.userService.setFirebaseUser(firebase_auth_user.user);
+    }
+
   }
 
 }

@@ -1,16 +1,20 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
+import { browser, by, element } from 'protractor';
 import * as protractor from 'protractor'
 
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class PublicPage {
-  navigateToHome() {
-    return browser.get(browser.baseUrl) as Promise<any>;
+  clickHome() {
+    element(by.id('home_link')).click()
+    browser.sleep(500); // worked at 500
   }
 
-  navigateToRegister() {
-    var ret = browser.get(browser.baseUrl+'/register') as Promise<any>;
-    browser.sleep(1000);
-    return ret;
+  clickRegister() {
+    element(by.id('register_link')).click()
+    browser.sleep(500); // lower values don't always work
+  }
+
+  clickUser() {
+    element(by.id('user_link')).click()
   }
 
   getTitleText() {
@@ -18,5 +22,14 @@ export class PublicPage {
     browser.ignoreSynchronization = true;
     return element(by.css('app-root h1')).getText() as Promise<string>;
   }
-  
+
+  logout() {
+    element(by.id('logout_link')).click()
+    browser.sleep(100);
+  }
+
+  getUrl() {
+    return browser.getCurrentUrl();
+  }
+
 }

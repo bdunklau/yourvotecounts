@@ -2,7 +2,7 @@ import { PublicPage } from './public.po';
 import { browser, logging } from 'protractor';
 import { TokenPage } from './token.po';
 
-describe('YourVoteCounts - Public page', () => {
+describe('Public page', () => {
   let page: PublicPage;
   let tokenPage: TokenPage;
 
@@ -13,10 +13,22 @@ describe('YourVoteCounts - Public page', () => {
 
   it('when user logs in, should be able to get to Register page', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
-    page.navigateToHome();
+    // browser.get(browser.baseUrl);
+    page.clickHome();
     expect(page.getTitleText()).toEqual('home');
-    page.navigateToRegister()
+    page.clickRegister();
     expect(page.getTitleText()).toEqual('Complete Your Account');
+    page.logout();
+  });
+
+  it('should be able to logout', () => {
+    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    page.clickHome();
+    page.clickRegister();
+    expect(page.getTitleText()).toEqual('Complete Your Account');
+    page.logout();
+    page.clickRegister();
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
   });
 
   afterEach(async () => {
