@@ -1,0 +1,68 @@
+import { PublicPage } from './public.po';
+import { browser, logging, element, by } from 'protractor';
+
+describe('Anonymous users', () => {
+  let page: PublicPage;
+
+  beforeEach(() => {
+    page = new PublicPage();
+  });
+
+  it('should see Login link', () => {
+    page.gotoBaseUrl();
+    var login_link = element(by.id('login_link'));
+    expect(login_link.isDisplayed()).toBeTruthy();
+  });
+
+  it('should be redirected from /user to /login', () => {
+    page.goto('/user');
+    browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
+    browser.sleep(1000);
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
+  });
+
+  it('should be redirected from /register to /login', () => {
+    page.goto('/register');
+    browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
+    browser.sleep(1000);
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
+  });
+
+  it('should be redirected from /myaccount to /login', () => {
+    page.goto('/myaccount');
+    browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
+    browser.sleep(1000);
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
+  });
+
+
+  // We don't want the UI to display a "Token" link.  That's only for e2e testing.
+  it('should not display a "Token" link', async () => {
+    page.gotoBaseUrl();
+    var home_link = element(by.id('home_link')); // sanity check
+    expect(home_link.isDisplayed()).toBeTruthy();
+
+    var myText = "Token";
+    var selectedElement = element(by.xpath("//*[. = '" + myText + "']"));
+
+    expect(selectedElement.isPresent()).toBeFalsy();
+  });
+
+  // We DO want to make sure we can always point the browser to /token however
+  it('should be able to point browser to /token', async () => {
+    page.gotoBaseUrl();
+    var home_link = element(by.id('home_link')); // sanity check
+    expect(home_link.isDisplayed()).toBeTruthy();
+
+    page.gotoTokenPage();
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/token');
+  });
+
+  afterEach(async () => {
+    // Assert that there are no errors emitted from the browser
+    const logs = await browser.manage().logs().get(logging.Type.BROWSER);
+    expect(logs).not.toContain(jasmine.objectContaining({
+      level: logging.Level.SEVERE,
+    } as logging.Entry));
+  });
+});
