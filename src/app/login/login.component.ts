@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import {firebase, firebaseui} from 'firebaseui-angular'
 import {BehaviorSubject} from 'rxjs';
 import { LogService } from '../log/log.service'
+import { UserService } from '../user/user.service'
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ export class LoginComponent implements OnInit {
   ui: firebaseui.auth.AuthUI
 
   constructor(private afAuth: AngularFireAuth,
-              private log: LogService) { }
+              private log: LogService,
+              private userService: UserService) { }
 
   ngOnInit() {
     console.log("login.component.ts: ngOnInit()")
@@ -37,9 +39,10 @@ export class LoginComponent implements OnInit {
   }
 
   onLoginSuccessful() {
-    console.log("onLoginSuccessful()")
+    console.log("onLoginSuccessful()");
     if(firebase.auth().currentUser){
-      this.log.i({event: 'login', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber})
+      this.log.i({event: 'login', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber});
+      this.userService.setFirebaseUser(firebase.auth().currentUser);
     }
   }
 

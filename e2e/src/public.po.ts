@@ -5,12 +5,12 @@ import * as protractor from 'protractor'
 export class PublicPage {
   clickHome() {
     element(by.id('home_link')).click()
-    browser.sleep(100); // worked at 500
+    browser.sleep(500); // worked at 500
   }
 
   clickRegister() {
     element(by.id('register_link')).click()
-    browser.sleep(1000); // lower values don't always work
+    browser.sleep(500); // lower values don't always work
   }
 
   clickUser() {

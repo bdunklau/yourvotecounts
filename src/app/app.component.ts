@@ -25,10 +25,13 @@ export class AppComponent {
     private messageService: MessageService) {  }
 
 
-  ngOnInit() {
+  async ngOnInit() {
+    console.log('AppComponent:ngOnInit()')
+    let user = await this.userService.getCurrentUser();
+    if(user) this.isAdmin = user.hasRole('admin')
     this.subscription = this.messageService.getUser()
       .subscribe(user => {
-        console.log('AppComponent: this.userFromSibling = ', user);
+        console.log('AppComponent: user from service: ', user);
         this.isAdmin = user && user.hasRole('admin')
       })
   }
