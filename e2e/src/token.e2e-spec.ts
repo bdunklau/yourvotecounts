@@ -1,7 +1,7 @@
 import { TokenPage } from './token.po';
 import { browser, logging } from 'protractor';
 
-describe('Token generator', () => {
+describe('Token Utility ', () => {
   let page: TokenPage;
 
   beforeEach(() => {

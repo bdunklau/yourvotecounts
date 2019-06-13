@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 export class AppComponent {
   title = 'YourVoteCounts';
   isAdmin: boolean;
+  isLoggedIn: boolean;
   private subscription: Subscription;
 
   constructor(db: AngularFirestore,
@@ -28,11 +29,13 @@ export class AppComponent {
   async ngOnInit() {
     console.log('AppComponent:ngOnInit()')
     let user = await this.userService.getCurrentUser();
-    if(user) this.isAdmin = user.hasRole('admin')
+    this.isAdmin = user && user.hasRole('admin')
+    this.isLoggedIn = user != null;
     this.subscription = this.messageService.getUser()
       .subscribe(user => {
         console.log('AppComponent: user from service: ', user);
         this.isAdmin = user && user.hasRole('admin')
+        this.isLoggedIn = user != null;
       })
   }
 
