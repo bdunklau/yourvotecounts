@@ -16,17 +16,14 @@ export class RegisterGuard implements CanActivate {
   async canActivate(): Promise<boolean> {
       try {
         var user = await this.userService.getCurrentUser()
-
-        console.log("RegisterGuard:canActivate(): user = ", user)
-        if(!user) {
-          this.router.navigate(['/login']);
-          return false
+        if(!user) return false;
+        if(!user.displayName) {
+          this.router.navigate(['/register']);
+          return false;
         }
         else return true;
       } catch(e) {
-        console.log("RegisterGuard:canActivate(): error = ", e)
-        this.router.navigate(['/login']);
-        return true;
+        return false;
       }
   }
 }

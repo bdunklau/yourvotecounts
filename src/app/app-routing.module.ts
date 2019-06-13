@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'log', component: LogComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'login', component: LoginComponent },
-  { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard] },
+  { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard, RegisterGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route

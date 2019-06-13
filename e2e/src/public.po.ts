@@ -33,6 +33,14 @@ export class PublicPage {
     element(by.id('user_link')).click()
   }
 
+  pullDownMyMenu() {
+    element(by.id('name_or_phone')).click()
+  }
+
+  clickMyAccount() {
+    element(by.id('myaccount_link')).click()
+  }
+
   getTitleText() {
     browser.sleep(100);
     browser.ignoreSynchronization = true;
