@@ -18,6 +18,18 @@ export class AdminPage {
     browser.sleep(1000);
   }
 
+  // Log link should be hidden from non-admins, but can non-admins still access the url?
+  gotoLog() {
+    return browser.get(browser.baseUrl+'/log') as Promise<any>;
+    browser.sleep(100);
+  }
+
+  // Users link should be hidden from non-admins, but can non-admins still access the url?
+  gotoUsers() {
+    return browser.get(browser.baseUrl+'/users') as Promise<any>;
+    browser.sleep(100);
+  }
+
   getTitleText() {
     browser.sleep(100);
     browser.ignoreSynchronization = true;
@@ -27,6 +39,10 @@ export class AdminPage {
   logout() {
     element(by.id('logout_link')).click()
     browser.sleep(100);
+  }
+
+  getUrl() {
+    return browser.getCurrentUrl();
   }
 
 }

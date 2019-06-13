@@ -14,7 +14,7 @@ describe('Admin page', () => {
     tokenPage = new TokenPage();
   });
 
-  it('normal user should not be able to get to Log page', () => {
+  it('normal user should not see a Log link', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
     var log_link = element(by.id('log_link'));
@@ -23,7 +23,17 @@ describe('Admin page', () => {
     page.logout()
   });
 
-  it('normal user should not be able to get to Users page', () => {
+  it('normal user should not be able to navigate to /logs', () => {
+    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    page.clickHome();
+    page.gotoLog();
+    browser.sleep(500);
+    expect(page.getTitleText()).toEqual('home');
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/home');
+    page.logout()
+  });
+
+  it('normal user should not see a Users link', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
     page.clickHome();
     var users_link = element(by.id('users_link'));
@@ -38,6 +48,16 @@ describe('Admin page', () => {
     browser.sleep(10000);
     page.clickLog();
     expect(page.getTitleText()).toEqual('Log');
+    page.logout()
+  });
+
+  it('normal user should not be able to navigate to /users', () => {
+    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    page.clickHome();
+    page.gotoUsers();
+    browser.sleep(500);
+    expect(page.getTitleText()).toEqual('home');
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/home');
     page.logout()
   });
 
