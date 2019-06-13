@@ -10,11 +10,20 @@
       <li class="nav-item active">
         <a id="home_link" class="nav-link" routerLink="/home"><i class="fa fa-home"></i></a>
       </li>
+
+      <li [hidden]="!isLoggedIn" class="nav-item dropdown" ngbDropdown>
+        <a class="nav-link dropdown-toggle" id="name_or_phone" ngbDropdownToggle>{{name_or_phone}}</a>
+        <div class="dropdown-menu" aria-labelledby="name_or_phone" ngbDropdownMenu>
+          <a class="dropdown-item" id="myaccount_link" routerLink="/myaccount">My Account</a>
+          <a class="dropdown-item" id="logout_link" (click)="logout()">Logout</a>
+          <a class="dropdown-item" href="#">more stuff</a>
+          <a class="dropdown-item" href="#">more stuff</a>
+        </div>
+      </li>
+
+
       <li [hidden]="isLoggedIn" class="nav-item">
         <a id="login_link" class="nav-link" routerLink="/login">Login</a>
-      </li>
-      <li [hidden]="!isLoggedIn" class="nav-item">
-        <a id="logout_link" class="nav-link" (click)="logout()">Logout</a>
       </li>
       <li [hidden]="!isLoggedIn" class="nav-item">
         <a id="user_link" class="nav-link" routerLink="/user">User</a>
@@ -28,6 +37,7 @@
       <li [hidden]="!isAdmin" class="nav-item">
         <a id="users_link" class="nav-link" routerLink="/users">Users</a>
       </li>
+
     </ul>
     <!-- search box for later if we want it
 
