@@ -3,7 +3,7 @@ import { AdminPage } from './role-admin.po';
 import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
 
-fdescribe('Admin page', () => {
+describe('Admin page', () => {
   // let page: PublicPage;
   let page: AdminPage;
   let tokenPage: TokenPage;
@@ -32,10 +32,10 @@ fdescribe('Admin page', () => {
     page.logout()
   });
 
-  fit('when admin logs in, should be able to get to Log page', () => {
+  it('when admin logs in, should be able to get to Log page', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickHome();
-    browser.sleep(3000);
+    browser.sleep(10000);
     page.clickLog();
     expect(page.getTitleText()).toEqual('Log');
     page.logout()
