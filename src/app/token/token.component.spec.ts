@@ -6,7 +6,8 @@ import { UserService } from '../user/user.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
-import {CommonServiceModuleStub, AngularFireAuthStub} from '../core/common.module'
+import {CommonServiceModuleStub, AngularFireAuthStub} from '../core/common.module';
+import { BehaviorSubject } from 'rxjs';
 
 // a stub/mock
 // FYI  https://github.com/angular/angularfire2/issues/1706#issuecomment-394212606
