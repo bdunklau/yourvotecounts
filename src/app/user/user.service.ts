@@ -125,11 +125,11 @@ export class UserService {
     return user;
   }
 
-  updateCurrentUser(value) {
+  updateCurrentUser(value: FirebaseUserModel) {
     return new Promise<any>((resolve, reject) => {
       var user = firebase.auth().currentUser;
       user.updateProfile({
-        displayName: value.name,
+        displayName: value.displayName,
         photoURL: user.photoURL
       }).then( () => {
         // now we have to update the /user node
@@ -137,10 +137,9 @@ export class UserService {
         var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid)).snapshotChanges().pipe(take(1));
         ref.subscribe(data  => {
           data.forEach(function(dt) {
-            dt.payload.doc.ref.update({displayName: value.name});
+            dt.payload.doc.ref.update({displayName: value.displayName});
           })
         });
-        this.user.displayName = value.name;
         this.messageService.updateUser(this.user);
         resolve();
       }, err => reject(err))

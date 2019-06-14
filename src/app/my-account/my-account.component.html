@@ -1,6 +1,6 @@
 
-<div class="container">
-  <div [hidden]="!stuffNeeded">
+<div class="container h-100">
+  <div [hidden]="!editing">
     <h1>Complete Your Account</h1>
     <form (ngSubmit)="onSubmit()" #myaccountForm="ngForm">
       <div class="form-group">
@@ -17,10 +17,19 @@
     </form>
   </div>
 
-  <div [hidden]="stuffNeeded">
+  <div [hidden]="editing">
     <h1>My Account</h1>
     <div class="row">
-      <div class="offset-sm-2 col-sm-4">{{nameValue}}</div>
+      <div class="col">{{nameValue}}</div>
+    </div>
+    <div class="row">
+      <div class="col"><a href="tel:{{phoneNumber}}">{{phoneNumber}}</a></div>
+    </div>
+    <div class="row">
+      <div class="col">&nbsp;</div>
+    </div>
+    <div class="row">
+      <div class="col"><button id="edit_my_account" class="btn btn-success" (click)="edit()">Edit</button></div>
     </div>
   </div>
 
