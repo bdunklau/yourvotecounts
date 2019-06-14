@@ -1,3 +1,27 @@
-<p>
-  my-account works!
-</p>
+
+<div class="container">
+  <div [hidden]="submitted">
+    <h1>Complete Your Account</h1>
+    <form (ngSubmit)="onSubmit()" #myaccountForm="ngForm">
+      <div class="form-group">
+        <input type="text" class="form-control" id="myaccount_name" placeholder="Name"
+                [(ngModel)]="nameValue" name="name" #name="ngModel" required>
+        <div [hidden]="name.valid || name.pristine"
+             class="alert alert-danger">
+          Name is required
+        </div>
+      </div>
+
+      <button id="submit_personal_info" type="submit" class="btn btn-success" [disabled]="!myaccountForm.form.valid">Submit</button>
+
+    </form>
+  </div>
+
+  <div [hidden]="!submitted">
+    <h1>My Account</h1>
+    <div class="row">
+      <div class="offset-sm-2 col-sm-4">{{nameValue}}</div>
+    </div>
+  </div>
+
+</div>

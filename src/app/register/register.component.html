@@ -1,7 +1,7 @@
 
 <div class="container">
-  <h1>Complete Your Account</h1>
   <div [hidden]="submitted">
+    <h1>Complete Your Account</h1>
     <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
       <div class="form-group">
         <input type="text" class="form-control" id="register_name" placeholder="Name"
@@ -15,5 +15,13 @@
       <button id="submit_personal_info" type="submit" class="btn btn-success" [disabled]="!registerForm.form.valid">Submit</button>
 
     </form>
+  </div>
+
+  <div [hidden]="!submitted">
+    <h1>My Account</h1>
+    <div class="row">
+      <div class="offset-sm-2 col-sm-4">{{nameValue}}</div>
+    </div>
+  </div>
 
 </div>

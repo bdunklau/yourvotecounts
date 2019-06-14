@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-my-account',
@@ -7,9 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MyAccountComponent implements OnInit {
 
-  constructor() { }
+    nameValue: string;
 
-  ngOnInit() {
-  }
+    submitted = false;
+
+    constructor(private userService: UserService) { }
+
+    ngOnInit() {
+    }
+
+    async onSubmit() {
+      this.submitted = true;
+      this.userService.updateCurrentUser({name: this.nameValue});
+    }
 
 }

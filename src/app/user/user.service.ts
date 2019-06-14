@@ -99,10 +99,11 @@ export class UserService {
 
   setFirebaseUser(firebase_auth_currentUser) {
     let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
-    var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1))
+    console.log('setFirebaseUser(): user.uid = ', user.uid);
+    var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
     // the pipe(take(1)) automatically unsubscribes after the first result
-    ref.subscribe((data: [FirebaseUserModel]) => {
-      // console.log('ref.subscribe:  data = ', data)
+    ref.subscribe((data:[FirebaseUserModel]) => {
+      console.log('setFirebaseUser(): ref.subscribe:  data = ', data)
       user.roles = data[0].roles
       this.user = user
       this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
@@ -124,16 +125,24 @@ export class UserService {
     return user;
   }
 
-  updateCurrentUser(value){
+  updateCurrentUser(value) {
     return new Promise<any>((resolve, reject) => {
       var user = firebase.auth().currentUser;
-      var profile = {displayName: value.displayName};
-      if(user.photoURL) profile['photoURL'] =
       user.updateProfile({
         displayName: value.name,
         photoURL: user.photoURL
-      }).then(res => {
-        resolve(res);
+      }).then( () => {
+        // now we have to update the /user node
+
+        var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid)).snapshotChanges().pipe(take(1));
+        ref.subscribe(data  => {
+          data.forEach(function(dt) {
+            dt.payload.doc.ref.update({displayName: value.name});
+          })
+        });
+        this.user.displayName = value.name;
+        this.messageService.updateUser(this.user);
+        resolve();
       }, err => reject(err))
     })
   }

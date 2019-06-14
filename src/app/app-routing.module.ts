@@ -8,7 +8,7 @@ import { UserComponent } from './user/user.component';
 import { UserResolver } from './user/user.resolver';
 import { UserService } from './user/user.service';
 import { RegisterComponent } from './register/register.component';
-import { RegisterGuard } from './register/register.guard';
+// import { RegisterGuard } from './register/register.guard';
 import { HomeComponent } from './home/home.component';
 import { LogComponent } from './log/log.component';
 import { UsersComponent } from './users/users.component'
@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'log', component: LogComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'login', component: LoginComponent },
-  { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard, RegisterGuard] },
+  { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
@@ -34,7 +34,7 @@ const routes: Routes = [
   providers: [
     AuthGuard,
     AuthService,
-    RegisterGuard,
+    // RegisterGuard,
     UserService,
     UserResolver
   ]
