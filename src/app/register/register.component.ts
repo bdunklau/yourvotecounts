@@ -18,8 +18,8 @@ export class RegisterComponent implements OnInit {
   }
 
   async onSubmit() {
-    this.submitted = true;
-    this.userService.updateCurrentUser({name: this.nameValue});
+    // this.submitted = true;
+    // this.userService.updateCurrentUser({name: this.nameValue});
   }
 
 }
