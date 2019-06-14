@@ -10,15 +10,19 @@ export class MyAccountComponent implements OnInit {
 
     nameValue: string;
 
-    submitted = false;
+    stuffNeeded = false;
 
     constructor(private userService: UserService) { }
 
-    ngOnInit() {
+    async ngOnInit() {
+      let user = await this.userService.getCurrentUser();
+      if(user && !user.displayName) {
+        this.stuffNeeded = true;
+      }
     }
 
     async onSubmit() {
-      this.submitted = true;
+      this.stuffNeeded = true;
       this.userService.updateCurrentUser({name: this.nameValue});
     }
 
