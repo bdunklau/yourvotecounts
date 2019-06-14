@@ -7,6 +7,7 @@ export class FirebaseUserModel {
   provider: string;
   phoneNumber: string;
   roles: Array<String>;
+  photoURL: string;
 
   constructor(){
     this.uid = ""
@@ -15,6 +16,7 @@ export class FirebaseUserModel {
     this.provider = "";
     this.phoneNumber = "";
     this.roles = [];
+    this.photoURL = "";
   }
 
   hasRole(role: string): boolean {
