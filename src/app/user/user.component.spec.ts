@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { UserComponent } from './user.component';
 import { HttpClientModule }    from '@angular/common/http';
 import { AuthService } from '../core/auth.service';
@@ -35,7 +34,6 @@ describe('UserComponent', () => {
     TestBed.configureTestingModule({
       imports: [ HttpClientModule ],
       declarations: [ UserComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],
       providers: [AuthService,Location,
                     { provide: AngularFireAuth, useValue: FirestoreStub/*TODO isn't right*/ },
                     { provide: LocationStrategy, useClass: PathLocationStrategy },

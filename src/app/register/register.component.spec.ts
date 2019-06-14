@@ -3,12 +3,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../core/auth.service'
 import { Router } from '@angular/router';
-import { FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {CommonServiceModuleStub, AngularFireAuthStub} from '../core/common.module'
 import { BehaviorSubject } from 'rxjs';
 import { of } from 'rxjs/observable/of';
+
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -30,7 +31,7 @@ describe('RegisterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, CommonServiceModuleStub],
+      imports: [ ReactiveFormsModule, FormsModule, CommonServiceModuleStub ],
       providers: [AuthService, FormBuilder,
                   { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); }  },
                   { provide: AngularFireAuth, useValue: AngularFireAuthStub },

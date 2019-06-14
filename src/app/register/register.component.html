@@ -4,7 +4,8 @@
   <div [hidden]="submitted">
     <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
       <div class="form-group">
-        <input type="text" class="form-control" id="register_name" [(ngModel)]="nameValue" name="name" #token="ngModel" required>
+        <input type="text" class="form-control" id="register_name" placeholder="Name"
+                [(ngModel)]="nameValue" name="name" #name="ngModel" required>
         <div [hidden]="name.valid || name.pristine"
              class="alert alert-danger">
           Name is required
