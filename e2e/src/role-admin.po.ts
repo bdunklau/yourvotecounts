@@ -36,7 +36,13 @@ export class AdminPage {
     return element(by.css('app-root h1')).getText() as Promise<string>;
   }
 
+  pullDownMyMenu() {
+    element(by.id('name_or_phone')).click()
+    browser.sleep(500);
+  }
+
   logout() {
+    this.pullDownMyMenu();
     element(by.id('logout_link')).click()
     browser.sleep(100);
   }

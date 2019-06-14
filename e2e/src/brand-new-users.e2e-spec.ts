@@ -2,7 +2,7 @@ import { PublicPage } from './public.po';
 import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
 
-fdescribe('Brand new users', () => {
+describe('Brand new users', () => {
   let page: PublicPage;
   let tokenPage: TokenPage;
 
@@ -12,11 +12,11 @@ fdescribe('Brand new users', () => {
   });
 
 
-  fit('should be required to enter name', () => {
+  it('should be required to enter name', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_BRAND_NEW_USER)
-    page.gotoBaseUrl();
+    browser.sleep(1000);
+    page.goto('/home');
     browser.sleep(500);
-    page.pullDownMyMenu();
     page.clickMyAccount();
     browser.sleep(500);
     expect(page.getTitleText()).toEqual('Complete Your Account');

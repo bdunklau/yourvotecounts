@@ -35,9 +35,11 @@ export class PublicPage {
 
   pullDownMyMenu() {
     element(by.id('name_or_phone')).click()
+    browser.sleep(500);
   }
 
   clickMyAccount() {
+    this.pullDownMyMenu();
     element(by.id('myaccount_link')).click()
   }
 
@@ -48,6 +50,7 @@ export class PublicPage {
   }
 
   logout() {
+    this.pullDownMyMenu();
     element(by.id('logout_link')).click()
     browser.sleep(100);
   }

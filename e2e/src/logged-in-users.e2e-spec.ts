@@ -12,14 +12,16 @@ describe('Logged in users', () => {
   });
 
 
-
   it('should see Logout link', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
+    browser.sleep(2000);
     page.gotoBaseUrl();
+    browser.sleep(2000);
+    page.pullDownMyMenu();
     browser.sleep(500);
     var logout_link = element(by.id('logout_link'));
     expect(logout_link.isDisplayed()).toBeTruthy();
-    page.logout();
+    logout_link.click();
   });
 
   it('should be able to get to Register page', () => {

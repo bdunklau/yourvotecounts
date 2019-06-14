@@ -25,7 +25,9 @@ describe('Admins', () => {
 
   it('should be able to get to Users page', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    browser.sleep(1000);
     page.clickHome();
+    browser.sleep(1000);
     page.clickUsers();
     expect(page.getTitleText()).toEqual('Users');
     page.logout()
