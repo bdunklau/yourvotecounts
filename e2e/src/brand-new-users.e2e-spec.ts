@@ -1,26 +1,26 @@
-import { PublicPage } from './public.po';
+import { MainPage } from './main.po';
+import { MyAccountPage } from './my-account.po';
 import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
 
 describe('Brand new users', () => {
-  let page: PublicPage;
+  let page: MainPage;
+  let myAccountPage: MyAccountPage;
   let tokenPage: TokenPage;
 
   beforeEach(() => {
-    page = new PublicPage();
+    page = new MainPage();
     tokenPage = new TokenPage();
+    myAccountPage = new MyAccountPage();
   });
 
 
   it('should be required to enter name', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_BRAND_NEW_USER)
-    browser.sleep(1000);
-    page.goto('/home');
-    browser.sleep(500);
+    // page.goto('/home');
     page.clickMyAccount();
-    browser.sleep(500);
-    expect(page.getTitleText()).toEqual('Complete Your Account');
-    page.logout();
+    expect(myAccountPage.getNameField().isDisplayed()).toBeTruthy();
+    page.clickLogout();
   });
 
   afterEach(async () => {

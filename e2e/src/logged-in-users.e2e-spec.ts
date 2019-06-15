@@ -1,65 +1,40 @@
-import { PublicPage } from './public.po';
+import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
 
 describe('Logged in users', () => {
-  let page: PublicPage;
+  let page: MainPage;
   let tokenPage: TokenPage;
 
   beforeEach(() => {
-    page = new PublicPage();
+    page = new MainPage();
     tokenPage = new TokenPage();
-  });
-
-
-  it('should see Logout link', () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
-    browser.sleep(2000);
-    page.gotoBaseUrl();
-    browser.sleep(2000);
-    page.pullDownMyMenu();
-    browser.sleep(500);
-    var logout_link = element(by.id('logout_link'));
-    expect(logout_link.isDisplayed()).toBeTruthy();
-    logout_link.click();
-  });
-
-  it('should be able to get to Register page', () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
-    // browser.get(browser.baseUrl);
-    page.clickHome();
-    expect(page.getTitleText()).toEqual('home');
-    page.clickRegister();
-    expect(page.getTitleText()).toEqual('Complete Your Account');
-    page.logout();
   });
 
   it('should be able to logout', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
-    page.clickRegister();
-    expect(page.getTitleText()).toEqual('Complete Your Account');
-    page.logout();
-    var login_link = element(by.id('login_link'));
+    page.clickMyAccount();
+    expect(page.getMyAccountElement().isDisplayed()).toBeTruthy();
+    page.clickLogout();
+    var login_link = page.getLoginLink()
     expect(login_link.isDisplayed()).toBeTruthy();
   });
 
   // We don't want the UI to display a "Token" link.  That's only for e2e testing.
   it('should not display a "Token" link', async () => {
-    page.gotoBaseUrl();
-    var home_link = element(by.id('home_link')); // sanity check
+    page.goto('');
+    var home_link = page.getHomeLink(); // sanity check
     expect(home_link.isDisplayed()).toBeTruthy();
 
-    var myText = "Token";
-    var selectedElement = element(by.xpath("//*[. = '" + myText + "']"));
-
-    expect(selectedElement.isPresent()).toBeFalsy();
+    var token_link = page.getTokenLink();
+    expect(token_link.isPresent()).toBeFalsy();
   });
 
   // We DO want to make sure we can always point the browser to /token however
   it('should be able to point browser to /token', async () => {
-    page.gotoBaseUrl();
-    var home_link = element(by.id('home_link')); // sanity check
+    page.goto('');
+    var home_link = page.getHomeLink(); // sanity check
     expect(home_link.isDisplayed()).toBeTruthy();
 
     page.gotoTokenPage();

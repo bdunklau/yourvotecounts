@@ -104,7 +104,7 @@ export class UserService {
     // the pipe(take(1)) automatically unsubscribes after the first result
     ref.subscribe((data:[FirebaseUserModel]) => {
       console.log('setFirebaseUser(): ref.subscribe:  data = ', data)
-      user.roles = data[0].roles
+      if(data && data[0]) user.roles = data[0].roles
       this.user = user
       this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
     })

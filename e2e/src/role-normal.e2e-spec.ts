@@ -1,55 +1,47 @@
-import { PublicPage } from './public.po';
-import { AdminPage } from './role-admin.po';
+import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
 
 describe('Normal user', () => {
-  // let page: PublicPage;
-  let page: AdminPage;
+  let page: MainPage;
   let tokenPage: TokenPage;
 
   beforeEach(() => {
-    // page = new PublicPage();
-    page = new AdminPage();
+    page = new MainPage();
     tokenPage = new TokenPage();
   });
 
   it( 'should not see a Log link', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
-    var log_link = element(by.id('log_link'));
-    expect(log_link.isDisplayed()).toBeFalsy();
-    expect(page.getTitleText()).toEqual('home');
-    page.logout()
+    expect(element(by.id('log_link')).isDisplayed()).toBeFalsy();
+    page.clickLogout()
   });
 
-  it('should not be able to navigate to /logs', () => {
+  it('should not be able to navigate to /log', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
-    page.gotoLog();
-    browser.sleep(500);
-    expect(page.getTitleText()).toEqual('home');
+    browser.sleep(2000);
+    page.goto('/log');
+    expect(page.getHomeElement().isPresent()).toBeTruthy();
     expect(page.getUrl()).toEqual(browser.baseUrl+'/home');
-    page.logout()
+    page.clickLogout()
   });
 
   it('should not see a Users link', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
     page.clickHome();
-    var users_link = element(by.id('users_link'));
-    expect(users_link.isDisplayed()).toBeFalsy();
-    expect(page.getTitleText()).toEqual('home');
-    page.logout()
+    expect(element(by.id('users_link')).isDisplayed()).toBeFalsy();
+    page.clickLogout()
   });
 
   it('should not be able to navigate to /users', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
-    page.gotoUsers();
-    browser.sleep(500);
-    expect(page.getTitleText()).toEqual('home');
+    page.goto('/users');
+    expect(page.getHomeElement().isDisplayed()).toBeTruthy();
     expect(page.getUrl()).toEqual(browser.baseUrl+'/home');
-    page.logout()
+    page.clickLogout()
   });
 
   afterEach(async () => {
