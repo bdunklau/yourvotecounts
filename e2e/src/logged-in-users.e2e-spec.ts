@@ -1,14 +1,17 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
+import { MyAccountPage } from './my-account.po';
 
 describe('Logged in users', () => {
   let page: MainPage;
   let tokenPage: TokenPage;
+  let myAccountPage: MyAccountPage;
 
   beforeEach(() => {
     page = new MainPage();
     tokenPage = new TokenPage();
+    myAccountPage = new MyAccountPage();
   });
 
   it('should be able to logout', () => {
@@ -39,6 +42,23 @@ describe('Logged in users', () => {
 
     page.gotoTokenPage();
     expect(page.getUrl()).toEqual(browser.baseUrl+'/token');
+  });
+
+  //
+  it('should be able to edit name', async () => {
+    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    page.clickHome();
+    page.clickMyAccount();
+    myAccountPage.clickEdit();
+    myAccountPage.enterName('Bob');
+    myAccountPage.clickSubmit();
+    expect(myAccountPage.getNameLabel().isDisplayed()).toBeTruthy();
+    var name = await myAccountPage.getNameLabel().getText();
+    expect(name == 'Bob').toBeTruthy();
+    myAccountPage.clickEdit();
+    myAccountPage.enterName('Joe');
+    myAccountPage.clickSubmit();
+    page.clickLogout();
   });
 
   afterEach(async () => {

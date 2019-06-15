@@ -4,7 +4,7 @@
   <div [hidden]="!editing">
     <form (ngSubmit)="onSubmit()" #myaccountForm="ngForm">
       <div class="form-group">
-        <input type="text" class="form-control" id="myaccount_name" placeholder="Name"
+        <input type="text" class="form-control" id="myaccount_name_field" placeholder="Name"
                 [(ngModel)]="nameValue" name="name" #name="ngModel" required>
         <div [hidden]="name.valid || name.pristine"
              class="alert alert-danger">
@@ -19,7 +19,7 @@
 
   <div [hidden]="editing">
     <div class="row">
-      <div class="col">{{nameValue}}</div>
+      <div class="col" id="myaccount_name_label">{{nameValue}}</div>
     </div>
     <div class="row">
       <div class="col"><a href="tel:{{phoneNumber}}">{{phoneNumber}}</a></div>

@@ -1,8 +1,9 @@
 import { browser, by, element } from 'protractor';
-import * as protractor from 'protractor'
+import * as protractor from 'protractor';
+import { BasePage } from './base.po';
 
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
-export class MainPage {
+export class MainPage extends BasePage {
 
   clickHome() {
     this.getHomeLink().click()
@@ -30,12 +31,12 @@ export class MainPage {
     this.getUsersLink().click();
   }
 
-  private getElement(locator) {
-    var EC=protractor.ExpectedConditions;
-    var ele=element(locator);
-    browser.wait(EC.visibilityOf(ele),5000,"element never became visible (locator: "+locator+")");
-    return ele
-  }
+  // private getElement(locator) {
+  //   var EC=protractor.ExpectedConditions;
+  //   var ele=element(locator);
+  //   browser.wait(EC.visibilityOf(ele),5000,"element never became visible (locator: "+locator+")");
+  //   return ele
+  // }
 
   getHomeElement() {
     return this.getElement(by.id('home_page'));
@@ -88,8 +89,8 @@ export class MainPage {
     browser.sleep(100);
   }
 
-  pullDownMyMenu() {
-    this.getElement(by.id('name_or_phone')).click();
-  }
+  // pullDownMyMenu() {
+  //   this.getElement(by.id('name_or_phone')).click();
+  // }
 
 }
