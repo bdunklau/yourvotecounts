@@ -5,4 +5,5 @@ export class LogEntry {
   date_ms: number;
   phoneNumber: string;
   level: string;
+  displayName: string;
 }

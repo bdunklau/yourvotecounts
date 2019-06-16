@@ -11,7 +11,7 @@ var db = admin.firestore();
 
 
 exports.logNewUser = functions.auth.user().onCreate((user) => {
-  return log.i({event: 'user created', uid: user.uid, phoneNumber: user.phoneNumber})
+  return log.i({event: 'user created', user: user})
 });
 
 
@@ -27,13 +27,13 @@ exports.deleteUser = functions.auth.user().onDelete(async (user) => {
     users.forEach(function(user) {batch.delete(user.ref)})
     return batch.commit()
   } catch(err) {
-    return log.e({event: 'error deleting user', uid: user.uid, phoneNumber: user.phoneNumber})
+    return log.e({event: 'error deleting user', user: user})
   }
 });
 
 
 exports.logDeleteUser = functions.auth.user().onDelete((user) => {
-  return log.i({event: 'user deleted', uid: user.uid, phoneNumber: user.phoneNumber})
+  return log.i({event: 'user deleted', user: user})
 });
 
 
