@@ -5,6 +5,8 @@ import { UserService } from '../user/user.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs/observable/of';
 
 describe('MyAccountComponent', () => {
   let component: MyAccountComponent;
@@ -17,8 +19,10 @@ describe('MyAccountComponent', () => {
           set: (_d: any) => new Promise((resolve, _reject) => resolve()),
         }),
         valueChanges: () => of([{id: '1', event: 'event1', date: {toDate: () => new Date()}}, // 2 mock LogEntry's
-                                {id: '2', event: 'event2', date: {toDate: () => new Date()}}]) // THIS IS NOT WHAT WE WANT TO MOCK HERE.
-                                // This was taken from log.component.spec.ts
+                                {id: '2', event: 'event2', date: {toDate: () => new Date()}}]), // THIS IS NOT WHAT WE WANT TO MOCK HERE.
+        snapshotChanges: () => ({
+          pipe: (xxx) => {}
+        })
       }),
     };
 
