@@ -1,16 +1,19 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TokenPage } from './token.po';
+import { AdminPage } from './admin.po';
 
 describe('Admins', () => {
   // let page: PublicPage;
   let page: MainPage;
   let tokenPage: TokenPage;
+  let adminPage: AdminPage;
 
   beforeEach(() => {
     // page = new PublicPage();
     page = new MainPage();
     tokenPage = new TokenPage();
+    adminPage = new AdminPage();
   });
 
   it('should be able to get to Log page', () => {
@@ -18,6 +21,15 @@ describe('Admins', () => {
     page.clickHome();
     page.clickLog();
     expect(page.getTitleText()).toEqual('Log');
+    page.clickLogout()
+  });
+
+  it('should be able to filter to only debug', () => {
+    tokenPage.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickHome();
+    page.clickLog();
+    adminPage.setLevels(['debug']);
+    
     page.clickLogout()
   });
 
