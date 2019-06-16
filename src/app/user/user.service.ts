@@ -42,7 +42,7 @@ export class UserService {
   async getCurrentUser() : Promise<FirebaseUserModel> {
     if(this.user) {
       // TODO verified on 6//10/19 but not part of automated testing yet.  Need a mock/spy LogService
-      await this.log.d({event: 'get cached user', uid: this.user.uid, phoneNumber: this.user.phoneNumber})
+      await this.log.cachedUser(this.user);
       console.log('getCurrentUser() got cached user');
       return this.user
     }
