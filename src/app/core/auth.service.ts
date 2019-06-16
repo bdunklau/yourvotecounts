@@ -94,16 +94,13 @@ export class AuthService {
 
   doLogout(){
     return new Promise(async (resolve, reject) => {
-      if(firebase.auth().currentUser){
-        await this.log.i({event: 'logout', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber})
-        this.afAuth.auth.signOut();
+      var user = firebase.auth().currentUser
+      if(user){
         this.userService.signOut();
-        resolve();
+        this.log.logout(user);
+        this.afAuth.auth.signOut();
       }
-      else{
-        await this.log.i({event: 'logout - no current user', uid: "uid n/a", phoneNumber: "ph n/a"})
-        resolve();
-      }
+      resolve();
     });
   }
 
