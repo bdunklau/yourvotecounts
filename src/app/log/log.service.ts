@@ -19,6 +19,7 @@ export class LogService {
   }
 
   async login(user) {
+    console.log('LogService.login()  user: ', user)
     var entry = {event: 'login'}
     if(user.uid) entry['uid'] = user.uid;
     if(user.displayName) entry['displayName'] = user.displayName;
@@ -44,12 +45,12 @@ export class LogService {
 
   private async logit(keyvals, level, level_number) {
     let entry = {}
-    entry['event'] = keyvals.event
-    entry['uid'] = keyvals.uid
-    entry['phoneNumber'] = keyvals.phoneNumber
-    entry['displayName'] = keyvals.displayName
-    entry['level'] = level
-    entry['level_number'] = level_number
+    if(keyvals.event) entry['event'] = keyvals.event
+    if(keyvals.uid) entry['uid'] = keyvals.uid
+    if(keyvals.phoneNumber) entry['phoneNumber'] = keyvals.phoneNumber
+    if(keyvals.displayName) entry['displayName'] = keyvals.displayName
+    if(level) entry['level'] = level
+    if(level_number) entry['level_number'] = level_number
     entry['date'] = firebase.firestore.Timestamp.now().toDate()
     entry['date_ms'] = firebase.firestore.Timestamp.now().toMillis()
     await this.db.collection('log').add(entry)
