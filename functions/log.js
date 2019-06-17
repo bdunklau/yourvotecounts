@@ -7,20 +7,21 @@ var db = admin.firestore();
 
 
 exports.i = function(keyvals) {
-  return logit(keyvals, 'info')
+  return logit(keyvals, 'info', 2)
 }
 
 exports.d = function(keyvals) {
-  return logit(keyvals, 'debug')
+  return logit(keyvals, 'debug', 1)
 }
 
 exports.e = function(keyvals) {
-  return logit(keyvals, 'error')
+  return logit(keyvals, 'error', 4)
 }
 
-logit = function(keyvals, level) {
+logit = function(keyvals, level, level_number) {
   var entry = {level: level,
-              event: keyvals.event, 
+              level_number: level_number,
+              event: keyvals.event,
               date: admin.firestore.Timestamp.now(),
               date_ms: admin.firestore.Timestamp.now().toMillis()};
   if(keyvals.user) {

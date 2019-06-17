@@ -9,4 +9,8 @@ export class AdminPage extends BasePage {
     
   }
 
+  getLogEntries(levels) {
+
+  }
+
 }

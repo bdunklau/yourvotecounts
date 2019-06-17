@@ -1,11 +1,10 @@
 <h1>Log</h1>
-<a (click)="logout()">test logout</a>
+
 <table class="table table-striped">
   <thead>
   <tr>
-    <th scope="col">ID</th>
     <th scope="col">date</th>
-    <th scope="col">level</th>
+    <th scope="col"><app-choose-level (level_number)="onLevelChosen($event)"></app-choose-level></th>
     <th scope="col">event</th>
     <th scope="col">Phone</th>
     <th scope="col">Name</th>
@@ -14,7 +13,6 @@
   </thead>
   <tbody>
   <tr *ngFor="let logentry of log | async">
-    <td>{{ logentry.id }}</td>
     <td>
       {{ logentry.date.toDate() }}
     </td>

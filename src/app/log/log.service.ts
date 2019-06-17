@@ -35,20 +35,21 @@ export class LogService {
   }
 
   async d(keyvals) {
-    this.logit(keyvals, 'debug')
+    this.logit(keyvals, 'debug', 1)
   }
 
   async i(keyvals) {
-    this.logit(keyvals, 'info')
+    this.logit(keyvals, 'info', 2)
   }
 
-  private async logit(keyvals, level) {
+  private async logit(keyvals, level, level_number) {
     let entry = {}
     entry['event'] = keyvals.event
     entry['uid'] = keyvals.uid
     entry['phoneNumber'] = keyvals.phoneNumber
     entry['displayName'] = keyvals.displayName
     entry['level'] = level
+    entry['level_number'] = level_number
     entry['date'] = firebase.firestore.Timestamp.now().toDate()
     entry['date_ms'] = firebase.firestore.Timestamp.now().toMillis()
     await this.db.collection('log').add(entry)

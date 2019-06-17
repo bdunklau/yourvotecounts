@@ -24,12 +24,12 @@ describe('Admins', () => {
     page.clickLogout()
   });
 
-  it('should be able to filter to only debug', () => {
+  it('should be able to logs by level', () => {
     tokenPage.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickHome();
     page.clickLog();
     adminPage.setLevels(['debug']);
-    
+    expect(adminPage.getLogEntries(['info', 'warn', 'error']) == []).toBeTruthy()
     page.clickLogout()
   });
 

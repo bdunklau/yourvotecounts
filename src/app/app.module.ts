@@ -21,6 +21,7 @@ import { UsersComponent } from './users/users.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TokenComponent } from './token/token.component';
 import { MyAccountComponent } from './my-account/my-account.component';
+import { ChooseLevelComponent } from './log/choose-level/choose-level.component';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { MyAccountComponent } from './my-account/my-account.component';
     UsersComponent,
     TokenComponent,
     MyAccountComponent,
+    ChooseLevelComponent,
   ],
   imports: [
     BrowserModule,
