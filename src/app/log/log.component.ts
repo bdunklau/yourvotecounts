@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { LogEntry } from './logentry'
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 import { LogService } from '../log/log.service';
 import { switchMap } from 'rxjs/operators';
+import _ from "lodash";
 
 
 @Component({
@@ -22,6 +23,7 @@ export class LogComponent implements OnInit {
   // log$ = new Subject<LogEntry[]>();
   log$ = new Subject<number>();
   log: Observable<LogEntry[]>;
+  subscription: Subscription;
 
   constructor(private afs: AngularFirestore,
               private logService: LogService) { }
@@ -44,14 +46,15 @@ export class LogComponent implements OnInit {
 
 
     // aka Dynamic Query
-    this.log = this.log$.pipe(
+    this.subscription = this.log$.pipe(
       switchMap(level_number => {// level_number not used below.  Filtering happens in the log.component.html file
           console.log('LogComponent: switchMap: size = ', level_number);
-          return this.afs.collection('log', ref => ref.where('level_number', '>=', level_number).orderBy('level_number').limit(50)).valueChanges()
+          return this.afs.collection('log', ref => ref.where('level_number', '>=', level_number).limit(25)).valueChanges()
         }
-      ),
-      map(items => items.sort(this.sortByDateDesc))
-    ) as Observable<LogEntry[]>;
+      )
+    ).subscribe((something) => {
+      this.log = _.orderBy(something, 'date_ms', 'desc');
+    });
 
     // subscribe to changes
     // this.log.subscribe(queriedItems => {
@@ -61,18 +64,18 @@ export class LogComponent implements OnInit {
     this.onLevelChosen(2); // for the initial query
   }
 
-  sortByDateDesc(a, b) {
-    // console.log('sortBy...  a = ', a, '  b = ', b);
-    if (a.date_ms < b.date_ms)
-      return 1;
-    if (a.date_ms > b.date_ms)
-      return -1;
-    return 0;
-  }
+  // sortByDateDesc(a, b) {
+  //   // console.log('sortBy...  a = ', a, '  b = ', b);
+  //   if (a.date_ms < b.date_ms)
+  //     return 1;
+  //   if (a.date_ms > b.date_ms)
+  //     return -1;
+  //   return 0;
+  // }
 
   ngOnDestroy() {
     console.log('LogComponent: unsubscribe');
-    this.log$.unsubscribe(); // not convinced this is right - never a call to subscribe
+    this.subscription.unsubscribe(); // not convinced this is right - never a call to subscribe
   }
 
   onLevelChosen(level_number: number) {
