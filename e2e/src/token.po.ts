@@ -1,6 +1,6 @@
 import { browser, by, element } from 'protractor';
 
-export class TokenPage {
+export class TestSupport {
   navigateTo(data) {
     var phoneNumber = data.phoneNumber
     var auth_key = data.auth_key ? '&auth_key='+data.auth_key : '';

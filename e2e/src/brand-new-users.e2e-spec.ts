@@ -1,16 +1,16 @@
 import { MainPage } from './main.po';
 import { MyAccountPage } from './my-account.po';
 import { browser, logging, element, by } from 'protractor';
-import { TokenPage } from './token.po';
+import { TestSupport } from './token.po';
 
 describe('Brand new users', () => {
   let page: MainPage;
   let myAccountPage: MyAccountPage;
-  let tokenPage: TokenPage;
+  let tokenPage: TestSupport;
 
   beforeEach(() => {
     page = new MainPage();
-    tokenPage = new TokenPage();
+    tokenPage = new TestSupport();
     myAccountPage = new MyAccountPage();
   });
 

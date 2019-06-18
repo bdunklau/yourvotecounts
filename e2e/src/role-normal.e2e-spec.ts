@@ -1,14 +1,14 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
-import { TokenPage } from './token.po';
+import { TestSupport } from './token.po';
 
 describe('Normal user', () => {
   let page: MainPage;
-  let tokenPage: TokenPage;
+  let tokenPage: TestSupport;
 
   beforeEach(() => {
     page = new MainPage();
-    tokenPage = new TokenPage();
+    tokenPage = new TestSupport();
   });
 
   it( 'should not see a Log link', () => {

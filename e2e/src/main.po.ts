@@ -69,7 +69,7 @@ export class MainPage extends BasePage {
     return this.getElement(by.id('users_link'));
   }
 
-  gotoTokenPage() {
+  gotoTestSupport() {
     return browser.get(browser.baseUrl+'/token') as Promise<any>;
     browser.sleep(100);
   }

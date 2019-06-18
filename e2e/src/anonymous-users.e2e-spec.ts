@@ -45,7 +45,7 @@ describe('Anonymous users', () => {
     var home_link = element(by.id('home_link')); // sanity check
     expect(home_link.isDisplayed()).toBeTruthy();
 
-    page.gotoTokenPage();
+    page.gotoTestSupport();
     expect(page.getUrl()).toEqual(browser.baseUrl+'/token');
   });
 

@@ -1,16 +1,16 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
-import { TokenPage } from './token.po';
+import { TestSupport } from './token.po';
 import { MyAccountPage } from './my-account.po';
 
 describe('Logged in users', () => {
   let page: MainPage;
-  let tokenPage: TokenPage;
+  let tokenPage: TestSupport;
   let myAccountPage: MyAccountPage;
 
   beforeEach(() => {
     page = new MainPage();
-    tokenPage = new TokenPage();
+    tokenPage = new TestSupport();
     myAccountPage = new MyAccountPage();
   });
 
@@ -40,7 +40,7 @@ describe('Logged in users', () => {
     var home_link = page.getHomeLink(); // sanity check
     expect(home_link.isDisplayed()).toBeTruthy();
 
-    page.gotoTokenPage();
+    page.gotoTestSupport();
     expect(page.getUrl()).toEqual(browser.baseUrl+'/token');
   });
 
