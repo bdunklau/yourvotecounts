@@ -4,6 +4,7 @@ import { LogComponent } from './log.component';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { of } from 'rxjs/observable/of';
+import { ChooseLevelComponent } from './choose-level/choose-level.component';
 
 
 describe('LogComponent', () => {
@@ -29,8 +30,8 @@ describe('LogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       // imports: [CommonServiceModuleStub],
-      declarations: [ LogComponent ],
-      providers: [
+      declarations: [ LogComponent, ChooseLevelComponent ],
+      providers: [ 
                   { provide: AngularFirestore, useValue: AngularFirestoreStub }
                 ],
     })
