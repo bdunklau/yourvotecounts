@@ -13,6 +13,32 @@ export class BasePage {
   }
 
 
+  getElements(locator) {
+    var elements = element.all(locator)
+    browser.wait(this.presenceOfAll(elements), 3000);
+    return elements;
+  }
+
+
+  getElementByText(text) {
+    return this.getElement(by.xpath("//*[. = '"+text+"']"));
+  }
+
+
+  getElementsByText(text) {
+    return this.getElements(by.xpath("//*[. = '"+text+"']"));
+  }
+
+
+  presenceOfAll(elementArrayFinder) {
+    return function () {
+        return elementArrayFinder.count(function (count) {
+            return count > 0;
+        });
+    };
+  }
+
+
   pullDownMyMenu() {
     this.getElement(by.id('name_or_phone')).click();
   }

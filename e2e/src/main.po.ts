@@ -31,13 +31,6 @@ export class MainPage extends BasePage {
     this.getUsersLink().click();
   }
 
-  // private getElement(locator) {
-  //   var EC=protractor.ExpectedConditions;
-  //   var ele=element(locator);
-  //   browser.wait(EC.visibilityOf(ele),5000,"element never became visible (locator: "+locator+")");
-  //   return ele
-  // }
-
   getHomeElement() {
     return this.getElement(by.id('home_page'));
   }
@@ -68,7 +61,8 @@ export class MainPage extends BasePage {
   }
 
   getTokenLink() {
-    return element(by.xpath("//*[. = 'Token']"));
+    // return element(by.xpath("//*[. = 'Token']"));
+    return this.getElementByText('Token');
   }
 
   getUsersLink() {
