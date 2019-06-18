@@ -24,22 +24,33 @@ fdescribe('Admins', () => {
     page.clickLogout()
   });
 
-  fit('should be able to view logs by level', async () => {
+  fit('should be able to view logs by level', () => {
+    // db setup - have to log error, info and debug entries so we have something
+    // to test
+
     tokenPage.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     // page.clickHome();
     page.clickLog();
 
-    browser.sleep(3000);
-    var infoItems = await adminPage.getLogEntries('info');
-    var infoCount = 0;
-    for(var i=0; i < infoItems.length; i++) {
-      var txt = infoItems[i].getText();
-      console.log("txt ->  '"+txt+"'") // NEVER GETS CALLED!!!
-      if(txt === 'info') {
-        ++infoCount;
-      }
-    }
-    expect(infoCount > 0).toBeTruthy();
+    adminPage.getLogEntries('info').then(function(numbers){
+      console.log('For "info", found '+numbers.length+' elements')
+      expect(numbers.length > 1).toBeTruthy();
+    });
+
+
+
+    // browser.sleep(3000);
+    // var infoItems = await adminPage.getLogEntries('info');
+    // var infoCount = 0;
+    // console.log('infoItems: ', infoItems)
+    // for(var i=0; i < infoItems.length; i++) {
+    //   var txt = infoItems[i].getText();
+    //   console.log("txt ->  '"+txt+"'") // NEVER GETS CALLED!!!
+    //   if(txt === 'info') {
+    //     ++infoCount;
+    //   }
+    // }
+    // expect(infoCount > 0).toBeTruthy();
 
 
     // adminPage.setLevel('debug');
@@ -62,6 +73,7 @@ fdescribe('Admins', () => {
     //   expect(infoCount > 0).toBeTruthy();
     // });
 
+
     // adminPage.getLogEntries('info')
     //
     // var value = adminPage.getLogEntries('info').reduce(function(acc, elem) {
@@ -78,7 +90,7 @@ fdescribe('Admins', () => {
     //   expect(items.length > 0).toBeTruthy();
     // });
 
-    // page.clickLogout()
+    page.clickLogout()
   });
 
   it('should be able to get to Users page', () => {
