@@ -110,3 +110,32 @@ exports.createCustomToken = functions.https.onRequest(async (req, res) => {
 
 
 })
+
+
+exports.authKeyValidated = function(auth_key) {
+
+  return new Promise((resolve, reject) => {
+    if(!auth_key) {
+      resolve(false);
+    }
+
+    return db.collection('config').where('auth_key', '==', req.query.auth_key).limit(1).get().then(snap => {
+      // auth_key not in the database?  quit early
+      if(snap.size === 0) {
+        resolve(false);
+        return;
+      }
+      var valid = false
+      snap.forEach(function(doc1) {
+        var auth_key = doc1.data().auth_key;
+        if(req.query.auth_key === auth_key) {
+          valid = true;
+        }
+        resolve(valid);
+      })
+      return;
+    })
+
+  })
+
+}
