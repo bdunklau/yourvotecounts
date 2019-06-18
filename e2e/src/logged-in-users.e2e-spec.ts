@@ -1,6 +1,6 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
-import { TestSupport } from './token.po';
+import { TestSupport } from './test-support.po';
 import { MyAccountPage } from './my-account.po';
 
 describe('Logged in users', () => {

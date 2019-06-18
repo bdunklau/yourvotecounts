@@ -1,7 +1,7 @@
 import { MainPage } from './main.po';
 import { MyAccountPage } from './my-account.po';
 import { browser, logging, element, by } from 'protractor';
-import { TestSupport } from './token.po';
+import { TestSupport } from './test-support.po';
 
 describe('Brand new users', () => {
   let page: MainPage;

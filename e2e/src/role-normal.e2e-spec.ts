@@ -1,6 +1,6 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
-import { TestSupport } from './token.po';
+import { TestSupport } from './test-support.po';
 
 describe('Normal user', () => {
   let page: MainPage;

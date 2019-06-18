@@ -1,4 +1,4 @@
-import { TestSupport } from './token.po';
+import { TestSupport } from './test-support.po';
 import { browser, logging } from 'protractor';
 
 describe('Token Utility ', () => {
