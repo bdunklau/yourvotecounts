@@ -2,9 +2,8 @@
     <div ngbDropdown class="d-inline-block">
       <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>level</button>
       <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-        <button ngbDropdownItem (click)="chooseLevel(1)">debug</button>
-        <button ngbDropdownItem (click)="chooseLevel(2)">info</button>
-        <button ngbDropdownItem (click)="chooseLevel(3)">warn</button>
-        <button ngbDropdownItem (click)="chooseLevel(4)">error</button>
+        <button ngbDropdownItem (click)="chooseLevel('debug')">debug</button>
+        <button ngbDropdownItem (click)="chooseLevel('info')">info</button>
+        <button ngbDropdownItem (click)="chooseLevel('error')">error</button>
       </div>
     </div>

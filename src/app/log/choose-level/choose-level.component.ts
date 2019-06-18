@@ -7,20 +7,16 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 })
 export class ChooseLevelComponent implements OnInit {
 
-  levels: [string];
-  // level_number: number;
-  @Output() level_number = new EventEmitter<number>();
+  @Output() level = new EventEmitter<string>();
 
   constructor() { }
 
   ngOnInit() {
   }
 
-  chooseLevel(level_number) {
-    // this.level_number = level_number;
-    console.log('level_number: ', level_number)
-
-    this.level_number.emit(level_number);
+  chooseLevel(level) {
+    console.log('ChooseLevelComponent: level = ', level)
+    this.level.emit(level);
   }
 
 }

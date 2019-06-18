@@ -36,23 +36,39 @@ export class LogService {
   }
 
   async d(keyvals) {
-    this.logit(keyvals, 'debug', 1)
+    this.logit(keyvals, 'debug')
   }
 
   async i(keyvals) {
-    this.logit(keyvals, 'info', 2)
+    this.logit(keyvals, 'info')
   }
 
-  private async logit(keyvals, level, level_number) {
+  private async logit(keyvals, level) {
     let entry = {}
     if(keyvals.event) entry['event'] = keyvals.event
     if(keyvals.uid) entry['uid'] = keyvals.uid
     if(keyvals.phoneNumber) entry['phoneNumber'] = keyvals.phoneNumber
     if(keyvals.displayName) entry['displayName'] = keyvals.displayName
     if(level) entry['level'] = level
-    if(level_number) entry['level_number'] = level_number
     entry['date'] = firebase.firestore.Timestamp.now().toDate()
     entry['date_ms'] = firebase.firestore.Timestamp.now().toMillis()
-    await this.db.collection('log').add(entry)
+    if(level === 'error') {
+      await Promise.all([
+        this.db.collection('log_error').add(entry),
+        this.db.collection('log_info').add(entry),
+        this.db.collection('log_debug').add(entry)
+      ])
+    }
+    else if(level === 'info') {
+      await Promise.all([
+        this.db.collection('log_info').add(entry),
+        this.db.collection('log_debug').add(entry)
+      ])
+    }
+    else {
+      await Promise.all([
+        this.db.collection('log_debug').add(entry),
+      ])
+    }
   }
 }
