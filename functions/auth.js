@@ -119,7 +119,7 @@ exports.authKeyValidated = function(auth_key) {
       resolve(false);
     }
 
-    return db.collection('config').where('auth_key', '==', req.query.auth_key).limit(1).get().then(snap => {
+    return db.collection('config').where('auth_key', '==', auth_key).limit(1).get().then(snap => {
       // auth_key not in the database?  quit early
       if(snap.size === 0) {
         resolve(false);
@@ -127,8 +127,8 @@ exports.authKeyValidated = function(auth_key) {
       }
       var valid = false
       snap.forEach(function(doc1) {
-        var auth_key = doc1.data().auth_key;
-        if(req.query.auth_key === auth_key) {
+        var auth_keyReal = doc1.data().auth_key;
+        if(auth_key === auth_keyReal) {
           valid = true;
         }
         resolve(valid);
