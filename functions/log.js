@@ -19,10 +19,14 @@ exports.e = function(keyvals) {
 }
 
 logit = function(keyvals, level) {
+  exports.logit2(keyvals, level, admin.firestore.Timestamp.now(), admin.firestore.Timestamp.now().toMillis());
+}
+
+exports.logit2 = function(keyvals, level, date, date_ms) {
   var entry = {level: level,
               event: keyvals.event,
-              date: admin.firestore.Timestamp.now(),
-              date_ms: admin.firestore.Timestamp.now().toMillis()};
+              date: date,
+              date_ms: date_ms};
   if(keyvals.user) {
     if(keyvals.user.uid) entry.uid = keyvals.user.uid;
     if(keyvals.user.displayName) entry.displayName = keyvals.user.displayName;
