@@ -5,17 +5,17 @@ import { MyAccountPage } from './my-account.po';
 
 describe('Logged in users', () => {
   let page: MainPage;
-  let tokenPage: TestSupport;
+  let testSupport: TestSupport;
   let myAccountPage: MyAccountPage;
 
   beforeEach(() => {
     page = new MainPage();
-    tokenPage = new TestSupport();
+    testSupport = new TestSupport();
     myAccountPage = new MyAccountPage();
   });
 
   it('should be able to logout', () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
     page.clickMyAccount();
     expect(page.getMyAccountElement().isDisplayed()).toBeTruthy();
@@ -46,7 +46,7 @@ describe('Logged in users', () => {
 
   //
   it('should be able to edit name', async () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
     page.clickMyAccount();
     myAccountPage.clickEdit();

@@ -1,23 +1,23 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
-import { TokenPage } from './token.po';
+import { TestSupport } from './test-support.po';
 import { AdminPage } from './admin.po';
 
 fdescribe('Admins', () => {
   // let page: PublicPage;
   let page: MainPage;
-  let tokenPage: TokenPage;
+  let testSupport: TestSupport;
   let adminPage: AdminPage;
 
   beforeEach(() => {
     // page = new PublicPage();
     page = new MainPage();
-    tokenPage = new TokenPage();
+    testSupport = new TestSupport();
     adminPage = new AdminPage();
   });
 
   it('should be able to get to Log page', () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickHome();
     page.clickLog();
     expect(page.getTitleText()).toEqual('Log');
@@ -28,7 +28,8 @@ fdescribe('Admins', () => {
     // db setup - have to log error, info and debug entries so we have something
     // to test
 
-    tokenPage.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     // page.clickHome();
     page.clickLog();
 
@@ -94,7 +95,7 @@ fdescribe('Admins', () => {
   });
 
   it('should be able to get to Users page', () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickHome();
     page.clickUsers();
     expect(page.getTitleText()).toEqual('Users');

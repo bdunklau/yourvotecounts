@@ -6,17 +6,17 @@ import { TestSupport } from './test-support.po';
 describe('Brand new users', () => {
   let page: MainPage;
   let myAccountPage: MyAccountPage;
-  let tokenPage: TestSupport;
+  let testSupport: TestSupport;
 
   beforeEach(() => {
     page = new MainPage();
-    tokenPage = new TestSupport();
+    testSupport = new TestSupport();
     myAccountPage = new MyAccountPage();
   });
 
 
   it('should be required to enter name', () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_BRAND_NEW_USER)
+    testSupport.login(process.env.YOURVOTECOUNTS_BRAND_NEW_USER)
     // page.goto('/home');
     page.clickMyAccount();
     expect(myAccountPage.getNameField().isDisplayed()).toBeTruthy();

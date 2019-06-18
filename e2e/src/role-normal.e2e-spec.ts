@@ -4,22 +4,22 @@ import { TestSupport } from './test-support.po';
 
 describe('Normal user', () => {
   let page: MainPage;
-  let tokenPage: TestSupport;
+  let testSupport: TestSupport;
 
   beforeEach(() => {
     page = new MainPage();
-    tokenPage = new TestSupport();
+    testSupport = new TestSupport();
   });
 
   it( 'should not see a Log link', () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
     expect(element(by.id('log_link')).isDisplayed()).toBeFalsy();
     page.clickLogout()
   });
 
   it('should not be able to navigate to /log', () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
     browser.sleep(2000);
     page.goto('/log');
@@ -29,14 +29,14 @@ describe('Normal user', () => {
   });
 
   it('should not see a Users link', () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
+    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
     page.clickHome();
     expect(element(by.id('users_link')).isDisplayed()).toBeFalsy();
     page.clickLogout()
   });
 
   it('should not be able to navigate to /users', () => {
-    tokenPage.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
     page.goto('/users');
     expect(page.getHomeElement().isDisplayed()).toBeTruthy();
