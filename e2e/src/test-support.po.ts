@@ -1,11 +1,15 @@
 import { browser, by, element } from 'protractor';
 
 export class TestSupport {
-  navigateTo(data) {
-    var phoneNumber = data.phoneNumber
-    var auth_key = data.auth_key ? '&auth_key='+data.auth_key : '';
+
+  createLogs() {
     browser.waitForAngularEnabled(false);
-    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
+    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLogs?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
+  }
+
+  deleteLogs() {
+    browser.waitForAngularEnabled(false);
+    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/deleteLogs?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
   }
 
   getTitleText() {
@@ -33,6 +37,13 @@ export class TestSupport {
     element(by.name('token')).sendKeys(token);
     element(by.id('submit_token')).click()
     browser.sleep(500); // worked at 1000
+  }
+
+  navigateTo(data) {
+    var phoneNumber = data.phoneNumber
+    var auth_key = data.auth_key ? '&auth_key='+data.auth_key : '';
+    browser.waitForAngularEnabled(false);
+    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
   }
 
 }
