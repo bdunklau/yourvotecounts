@@ -30,7 +30,7 @@ describe('Logged in users', () => {
     var home_link = page.getHomeLink(); // sanity check
     expect(home_link.isDisplayed()).toBeTruthy();
 
-    var token_link = page.getTokenLink();
+    var token_link = element(by.xpath("//*[. = 'Token']"));
     expect(token_link.isPresent()).toBeFalsy();
   });
 
