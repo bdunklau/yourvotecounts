@@ -10,14 +10,6 @@ export class LogService {
   constructor(
     public db: AngularFirestore,) { }
 
-  async cachedUser(user) {
-    var entry = {event: 'get cached user'}
-    if(user.uid) entry['uid'] = user.uid;
-    if(user.displayName) entry['displayName'] = user.displayName;
-    if(user.phoneNumber) entry['phoneNumber'] = user.phoneNumber;
-    await this.d(entry);
-  }
-
   async login(user) {
     console.log('LogService.login()  user: ', user)
     var entry = {event: 'login'}
