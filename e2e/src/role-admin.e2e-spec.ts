@@ -10,7 +10,6 @@ fdescribe('Admins', () => {
   let adminPage: AdminPage;
 
   beforeEach(() => {
-    // page = new PublicPage();
     page = new MainPage();
     testSupport = new TestSupport();
     adminPage = new AdminPage();
@@ -27,71 +26,31 @@ fdescribe('Admins', () => {
   fit('should be able to view logs by level', () => {
     // db setup - have to log error, info and debug entries so we have something
     // to test
-
+    testSupport.createLogs();
 
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
-    // page.clickHome();
     page.clickLog();
 
+    adminPage.setLevel('info');
     adminPage.getLogEntries('info').then(function(numbers){
       console.log('For "info", found '+numbers.length+' elements')
-      expect(numbers.length > 1).toBeTruthy();
+      expect(numbers.length > 0).toBeTruthy('expected at least 1 info element');
     });
 
+    adminPage.setLevel('debug');
+    adminPage.getLogEntries('debug').then(function(numbers){
+      console.log('For "debug", found '+numbers.length+' elements')
+      expect(numbers.length > 0).toBeTruthy('expected at least 1 debug element');
+    });
 
-
-    // browser.sleep(3000);
-    // var infoItems = await adminPage.getLogEntries('info');
-    // var infoCount = 0;
-    // console.log('infoItems: ', infoItems)
-    // for(var i=0; i < infoItems.length; i++) {
-    //   var txt = infoItems[i].getText();
-    //   console.log("txt ->  '"+txt+"'") // NEVER GETS CALLED!!!
-    //   if(txt === 'info') {
-    //     ++infoCount;
-    //   }
-    // }
-    // expect(infoCount > 0).toBeTruthy();
-
-
-    // adminPage.setLevel('debug');
-    // adminPage.getLogEntries('debug').then(function(items) {
-    //   expect(items.length > 0).toBeTruthy();
-    // });
-
-
-
-    // adminPage.getLogEntries('info').then(function(items) {
-    //   var infoCount = 0;
-    //   for(var i=0; i < items.length; i++) {
-    //     items[i].getText().then(function(text) {
-    //       console.log('info text: ', text)
-    //       if(text === 'info') {
-    //         ++infoCount;
-    //       }
-    //     })
-    //   }
-    //   expect(infoCount > 0).toBeTruthy();
-    // });
-
-
-    // adminPage.getLogEntries('info')
-    //
-    // var value = adminPage.getLogEntries('info').reduce(function(acc, elem) {
-    //     return elem.getText().then(function(text) {
-    //         console.log ("CHECK:  "+acc + text + " ");
-    //     });
-    // }, ' ');
-
-    // err.then(function(items) {
-    //   console.log('error items: ', items);
-    //   for(var i=0; i < items.length; i++) {
-    //     console.log('error items['+i+'].getWebElement(): ', items[i].getWebElement());
-    //   }
-    //   expect(items.length > 0).toBeTruthy();
-    // });
+    adminPage.setLevel('error');
+    adminPage.getLogEntries('error').then(function(numbers){
+      console.log('For "error", found '+numbers.length+' elements')
+      expect(numbers.length > 0).toBeTruthy('expected at least 1 error element');
+    });
 
     page.clickLogout()
+    testSupport.deleteLogs();
   });
 
   it('should be able to get to Users page', () => {
