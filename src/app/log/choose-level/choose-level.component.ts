@@ -8,6 +8,7 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 export class ChooseLevelComponent implements OnInit {
 
   @Output() level = new EventEmitter<string>();
+  levelValue: string;
 
   constructor() { }
 
@@ -15,7 +16,7 @@ export class ChooseLevelComponent implements OnInit {
   }
 
   chooseLevel(level) {
-    console.log('ChooseLevelComponent: level = ', level)
+    this.levelValue = level;
     this.level.emit(level);
   }
 
