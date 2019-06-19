@@ -21,6 +21,7 @@ const states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'C
 })
 export class SearchByPhoneComponent implements OnInit {
 
+  public model: any;
   phoneNumbers;
   startAt = new Subject();
   endAt = new Subject();
@@ -45,7 +46,6 @@ export class SearchByPhoneComponent implements OnInit {
     // todoCollectionRef: AngularFirestoreCollection<LogEntry>;
     // todo$: Observable<LogEntry[]>;
 
-    // public model: any;
 
     // good ref:  https://weblog.west-wind.com/posts/2019/Apr/08/Using-the-ngBootStrap-TypeAhead-Control-with-Dynamic-Data
     // THIS WORKS - NOW LET'S TRY IT WITH A REAL QUERY
