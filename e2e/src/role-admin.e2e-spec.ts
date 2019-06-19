@@ -3,7 +3,7 @@ import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { AdminPage } from './admin.po';
 
-fdescribe('Admins', () => {
+describe('Admins', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -23,7 +23,7 @@ fdescribe('Admins', () => {
     page.clickLogout()
   });
 
-  fit('should be able to view logs by level', () => {
+  it('should be able to view logs by level', () => {
     // db setup - have to log error, info and debug entries so we have something
     // to test
     testSupport.createLogs();
