@@ -22,6 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TokenComponent } from './token/token.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { ChooseLevelComponent } from './log/choose-level/choose-level.component';
+import { SearchByPhoneComponent } from './log/search-by-phone/search-by-phone.component';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { ChooseLevelComponent } from './log/choose-level/choose-level.component'
     TokenComponent,
     MyAccountComponent,
     ChooseLevelComponent,
+    SearchByPhoneComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,15 @@
+
+    <!-- <div ngbDropdown class="d-inline-block">
+      <button class="btn btn-outline-primary" id="phoneDropdown" ngbDropdownToggle>{{phoneValue}}</button>
+      <div ngbDropdownMenu aria-labelledby="phoneDropdown">
+        <button id="debugLevel" ngbDropdownItem (click)="chooseLevel('debug')">debug</button>
+        <button id="infoLevel" ngbDropdownItem (click)="chooseLevel('info')">info</button>
+        <button id="errorLevel" ngbDropdownItem (click)="chooseLevel('error')">error</button>
+      </div>
+    </div> -->
+
+
+    <label for="typeahead-basic">Search for a state:</label>
+    <input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"/>
+    <hr>
+    <pre>Model: {{ model | json }}</pre>
