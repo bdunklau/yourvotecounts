@@ -39,7 +39,7 @@ export class LogComponent implements OnInit {
       this.log = xx;
     });
 
-    this.onLevelChosen('info'); // for the initial query
+    // initial log level is set in choose-level.component.ts : ngOnInit()
   }
 
   ngOnDestroy() {
@@ -47,6 +47,7 @@ export class LogComponent implements OnInit {
     this.subscription.unsubscribe(); // not convinced this is right - never a call to subscribe
   }
 
+  // see choose-level.component.ts : ngOnInit() - that methods sets an initial log level which gets picked up here
   // see  <app-choose-level (level)="onLevelChosen($event)"></app-choose-level>
   // in log.component.html
   onLevelChosen(level: string) {
