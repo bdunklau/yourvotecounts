@@ -6,7 +6,7 @@ import { BasePage } from './base.po';
 export class AdminPage extends BasePage {
 
   setLevel(level) {
-
+    var levelDropdown = this.getElement(by.id('levelDropdown'))
   }
 
   getLogEntries(level): ElementArrayFinder {
