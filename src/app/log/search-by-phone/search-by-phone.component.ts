@@ -57,7 +57,6 @@ export class SearchByPhoneComponent implements OnInit {
   // in search-by-phone.component.html
   itemSelected($event) {
     // alert(JSON.stringify($event.item.phoneNumber));
-    console.log('itemSelected: this.enteredPhone.emit = ', this.enteredPhone.emit);
     this.enteredPhone.emit($event.item.phoneNumber);
   }
 
