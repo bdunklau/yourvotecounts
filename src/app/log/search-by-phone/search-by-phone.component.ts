@@ -23,7 +23,7 @@ export class SearchByPhoneComponent implements OnInit {
 
   // got code from here:  https://www.youtube.com/watch?v=eQuVbyBGhHA
   search = (text$: Observable<string>) => {
-    console.log('text$ = ', text$);
+        //console.log('text$ = ', text$);
         return text$.pipe(
             debounceTime(200),
             distinctUntilChanged(),

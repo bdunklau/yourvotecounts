@@ -37,7 +37,7 @@ export class LogComponent implements OnInit {
           return this.afs
               .collection('log_'+level,
                   ref => {
-                    console.log('args.phoneVal = ', args.phoneVal);
+                    //console.log('args.phoneVal = ', args.phoneVal);
                     // WHICH QUERY? DEPENDS ON THE ARGS PASSED IN
                     if(args.phoneVal) {
                       return ref.where('phoneNumber', '==', args.phoneVal).limit(25);
@@ -49,7 +49,7 @@ export class LogComponent implements OnInit {
       )
     ).subscribe((something) => {
       let xx:LogEntry[] = something as LogEntry[];
-      console.log('xx = ', xx)
+      //console.log('xx = ', xx)
       this.log = xx;
     });
 
