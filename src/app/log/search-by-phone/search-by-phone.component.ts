@@ -27,7 +27,10 @@ export class SearchByPhoneComponent implements OnInit {
         return text$.pipe(
             debounceTime(200),
             distinctUntilChanged(),
-            switchMap( searchText => this.userService.searchByPhone(searchText) )
+            switchMap( searchText => {
+              if(!searchText.startsWith('+1')) searchText = '+1'+searchText
+              return this.userService.searchByPhone(searchText)
+            } )
             // catchError(new ErrorInfo().parseObservableResponseError)
         );
       }
