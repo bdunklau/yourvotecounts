@@ -39,6 +39,15 @@ export class UserService {
     this.messageService.updateUser(this.user);
   }
 
+  searchByPhone(phoneVal) {
+    return this.afs.collection('user', ref => ref
+      .orderBy("phoneNumber")
+      .startAt(phoneVal)
+      .endAt(phoneVal+"\uf8ff")
+      .limit(10))
+      .valueChanges();
+  }
+
   async getCurrentUser() : Promise<FirebaseUserModel> {
     if(this.user) {
       // TODO verified on 6//10/19 but not part of automated testing yet.  Need a mock/spy LogService

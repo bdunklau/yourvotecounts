@@ -16,9 +16,11 @@ import * as _ from "lodash";
 })
 export class LogComponent implements OnInit {
 
-  log$ = new Subject<string>();
+  log$ = new Subject<any>();
   log: LogEntry[];
   subscription: Subscription;
+  level: string;
+  phoneVal: string;
 
   constructor(private afs: AngularFirestore,
               private logService: LogService) { }
@@ -28,9 +30,21 @@ export class LogComponent implements OnInit {
 
     // aka Dynamic Query
     this.subscription = this.log$.pipe(
-      switchMap(level => {
+      switchMap(args => {
+          var level = args.level ? args.level : this.level;
+          var phoneVal = args.phoneVal ? args.phoneVal : this.phoneVal;
           console.log('switchMap:  level = ', level)
-          return this.afs.collection('log_'+level, ref => ref.orderBy('date_ms', 'desc').limit(25)).valueChanges()
+          return this.afs
+              .collection('log_'+level,
+                  ref => {
+                    console.log('args.phoneVal = ', args.phoneVal);
+                    // WHICH QUERY? DEPENDS ON THE ARGS PASSED IN
+                    if(args.phoneVal) {
+                      return ref.where('phoneNumber', '==', args.phoneVal).limit(25);
+                    }
+                    else return ref.orderBy('date_ms', 'desc').limit(25);
+              })
+              .valueChanges()
         }
       )
     ).subscribe((something) => {
@@ -52,7 +66,14 @@ export class LogComponent implements OnInit {
   // in log.component.html
   onLevelChosen(level: string) {
     console.log('onLevelChosen: level = ', level);
-    this.log$.next(level);
+    this.level = level;
+    this.log$.next({level: level});
+  }
+
+  onPhoneEntered(phoneVal: string) {
+    console.log('onPhoneEntered: phoneVal = ', phoneVal);
+    this.phoneVal = phoneVal;
+    this.log$.next({phoneVal: phoneVal});
   }
 
 }
