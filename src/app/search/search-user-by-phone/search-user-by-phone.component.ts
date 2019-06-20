@@ -5,12 +5,11 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError  } from 'rxjs
 import { UserService } from '../../user/user.service';
 
 @Component({
-  selector: 'app-search-by-phone',
-  templateUrl: './search-by-phone.component.html',
+  selector: 'app-search-user-by-phone',
+  templateUrl: './search-user-by-phone.component.html',
   styles: [`.form-control { width: 150px; }`]
-  // styleUrls: ['./search-by-phone.component.css']
 })
-export class SearchByPhoneComponent implements OnInit {
+export class SearchUserByPhoneComponent implements OnInit {
 
   @Output() enteredPhone = new EventEmitter<string>();
   phoneVal: string;

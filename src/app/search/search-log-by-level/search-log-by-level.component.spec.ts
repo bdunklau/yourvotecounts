@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChooseLevelComponent } from './choose-level.component';
+import { SearchLogByLevelComponent } from './search-log-by-level.component';
 
-describe('ChooseLevelComponent', () => {
-  let component: ChooseLevelComponent;
-  let fixture: ComponentFixture<ChooseLevelComponent>;
+describe('SearchLogByLevelComponent', () => {
+  let component: SearchLogByLevelComponent;
+  let fixture: ComponentFixture<SearchLogByLevelComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChooseLevelComponent ]
+      declarations: [ SearchLogByLevelComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ChooseLevelComponent);
+    fixture = TestBed.createComponent(SearchLogByLevelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

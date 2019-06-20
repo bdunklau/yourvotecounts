@@ -21,8 +21,9 @@ import { UsersComponent } from './users/users.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TokenComponent } from './token/token.component';
 import { MyAccountComponent } from './my-account/my-account.component';
-import { ChooseLevelComponent } from './log/choose-level/choose-level.component';
-import { SearchByPhoneComponent } from './log/search-by-phone/search-by-phone.component';
+import { SearchUserByPhoneComponent } from './search/search-user-by-phone/search-user-by-phone.component';
+import { SearchUserByNameComponent } from './search/search-user-by-name/search-user-by-name.component';
+import { SearchLogByLevelComponent } from './search/search-log-by-level/search-log-by-level.component';
 
 
 @NgModule({
@@ -35,8 +36,9 @@ import { SearchByPhoneComponent } from './log/search-by-phone/search-by-phone.co
     UsersComponent,
     TokenComponent,
     MyAccountComponent,
-    ChooseLevelComponent,
-    SearchByPhoneComponent,
+    SearchUserByPhoneComponent,
+    SearchUserByNameComponent,
+    SearchLogByLevelComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,11 +1,11 @@
 import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-choose-level',
-  templateUrl: './choose-level.component.html',
-  styleUrls: ['./choose-level.component.css']
+  selector: 'app-search-log-by-level',
+  templateUrl: './search-log-by-level.component.html',
+  styleUrls: ['./search-log-by-level.component.css']
 })
-export class ChooseLevelComponent implements OnInit {
+export class SearchLogByLevelComponent implements OnInit {
 
   @Output() level = new EventEmitter<string>();
   levelValue: string;
