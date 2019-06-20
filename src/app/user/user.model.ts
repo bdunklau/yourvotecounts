@@ -4,6 +4,7 @@ export class FirebaseUserModel {
   uid: string;
   image: string;
   displayName: string;
+  displayName_lower: string;
   provider: string;
   phoneNumber: string;
   roles: Array<String>;
@@ -13,6 +14,7 @@ export class FirebaseUserModel {
     this.uid = ""
     this.image = "";
     this.displayName = "";
+    this.displayName_lower = "";
     this.provider = "";
     this.phoneNumber = "";
     this.roles = [];

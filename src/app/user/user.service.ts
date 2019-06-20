@@ -66,6 +66,7 @@ export class UserService {
     return new Promise<FirebaseUserModel>(async (resolve, reject) => {
       var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
       var sub = ref.subscribe((data: [FirebaseUserModel]) => {
+        user.displayName_lower = data[0].displayName_lower;
         user.roles = data[0].roles
         this.user = user
         this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
@@ -144,7 +145,8 @@ export class UserService {
         var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid)).snapshotChanges().pipe(take(1));
         ref.subscribe(data  => {
           data.forEach(function(dt) {
-            dt.payload.doc.ref.update({displayName: value.displayName});
+            dt.payload.doc.ref.update({displayName: value.displayName,
+                                       displayName_lower: value.displayName.toLowerCase()});
           })
         });
         this.messageService.updateUser(this.user);
