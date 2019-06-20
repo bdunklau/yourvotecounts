@@ -17,12 +17,12 @@ exports.createLogs = functions.https.onRequest(async (req, res) => {
   if(!authKeyValid)
     return res.status(200).send('<h3>error</h3><br/><h2>not authorized (code 4)</h2>')
 
-  var kv1 = {event: 'test event', user: {uid:'111111', displayName:'User1', phoneNumber:'1115551111'}}
-  var kv2 = {event: 'test event', user: {uid:'222222', displayName:'User2', phoneNumber:'1115552222'}}
-  var kv3 = {event: 'test event', user: {uid:'333333', displayName:'User3', phoneNumber:'1115553333'}}
-  var kv4 = {event: 'test event', user: {uid:'444444', displayName:'User4', phoneNumber:'1115554444'}}
-  var kv5 = {event: 'test event', user: {uid:'555555', displayName:'User5', phoneNumber:'1115555555'}}
-  var kv6 = {event: 'test event', user: {uid:'666666', displayName:'User6', phoneNumber:'1115556666'}}
+  var kv1 = {event: 'test event', user: {uid:'111111', displayName:'User1', phoneNumber:'+11115551111'}}
+  var kv2 = {event: 'test event', user: {uid:'222222', displayName:'User2', phoneNumber:'+11115552222'}}
+  var kv3 = {event: 'test event', user: {uid:'333333', displayName:'User3', phoneNumber:'+11115553333'}}
+  var kv4 = {event: 'test event', user: {uid:'444444', displayName:'User4', phoneNumber:'+11115554444'}}
+  var kv5 = {event: 'test event', user: {uid:'555555', displayName:'User5', phoneNumber:'+11115555555'}}
+  var kv6 = {event: 'test event', user: {uid:'666666', displayName:'User6', phoneNumber:'+11115556666'}}
   log.logit2(kv1, 'debug', admin.firestore.Timestamp.now(), admin.firestore.Timestamp.now().toMillis()),
   log.logit2(kv2, 'debug', admin.firestore.Timestamp.now(), admin.firestore.Timestamp.now().toMillis()),
   log.logit2(kv3, 'info', admin.firestore.Timestamp.now(), admin.firestore.Timestamp.now().toMillis()),
