@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Location } from '@angular/common';
 import { AuthService } from './core/auth.service';
@@ -6,11 +6,14 @@ import { UserService } from './user/user.service';
 import { Router } from "@angular/router";
 import { MessageService } from './core/message.service';
 import { Subscription } from 'rxjs';
+import { NgbDatepickerConfig, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser-formatter"
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [{provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter}]
 })
 export class AppComponent {
   title = 'YourVoteCounts';
