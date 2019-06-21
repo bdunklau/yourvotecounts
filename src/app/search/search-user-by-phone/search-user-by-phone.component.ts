@@ -1,6 +1,5 @@
 import { Component, OnInit, EventEmitter/*, Input*/, Output } from '@angular/core';
-// import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { Subject, Observable, of/*, Subscription*/ } from 'rxjs';
+import { Observable, /*of, Subject, Subscription*/ } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, catchError  } from 'rxjs/operators';
 import { UserService } from '../../user/user.service';
 

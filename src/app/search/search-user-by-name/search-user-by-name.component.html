@@ -1,3 +1,13 @@
-<p>
-  search-user-by-name works!
-</p>
+<div class="form-group">
+  <input id="logName" type="text"
+         name="logName"
+         placeholder="Name"
+         class="form-control"
+         (selectItem)="itemSelected($event)"
+         [(ngModel)]="nameVal"
+         [ngbTypeahead]="search"
+         [resultFormatter]="resultFormatNameListValue"
+         [inputFormatter]="inputFormatNameListValue"
+         #instance="ngbTypeahead"
+    />
+</div>

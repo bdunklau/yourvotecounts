@@ -39,6 +39,15 @@ export class UserService {
     this.messageService.updateUser(this.user);
   }
 
+  searchByName(nameVal) {
+    return this.afs.collection('user', ref => ref
+      .orderBy("displayName_lower")
+      .startAt(nameVal)
+      .endAt(nameVal+"\uf8ff")
+      .limit(10))
+      .valueChanges();
+  }
+
   searchByPhone(phoneVal) {
     return this.afs.collection('user', ref => ref
       .orderBy("phoneNumber")

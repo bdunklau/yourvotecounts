@@ -21,6 +21,7 @@ export class LogComponent implements OnInit {
   subscription: Subscription;
   level: string;
   phoneVal: string;
+  nameVal: string;
 
   constructor(private afs: AngularFirestore,
               private logService: LogService) { }
@@ -41,6 +42,8 @@ export class LogComponent implements OnInit {
                     // WHICH QUERY? DEPENDS ON THE ARGS PASSED IN
                     if(args.phoneVal) {
                       return ref.where('phoneNumber', '==', args.phoneVal).limit(25);
+                    } else if(args.nameVal) {
+                      return ref.where('displayName', '==', args.nameVal).limit(25);
                     }
                     else return ref.orderBy('date_ms', 'desc').limit(25);
               })
@@ -74,6 +77,12 @@ export class LogComponent implements OnInit {
     console.log('onPhoneEntered: phoneVal = ', phoneVal);
     this.phoneVal = phoneVal;
     this.log$.next({phoneVal: phoneVal});
+  }
+
+  onNameEntered(nameVal: string) {
+    console.log('onNameEntered: nameVal = ', nameVal);
+    this.nameVal = nameVal;
+    this.log$.next({nameVal: nameVal});
   }
 
 }
