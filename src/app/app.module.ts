@@ -24,6 +24,7 @@ import { MyAccountComponent } from './my-account/my-account.component';
 import { SearchUserByPhoneComponent } from './search/search-user-by-phone/search-user-by-phone.component';
 import { SearchUserByNameComponent } from './search/search-user-by-name/search-user-by-name.component';
 import { SearchLogByLevelComponent } from './search/search-log-by-level/search-log-by-level.component';
+import { DateChooserComponent } from './util/date-chooser/date-chooser.component';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { SearchLogByLevelComponent } from './search/search-log-by-level/search-l
     SearchUserByPhoneComponent,
     SearchUserByNameComponent,
     SearchLogByLevelComponent,
+    DateChooserComponent,
   ],
   imports: [
     BrowserModule,
