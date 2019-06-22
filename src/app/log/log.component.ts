@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, CollectionReference } from '@angular/fire/firestore';
 import { LogEntry } from './logentry'
 import { Subject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -22,6 +22,7 @@ export class LogComponent implements OnInit {
   level: string;
   phoneVal: string;
   nameVal: string;
+  dates: any;
 
   constructor(private afs: AngularFirestore,
               private logService: LogService) { }
@@ -37,28 +38,28 @@ export class LogComponent implements OnInit {
           var nameVal = args.nameVal ? args.nameVal : this.nameVal;
           var dates = args.dates ? args.dates : this.dates;
           var limit = 50;
+          var collectionRef;
           return this.afs
               .collection('log_'+level,
                   ref => {
-                    //console.log('args.phoneVal = ', args.phoneVal);
                     // WHICH QUERY? DEPENDS ON THE ARGS PASSED IN
                     if(phoneVal) {
                       console.log('switchMap:  phoneVal = ', phoneVal);
-                      ref = ref.where('phoneNumber', '==', phoneVal);
+                      collectionRef = ref.where('phoneNumber', '==', phoneVal);
                     }
                     if(nameVal) {
                       console.log('switchMap:  nameVal = ', nameVal);
-                      ref = ref.where('displayName', '==', nameVal);
+                      collectionRef = (collectionRef ? collectionRef : ref).where('displayName', '==', nameVal);
                     }
                     if(dates && dates != NaN) {
                       console.log('switchMap:  dates.date1 = ', dates.date1)
-                      ref = ref.orderBy('date_ms', 'desc').startAt(dates.date2).endAt(dates.date1);
+                      collectionRef = (collectionRef ? collectionRef : ref).orderBy('date_ms', 'desc').startAt(dates.date2).endAt(dates.date1);
                     }
                     if(!phoneVal && !nameVal && !dates) {
-                      ref = ref.orderBy('date_ms', 'desc');
+                      collectionRef = (collectionRef ? collectionRef : ref).orderBy('date_ms', 'desc');
                     }
-                    ref = ref.limit(limit);
-                    return ref;
+                    collectionRef = (collectionRef ? collectionRef : ref).limit(limit);
+                    return collectionRef;
               })
               .valueChanges()
         }
