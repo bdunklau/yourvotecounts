@@ -40,10 +40,10 @@ export class UserService {
   }
 
   searchByName(nameVal) {
-    if(nameVal) nameVal = nameVal.toLowerCase();
+    if(!nameVal || nameVal === '') return [];
     return this.afs.collection('user', ref => ref
       .orderBy("displayName_lower")
-      .startAt(nameVal)
+      .startAt(nameVal.toLowerCase())
       .endAt(nameVal+"\uf8ff")
       .limit(10))
       .valueChanges();
