@@ -34,18 +34,31 @@ export class LogComponent implements OnInit {
       switchMap(args => {
           var level = args.level ? args.level : this.level;
           var phoneVal = args.phoneVal ? args.phoneVal : this.phoneVal;
-          console.log('switchMap:  level = ', level)
+          var nameVal = args.nameVal ? args.nameVal : this.nameVal;
+          var dates = args.dates ? args.dates : this.dates;
+          var limit = 50;
           return this.afs
               .collection('log_'+level,
                   ref => {
                     //console.log('args.phoneVal = ', args.phoneVal);
                     // WHICH QUERY? DEPENDS ON THE ARGS PASSED IN
-                    if(args.phoneVal) {
-                      return ref.where('phoneNumber', '==', args.phoneVal).limit(25);
-                    } else if(args.nameVal) {
-                      return ref.where('displayName', '==', args.nameVal).limit(25);
+                    if(phoneVal) {
+                      console.log('switchMap:  phoneVal = ', phoneVal);
+                      ref = ref.where('phoneNumber', '==', phoneVal);
                     }
-                    else return ref.orderBy('date_ms', 'desc').limit(25);
+                    if(nameVal) {
+                      console.log('switchMap:  nameVal = ', nameVal);
+                      ref = ref.where('displayName', '==', nameVal);
+                    }
+                    if(dates && dates != NaN) {
+                      console.log('switchMap:  dates.date1 = ', dates.date1)
+                      ref = ref.orderBy('date_ms', 'desc').startAt(dates.date2).endAt(dates.date1);
+                    }
+                    if(!phoneVal && !nameVal && !dates) {
+                      ref = ref.orderBy('date_ms', 'desc');
+                    }
+                    ref = ref.limit(limit);
+                    return ref;
               })
               .valueChanges()
         }
@@ -60,7 +73,7 @@ export class LogComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    console.log('LogComponent: unsubscribe');
+    // console.log('LogComponent: unsubscribe');
     this.subscription.unsubscribe(); // not convinced this is right - never a call to subscribe
   }
 
@@ -68,21 +81,27 @@ export class LogComponent implements OnInit {
   // see  <app-choose-level (level)="onLevelChosen($event)"></app-choose-level>
   // in log.component.html
   onLevelChosen(level: string) {
-    console.log('onLevelChosen: level = ', level);
+    // console.log('onLevelChosen: level = ', level);
     this.level = level;
     this.log$.next({level: level});
   }
 
   onPhoneEntered(phoneVal: string) {
-    console.log('onPhoneEntered: phoneVal = ', phoneVal);
+    // console.log('onPhoneEntered: phoneVal = ', phoneVal);
     this.phoneVal = phoneVal;
     this.log$.next({phoneVal: phoneVal});
   }
 
   onNameEntered(nameVal: string) {
-    console.log('onNameEntered: nameVal = ', nameVal);
+    // console.log('onNameEntered: nameVal = ', nameVal);
     this.nameVal = nameVal;
     this.log$.next({nameVal: nameVal});
+  }
+
+  onDateEntered(dates) {
+    console.log('onDateEntered: dates = ', dates);
+    this.dates = dates;
+    this.log$.next(dates);
   }
 
 }

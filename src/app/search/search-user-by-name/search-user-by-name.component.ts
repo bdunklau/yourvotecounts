@@ -20,17 +20,16 @@ export class SearchUserByNameComponent implements OnInit {
 
 
   // got code from here:  https://www.youtube.com/watch?v=eQuVbyBGhHA
-  search = (text$: Observable<string>) => {
-        //console.log('text$ = ', text$);
-        return text$.pipe(
-            debounceTime(200),
-            distinctUntilChanged(),
-            switchMap( searchText => {
-              return this.userService.searchByName(searchText)
-            } )
-            // catchError(new ErrorInfo().parseObservableResponseError)
-        );
-      }
+  searchName = (text$: Observable<string>) => {
+      return text$.pipe(
+          debounceTime(200),
+          distinctUntilChanged(),
+          switchMap( searchText => {
+            return searchText.length < 2 ? [] : this.userService.searchByName(searchText);
+          } )
+          // catchError(new ErrorInfo().parseObservableResponseError)
+      );
+  }
 
   /**
    * Used to format the result data from the lookup into the
@@ -53,7 +52,6 @@ export class SearchUserByNameComponent implements OnInit {
   // NOTE this:  (selectItem)="itemSelected($event)"
   // in search-user-by-name.component.html
   itemSelected($event) {
-    // alert(JSON.stringify($event.item.displayName));
     this.enteredName.emit($event.item.displayName);
   }
 

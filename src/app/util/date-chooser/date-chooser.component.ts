@@ -9,24 +9,22 @@ import {NgbDate, NgbCalendar} from '@ng-bootstrap/ng-bootstrap';
 export class DateChooserComponent {
 
   model;
-  @Output() enteredDate = new EventEmitter<string>();
+  @Output() dateSelected = new EventEmitter<any>();
 
   // $event is an NgbDate with day, month, year attributes
   select($event) {
-    var d1 = new Date($event.year, $event.month - 1, $event.day);
-    var d2 = new Date($event.year, $event.month - 1, $event.day + 1);
-        console.log('select: ', d2);
-
-    // this.model = $event.item
-    // this.enteredDate.emit($event.item.displayName);
+    this.emitDate($event);
   }
 
   dateChanged($event) {
+    this.emitDate($event);
+  }
+
+  emitDate($event) {
     var d1 = new Date($event.year, $event.month - 1, $event.day);
     var d2 = new Date($event.year, $event.month - 1, $event.day + 1);
-           console.log('dateChanged: ', d2);
-    // this.model = $event.item
-    // this.enteredDate.emit($event.item.displayName);
+    this.dateSelected.emit({date1: d1.getTime(), date2: d2.getTime()});
+      console.log('emitDate: d1 = ', d1);
   }
 
 }
