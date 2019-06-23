@@ -1,15 +1,34 @@
 import { browser, by, element } from 'protractor';
+import * as _ from 'lodash';
+import { MyAccountPage } from './my-account.po';
+import { MainPage } from './main.po';
 
 export class TestSupport {
+
+  createLog(log) {
+    browser.waitForAngularEnabled(false);
+    var logParm = 'level='+log['level'];
+    logParm += '&event='+log['event'];
+    logParm += '&uid='+log['uid'];
+    logParm += '&displayName='+log['displayName'];
+    logParm += '&phoneNumber='+log['phoneNumber'];
+    logParm += '&date_ms='+log['date_ms'];
+    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLog?'+logParm+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
+  }
 
   createLogs() {
     browser.waitForAngularEnabled(false);
     return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLogs?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
   }
 
-  deleteLogs() {
+  createLogsWithDate(millis) {
     browser.waitForAngularEnabled(false);
-    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/deleteLogs?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
+    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLogs?millis='+millis+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
+  }
+
+  deleteLogs(event) {
+    browser.waitForAngularEnabled(false);
+    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/deleteLogs?event='+event+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
   }
 
   getTitleText() {
@@ -44,6 +63,21 @@ export class TestSupport {
     var auth_key = data.auth_key ? '&auth_key='+data.auth_key : '';
     browser.waitForAngularEnabled(false);
     return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
+  }
+
+  // a test prep method that sets users names to whatever we pass in
+  setNames(names) {
+    _.forEach(names, (obj) => {
+      this.login(obj.phoneNumber);
+      let page = new MainPage();
+      let myAccountPage = new MyAccountPage();
+      page.clickHome();
+      page.clickMyAccount();
+      myAccountPage.clickEdit();
+      myAccountPage.enterName(obj.displayName);
+      myAccountPage.clickSubmit();
+      page.clickLogout();
+    })
   }
 
 }
