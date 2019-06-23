@@ -11,6 +11,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap'; // https://ng-bootstrap.gi
 import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { DateChooserComponent } from '../util/date-chooser/date-chooser.component';
+import { SearchUserByNameComponent } from '../search/search-user-by-name/search-user-by-name.component';
 
 
 describe('LogComponent', () => {
@@ -35,9 +37,8 @@ describe('LogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      // imports: [CommonServiceModuleStub],
-      imports: [FormsModule, ReactiveFormsModule, NgbModule,],
-      declarations: [ LogComponent, SearchLogByLevelComponent, SearchUserByPhoneComponent ],
+      imports: [ /*CommonServiceModuleStub, */ FormsModule, ReactiveFormsModule, NgbModule],
+      declarations: [ LogComponent, SearchLogByLevelComponent, SearchUserByPhoneComponent, SearchUserByNameComponent, DateChooserComponent ],
       providers: [ UserService,
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },

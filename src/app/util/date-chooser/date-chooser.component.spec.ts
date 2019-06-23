@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { DateChooserComponent } from './date-chooser.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 describe('DateChooserComponent', () => {
   let component: DateChooserComponent;
@@ -8,6 +9,7 @@ describe('DateChooserComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [FormsModule, ReactiveFormsModule, NgbModule,],
       declarations: [ DateChooserComponent ]
     })
     .compileComponents();
