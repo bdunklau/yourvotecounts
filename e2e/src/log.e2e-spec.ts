@@ -5,7 +5,7 @@ import { AdminPage } from './admin.po';
 import * as moment from 'moment'
 import * as _ from 'lodash';
 
-fdescribe('Admins', () => {
+describe('Admins', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -35,7 +35,7 @@ fdescribe('Admins', () => {
       page.clickLogout();
   })
 
-  fit('should should be able to query Log by date', async () => {
+  it('should should be able to query Log by date', async () => {
     var names = [
       {displayName: 'Brent 5555', phoneNumber: process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER, uid: '1111111111'},
       {displayName: 'Brent Normal', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER, uid: '222222222'},
