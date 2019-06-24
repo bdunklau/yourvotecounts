@@ -40,9 +40,10 @@ export class LoginComponent implements OnInit {
 
   onLoginSuccessful() {
     console.log("onLoginSuccessful()");
-    if(firebase.auth().currentUser){
-      this.log.i({event: 'login', uid: firebase.auth().currentUser.uid, phoneNumber: firebase.auth().currentUser.phoneNumber});
-      this.userService.setFirebaseUser(firebase.auth().currentUser);
+    var user = firebase.auth().currentUser;
+    if(user){
+      this.log.login(user);
+      this.userService.setFirebaseUser(user);
     }
   }
 

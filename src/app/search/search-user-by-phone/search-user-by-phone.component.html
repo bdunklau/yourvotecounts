@@ -1,0 +1,12 @@
+
+  <input id="logPhoneNumber" type="text"
+         name="logPhoneNumber"
+         placeholder="Phone"
+         class="form-control"
+         (selectItem)="itemSelected($event)"
+         [(ngModel)]="phoneVal"
+         [ngbTypeahead]="search"
+         [resultFormatter]="resultFormatPhoneListValue"
+         [inputFormatter]="inputFormatPhoneListValue"
+         #instance="ngbTypeahead"
+    />

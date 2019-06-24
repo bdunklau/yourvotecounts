@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { /*Component, DebugElement,*/ NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TokenComponent } from './token.component';
 import { UserService } from '../user/user.service';
@@ -28,7 +27,6 @@ describe('TokenComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule, FormsModule, CommonServiceModuleStub ],
-      schemas: [ NO_ERRORS_SCHEMA ],
       providers: [ UserService,
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: AngularFireAuthStub },

@@ -13,7 +13,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 // - https://github.com/RaphaelJenni/FirebaseUI-Angular/issues/76
 // the plugin exposes the two libraries as well. You can use those:
 import {FirebaseUIModule, firebase, firebaseui} from 'firebaseui-angular';
-import { RegisterComponent } from './register/register.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap'; // https://ng-bootstrap.github.io/#/getting-started
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './core/auth.service';
@@ -21,6 +20,11 @@ import { LogComponent } from './log/log.component';
 import { UsersComponent } from './users/users.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TokenComponent } from './token/token.component';
+import { MyAccountComponent } from './my-account/my-account.component';
+import { SearchUserByPhoneComponent } from './search/search-user-by-phone/search-user-by-phone.component';
+import { SearchUserByNameComponent } from './search/search-user-by-name/search-user-by-name.component';
+import { SearchLogByLevelComponent } from './search/search-log-by-level/search-log-by-level.component';
+import { DateChooserComponent } from './util/date-chooser/date-chooser.component';
 
 
 @NgModule({
@@ -28,11 +32,15 @@ import { TokenComponent } from './token/token.component';
     AppComponent,
     LoginComponent,
     UserComponent,
-    RegisterComponent,
     HomeComponent,
     LogComponent,
     UsersComponent,
     TokenComponent,
+    MyAccountComponent,
+    SearchUserByPhoneComponent,
+    SearchUserByNameComponent,
+    SearchLogByLevelComponent,
+    DateChooserComponent,
   ],
   imports: [
     BrowserModule,

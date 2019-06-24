@@ -39,11 +39,28 @@ export class UserService {
     this.messageService.updateUser(this.user);
   }
 
+  searchByName(nameVal) {
+    if(!nameVal || nameVal === '') return [];
+    return this.afs.collection('user', ref => ref
+      .orderBy("displayName_lower")
+      .startAt(nameVal.toLowerCase())
+      .endAt(nameVal+"\uf8ff")
+      .limit(10))
+      .valueChanges();
+  }
+
+  searchByPhone(phoneVal) {
+    return this.afs.collection('user', ref => ref
+      .orderBy("phoneNumber")
+      .startAt(phoneVal)
+      .endAt(phoneVal+"\uf8ff")
+      .limit(10))
+      .valueChanges();
+  }
+
   async getCurrentUser() : Promise<FirebaseUserModel> {
     if(this.user) {
       // TODO verified on 6//10/19 but not part of automated testing yet.  Need a mock/spy LogService
-      await this.log.d({event: 'get cached user', uid: this.user.uid, phoneNumber: this.user.phoneNumber})
-      console.log('getCurrentUser() got cached user');
       return this.user
     }
     var user = await this.createFirebaseUserModel()
@@ -59,6 +76,7 @@ export class UserService {
     return new Promise<FirebaseUserModel>(async (resolve, reject) => {
       var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
       var sub = ref.subscribe((data: [FirebaseUserModel]) => {
+        user.displayName_lower = data[0].displayName_lower;
         user.roles = data[0].roles
         this.user = user
         this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
@@ -99,11 +117,12 @@ export class UserService {
 
   setFirebaseUser(firebase_auth_currentUser) {
     let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
-    var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1))
+    console.log('setFirebaseUser(): user.uid = ', user.uid);
+    var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
     // the pipe(take(1)) automatically unsubscribes after the first result
-    ref.subscribe((data: [FirebaseUserModel]) => {
-      // console.log('ref.subscribe:  data = ', data)
-      user.roles = data[0].roles
+    ref.subscribe((data:[FirebaseUserModel]) => {
+      console.log('setFirebaseUser(): ref.subscribe:  data = ', data)
+      if(data && data[0]) user.roles = data[0].roles
       this.user = user
       this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
     })
@@ -124,14 +143,24 @@ export class UserService {
     return user;
   }
 
-  updateCurrentUser(value){
+  updateCurrentUser(value: FirebaseUserModel) {
     return new Promise<any>((resolve, reject) => {
       var user = firebase.auth().currentUser;
       user.updateProfile({
-        displayName: value.name,
+        displayName: value.displayName,
         photoURL: user.photoURL
-      }).then(res => {
-        resolve(res);
+      }).then( () => {
+        // now we have to update the /user node
+
+        var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid)).snapshotChanges().pipe(take(1));
+        ref.subscribe(data  => {
+          data.forEach(function(dt) {
+            dt.payload.doc.ref.update({displayName: value.displayName,
+                                       displayName_lower: value.displayName.toLowerCase()});
+          })
+        });
+        this.messageService.updateUser(this.user);
+        resolve();
       }, err => reject(err))
     })
   }

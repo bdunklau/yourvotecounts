@@ -1,0 +1,35 @@
+
+<div class="container" id="myaccount_page">
+  <h1>My Account</h1>
+  <div [hidden]="!editing">
+    <form (ngSubmit)="onSubmit()" #myaccountForm="ngForm">
+      <div class="form-group">
+        <input type="text" class="form-control" id="myaccount_name_field" placeholder="Name"
+                [(ngModel)]="nameValue" name="name" #name="ngModel" required>
+        <div [hidden]="name.valid || name.pristine"
+             class="alert alert-danger">
+          Name is required
+        </div>
+      </div>
+
+      <button id="submit_personal_info" type="submit" class="btn btn-success" [disabled]="!myaccountForm.form.valid">Submit</button>
+
+    </form>
+  </div>
+
+  <div [hidden]="editing">
+    <div class="row">
+      <div class="col" id="myaccount_name_label">{{nameValue}}</div>
+    </div>
+    <div class="row">
+      <div class="col"><a href="tel:{{phoneNumber}}">{{phoneNumber}}</a></div>
+    </div>
+    <div class="row">
+      <div class="col">&nbsp;</div>
+    </div>
+    <div class="row">
+      <div class="col"><button id="edit_my_account" class="btn btn-success" (click)="edit()">Edit</button></div>
+    </div>
+  </div>
+
+</div>

@@ -19,5 +19,30 @@ exports.e = function(keyvals) {
 }
 
 logit = function(keyvals, level) {
-  return db.collection('log').add({level: level, event: keyvals.event, uid: keyvals.uid, phoneNumber: keyvals.phoneNumber, date: admin.firestore.Timestamp.now(), date_ms: admin.firestore.Timestamp.now().toMillis()})
+  exports.logit2(keyvals, level, admin.firestore.Timestamp.now(), admin.firestore.Timestamp.now().toMillis());
+}
+
+exports.logit2 = function(keyvals, level, date, date_ms) {
+  var entry = {level: level,
+              event: keyvals.event,
+              date: date,
+              date_ms: date_ms};
+  if(keyvals.user) {
+    if(keyvals.user.uid) entry.uid = keyvals.user.uid;
+    if(keyvals.user.displayName) entry.displayName = keyvals.user.displayName;
+    if(keyvals.user.phoneNumber) entry.phoneNumber = keyvals.user.phoneNumber;
+  }
+  if(level === 'error') {
+    db.collection('log_error').add(entry);
+    db.collection('log_info').add(entry);
+    db.collection('log_debug').add(entry);
+  }
+  else if(level === 'info') {
+    db.collection('log_info').add(entry);
+    db.collection('log_debug').add(entry);
+  }
+  else if(level === 'debug') {
+    db.collection('log_debug').add(entry);
+  }
+  return;
 }

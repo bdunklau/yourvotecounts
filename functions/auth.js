@@ -11,7 +11,7 @@ var db = admin.firestore();
 
 
 exports.logNewUser = functions.auth.user().onCreate((user) => {
-  return log.i({event: 'user created', uid: user.uid, phoneNumber: user.phoneNumber})
+  return log.i({event: 'user created', user: user})
 });
 
 
@@ -27,13 +27,13 @@ exports.deleteUser = functions.auth.user().onDelete(async (user) => {
     users.forEach(function(user) {batch.delete(user.ref)})
     return batch.commit()
   } catch(err) {
-    return log.e({event: 'error deleting user', uid: user.uid, phoneNumber: user.phoneNumber})
+    return log.e({event: 'error deleting user', user: user})
   }
 });
 
 
 exports.logDeleteUser = functions.auth.user().onDelete((user) => {
-  return log.i({event: 'user deleted', uid: user.uid, phoneNumber: user.phoneNumber})
+  return log.i({event: 'user deleted', user: user})
 });
 
 
@@ -110,3 +110,32 @@ exports.createCustomToken = functions.https.onRequest(async (req, res) => {
 
 
 })
+
+
+exports.authKeyValidated = function(auth_key) {
+
+  return new Promise((resolve, reject) => {
+    if(!auth_key) {
+      resolve(false);
+    }
+
+    return db.collection('config').where('auth_key', '==', auth_key).limit(1).get().then(snap => {
+      // auth_key not in the database?  quit early
+      if(snap.size === 0) {
+        resolve(false);
+        return;
+      }
+      var valid = false
+      snap.forEach(function(doc1) {
+        var auth_keyReal = doc1.data().auth_key;
+        if(auth_key === auth_keyReal) {
+          valid = true;
+        }
+        resolve(valid);
+      })
+      return;
+    })
+
+  })
+
+}

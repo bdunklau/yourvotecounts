@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as firebase from 'firebase/app';
 import { UserService } from '../user/user.service';
+import { LogService } from '../log/log.service'
 
 @Component({
   selector: 'app-token',
@@ -10,11 +11,11 @@ import { UserService } from '../user/user.service';
 export class TokenComponent implements OnInit {
 
   tokenValue: string;
-  otherStuff: string;
 
   submitted = false;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,
+              private log: LogService) { }
 
   ngOnInit() {
   }
@@ -34,8 +35,9 @@ export class TokenComponent implements OnInit {
     });
 
     if(firebase_auth_user && firebase_auth_user.user) {
-      console.log('TokenComponent: firebase_auth_user.user = ', firebase_auth_user.user);
-      this.userService.setFirebaseUser(firebase_auth_user.user);
+      var user = firebase_auth_user.user
+      this.log.login(user);
+      this.userService.setFirebaseUser(user);
     }
 
   }

@@ -1,0 +1,20 @@
+<form class="form-inline">
+  <div class="form-group">
+    <div class="input-group">
+      <input class="form-control datepicker" placeholder="mm/dd/yyyy"
+            (ngModelChange)="dateChanged($event)"
+            (dateSelect)="select($event)"
+            [firstDayOfWeek]="7"
+             name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+             <!-- 7 = Sunday -->
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!--
+<hr/>
+<pre>Model: {{ model | json }}</pre>
+ -->

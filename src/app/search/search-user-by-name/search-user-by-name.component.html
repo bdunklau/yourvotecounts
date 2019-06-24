@@ -1,0 +1,12 @@
+
+  <input id="logName" type="text"
+         name="logName"
+         placeholder="Name"
+         class="form-control"
+         (selectItem)="itemSelected($event)"
+         [(ngModel)]="nameVal"
+         [ngbTypeahead]="searchName"
+         [resultFormatter]="resultFormatNameListValue"
+         [inputFormatter]="inputFormatNameListValue"
+         #instance="ngbTypeahead"
+    />
