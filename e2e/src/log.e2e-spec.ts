@@ -4,7 +4,7 @@ import { TestSupport } from './test-support.po';
 import { LogPage } from './log.po';
 import * as _ from 'lodash';
 
-describe('Admins', () => {
+fdescribe('Admins', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -35,7 +35,7 @@ describe('Admins', () => {
   })
 
   it('should should be able to query Log by date', async () => {
-    logPage.setupQueryLogByDateTest(testSupport);
+    logPage.setupQueryByDateTest(testSupport);
 
     // Since we're just looking for instances of text on the page, we have to remember that
     // the debug, info and error are also found in the level dropdown and the selected level
@@ -80,6 +80,57 @@ describe('Admins', () => {
 
     // Can't get the value of the datepicker <input> field.  It's not your typical
     // <input> field.  Inspect it via Chrome and you'll see
+    page.clickLogout();
+
+    // clean up
+    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
+      testSupport.deleteLogs(event);
+    })
+  })
+
+
+  fit('should should be able to query Log by name', async () => {
+    logPage.setupQueryByNameTest(testSupport);
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickLog();
+    logPage.enterPartialName(logPage.names[0].displayName, 3);
+    browser.sleep(3000);
+
+
+    // expect(logPage.nameDropdownContains(logPage.names[0].displayName)).toBeTruthy('Expected name dropdown to contain '+logPage.names[0].displayName+' but did not');
+    // expect(logPage.nameDropdownContains(logPage.names[1].displayName)).toBeTruthy('Expected name dropdown to contain '+logPage.names[1].displayName+' but did not');
+    // expect(logPage.nameDropdownContains('someone else')).toBeFalsy('Did not expect name dropdown to contain "someone else" but it did');
+
+    // logPage.getNamesInDropdown().then(function(elements) {
+    //   var index = _.findIndex(elements, function(ele) {
+    //     console.log('ele.getWebElement().getText() = ', ele.getWebElement().getText());
+    //     return ele.getWebElement().getText() === logPage.names[0].displayName;
+    //   });
+    //   expect(index != -1).toBeTruthy('Expected name dropdown to contain '+logPage.names[0].displayName+' but did not');
+    // })
+
+    // var elements = await logPage.getNamesInDropdown();
+    // var promises = _.forEach(elements, (element) => element.getText())
+    // Promise.all(promises).then(function(names) {
+    //   var index = _.findIndex(names, (name) => name === logPage.names[0].displayName);
+    //   expect(index != -1).toBeTruthy('Expected name dropdown to contain '+logPage.names[0].displayName+' but did not');
+    // })
+
+    logPage.getNamesInDropdown().then(function(elements) {
+      var promises = _.forEach(elements, (element) => element.getText());
+      Promise.all(promises).then(function(names) {
+        var p2 = _.forEach(names, (name) => name.getText());
+        Promise.all(p2).then(function(nms) {
+          var index = _.findIndex(nms, (nm) => {
+            console.log('nm = ', nm);
+            return nm === logPage.names[0].displayName
+          });
+          expect(index != -1).toBeTruthy('Expected name dropdown to contain '+logPage.names[0].displayName+' but did not');
+        })
+
+      })
+    })
+
     page.clickLogout();
 
     // clean up
