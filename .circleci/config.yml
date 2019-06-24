@@ -25,4 +25,4 @@ jobs:
       - run: npm test
       - run: pwd
       - run: ls -al e2e
-      - run: npm run e2e --protractorConfig ./e2e/protractor-headless.conf.js
+      - run: npm run e2e --protractorConfig /home/circleci/foo/e2e/protractor-headless.conf.js
