@@ -24,5 +24,5 @@ jobs:
       - run: npm install
       - run: npm test
       - run: pwd
-      - run: ls -al
+      - run: ls -al e2e
       - run: npm run e2e --protractorConfig ./e2e/protractor-headless.conf.js
