@@ -201,7 +201,7 @@ describe('Admins', () => {
         logPage.setLevel(selectedLevel);
         _.forEach(obj.levels, (logtype) => {
             logPage.getLogEntries(logtype.level).then(function(numbers){
-              console.log('In '+selectedLevel+' log, found '+numbers.length+' '+logtype.level+' elements')
+              //console.log('In '+selectedLevel+' log, found '+numbers.length+' '+logtype.level+' elements')
               expect(numbers.length == logtype.expected ).toBeTruthy('expected '+logtype.expected+' instances of "'+logtype.level+'" on '+selectedLevel+' log page but got '+numbers.length);
             });
         })
