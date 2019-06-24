@@ -9,12 +9,12 @@ describe('Admins', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
-  let LogPage: LogPage;
+  let logPage: LogPage;
 
   beforeEach(() => {
     page = new MainPage();
     testSupport = new TestSupport();
-    LogPage = new LogPage();
+    logPage = new LogPage();
   });
 
   it('should be able to get to Log page', () => {
@@ -30,8 +30,8 @@ describe('Admins', () => {
       page.clickLog();
       // Can't get the value of the datepicker <input> field.  It's not your typical
       // <input> field.  Inspect it via Chrome and you'll see
-      LogPage.clickCalendarIcon();
-      expect(LogPage.getCalendar().isPresent()).toBeTruthy('was not able to get the calendar widget to pop up');
+      logPage.clickCalendarIcon();
+      expect(logPage.getCalendar().isPresent()).toBeTruthy('was not able to get the calendar widget to pop up');
       page.clickLogout();
   })
 
@@ -195,12 +195,12 @@ describe('Admins', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
     _.forEach(dates, (date) => {
-      LogPage.setDatePickerField(date);
+      logPage.setDatePickerField(date);
       _.forEach(levels, (obj) => {
         var selectedLevel = obj.level;
-        LogPage.setLevel(selectedLevel);
+        logPage.setLevel(selectedLevel);
         _.forEach(obj.levels, (logtype) => {
-            LogPage.getLogEntries(logtype.level).then(function(numbers){
+            logPage.getLogEntries(logtype.level).then(function(numbers){
               console.log('In '+selectedLevel+' log, found '+numbers.length+' '+logtype.level+' elements')
               expect(numbers.length == logtype.expected ).toBeTruthy('expected '+logtype.expected+' instances of "'+logtype.level+'" on '+selectedLevel+' log page but got '+numbers.length);
             });
@@ -228,52 +228,52 @@ describe('Admins', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
     var actualLevel;
-    LogPage.setLevel('error');
-    actualLevel = await LogPage.getLevel();
+    logPage.setLevel('error');
+    actualLevel = await logPage.getLevel();
     expect(actualLevel === 'error').toBeTruthy('expected level to be error, not '+actualLevel);
-    LogPage.getLogEntries('error').then(function(numbers){
+    logPage.getLogEntries('error').then(function(numbers){
       console.log('In error log, found '+numbers.length+' error elements')
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "error" on error log page but got '+numbers.length);
     });
-    LogPage.getLogEntries('info').then(function(numbers){
+    logPage.getLogEntries('info').then(function(numbers){
       console.log('In error log, found '+numbers.length+' info elements');
       expect(numbers.length === 1).toBeTruthy('expected 1 instance of "info" on the error log but got '+numbers.length);
     });
-    LogPage.getLogEntries('debug').then(function(numbers){
+    logPage.getLogEntries('debug').then(function(numbers){
       console.log('In error log, found '+numbers.length+' debug elements');
       expect(numbers.length === 1).toBeTruthy('expected 1 instance of "debug" on the error log but got '+numbers.length);
     });
 
 
-    LogPage.setLevel('info');
-    actualLevel = await LogPage.getLevel();
+    logPage.setLevel('info');
+    actualLevel = await logPage.getLevel();
     expect(actualLevel === 'info').toBeTruthy('expected level to be info, not '+actualLevel);
-    LogPage.getLogEntries('error').then(function(numbers){
+    logPage.getLogEntries('error').then(function(numbers){
       console.log('In info log, found '+numbers.length+' error elements');
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "error" on info log page but got '+numbers.length);
     });
-    LogPage.getLogEntries('info').then(function(numbers){
+    logPage.getLogEntries('info').then(function(numbers){
       console.log('In info log, found '+numbers.length+' info elements');
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "info" on info log page but got '+numbers.length);
     });
-    LogPage.getLogEntries('debug').then(function(numbers){
+    logPage.getLogEntries('debug').then(function(numbers){
       console.log('In info log, found '+numbers.length+' debug elements');
       expect(numbers.length === 1).toBeTruthy('expected 1 instance of "debug" on the info log but got '+numbers.length);
     });
 
 
-    LogPage.setLevel('debug');
-    actualLevel = await LogPage.getLevel();
+    logPage.setLevel('debug');
+    actualLevel = await logPage.getLevel();
     expect(actualLevel === 'debug').toBeTruthy('expected level to be debug, not '+actualLevel);
-    LogPage.getLogEntries('error').then(function(numbers){
+    logPage.getLogEntries('error').then(function(numbers){
       console.log('In debug log, found '+numbers.length+' error elements');
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "error" on debug log page but got '+numbers.length);
     });
-    LogPage.getLogEntries('info').then(function(numbers){
+    logPage.getLogEntries('info').then(function(numbers){
       console.log('In debug log, found '+numbers.length+' info elements');
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "info" on debug log page but got '+numbers.length);
     });
-    LogPage.getLogEntries('debug').then(function(numbers){
+    logPage.getLogEntries('debug').then(function(numbers){
       console.log('In debug log, found '+numbers.length+' debug elements');
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "debug" on debug log page but got '+numbers.length);
     });
