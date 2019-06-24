@@ -6,6 +6,8 @@ import { UserService } from '../../user/user.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs/observable/of';
 
 
 describe('SearchUserByNameComponent', () => {
