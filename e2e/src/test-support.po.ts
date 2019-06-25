@@ -75,6 +75,7 @@ export class TestSupport {
       page.clickMyAccount();
       myAccountPage.clickEdit();
       myAccountPage.enterName(obj.displayName);
+      browser.sleep(300);
       myAccountPage.clickSubmit();
       page.clickLogout();
     })
