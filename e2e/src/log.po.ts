@@ -37,15 +37,17 @@ export class LogPage extends BasePage {
     return this.getElements(by.tagName('ngb-highlight'));
   }
 
-  // async nameDropdownContains(name): Promise<boolean> {
-  //   var names = await this.getElements(by.tagName('ngb-highlight'))
-  //   console.log('names = ', names);
-  //   var index = _.findIndex(names, (nameEl) => {
-  //     console.log('nameEl.getText() = ', nameEl.getText());
-  //     return nameEl.getText() === name;
-  //   });
-  //   return index != -1;
-  // }
+  getNamesInLog(): ElementArrayFinder {
+    browser.sleep(300);
+    return this.getElements(by.css('.log_displayName'));
+  }
+
+  queryForUser(name) {
+    var fld = this.getElement(by.id('logName'));
+    fld.clear();
+    fld.sendKeys(name);
+    this.getElement(by.tagName('ngb-highlight')).click();
+  }
 
   // the <input> holding the date
   // You can set the value but you can't *get* the value of the datepicker <input> field.  It's not your typical
@@ -63,8 +65,8 @@ export class LogPage extends BasePage {
 
 
   names = [
-    {displayName: 'Brent 2222', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2, uid: '1111111111'},
-    {displayName: 'Brent Normal', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER, uid: '222222222'},
+    {displayName: 'Bre222nt', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2, uid: '1111111111'},
+    {displayName: 'Bre444nt', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER, uid: '222222222'},
   ]
 
   tomorrow_ms = moment(new Date().getTime()).add(1, 'days').toDate().getTime();
@@ -200,7 +202,6 @@ export class LogPage extends BasePage {
 
 
   setupQueryByNameTest(testSupport: TestSupport) {
-
     testSupport.setNames(this.names);
 
     // Create a debug, info and error log entry for 1 user but not the other

@@ -4,7 +4,7 @@ import { TestSupport } from './test-support.po';
 import { LogPage } from './log.po';
 import * as _ from 'lodash';
 
-fdescribe('Admins', () => {
+describe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -16,7 +16,7 @@ fdescribe('Admins', () => {
     logPage = new LogPage();
   });
 
-  it('should be able to get to Log page', () => {
+  it('should be accessible by hyperlink', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickHome();
     page.clickLog();
@@ -24,7 +24,7 @@ fdescribe('Admins', () => {
     page.clickLogout();
   });
 
-  it('should should be able to click calendar', async () => {
+  it('should have a click-able calendar', async () => {
       testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
       page.clickLog();
       // Can't get the value of the datepicker <input> field.  It's not your typical
@@ -34,7 +34,96 @@ fdescribe('Admins', () => {
       page.clickLogout();
   })
 
-  it('should should be able to query Log by date', async () => {
+
+  it('should display correct list of users in dropdown', async () => {
+    logPage.setupQueryByNameTest(testSupport);
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickLog();
+
+    var run1 = [{displayName: logPage.names[0].displayName,
+                  case_sensitive: true,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+logPage.names[0].displayName+' but did not'},
+                 {displayName: logPage.names[1].displayName,
+                  case_sensitive: true,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+logPage.names[1].displayName+' but did not'},
+                 {displayName: 'Mr Fixit',
+                  case_sensitive: true,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain Mr Fixit but it did'},
+                ];
+
+    // the difference is in the 2nd element
+    var run2 = [{displayName: logPage.names[0].displayName,
+                  case_sensitive: true,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+logPage.names[0].displayName+' but did not'},
+                 {displayName: logPage.names[1].displayName,
+                  case_sensitive: true,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain '+logPage.names[1].displayName+' but it did'},
+                 {displayName: 'Mr Fixit',
+                  case_sensitive: true,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain Mr Fixit but it did'},
+                ];
+
+    // same as run1, except lower case name
+    var run3 = [{displayName: logPage.names[0].displayName.toLowerCase(),
+                  case_sensitive: false,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+logPage.names[0].displayName+' but did not (case-insensitive)'},
+                 {displayName: logPage.names[1].displayName,
+                 case_sensitive: false,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+logPage.names[1].displayName+' but did not (case-insensitive)'},
+                 {displayName: 'Mr Fixit',
+                  case_sensitive: false,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain Mr Fixit but it did (case-insensitive)'},
+                ];
+
+    var func = function(expecteds, len) {
+      logPage.enterPartialName(expecteds[0].displayName, len);
+      logPage.getNamesInDropdown().then(function(elements) {
+        browser.sleep(1000);
+        var promises = [];
+        _.forEach(elements, element => {
+          promises.push(element.getText());
+        })
+
+        Promise.all(promises).then(function(names) {
+          for(var i=0; i < expecteds.length; i++) {
+            var index = _.findIndex(names, (name) => {
+              return expecteds[i].case_sensitive ? name === expecteds[i].displayName : name.toLowerCase() === expecteds[i].displayName.toLowerCase();
+            });
+            var actual = index != -1;
+            expect(actual == expecteds[i].expected).toBeTruthy(expecteds[i].failMsg);
+          }
+        })
+        .catch(function(err) {console.log('ERROR: ', err)})
+      })
+    }
+
+    // func(run1, 3);
+
+    // Now enter the first 4 chars of name and see if one of the users drops out of the dropdown list
+    func(run2, 4);
+
+    // test case-insensitive name search
+    func(run3, 3);
+
+    page.clickLogout();
+
+    // clean up
+    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
+      testSupport.deleteLogs(event);
+    })
+  })
+
+
+  it('should allow query by date', async () => {
     logPage.setupQueryByDateTest(testSupport);
 
     // Since we're just looking for instances of text on the page, we have to remember that
@@ -89,60 +178,8 @@ fdescribe('Admins', () => {
   })
 
 
-  fit('should should be able to query Log by name', async () => {
-    logPage.setupQueryByNameTest(testSupport);
-    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
-    page.clickLog();
-    logPage.enterPartialName(logPage.names[0].displayName, 3);
-    browser.sleep(3000);
-
-
-    // expect(logPage.nameDropdownContains(logPage.names[0].displayName)).toBeTruthy('Expected name dropdown to contain '+logPage.names[0].displayName+' but did not');
-    // expect(logPage.nameDropdownContains(logPage.names[1].displayName)).toBeTruthy('Expected name dropdown to contain '+logPage.names[1].displayName+' but did not');
-    // expect(logPage.nameDropdownContains('someone else')).toBeFalsy('Did not expect name dropdown to contain "someone else" but it did');
-
-    // logPage.getNamesInDropdown().then(function(elements) {
-    //   var index = _.findIndex(elements, function(ele) {
-    //     console.log('ele.getWebElement().getText() = ', ele.getWebElement().getText());
-    //     return ele.getWebElement().getText() === logPage.names[0].displayName;
-    //   });
-    //   expect(index != -1).toBeTruthy('Expected name dropdown to contain '+logPage.names[0].displayName+' but did not');
-    // })
-
-    // var elements = await logPage.getNamesInDropdown();
-    // var promises = _.forEach(elements, (element) => element.getText())
-    // Promise.all(promises).then(function(names) {
-    //   var index = _.findIndex(names, (name) => name === logPage.names[0].displayName);
-    //   expect(index != -1).toBeTruthy('Expected name dropdown to contain '+logPage.names[0].displayName+' but did not');
-    // })
-
-    logPage.getNamesInDropdown().then(function(elements) {
-      var promises = _.forEach(elements, (element) => element.getText());
-      Promise.all(promises).then(function(names) {
-        var p2 = _.forEach(names, (name) => name.getText());
-        Promise.all(p2).then(function(nms) {
-          var index = _.findIndex(nms, (nm) => {
-            console.log('nm = ', nm);
-            return nm === logPage.names[0].displayName
-          });
-          expect(index != -1).toBeTruthy('Expected name dropdown to contain '+logPage.names[0].displayName+' but did not');
-        })
-
-      })
-    })
-
-    page.clickLogout();
-
-    // clean up
-    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
-      testSupport.deleteLogs(event);
-    })
-  })
-
-
-  it('should be able to view logs by level', async () => {
-    // db setup - have to log error, info and debug entries so we have something
-    // to test
+  it('should allow query by level', async () => {
+    // db setup - have to log error, info and debug entries so we have something to test
     testSupport.createLogs();
 
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
@@ -202,6 +239,35 @@ fdescribe('Admins', () => {
     testSupport.deleteLogs('test event');
   });
 
+
+  it('should allow query by user', async () => {
+    logPage.setupQueryByNameTest(testSupport);
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickLog();
+    var theName = logPage.names[0].displayName
+    logPage.queryForUser(theName);
+    logPage.getNamesInLog().then(function(elements) {
+      var promises = [];
+      _.forEach(elements, element => {
+        promises.push(element.getText());
+      })
+      Promise.all(promises).then(function(names) {
+        _.forEach(names, (name) => {
+          expect(theName === name).toBeTruthy('All names in the log should have been '+theName+' but found '+name);
+        })
+      })
+    })
+
+    page.clickLogout();
+
+    // clean up
+    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
+      testSupport.deleteLogs(event);
+    })
+  })
+
+
+  // TODO move this to its own spec file
   it('should be able to get to Users page', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickHome();
