@@ -189,15 +189,12 @@ describe('Log page', () => {
     actualLevel = await logPage.getLevel();
     expect(actualLevel === 'error').toBeTruthy('expected level to be error, not '+actualLevel);
     logPage.getLogEntries('error').then(function(numbers){
-      console.log('In error log, found '+numbers.length+' error elements')
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "error" on error log page but got '+numbers.length);
     });
     logPage.getLogEntries('info').then(function(numbers){
-      console.log('In error log, found '+numbers.length+' info elements');
       expect(numbers.length === 1).toBeTruthy('expected 1 instance of "info" on the error log but got '+numbers.length);
     });
     logPage.getLogEntries('debug').then(function(numbers){
-      console.log('In error log, found '+numbers.length+' debug elements');
       expect(numbers.length === 1).toBeTruthy('expected 1 instance of "debug" on the error log but got '+numbers.length);
     });
 
@@ -206,15 +203,12 @@ describe('Log page', () => {
     actualLevel = await logPage.getLevel();
     expect(actualLevel === 'info').toBeTruthy('expected level to be info, not '+actualLevel);
     logPage.getLogEntries('error').then(function(numbers){
-      console.log('In info log, found '+numbers.length+' error elements');
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "error" on info log page but got '+numbers.length);
     });
     logPage.getLogEntries('info').then(function(numbers){
-      console.log('In info log, found '+numbers.length+' info elements');
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "info" on info log page but got '+numbers.length);
     });
     logPage.getLogEntries('debug').then(function(numbers){
-      console.log('In info log, found '+numbers.length+' debug elements');
       expect(numbers.length === 1).toBeTruthy('expected 1 instance of "debug" on the info log but got '+numbers.length);
     });
 
@@ -223,15 +217,12 @@ describe('Log page', () => {
     actualLevel = await logPage.getLevel();
     expect(actualLevel === 'debug').toBeTruthy('expected level to be debug, not '+actualLevel);
     logPage.getLogEntries('error').then(function(numbers){
-      console.log('In debug log, found '+numbers.length+' error elements');
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "error" on debug log page but got '+numbers.length);
     });
     logPage.getLogEntries('info').then(function(numbers){
-      console.log('In debug log, found '+numbers.length+' info elements');
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "info" on debug log page but got '+numbers.length);
     });
     logPage.getLogEntries('debug').then(function(numbers){
-      console.log('In debug log, found '+numbers.length+' debug elements');
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "debug" on debug log page but got '+numbers.length);
     });
 
