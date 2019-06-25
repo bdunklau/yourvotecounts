@@ -54,7 +54,7 @@ export class LogComponent implements OnInit {
                       console.log('switchMap:  dates.date1 = ', dates.date1)
                       collectionRef = (collectionRef ? collectionRef : ref).orderBy('date_ms', 'desc').startAt(dates.date2).endAt(dates.date1);
                     }
-                    if(!phoneVal && !nameVal && !dates) {
+                    else {
                       collectionRef = (collectionRef ? collectionRef : ref).orderBy('date_ms', 'desc');
                     }
                     collectionRef = (collectionRef ? collectionRef : ref).limit(limit);
