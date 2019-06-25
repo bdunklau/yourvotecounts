@@ -1,23 +1,22 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
-import { AdminPage } from './admin.po';
-import * as moment from 'moment'
+import { LogPage } from './log.po';
 import * as _ from 'lodash';
 
-describe('Admins', () => {
+describe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
-  let adminPage: AdminPage;
+  let logPage: LogPage;
 
   beforeEach(() => {
     page = new MainPage();
     testSupport = new TestSupport();
-    adminPage = new AdminPage();
+    logPage = new LogPage();
   });
 
-  it('should be able to get to Log page', () => {
+  it('should be accessible by hyperlink', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickHome();
     page.clickLog();
@@ -25,148 +24,107 @@ describe('Admins', () => {
     page.clickLogout();
   });
 
-  it('should should be able to click calendar', async () => {
+  it('should have a click-able calendar', async () => {
       testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
       page.clickLog();
       // Can't get the value of the datepicker <input> field.  It's not your typical
       // <input> field.  Inspect it via Chrome and you'll see
-      adminPage.clickCalendarIcon();
-      expect(adminPage.getCalendar().isPresent()).toBeTruthy('was not able to get the calendar widget to pop up');
+      logPage.clickCalendarIcon();
+      expect(logPage.getCalendar().isPresent()).toBeTruthy('was not able to get the calendar widget to pop up');
       page.clickLogout();
   })
 
-  it('should should be able to query Log by date', async () => {
-    var names = [
-      {displayName: 'Brent 5555', phoneNumber: process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER, uid: '1111111111'},
-      {displayName: 'Brent Normal', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER, uid: '222222222'},
-    ]
-    testSupport.setNames(names);
 
-    var tomorrow_ms = moment(new Date().getTime()).add(1, 'days').toDate().getTime();
-    var tomorrow_mmddyyyy = moment(tomorrow_ms).format('MM/DD/YYYY');
-    var dayafter_ms = moment(new Date().getTime()).add(2, 'days').toDate().getTime();
-    var dayafter_mmddyyyy = moment(dayafter_ms).format('MM/DD/YYYY');
+  it('should display correct list of users in dropdown', async () => {
+    logPage.setupQueryByNameTest(testSupport);
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickLog();
 
-    var dates = [ tomorrow_mmddyyyy, dayafter_mmddyyyy ]
+    var run1 = [{displayName: logPage.names[0].displayName,
+                  case_sensitive: true,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+logPage.names[0].displayName+' but did not'},
+                 {displayName: logPage.names[1].displayName,
+                  case_sensitive: true,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+logPage.names[1].displayName+' but did not'},
+                 {displayName: 'Mr Fixit',
+                  case_sensitive: true,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain Mr Fixit but it did'},
+                ];
 
-    var debug_user0_tomorrow = { level: 'debug',
-      event: 'dbg event',
-      uid: names[0]['uid'],
-      displayName: names[0]['displayName'],
-      phoneNumber: names[0]['phoneNumber'],
-      date_ms: tomorrow_ms
+    // the difference is in the 2nd element
+    var run2 = [{displayName: logPage.names[0].displayName,
+                  case_sensitive: true,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+logPage.names[0].displayName+' but did not'},
+                 {displayName: logPage.names[1].displayName,
+                  case_sensitive: true,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain '+logPage.names[1].displayName+' but it did'},
+                 {displayName: 'Mr Fixit',
+                  case_sensitive: true,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain Mr Fixit but it did'},
+                ];
+
+    // same as run1, except lower case name
+    var run3 = [{displayName: logPage.names[0].displayName.toLowerCase(),
+                  case_sensitive: false,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+logPage.names[0].displayName+' but did not (case-insensitive)'},
+                 {displayName: logPage.names[1].displayName,
+                 case_sensitive: false,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+logPage.names[1].displayName+' but did not (case-insensitive)'},
+                 {displayName: 'Mr Fixit',
+                  case_sensitive: false,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain Mr Fixit but it did (case-insensitive)'},
+                ];
+
+    var func = function(expecteds, len) {
+      logPage.enterPartialName(expecteds[0].displayName, len);
+      logPage.getNamesInDropdown().then(function(elements) {
+        browser.sleep(1000);
+        var promises = [];
+        _.forEach(elements, element => {
+          promises.push(element.getText());
+        })
+
+        Promise.all(promises).then(function(names) {
+          for(var i=0; i < expecteds.length; i++) {
+            var index = _.findIndex(names, (name) => {
+              return expecteds[i].case_sensitive ? name === expecteds[i].displayName : name.toLowerCase() === expecteds[i].displayName.toLowerCase();
+            });
+            var actual = index != -1;
+            expect(actual == expecteds[i].expected).toBeTruthy(expecteds[i].failMsg);
+          }
+        })
+        .catch(function(err) {console.log('ERROR: ', err)})
+      })
     }
 
-    var info_user0_tomorrow = { level: 'info',
-      event: 'nfo event',
-      uid: names[0]['uid'],
-      displayName: names[0]['displayName'],
-      phoneNumber: names[0]['phoneNumber'],
-      date_ms: tomorrow_ms
-    }
+    // func(run1, 3);
 
-    var error_user0_tomorrow = { level: 'error',
-      event: 'err event',
-      uid: names[0]['uid'],
-      displayName: names[0]['displayName'],
-      phoneNumber: names[0]['phoneNumber'],
-      date_ms: tomorrow_ms
-    }
+    // Now enter the first 4 chars of name and see if one of the users drops out of the dropdown list
+    func(run2, 4);
 
-    var debug_user1_tomorrow = { level: 'debug',
-      event: 'dbg event',
-      uid: names[1]['uid'],
-      displayName: names[1]['displayName'],
-      phoneNumber: names[1]['phoneNumber'],
-      date_ms: tomorrow_ms
-    }
+    // test case-insensitive name search
+    func(run3, 3);
 
-    var info_user1_tomorrow = { level: 'info',
-      event: 'nfo event',
-      uid: names[1]['uid'],
-      displayName: names[1]['displayName'],
-      phoneNumber: names[1]['phoneNumber'],
-      date_ms: tomorrow_ms
-    }
+    page.clickLogout();
 
-    var error_user1_tomorrow = { level: 'error',
-      event: 'err event',
-      uid: names[1]['uid'],
-      displayName: names[1]['displayName'],
-      phoneNumber: names[1]['phoneNumber'],
-      date_ms: tomorrow_ms
-    }
-
-    var debug_user0_dayafter = { level: 'debug',
-      event: 'dbg event',
-      uid: names[0]['uid'],
-      displayName: names[0]['displayName'],
-      phoneNumber: names[0]['phoneNumber'],
-      date_ms: dayafter_ms
-    }
-
-    var info_user0_dayafter = { level: 'info',
-      event: 'nfo event',
-      uid: names[0]['uid'],
-      displayName: names[0]['displayName'],
-      phoneNumber: names[0]['phoneNumber'],
-      date_ms: dayafter_ms
-    }
-
-    var error_user0_dayafter = { level: 'error',
-      event: 'err event',
-      uid: names[0]['uid'],
-      displayName: names[0]['displayName'],
-      phoneNumber: names[0]['phoneNumber'],
-      date_ms: dayafter_ms
-    }
-
-    var debug_user1_dayafter = { level: 'debug',
-      event: 'dbg event',
-      uid: names[1]['uid'],
-      displayName: names[1]['displayName'],
-      phoneNumber: names[1]['phoneNumber'],
-      date_ms: dayafter_ms
-    }
-
-    var info_user1_dayafter = { level: 'info',
-      event: 'nfo event',
-      uid: names[1]['uid'],
-      displayName: names[1]['displayName'],
-      phoneNumber: names[1]['phoneNumber'],
-      date_ms: dayafter_ms
-    }
-
-    var error_user1_dayafter = { level: 'error',
-      event: 'err event',
-      uid: names[1]['uid'],
-      displayName: names[1]['displayName'],
-      phoneNumber: names[1]['phoneNumber'],
-      date_ms: dayafter_ms
-    }
-
-    // Create a debug, info and error log entry for 2 users on 2 days
-    var logs = [ debug_user0_tomorrow,
-                info_user0_tomorrow,
-                error_user0_tomorrow,
-
-                debug_user1_tomorrow,
-                info_user1_tomorrow,
-                error_user1_tomorrow,
-
-                debug_user0_dayafter,
-                info_user0_dayafter,
-                error_user0_dayafter,
-
-                debug_user1_dayafter,
-                info_user1_dayafter,
-                error_user1_dayafter ]
-
-    _.forEach(logs, (log) => {
-      testSupport.createLog(log);
-      browser.sleep(500);
+    // clean up
+    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
+      testSupport.deleteLogs(event);
     })
-    // THIS IS THE END OF THE TEST SETUP
+  })
+
+
+  it('should allow query by date', async () => {
+    logPage.setupQueryByDateTest(testSupport);
 
     // Since we're just looking for instances of text on the page, we have to remember that
     // the debug, info and error are also found in the level dropdown and the selected level
@@ -194,14 +152,14 @@ describe('Admins', () => {
 
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
-    _.forEach(dates, (date) => {
-      adminPage.setDatePickerField(date);
+    _.forEach(logPage.dates, (date) => {
+      logPage.setDatePickerField(date);
       _.forEach(levels, (obj) => {
         var selectedLevel = obj.level;
-        adminPage.setLevel(selectedLevel);
+        logPage.setLevel(selectedLevel);
         _.forEach(obj.levels, (logtype) => {
-            adminPage.getLogEntries(logtype.level).then(function(numbers){
-              console.log('In '+selectedLevel+' log, found '+numbers.length+' '+logtype.level+' elements')
+            logPage.getLogEntries(logtype.level).then(function(numbers){
+              //console.log('In '+selectedLevel+' log, found '+numbers.length+' '+logtype.level+' elements')
               expect(numbers.length == logtype.expected ).toBeTruthy('expected '+logtype.expected+' instances of "'+logtype.level+'" on '+selectedLevel+' log page but got '+numbers.length);
             });
         })
@@ -220,61 +178,51 @@ describe('Admins', () => {
   })
 
 
-  it('should be able to view logs by level', async () => {
-    // db setup - have to log error, info and debug entries so we have something
-    // to test
+  it('should allow query by level', async () => {
+    // db setup - have to log error, info and debug entries so we have something to test
     testSupport.createLogs();
 
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
     var actualLevel;
-    adminPage.setLevel('error');
-    actualLevel = await adminPage.getLevel();
+    logPage.setLevel('error');
+    actualLevel = await logPage.getLevel();
     expect(actualLevel === 'error').toBeTruthy('expected level to be error, not '+actualLevel);
-    adminPage.getLogEntries('error').then(function(numbers){
-      console.log('In error log, found '+numbers.length+' error elements')
+    logPage.getLogEntries('error').then(function(numbers){
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "error" on error log page but got '+numbers.length);
     });
-    adminPage.getLogEntries('info').then(function(numbers){
-      console.log('In error log, found '+numbers.length+' info elements');
+    logPage.getLogEntries('info').then(function(numbers){
       expect(numbers.length === 1).toBeTruthy('expected 1 instance of "info" on the error log but got '+numbers.length);
     });
-    adminPage.getLogEntries('debug').then(function(numbers){
-      console.log('In error log, found '+numbers.length+' debug elements');
+    logPage.getLogEntries('debug').then(function(numbers){
       expect(numbers.length === 1).toBeTruthy('expected 1 instance of "debug" on the error log but got '+numbers.length);
     });
 
 
-    adminPage.setLevel('info');
-    actualLevel = await adminPage.getLevel();
+    logPage.setLevel('info');
+    actualLevel = await logPage.getLevel();
     expect(actualLevel === 'info').toBeTruthy('expected level to be info, not '+actualLevel);
-    adminPage.getLogEntries('error').then(function(numbers){
-      console.log('In info log, found '+numbers.length+' error elements');
+    logPage.getLogEntries('error').then(function(numbers){
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "error" on info log page but got '+numbers.length);
     });
-    adminPage.getLogEntries('info').then(function(numbers){
-      console.log('In info log, found '+numbers.length+' info elements');
+    logPage.getLogEntries('info').then(function(numbers){
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "info" on info log page but got '+numbers.length);
     });
-    adminPage.getLogEntries('debug').then(function(numbers){
-      console.log('In info log, found '+numbers.length+' debug elements');
+    logPage.getLogEntries('debug').then(function(numbers){
       expect(numbers.length === 1).toBeTruthy('expected 1 instance of "debug" on the info log but got '+numbers.length);
     });
 
 
-    adminPage.setLevel('debug');
-    actualLevel = await adminPage.getLevel();
+    logPage.setLevel('debug');
+    actualLevel = await logPage.getLevel();
     expect(actualLevel === 'debug').toBeTruthy('expected level to be debug, not '+actualLevel);
-    adminPage.getLogEntries('error').then(function(numbers){
-      console.log('In debug log, found '+numbers.length+' error elements');
+    logPage.getLogEntries('error').then(function(numbers){
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "error" on debug log page but got '+numbers.length);
     });
-    adminPage.getLogEntries('info').then(function(numbers){
-      console.log('In debug log, found '+numbers.length+' info elements');
+    logPage.getLogEntries('info').then(function(numbers){
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "info" on debug log page but got '+numbers.length);
     });
-    adminPage.getLogEntries('debug').then(function(numbers){
-      console.log('In debug log, found '+numbers.length+' debug elements');
+    logPage.getLogEntries('debug').then(function(numbers){
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "debug" on debug log page but got '+numbers.length);
     });
 
@@ -282,6 +230,35 @@ describe('Admins', () => {
     testSupport.deleteLogs('test event');
   });
 
+
+  it('should allow query by user', async () => {
+    logPage.setupQueryByNameTest(testSupport);
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickLog();
+    var theName = logPage.names[0].displayName
+    logPage.queryForUser(theName);
+    logPage.getNamesInLog().then(function(elements) {
+      var promises = [];
+      _.forEach(elements, element => {
+        promises.push(element.getText());
+      })
+      Promise.all(promises).then(function(names) {
+        _.forEach(names, (name) => {
+          expect(theName === name).toBeTruthy('All names in the log should have been '+theName+' but found '+name);
+        })
+      })
+    })
+
+    page.clickLogout();
+
+    // clean up
+    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
+      testSupport.deleteLogs(event);
+    })
+  })
+
+
+  // TODO move this to its own spec file
   it('should be able to get to Users page', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickHome();

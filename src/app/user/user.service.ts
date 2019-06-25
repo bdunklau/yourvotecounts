@@ -44,7 +44,7 @@ export class UserService {
     return this.afs.collection('user', ref => ref
       .orderBy("displayName_lower")
       .startAt(nameVal.toLowerCase())
-      .endAt(nameVal+"\uf8ff")
+      .endAt(nameVal.toLowerCase()+"\uf8ff")
       .limit(10))
       .valueChanges();
   }
