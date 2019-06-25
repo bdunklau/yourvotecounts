@@ -4,7 +4,7 @@ import { TestSupport } from './test-support.po';
 import { LogPage } from './log.po';
 import * as _ from 'lodash';
 
-fdescribe('Log page', () => {
+describe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -123,7 +123,7 @@ fdescribe('Log page', () => {
   })
 
 
-  fit('should allow query by date', async () => {
+  it('should allow query by date', async () => {
     logPage.setupQueryByDateTest(testSupport);
 
     // Since we're just looking for instances of text on the page, we have to remember that
@@ -231,7 +231,7 @@ fdescribe('Log page', () => {
   });
 
 
-  fit('should allow query by user', async () => {
+  it('should allow query by user', async () => {
     logPage.setupQueryByNameTest(testSupport);
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
