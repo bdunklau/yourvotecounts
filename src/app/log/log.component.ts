@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 import { LogService } from '../log/log.service';
 import { switchMap } from 'rxjs/operators';
+import moment from 'moment';
 
 
 @Component({
@@ -105,7 +106,9 @@ export class LogComponent implements OnInit {
   }
 
   public onDateRangeSelection(range: { from: Date, to: Date }) {
-    this.dates = {date1: range.from.getTime(), date2: range.to.getTime()};
+    // Add 1 day so that the results will include the 'to' date, since times are midnight
+    var plus1Day = moment(range.to).add(1, 'days').toDate()
+    this.dates = {date1: range.from.getTime(), date2: plus1Day.getTime()};
     this.log$.next(this.dates);
   }
 
