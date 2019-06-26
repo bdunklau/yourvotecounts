@@ -22,5 +22,7 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: npm test
+      - run: npm test "yourvotecounts-e2e" "--watch=false"
       - run: npm run e2e "yourvotecounts-e2e" "--protractorConfig=e2e/protractor-headless.conf.js"
+
+# Re:  ng test, see karma.conf.js for a note about watch=false and singleRun=true/false

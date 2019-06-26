@@ -26,7 +26,7 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: true, // false on laptop, true on github to terminate the test at the end.  False leaves the process running indefinitely
+    singleRun: false, // False leaves the process running indefinitely.  On CircleCI/Github, add --watch=false to make the tests complete/finish.  See .circleci/config.yml
     restartOnFileChange: true
   });
 };
