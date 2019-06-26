@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 import { LogService } from '../log/log.service';
 import { switchMap } from 'rxjs/operators';
-import moment from 'moment';
+import * as moment from 'moment'
 
 
 @Component({
