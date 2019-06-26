@@ -104,4 +104,9 @@ export class LogComponent implements OnInit {
     this.log$.next(dates);
   }
 
+  public onDateRangeSelection(range: { from: Date, to: Date }) {
+    this.dates = {date1: range.from.getTime(), date2: range.to.getTime()};
+    this.log$.next(this.dates);
+  }
+
 }
