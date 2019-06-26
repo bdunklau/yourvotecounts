@@ -6,7 +6,7 @@ import { UserService } from '../../user/user.service';
 @Component({
   selector: 'app-search-user-by-phone',
   templateUrl: './search-user-by-phone.component.html',
-  styles: [`.form-control { width: 150px; }`]
+  styleUrls: ['./search-user-by-phone.component.css']
 })
 export class SearchUserByPhoneComponent implements OnInit {
 

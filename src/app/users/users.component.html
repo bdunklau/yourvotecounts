@@ -1,5 +1,5 @@
 <h1>Users</h1>
-
+<!--
 <table class="table table-striped">
   <thead>
   <tr>
@@ -18,3 +18,9 @@
     </tr>
   </tbody>
 </table>
+ -->
+
+<div class="row">
+  <div class="col"><app-search-user-by-name (enteredName)="onNameEntered($event)"></app-search-user-by-name></div>
+  <div class="col"><app-search-user-by-phone (enteredPhone)="onPhoneEntered($event)"></app-search-user-by-phone></div>
+</div>
