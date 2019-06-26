@@ -26,7 +26,7 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: false, // False leaves the process running indefinitely.  On CircleCI/Github, add --watch=false to make the tests complete/finish.  See .circleci/config.yml
+    singleRun: true, // true causes the process to end when the tests end. This setting is needed by CircleCI so the integration can actually complete.
     restartOnFileChange: true
   });
 };
