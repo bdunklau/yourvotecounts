@@ -3,6 +3,7 @@ import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { LogPage } from './log.po';
 import * as _ from 'lodash';
+import * as moment from 'moment'
 
 describe('Log page', () => {
   // let page: PublicPage;
@@ -36,6 +37,7 @@ describe('Log page', () => {
 
 
   it('should display correct list of users in dropdown', async () => {
+
     logPage.setupQueryByNameTest(testSupport);
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
@@ -123,7 +125,37 @@ describe('Log page', () => {
   })
 
 
+  it('should be able to convert back and forth between strings and dates', () => {
+    var str = "Friday, June 28, 2019";
+    var date = logPage.toDate(str, 'dddd, MMMM D, YYYY');
+    var str2 = logPage.toDateString(date, 'dddd, MMMM D, YYYY');
+    expect(str == str2).toBeTruthy(str+' should have been the same as '+str2);
+
+    var str3 = '06/28/2019';
+    var str4 = logPage.toLongDateFormat(str3);
+    expect(str4 == str).toBeTruthy(str4+' should have been the same as '+str);
+  })
+
+
+  it('should allow date range to be clicked', async () => {
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickLog();
+    var d1 = logPage.threeDaysBefore();
+    var d2 = logPage.threeDaysAfter();
+    logPage.pickFirstDate(d1);
+    browser.sleep(300);
+    logPage.pickSecondDate(d2);
+    browser.sleep(300);
+    var exp = d1+' to '+d2;
+    logPage.getDateRangeField().then(actualValue => {
+      expect(actualValue == exp).toBeTruthy('expected the date range field to be '+exp+' but it was actually '+actualValue);
+      page.clickLogout();
+    })
+  })
+
+
   it('should allow query by date', async () => {
+
     logPage.setupQueryByDateTest(testSupport);
 
     // Since we're just looking for instances of text on the page, we have to remember that
@@ -131,36 +163,40 @@ describe('Log page', () => {
     // is used as the text of the dropdown.
     var levels = [ {level: 'debug',
                     levels: [
-                      {level: 'debug', expected: 4},
-                      {level: 'info', expected: 3},
-                      {level: 'error', expected: 3},
+                      {level: 'debug', expected: 6},
+                      {level: 'info', expected: 5},
+                      {level: 'error', expected: 5},
                     ]},
 
                    {level: 'info',
                     levels: [
                       {level: 'debug', expected: 1},
-                      {level: 'info', expected: 4},
-                      {level: 'error', expected: 3},
+                      {level: 'info', expected: 6},
+                      {level: 'error', expected: 5},
                     ]},
 
                    {level: 'error',
                     levels: [
                       {level: 'debug', expected: 1},
                       {level: 'info', expected: 1},
-                      {level: 'error', expected: 4},
+                      {level: 'error', expected: 6},
                     ]}  ]
 
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
     _.forEach(logPage.dates, (date) => {
-      logPage.setDatePickerField(date);
+      logPage.pickFirstDate(date.from);
+      browser.sleep(300);
+      logPage.pickSecondDate(date.to);
+      browser.sleep(300);
       _.forEach(levels, (obj) => {
         var selectedLevel = obj.level;
         logPage.setLevel(selectedLevel);
         _.forEach(obj.levels, (logtype) => {
             logPage.getLogEntries(logtype.level).then(function(numbers){
+              browser.sleep(500);
               //console.log('In '+selectedLevel+' log, found '+numbers.length+' '+logtype.level+' elements')
-              expect(numbers.length == logtype.expected ).toBeTruthy('expected '+logtype.expected+' instances of "'+logtype.level+'" on '+selectedLevel+' log page but got '+numbers.length);
+              expect(numbers.length == logtype.expected ).toBeTruthy('For '+date.from+' to '+date.to+', expected '+logtype.expected+' instances of "'+logtype.level+'" on '+selectedLevel+' log page but got '+numbers.length);
             });
         })
       })
@@ -171,7 +207,6 @@ describe('Log page', () => {
     // <input> field.  Inspect it via Chrome and you'll see
     page.clickLogout();
 
-    // clean up
     _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
       testSupport.deleteLogs(event);
     })
@@ -179,6 +214,7 @@ describe('Log page', () => {
 
 
   it('should allow query by level', async () => {
+
     // db setup - have to log error, info and debug entries so we have something to test
     testSupport.createLogs();
 
@@ -226,7 +262,8 @@ describe('Log page', () => {
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "debug" on debug log page but got '+numbers.length);
     });
 
-    page.clickLogout()
+    page.clickLogout();
+
     testSupport.deleteLogs('test event');
   });
 
@@ -250,11 +287,6 @@ describe('Log page', () => {
     })
 
     page.clickLogout();
-
-    // clean up
-    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
-      testSupport.deleteLogs(event);
-    })
   })
 
 

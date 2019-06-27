@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { FirebaseUserModel } from '../user/user.model'
-import { Observable } from 'rxjs/Observable'
-import { UserService } from '../user/user.service'
+import { FirebaseUserModel } from '../user/user.model';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-users',
@@ -11,26 +9,22 @@ import { UserService } from '../user/user.service'
 })
 export class UsersComponent implements OnInit {
 
-  respbody: String;
-  headers: String[];
-  ref: AngularFirestoreCollection<FirebaseUserModel>;
-  list: Observable<FirebaseUserModel[]>;
+  user: FirebaseUserModel;
 
-  constructor(private afs: AngularFirestore,
-              public us: UserService) { }
+  constructor(public us: UserService) { }
 
   ngOnInit() {
-    console.log("this.afs = ", this.afs)
-    console.log("this.afs.collection = ", this.afs.collection)
-    this.ref = this.afs.collection('user', ref => ref.orderBy('date_ms'))
-    this.list = this.ref.valueChanges()
   }
 
-  deleteUser(uid: String) {
-    this.us.deleteUser(uid)
-    .subscribe(resp => {
-      console.log("resp: ", resp) // json formatted string
-    });
+  ngOnDestroy() {
+  }
+
+  onUserSelectedByName(user: FirebaseUserModel) {
+    this.user = user;
+  }
+
+  onUserSelectedByPhone(user: FirebaseUserModel) {
+    this.user = user;
   }
 
 }

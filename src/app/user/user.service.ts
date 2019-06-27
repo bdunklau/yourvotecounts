@@ -39,22 +39,22 @@ export class UserService {
     this.messageService.updateUser(this.user);
   }
 
-  searchByName(nameVal) {
+  searchByName(nameVal, limit) {
     if(!nameVal || nameVal === '') return [];
     return this.afs.collection('user', ref => ref
       .orderBy("displayName_lower")
       .startAt(nameVal.toLowerCase())
       .endAt(nameVal.toLowerCase()+"\uf8ff")
-      .limit(10))
+      .limit(limit))
       .valueChanges();
   }
 
-  searchByPhone(phoneVal) {
+  searchByPhone(phoneVal, limit) {
     return this.afs.collection('user', ref => ref
       .orderBy("phoneNumber")
       .startAt(phoneVal)
       .endAt(phoneVal+"\uf8ff")
-      .limit(10))
+      .limit(limit))
       .valueChanges();
   }
 

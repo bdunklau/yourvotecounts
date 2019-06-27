@@ -6,6 +6,8 @@ import { map } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 import { LogService } from '../log/log.service';
 import { switchMap } from 'rxjs/operators';
+import * as moment from 'moment';
+import { FirebaseUserModel } from '../user/user.model';
 
 
 @Component({
@@ -86,22 +88,42 @@ export class LogComponent implements OnInit {
     this.log$.next({level: level});
   }
 
-  onPhoneEntered(phoneVal: string) {
-    // console.log('onPhoneEntered: phoneVal = ', phoneVal);
-    this.phoneVal = phoneVal;
-    this.log$.next({phoneVal: phoneVal});
+  onUserSelectedByPhone(user: FirebaseUserModel) {
+    // console.log('onUserSelectedByPhone: phoneVal = ', phoneVal);
+    if(!user) {
+      delete this.phoneVal;
+    }
+    else {
+      this.phoneVal = user.phoneNumber;
+      this.log$.next({phoneVal: this.phoneVal});
+    }
   }
 
-  onNameEntered(nameVal: string) {
-    // console.log('onNameEntered: nameVal = ', nameVal);
-    this.nameVal = nameVal;
-    this.log$.next({nameVal: nameVal});
+  onUserSelectedByName(user: FirebaseUserModel) {
+    // console.log('onUserSelectedByName: nameVal = ', nameVal);
+    if(!user) {
+      delete this.nameVal;
+    }
+    else {
+      this.nameVal = user.displayName;
+      this.log$.next({nameVal: this.nameVal});
+    }
   }
 
   onDateEntered(dates) {
     console.log('onDateEntered: dates = ', dates);
     this.dates = dates;
     this.log$.next(dates);
+  }
+
+  public onDateRangeSelection(range: { from: Date, to: Date }) {
+    // Add 1 day so that the results will include the 'to' date, since times are midnight
+    console.log('onDateRangeSelection: range = ', range);
+    if(range && range.to && range.from) {
+      var plus1Day = moment(range.to).add(1, 'days').toDate()
+      this.dates = {date1: range.from.getTime(), date2: plus1Day.getTime()};
+      this.log$.next(this.dates);
+    }
   }
 
 }

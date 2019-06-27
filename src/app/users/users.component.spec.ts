@@ -7,6 +7,10 @@ import { BehaviorSubject } from 'rxjs';
 import { of } from 'rxjs/observable/of';
 import { UserService } from '../user/user.service'
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
+import { SearchUserByNameComponent } from '../search/search-user-by-name/search-user-by-name.component';
+import { SearchUserByPhoneComponent } from '../search/search-user-by-phone/search-user-by-phone.component';
+import {FormsModule} from '@angular/forms';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 
 describe('UsersComponent', () => {
@@ -27,8 +31,8 @@ describe('UsersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      // imports: [CommonServiceModuleStub],
-      declarations: [ UsersComponent ],
+      imports: [/*CommonServiceModuleStub,*/ FormsModule, NgbModule],
+      declarations: [ UsersComponent, SearchUserByNameComponent, SearchUserByPhoneComponent ],
       providers: [ UserService,
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },

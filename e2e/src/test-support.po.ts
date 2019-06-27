@@ -77,6 +77,7 @@ export class TestSupport {
       myAccountPage.enterName(obj.displayName);
       browser.sleep(300);
       myAccountPage.clickSubmit();
+      browser.sleep(500); // this sucks - fails without this delay
       page.clickLogout();
     })
   }

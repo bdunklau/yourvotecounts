@@ -3,6 +3,7 @@
          name="logName"
          placeholder="Name"
          class="form-control"
+         (blur)="checkEmpty()"
          (selectItem)="itemSelected($event)"
          [(ngModel)]="nameVal"
          [ngbTypeahead]="searchName"
