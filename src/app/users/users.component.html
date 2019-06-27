@@ -24,3 +24,13 @@
   <div class="col"><app-search-user-by-name (selectedUser)="onUserSelectedByName($event)"></app-search-user-by-name></div>
   <div class="col"><app-search-user-by-phone (selectedUser)="onUserSelectedByPhone($event)"></app-search-user-by-phone></div>
 </div>
+
+{{user | json}}
+
+
+<div [hidden]="!user">
+<div class="row">
+  <div class="col">Name:</div>
+  <div class="col">{{displayName}}</div>
+</div>
+</div>

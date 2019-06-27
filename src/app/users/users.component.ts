@@ -20,10 +20,12 @@ export class UsersComponent implements OnInit {
   }
 
   onUserSelectedByName(user: FirebaseUserModel) {
+    if(!user) return;
     this.user = user;
   }
 
   onUserSelectedByPhone(user: FirebaseUserModel) {
+    if(!user) return;
     this.user = user;
   }
 

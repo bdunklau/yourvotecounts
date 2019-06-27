@@ -57,8 +57,8 @@ export class SearchUserByNameComponent implements OnInit {
     this.selectedUser.emit($event.item);
   }
 
-  checkEmpty() {
-    console.log('checkEmpty');
+  checkEmpty($event) {
+    console.log('checkEmpty: $event = ', $event);
     this.selectedUser.emit(null);
   }
 
