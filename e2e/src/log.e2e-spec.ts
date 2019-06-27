@@ -5,7 +5,7 @@ import { LogPage } from './log.po';
 import * as _ from 'lodash';
 import * as moment from 'moment'
 
-describe('Log page', () => {
+fdescribe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -36,7 +36,7 @@ describe('Log page', () => {
   })
 
 
-  it('should display correct list of users in dropdown', async () => {
+  fit('should display correct list of users in dropdown', async () => {
 
     logPage.setupQueryByNameTest(testSupport);
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
