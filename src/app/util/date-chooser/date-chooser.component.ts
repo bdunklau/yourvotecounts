@@ -11,7 +11,6 @@ import * as _ from 'lodash';
 })
 export class DateChooserComponent {
 
-    model;
     @ViewChild('dp') private datePicker: NgbInputDatepicker;
     @Input() from: Date;
     @Input() to: Date;
@@ -79,25 +78,6 @@ export class DateChooserComponent {
         + ` to `
         + `${moment(this.to).format('MM/DD/YYYY')}`
         : `${fromFormatted}`;
-
-    }
-
-    // fires when you manually type in a date
-    dateChanged($event) {
-      if($event.indexOf(' to ') == -1) {
-        this.from = moment($event, 'MM/DD/YYYY').toDate();
-        console.log('date-chooser.comp.ts:  this.from = ', this.from);
-      }
-      else {
-        this.to = moment($event.substring($event.indexOf(' to ')+4), 'MM/DD/YYYY').toDate();
-        console.log('date-chooser.comp.ts:  this.to = ', this.to);
-        this.dateRangeSelection.emit({from: this.from, to: this.to});
-      }
-      // var dts = _.split($event, ' to ');
-      // var d1 = moment(dts[0], 'M/D/YYYY').toDate();
-      // var d2 = moment(dts[1], 'M/D/YYYY').add(1, 'days').toDate();
-      // console.log('emitDate: {from: d1, to: d2} = ', {from: d1, to: d2});
-      // this.dateRangeSelection.emit({from: d1, to: d2});
     }
 
     onDateSelection(date: NgbDateStruct) {
