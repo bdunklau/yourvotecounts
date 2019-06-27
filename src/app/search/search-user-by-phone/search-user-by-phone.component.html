@@ -3,6 +3,7 @@
          name="logPhoneNumber"
          placeholder="Phone"
          class="form-control"
+         (blur)="checkEmpty()"
          (selectItem)="itemSelected($event)"
          [(ngModel)]="phoneVal"
          [ngbTypeahead]="search"
