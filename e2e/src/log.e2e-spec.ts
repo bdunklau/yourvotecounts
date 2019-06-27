@@ -5,7 +5,7 @@ import { LogPage } from './log.po';
 import * as _ from 'lodash';
 import * as moment from 'moment'
 
-fdescribe('Log page', () => {
+describe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -153,7 +153,7 @@ fdescribe('Log page', () => {
   })
 
 
-  fit('should allow query by date', async () => {
+  it('should allow query by date', async () => {
 
     logPage.setupQueryByDateTest(testSupport);
 
