@@ -206,9 +206,9 @@ fdescribe('Log page', () => {
     // <input> field.  Inspect it via Chrome and you'll see
     page.clickLogout();
 
-    // _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
-    //   testSupport.deleteLogs(event);
-    // })
+    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
+      testSupport.deleteLogs(event);
+    })
   })
 
 
