@@ -207,9 +207,9 @@ fdescribe('Log page', () => {
     page.clickLogout();
 
     // put the clean up at the top
-    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
-      testSupport.deleteLogs(event);
-    })
+    // _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
+    //   testSupport.deleteLogs(event);
+    // })
   })
 
 
