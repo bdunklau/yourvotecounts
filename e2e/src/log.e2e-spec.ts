@@ -37,10 +37,6 @@ describe('Log page', () => {
 
 
   it('should display correct list of users in dropdown', async () => {
-    // clean up
-    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
-      testSupport.deleteLogs(event);
-    })
 
     logPage.setupQueryByNameTest(testSupport);
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
@@ -121,6 +117,11 @@ describe('Log page', () => {
     func(run3, 3);
 
     page.clickLogout();
+
+    // clean up
+    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
+      testSupport.deleteLogs(event);
+    })
   })
 
 
@@ -213,7 +214,6 @@ describe('Log page', () => {
 
 
   it('should allow query by level', async () => {
-    testSupport.deleteLogs('test event');
 
     // db setup - have to log error, info and debug entries so we have something to test
     testSupport.createLogs();
@@ -262,7 +262,9 @@ describe('Log page', () => {
       expect(numbers.length >= 2 ).toBeTruthy('expected at least 2 instances of "debug" on debug log page but got '+numbers.length);
     });
 
-    page.clickLogout()
+    page.clickLogout();
+
+    testSupport.deleteLogs('test event');
   });
 
 
