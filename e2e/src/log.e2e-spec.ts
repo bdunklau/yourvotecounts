@@ -153,7 +153,7 @@ fdescribe('Log page', () => {
   })
 
 
-  it('should allow query by date', async () => {
+  fit('should allow query by date', async () => {
 
     logPage.setupQueryByDateTest(testSupport);
 
