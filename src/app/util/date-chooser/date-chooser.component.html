@@ -2,7 +2,7 @@
 <form class="form-inline">
   <div class="form-group">
     <div class="input-group" id="dateRangePicker">
-      <input class="form-control" id="dateRange" [placeholder]="placeholder" name="dp" [value]="formattedDateRange" ngbDatepicker
+      <input class="form-control datepicker" id="dateRange" [placeholder]="placeholder" name="dp" [value]="formattedDateRange" ngbDatepicker
         #dp="ngbDatepicker" (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" [autoClose]="false"
         [firstDayOfWeek]="7" (click)="dp.toggle(); isOpen = !isOpen" readonly />
         <!-- 7 = Sunday -->
