@@ -118,9 +118,12 @@ export class LogComponent implements OnInit {
 
   public onDateRangeSelection(range: { from: Date, to: Date }) {
     // Add 1 day so that the results will include the 'to' date, since times are midnight
-    var plus1Day = moment(range.to).add(1, 'days').toDate()
-    this.dates = {date1: range.from.getTime(), date2: plus1Day.getTime()};
-    this.log$.next(this.dates);
+    console.log('onDateRangeSelection: range = ', range);
+    if(range && range.to && range.from) {
+      var plus1Day = moment(range.to).add(1, 'days').toDate()
+      this.dates = {date1: range.from.getTime(), date2: plus1Day.getTime()};
+      this.log$.next(this.dates);
+    }
   }
 
 }

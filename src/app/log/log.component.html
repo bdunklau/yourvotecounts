@@ -3,12 +3,10 @@
 <table class="table table-striped">
   <thead>
   <tr>
-    <!-- <th scope="col"><app-date-chooser (dateSelected)="onDateEntered($event)"></app-date-chooser></th> -->
     <th scope="col"><app-date-chooser [from]="defaultFrom" [to]="defaultTo" (dateRangeSelection)="onDateRangeSelection($event)"></app-date-chooser></th>
     <th scope="col"><app-search-log-by-level (level)="onLevelChosen($event)"></app-search-log-by-level></th>
     <th scope="col"><app-search-user-by-phone (selectedUser)="onUserSelectedByPhone($event)"></app-search-user-by-phone></th>
     <th scope="col"><app-search-user-by-name (selectedUser)="onUserSelectedByName($event)"></app-search-user-by-name></th>
-    <!-- <th scope="col">User ID</th> -->
   </tr>
   </thead>
   <tbody>

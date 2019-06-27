@@ -4,7 +4,7 @@ import { TestSupport } from './test-support.po';
 import { LogPage } from './log.po';
 import * as _ from 'lodash';
 
-describe('Log page', () => {
+fdescribe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -123,7 +123,7 @@ describe('Log page', () => {
   })
 
 
-  it('should allow query by date', async () => {
+  fit('should allow query by date', async () => {
     logPage.setupQueryByDateTest(testSupport);
 
     // Since we're just looking for instances of text on the page, we have to remember that
@@ -159,8 +159,9 @@ describe('Log page', () => {
         logPage.setLevel(selectedLevel);
         _.forEach(obj.levels, (logtype) => {
             logPage.getLogEntries(logtype.level).then(function(numbers){
+              browser.sleep(3000);
               //console.log('In '+selectedLevel+' log, found '+numbers.length+' '+logtype.level+' elements')
-              expect(numbers.length == logtype.expected ).toBeTruthy('expected '+logtype.expected+' instances of "'+logtype.level+'" on '+selectedLevel+' log page but got '+numbers.length);
+              expect(numbers.length == logtype.expected ).toBeTruthy('For '+date+', expected '+logtype.expected+' instances of "'+logtype.level+'" on '+selectedLevel+' log page but got '+numbers.length);
             });
         })
       })
@@ -173,7 +174,7 @@ describe('Log page', () => {
 
     // clean up
     _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
-      testSupport.deleteLogs(event);
+      // testSupport.deleteLogs(event);
     })
   })
 
