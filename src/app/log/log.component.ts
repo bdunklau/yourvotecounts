@@ -6,7 +6,8 @@ import { map } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 import { LogService } from '../log/log.service';
 import { switchMap } from 'rxjs/operators';
-import * as moment from 'moment'
+import * as moment from 'moment';
+import { FirebaseUserModel } from '../user/user.model';
 
 
 @Component({
@@ -87,16 +88,26 @@ export class LogComponent implements OnInit {
     this.log$.next({level: level});
   }
 
-  onPhoneEntered(phoneVal: string) {
-    // console.log('onPhoneEntered: phoneVal = ', phoneVal);
-    this.phoneVal = phoneVal;
-    this.log$.next({phoneVal: phoneVal});
+  onUserSelectedByPhone(user: FirebaseUserModel) {
+    // console.log('onUserSelectedByPhone: phoneVal = ', phoneVal);
+    if(!user) {
+      delete this.phoneVal;
+    }
+    else {
+      this.phoneVal = user.phoneNumber;
+      this.log$.next({phoneVal: this.phoneVal});
+    }
   }
 
-  onNameEntered(nameVal: string) {
-    // console.log('onNameEntered: nameVal = ', nameVal);
-    this.nameVal = nameVal;
-    this.log$.next({nameVal: nameVal});
+  onUserSelectedByName(user: FirebaseUserModel) {
+    // console.log('onUserSelectedByName: nameVal = ', nameVal);
+    if(!user) {
+      delete this.nameVal;
+    }
+    else {
+      this.nameVal = user.displayName;
+      this.log$.next({nameVal: this.nameVal});
+    }
   }
 
   onDateEntered(dates) {

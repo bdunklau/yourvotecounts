@@ -21,6 +21,6 @@
  -->
 
 <div class="row">
-  <div class="col"><app-search-user-by-name (enteredName)="onNameEntered($event)"></app-search-user-by-name></div>
-  <div class="col"><app-search-user-by-phone (enteredPhone)="onPhoneEntered($event)"></app-search-user-by-phone></div>
+  <div class="col"><app-search-user-by-name (selectedUser)="onUserSelectedByName($event)"></app-search-user-by-name></div>
+  <div class="col"><app-search-user-by-phone (selectedUser)="onUserSelectedByPhone($event)"></app-search-user-by-phone></div>
 </div>

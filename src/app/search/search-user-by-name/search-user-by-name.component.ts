@@ -2,6 +2,7 @@ import { Component, OnInit, EventEmitter/*, Input*/, Output } from '@angular/cor
 import { Observable, /*of, Subject, Subscription*/ } from 'rxjs';
 import { UserService } from '../../user/user.service';
 import { debounceTime, distinctUntilChanged, switchMap, catchError  } from 'rxjs/operators';
+import { FirebaseUserModel } from '../../user/user.model';
 
 @Component({
   selector: 'app-search-user-by-name',
@@ -10,7 +11,7 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError  } from 'rxjs
 })
 export class SearchUserByNameComponent implements OnInit {
 
-  @Output() enteredName = new EventEmitter<string>();
+  @Output() selectedUser = new EventEmitter<FirebaseUserModel>();
   nameVal: string;
 
   constructor(private userService: UserService) { }
@@ -25,7 +26,7 @@ export class SearchUserByNameComponent implements OnInit {
           debounceTime(200),
           distinctUntilChanged(),
           switchMap( searchText => {
-            return searchText.length < 2 ? [] : this.userService.searchByName(searchText);
+            return searchText.length < 1 ? [] : this.userService.searchByName(searchText, 10);
           } )
           // catchError(new ErrorInfo().parseObservableResponseError)
       );
@@ -52,7 +53,13 @@ export class SearchUserByNameComponent implements OnInit {
   // NOTE this:  (selectItem)="itemSelected($event)"
   // in search-user-by-name.component.html
   itemSelected($event) {
-    this.enteredName.emit($event.item.displayName);
+    console.log('itemSelected: ', $event.item)
+    this.selectedUser.emit($event.item);
+  }
+
+  checkEmpty() {
+    console.log('checkEmpty');
+    this.selectedUser.emit(null);
   }
 
 }
