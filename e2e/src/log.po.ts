@@ -23,6 +23,10 @@ export class LogPage extends BasePage {
     return this.getElement(by.tagName('ngb-datepicker'));
   }
 
+  getDateRangeField() {
+    return this.getElement(by.id('dateRange')).getAttribute('value');
+  }
+
   getLevel() {
     return this.getElement(by.id('levelDropdown')).getText();
   }
@@ -42,25 +46,26 @@ export class LogPage extends BasePage {
     return this.getElements(by.css('.log_displayName'));
   }
 
+  pickFirstDate(mmddyyyy: string) {
+    var dt = this.toLongDateFormat(mmddyyyy);
+    var aria1 = '[aria-label="'+dt+'"]';
+    this.getElement(by.id('dateRange')).click();
+    browser.sleep(3000);
+    console.log('looking for:  ', aria1)
+    this.getElement(by.css(aria1)).click();
+  }
+
+  pickSecondDate(mmddyyyy: string) {
+    var dt = this.toLongDateFormat(mmddyyyy);
+    var aria1 = '[aria-label="'+dt+'"]';
+    this.getElement(by.css(aria1)).click();
+  }
+
   queryForUser(name) {
     var fld = this.getElement(by.id('logName'));
     fld.clear();
     fld.sendKeys(name);
     this.getElement(by.tagName('ngb-highlight')).click();
-  }
-
-  // the <input> holding the date
-  // You can set the value but you can't *get* the value of the datepicker <input> field.  It's not your typical
-  // <input> field.  Inspect it via Chrome and you'll see
-  setDatePickerField(obj) {
-    var fld = this.getElement(by.css('.form-control.datepicker'));
-    fld.clear();
-    console.log('obj.from = ', obj.from);
-    fld.sendKeys(obj.from);
-    browser.sleep(5000);
-    fld.sendKeys(obj.to);
-    console.log('obj.to = ', obj.to);
-    browser.sleep(5000);
   }
 
   setLevel(level) {
@@ -86,8 +91,62 @@ export class LogPage extends BasePage {
   day3_ms = this.day3.getTime();
   day3_mmddyyyy = moment(this.day3_ms).format(this.fmt);
 
-  dates = [{from: this.tomorrow_mmddyyyy, to: ' to '+this.dayafter_mmddyyyy},
-           {from: this.dayafter_mmddyyyy, to: ' to '+this.day3_mmddyyyy}];
+  // dates = [{from: this.tomorrow_mmddyyyy, to: ' to '+this.dayafter_mmddyyyy},
+  //          {from: this.dayafter_mmddyyyy, to: ' to '+this.day3_mmddyyyy}];
+
+  dates = [{from: this.tomorrow_mmddyyyy, to: this.dayafter_mmddyyyy},
+           {from: this.dayafter_mmddyyyy, to: this.day3_mmddyyyy}];
+
+
+
+  debug_user0_tomorrow = { level: 'debug',
+    event: 'dbg event',
+    uid: this.names[0]['uid'],
+    displayName: this.names[0]['displayName'],
+    phoneNumber: this.names[0]['phoneNumber'],
+    date_ms: this.tomorrow_ms
+  }
+
+  info_user0_tomorrow = { level: 'info',
+    event: 'nfo event',
+    uid: this.names[0]['uid'],
+    displayName: this.names[0]['displayName'],
+    phoneNumber: this.names[0]['phoneNumber'],
+    date_ms: this.tomorrow_ms
+  }
+
+  error_user0_tomorrow = { level: 'error',
+    event: 'err event',
+    uid: this.names[0]['uid'],
+    displayName: this.names[0]['displayName'],
+    phoneNumber: this.names[0]['phoneNumber'],
+    date_ms: this.tomorrow_ms
+  }
+
+  debug_user1_tomorrow = { level: 'debug',
+    event: 'dbg event',
+    uid: this.names[1]['uid'],
+    displayName: this.names[1]['displayName'],
+    phoneNumber: this.names[1]['phoneNumber'],
+    date_ms: this.tomorrow_ms
+  }
+
+  info_user1_tomorrow = { level: 'info',
+    event: 'nfo event',
+    uid: this.names[1]['uid'],
+    displayName: this.names[1]['displayName'],
+    phoneNumber: this.names[1]['phoneNumber'],
+    date_ms: this.tomorrow_ms
+  }
+
+  error_user1_tomorrow = { level: 'error',
+    event: 'err event',
+    uid: this.names[1]['uid'],
+    displayName: this.names[1]['displayName'],
+    phoneNumber: this.names[1]['phoneNumber'],
+    date_ms: this.tomorrow_ms
+  }
+
 
   debug_user0_dayafter = { level: 'debug',
     event: 'dbg event',
@@ -190,7 +249,16 @@ export class LogPage extends BasePage {
     testSupport.setNames(this.names);
 
     // Create a debug, info and error log entry for 2 users on 2 days
-    var logs = [ this.debug_user0_dayafter,
+    var logs = [
+                this.debug_user0_tomorrow,
+                this.info_user0_tomorrow,
+                this.error_user0_tomorrow,
+
+                this.debug_user1_tomorrow,
+                this.info_user1_tomorrow,
+                this.error_user1_tomorrow,
+
+                this.debug_user0_dayafter,
                 this.info_user0_dayafter,
                 this.error_user0_dayafter,
 
@@ -230,5 +298,31 @@ export class LogPage extends BasePage {
     })
 
   } // setupQueryByNameTest
+
+
+  threeDaysBefore() {
+    var date = moment().add(-3, 'days').toDate();
+    return this.toDateString(date, 'MM/DD/YYYY');
+  }
+
+
+  threeDaysAfter() {
+    var date = moment().add(3, 'days').toDate();
+    return this.toDateString(date, 'MM/DD/YYYY');
+  }
+
+
+  toDate(str, format) {
+    return moment(str, format).toDate();
+  }
+
+  toLongDateFormat(str) {
+    var date = this.toDate(str, 'MM/DD/YYYY');
+    return this.toDateString(date, 'dddd, MMMM D, YYYY');
+  }
+
+  toDateString(date, format) {
+    return moment(date).format(format);
+  }
 
 }
