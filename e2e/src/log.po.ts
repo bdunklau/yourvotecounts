@@ -73,7 +73,7 @@ export class LogPage extends BasePage {
     this.getElement(by.css(selector)).click();
   }
 
-  queryForUser(name) {
+  queryForUserByName(name) {
     var fld = this.getElement(by.id('nameSearchField'));
     fld.clear();
     fld.sendKeys(name);

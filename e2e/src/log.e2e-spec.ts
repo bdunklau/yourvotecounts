@@ -273,7 +273,7 @@ describe('Log page', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
     var theName = testSupport.names[0].displayName
-    logPage.queryForUser(theName);
+    logPage.queryForUserByName(theName);
     logPage.getNamesInLog().then(function(elements) {
       var promises = [];
       _.forEach(elements, element => {
