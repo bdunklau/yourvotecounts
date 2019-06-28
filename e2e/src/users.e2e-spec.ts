@@ -43,17 +43,36 @@ describe('Users page', () => {
     usersPage.queryByPhone(testSupport.names[0].phoneNumber);
     var actualName = await usersPage.getNameField();
     expect(actualName === testSupport.names[0].displayName).toBeTruthy('expected the Users page to display the name "'+testSupport.names[0].displayName+'" but actually got: '+actualName);
+    var actualPhone = await usersPage.getPhoneLabel();
+    expect((actualPhone === testSupport.names[0].phoneNumber)
+          || (actualPhone === '+1'+testSupport.names[0].phoneNumber))
+      .toBeTruthy('expected the Users page to display the phone number "'+testSupport.names[0].phoneNumber+'" but actually got: '+actualPhone);
     page.clickLogout();
   });
 
 
-  it('should be to able to query for users by phone', () => {
-    expect(false).toBeTruthy();
-  });
+  it('should be able to edit name', async () => {
+    testSupport.setNames(testSupport.names);
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickUsers();
+    usersPage.queryByName(testSupport.names[0].displayName);
+    usersPage.setName('Billy Bob');
 
 
-  it('should be to able to update a user\' name', () => {
-    expect(false).toBeTruthy();
+
+    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    page.clickHome();
+    page.clickMyAccount();
+    myAccountPage.clickEdit();
+    myAccountPage.enterName('Bob');
+    myAccountPage.clickSubmit();
+    expect(myAccountPage.getNameLabel().isDisplayed()).toBeTruthy();
+    var name = await myAccountPage.getNameLabel().getText();
+    expect(name == 'Bob').toBeTruthy();
+    myAccountPage.clickEdit();
+    myAccountPage.enterName('Joe');
+    myAccountPage.clickSubmit();
+    page.clickLogout();
   });
 
 
