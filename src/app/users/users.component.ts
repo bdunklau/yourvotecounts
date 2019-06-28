@@ -9,7 +9,9 @@ import { UserService } from '../user/user.service';
 })
 export class UsersComponent implements OnInit {
 
-  user: FirebaseUserModel;
+  user = new FirebaseUserModel();
+  seconds = 0;
+  roles;
 
   constructor(public us: UserService) { }
 
@@ -20,13 +22,18 @@ export class UsersComponent implements OnInit {
   }
 
   onUserSelectedByName(user: FirebaseUserModel) {
-    if(!user) return;
-    this.user = user;
+    this.set(user);
   }
 
   onUserSelectedByPhone(user: FirebaseUserModel) {
+    this.set(user);
+  }
+
+  private set(user: FirebaseUserModel) {
     if(!user) return;
     this.user = user;
+    this.seconds = user.date_ms;
+    this.roles = user.roles;
   }
 
 }
