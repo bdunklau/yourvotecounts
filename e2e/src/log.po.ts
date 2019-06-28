@@ -49,6 +49,11 @@ export class LogPage extends BasePage {
     return this.getElements(by.css('.log_displayName'));
   }
 
+  getPhonesInLog(): ElementArrayFinder {
+    browser.sleep(300);
+    return this.getElements(by.css('.log_phoneNumber'));
+  }
+
   pickFirstDate(mmddyyyy: string) {
     var dt = this.toLongDateFormat(mmddyyyy);
     // Have to add class="ngb-dp-day" to make sure we select the VISIBLE date element.
@@ -75,6 +80,13 @@ export class LogPage extends BasePage {
 
   queryForUserByName(name) {
     var fld = this.getElement(by.id('nameSearchField'));
+    fld.clear();
+    fld.sendKeys(name);
+    this.getElement(by.tagName('ngb-highlight')).click();
+  }
+
+  queryForUserByPhone(name) {
+    var fld = this.getElement(by.id('phoneSearchField'));
     fld.clear();
     fld.sendKeys(name);
     this.getElement(by.tagName('ngb-highlight')).click();

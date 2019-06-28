@@ -268,7 +268,7 @@ describe('Log page', () => {
   });
 
 
-  it('should allow query by user', async () => {
+  it('should allow query by user name', async () => {
     logPage.setupQueryByNameTest();
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
@@ -282,6 +282,28 @@ describe('Log page', () => {
       Promise.all(promises).then(function(names) {
         _.forEach(names, (name) => {
           expect(theName === name).toBeTruthy('All names in the log should have been '+theName+' but found '+name);
+        })
+      })
+    })
+
+    page.clickLogout();
+  })
+
+
+  it('should allow query by user phone', async () => {
+    logPage.setupQueryByNameTest();
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickLog();
+    var phoneNumber = testSupport.names[0].phoneNumber
+    logPage.queryForUserByPhone(phoneNumber);
+    logPage.getPhonesInLog().then(function(elements) {
+      var promises = [];
+      _.forEach(elements, element => {
+        promises.push(element.getText());
+      })
+      Promise.all(promises).then(function(phones) {
+        _.forEach(phones, (phone) => {
+          expect((phoneNumber === phone) || ('+1'+phoneNumber === phone)).toBeTruthy('All phone numbers in the log should have been '+phoneNumber+' but found '+phone);
         })
       })
     })
