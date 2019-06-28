@@ -51,17 +51,26 @@ export class LogPage extends BasePage {
 
   pickFirstDate(mmddyyyy: string) {
     var dt = this.toLongDateFormat(mmddyyyy);
-    var aria1 = '[aria-label="'+dt+'"]';
+    // Have to add class="ngb-dp-day" to make sure we select the VISIBLE date element.
+    // Some date strings can appear as aria-labels twice on a page.  The first instance will be a hidden element.
+    // It's hidden when a month doesn't end on Sat.  The rest of the week are hidden elements because they don't
+    // belong to the current month.  Example July 1-6, 2019.  Those days are hidden from June calendar but the
+    // elements are still on the page because the calendar can be configured to display them.
+    var selector = '[class="ngb-dp-day"][aria-label="'+dt+'"]';
     this.getElement(by.id('dateRange')).click();
-    browser.sleep(3000);
-    console.log('looking for:  ', aria1)
-    this.getElement(by.css(aria1)).click();
+    browser.sleep(300);
+    this.getElement(by.css(selector)).click();
   }
 
   pickSecondDate(mmddyyyy: string) {
     var dt = this.toLongDateFormat(mmddyyyy);
-    var aria1 = '[aria-label="'+dt+'"]';
-    this.getElement(by.css(aria1)).click();
+    // Have to add class="ngb-dp-day" to make sure we select the VISIBLE date element.
+    // Some date strings can appear as aria-labels twice on a page.  The first instance will be a hidden element.
+    // It's hidden when a month doesn't end on Sat.  The rest of the week are hidden elements because they don't
+    // belong to the current month.  Example July 1-6, 2019.  Those days are hidden from June calendar but the
+    // elements are still on the page because the calendar can be configured to display them.
+    var selector = '[class="ngb-dp-day"][aria-label="'+dt+'"]';
+    this.getElement(by.css(selector)).click();
   }
 
   queryForUser(name) {
