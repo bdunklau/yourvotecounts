@@ -3,7 +3,7 @@ import { MainPage } from './main.po';
 import { UsersPage } from './users.po';
 import { browser, logging, /*, element, by*/ } from 'protractor';
 
-fdescribe('Users page', () => {
+describe('Users page', () => {
   let testSupport: TestSupport;
   let page: MainPage;
   let usersPage: UsersPage;
@@ -25,11 +25,22 @@ fdescribe('Users page', () => {
   });
 
 
-  fit('should be to able to query for users by name', async () => {
+  it('should be to able to query for users by name', async () => {
     testSupport.setNames(testSupport.names);
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickUsers();
-    usersPage.queryForUser(testSupport.names[0].displayName);
+    usersPage.queryByName(testSupport.names[0].displayName);
+    var actualName = await usersPage.getNameField();
+    expect(actualName === testSupport.names[0].displayName).toBeTruthy('expected the Users page to display the name "'+testSupport.names[0].displayName+'" but actually got: '+actualName);
+    page.clickLogout();
+  });
+
+
+  it('should be to able to query for users by phone', async () => {
+    testSupport.setNames(testSupport.names);
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickUsers();
+    usersPage.queryByPhone(testSupport.names[0].phoneNumber);
     var actualName = await usersPage.getNameField();
     expect(actualName === testSupport.names[0].displayName).toBeTruthy('expected the Users page to display the name "'+testSupport.names[0].displayName+'" but actually got: '+actualName);
     page.clickLogout();

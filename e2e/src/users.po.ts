@@ -23,8 +23,15 @@ export class UsersPage extends BasePage {
     return this.getElement(by.id('phoneSearchField'));
   }
 
-  queryForUser(name) {
+  queryByName(name) {
     var fld = this.getElement(by.id('nameSearchField'));
+    fld.clear();
+    fld.sendKeys(name);
+    this.getElement(by.tagName('ngb-highlight')).click();
+  }
+
+  queryByPhone(name) {
+    var fld = this.getElement(by.id('phoneSearchField'));
     fld.clear();
     fld.sendKeys(name);
     this.getElement(by.tagName('ngb-highlight')).click();
