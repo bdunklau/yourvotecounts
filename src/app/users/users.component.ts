@@ -12,6 +12,7 @@ export class UsersComponent implements OnInit {
   user = new FirebaseUserModel();
   seconds = 0;
   roles;
+  displayNameValue;
 
   constructor(public us: UserService) { }
 
@@ -34,6 +35,7 @@ export class UsersComponent implements OnInit {
     this.user = user;
     this.seconds = user.date_ms;
     this.roles = user.roles;
+    this.displayNameValue = user.displayName;
   }
 
 }

@@ -8,13 +8,16 @@ import { TestSupport } from './test-support.po';
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class LogPage extends BasePage {
 
+  constructor(private testSupport: TestSupport) {
+    super();
+  }
 
   clickCalendarIcon() {
     this.getElement(by.css('.btn.btn-outline-secondary.calendar')).click();
   }
 
   enterPartialName(name, length) {
-    var fld = this.getElement(by.id('logName'));
+    var fld = this.getElement(by.id('nameSearchField'));
     fld.clear();
     fld.sendKeys(name.substring(0, length));
   }
@@ -62,7 +65,7 @@ export class LogPage extends BasePage {
   }
 
   queryForUser(name) {
-    var fld = this.getElement(by.id('logName'));
+    var fld = this.getElement(by.id('nameSearchField'));
     fld.clear();
     fld.sendKeys(name);
     this.getElement(by.tagName('ngb-highlight')).click();
@@ -73,180 +76,156 @@ export class LogPage extends BasePage {
     this.getElement(by.id(level+'Level')).click();
   }
 
-  names = [
-    {displayName: 'Bre222nt', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2, uid: '1111111111'},
-    {displayName: 'Bre444nt', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER, uid: '222222222'},
-  ]
-
-  fmt = 'MM/DD/YYYY';
-  tomorrow = moment(new Date().getTime()).add(1, 'days').toDate();
-  tomorrow_ms = this.tomorrow.getTime();
-  tomorrow_mmddyyyy = moment(this.tomorrow_ms).format(this.fmt);
-
-  dayafter = moment(new Date().getTime()).add(2, 'days').toDate();
-  dayafter_ms = this.dayafter.getTime();
-  dayafter_mmddyyyy = moment(this.dayafter_ms).format(this.fmt);
-
-  day3 = moment(new Date().getTime()).add(3, 'days').toDate();
-  day3_ms = this.day3.getTime();
-  day3_mmddyyyy = moment(this.day3_ms).format(this.fmt);
-
-  // dates = [{from: this.tomorrow_mmddyyyy, to: ' to '+this.dayafter_mmddyyyy},
-  //          {from: this.dayafter_mmddyyyy, to: ' to '+this.day3_mmddyyyy}];
-
-  dates = [{from: this.tomorrow_mmddyyyy, to: this.dayafter_mmddyyyy},
-           {from: this.dayafter_mmddyyyy, to: this.day3_mmddyyyy}];
-
 
 
   debug_user0_tomorrow = { level: 'debug',
     event: 'dbg event',
-    uid: this.names[0]['uid'],
-    displayName: this.names[0]['displayName'],
-    phoneNumber: this.names[0]['phoneNumber'],
-    date_ms: this.tomorrow_ms
+    uid: this.testSupport.names[0]['uid'],
+    displayName: this.testSupport.names[0]['displayName'],
+    phoneNumber: this.testSupport.names[0]['phoneNumber'],
+    date_ms: this.testSupport.tomorrow_ms
   }
 
   info_user0_tomorrow = { level: 'info',
     event: 'nfo event',
-    uid: this.names[0]['uid'],
-    displayName: this.names[0]['displayName'],
-    phoneNumber: this.names[0]['phoneNumber'],
-    date_ms: this.tomorrow_ms
+    uid: this.testSupport.names[0]['uid'],
+    displayName: this.testSupport.names[0]['displayName'],
+    phoneNumber: this.testSupport.names[0]['phoneNumber'],
+    date_ms: this.testSupport.tomorrow_ms
   }
 
   error_user0_tomorrow = { level: 'error',
     event: 'err event',
-    uid: this.names[0]['uid'],
-    displayName: this.names[0]['displayName'],
-    phoneNumber: this.names[0]['phoneNumber'],
-    date_ms: this.tomorrow_ms
+    uid: this.testSupport.names[0]['uid'],
+    displayName: this.testSupport.names[0]['displayName'],
+    phoneNumber: this.testSupport.names[0]['phoneNumber'],
+    date_ms: this.testSupport.tomorrow_ms
   }
 
   debug_user1_tomorrow = { level: 'debug',
     event: 'dbg event',
-    uid: this.names[1]['uid'],
-    displayName: this.names[1]['displayName'],
-    phoneNumber: this.names[1]['phoneNumber'],
-    date_ms: this.tomorrow_ms
+    uid: this.testSupport.names[1]['uid'],
+    displayName: this.testSupport.names[1]['displayName'],
+    phoneNumber: this.testSupport.names[1]['phoneNumber'],
+    date_ms: this.testSupport.tomorrow_ms
   }
 
   info_user1_tomorrow = { level: 'info',
     event: 'nfo event',
-    uid: this.names[1]['uid'],
-    displayName: this.names[1]['displayName'],
-    phoneNumber: this.names[1]['phoneNumber'],
-    date_ms: this.tomorrow_ms
+    uid: this.testSupport.names[1]['uid'],
+    displayName: this.testSupport.names[1]['displayName'],
+    phoneNumber: this.testSupport.names[1]['phoneNumber'],
+    date_ms: this.testSupport.tomorrow_ms
   }
 
   error_user1_tomorrow = { level: 'error',
     event: 'err event',
-    uid: this.names[1]['uid'],
-    displayName: this.names[1]['displayName'],
-    phoneNumber: this.names[1]['phoneNumber'],
-    date_ms: this.tomorrow_ms
+    uid: this.testSupport.names[1]['uid'],
+    displayName: this.testSupport.names[1]['displayName'],
+    phoneNumber: this.testSupport.names[1]['phoneNumber'],
+    date_ms: this.testSupport.tomorrow_ms
   }
 
 
   debug_user0_dayafter = { level: 'debug',
     event: 'dbg event',
-    uid: this.names[0]['uid'],
-    displayName: this.names[0]['displayName'],
-    phoneNumber: this.names[0]['phoneNumber'],
-    date_ms: this.dayafter_ms
+    uid: this.testSupport.names[0]['uid'],
+    displayName: this.testSupport.names[0]['displayName'],
+    phoneNumber: this.testSupport.names[0]['phoneNumber'],
+    date_ms: this.testSupport.dayafter_ms
   }
 
   info_user0_dayafter = { level: 'info',
     event: 'nfo event',
-    uid: this.names[0]['uid'],
-    displayName: this.names[0]['displayName'],
-    phoneNumber: this.names[0]['phoneNumber'],
-    date_ms: this.dayafter_ms
+    uid: this.testSupport.names[0]['uid'],
+    displayName: this.testSupport.names[0]['displayName'],
+    phoneNumber: this.testSupport.names[0]['phoneNumber'],
+    date_ms: this.testSupport.dayafter_ms
   }
 
   error_user0_dayafter = { level: 'error',
     event: 'err event',
-    uid: this.names[0]['uid'],
-    displayName: this.names[0]['displayName'],
-    phoneNumber: this.names[0]['phoneNumber'],
-    date_ms: this.dayafter_ms
+    uid: this.testSupport.names[0]['uid'],
+    displayName: this.testSupport.names[0]['displayName'],
+    phoneNumber: this.testSupport.names[0]['phoneNumber'],
+    date_ms: this.testSupport.dayafter_ms
   }
 
   debug_user1_dayafter = { level: 'debug',
     event: 'dbg event',
-    uid: this.names[1]['uid'],
-    displayName: this.names[1]['displayName'],
-    phoneNumber: this.names[1]['phoneNumber'],
-    date_ms: this.dayafter_ms
+    uid: this.testSupport.names[1]['uid'],
+    displayName: this.testSupport.names[1]['displayName'],
+    phoneNumber: this.testSupport.names[1]['phoneNumber'],
+    date_ms: this.testSupport.dayafter_ms
   }
 
   info_user1_dayafter = { level: 'info',
     event: 'nfo event',
-    uid: this.names[1]['uid'],
-    displayName: this.names[1]['displayName'],
-    phoneNumber: this.names[1]['phoneNumber'],
-    date_ms: this.dayafter_ms
+    uid: this.testSupport.names[1]['uid'],
+    displayName: this.testSupport.names[1]['displayName'],
+    phoneNumber: this.testSupport.names[1]['phoneNumber'],
+    date_ms: this.testSupport.dayafter_ms
   }
 
   error_user1_dayafter = { level: 'error',
     event: 'err event',
-    uid: this.names[1]['uid'],
-    displayName: this.names[1]['displayName'],
-    phoneNumber: this.names[1]['phoneNumber'],
-    date_ms: this.dayafter_ms
+    uid: this.testSupport.names[1]['uid'],
+    displayName: this.testSupport.names[1]['displayName'],
+    phoneNumber: this.testSupport.names[1]['phoneNumber'],
+    date_ms: this.testSupport.dayafter_ms
   }
 
   debug_user0_day3 = { level: 'debug',
     event: 'dbg event',
-    uid: this.names[0]['uid'],
-    displayName: this.names[0]['displayName'],
-    phoneNumber: this.names[0]['phoneNumber'],
-    date_ms: this.day3_ms
+    uid: this.testSupport.names[0]['uid'],
+    displayName: this.testSupport.names[0]['displayName'],
+    phoneNumber: this.testSupport.names[0]['phoneNumber'],
+    date_ms: this.testSupport.day3_ms
   }
 
   info_user0_day3 = { level: 'info',
     event: 'nfo event',
-    uid: this.names[0]['uid'],
-    displayName: this.names[0]['displayName'],
-    phoneNumber: this.names[0]['phoneNumber'],
-    date_ms: this.day3_ms
+    uid: this.testSupport.names[0]['uid'],
+    displayName: this.testSupport.names[0]['displayName'],
+    phoneNumber: this.testSupport.names[0]['phoneNumber'],
+    date_ms: this.testSupport.day3_ms
   }
 
   error_user0_day3 = { level: 'error',
     event: 'err event',
-    uid: this.names[0]['uid'],
-    displayName: this.names[0]['displayName'],
-    phoneNumber: this.names[0]['phoneNumber'],
-    date_ms: this.day3_ms
+    uid: this.testSupport.names[0]['uid'],
+    displayName: this.testSupport.names[0]['displayName'],
+    phoneNumber: this.testSupport.names[0]['phoneNumber'],
+    date_ms: this.testSupport.day3_ms
   }
 
   debug_user1_day3 = { level: 'debug',
     event: 'dbg event',
-    uid: this.names[1]['uid'],
-    displayName: this.names[1]['displayName'],
-    phoneNumber: this.names[1]['phoneNumber'],
-    date_ms: this.day3_ms
+    uid: this.testSupport.names[1]['uid'],
+    displayName: this.testSupport.names[1]['displayName'],
+    phoneNumber: this.testSupport.names[1]['phoneNumber'],
+    date_ms: this.testSupport.day3_ms
   }
 
   info_user1_day3 = { level: 'info',
     event: 'nfo event',
-    uid: this.names[1]['uid'],
-    displayName: this.names[1]['displayName'],
-    phoneNumber: this.names[1]['phoneNumber'],
-    date_ms: this.day3_ms
+    uid: this.testSupport.names[1]['uid'],
+    displayName: this.testSupport.names[1]['displayName'],
+    phoneNumber: this.testSupport.names[1]['phoneNumber'],
+    date_ms: this.testSupport.day3_ms
   }
 
   error_user1_day3 = { level: 'error',
     event: 'err event',
-    uid: this.names[1]['uid'],
-    displayName: this.names[1]['displayName'],
-    phoneNumber: this.names[1]['phoneNumber'],
-    date_ms: this.day3_ms
+    uid: this.testSupport.names[1]['uid'],
+    displayName: this.testSupport.names[1]['displayName'],
+    phoneNumber: this.testSupport.names[1]['phoneNumber'],
+    date_ms: this.testSupport.day3_ms
   }
 
-  setupQueryByDateTest(testSupport: TestSupport) {
+  setupQueryByDateTest(/*testSupport: TestSupport*/) {
 
-    testSupport.setNames(this.names);
+    this.testSupport.setNames(this.testSupport.names);
 
     // Create a debug, info and error log entry for 2 users on 2 days
     var logs = [
@@ -276,14 +255,14 @@ export class LogPage extends BasePage {
 
 
     _.forEach(logs, (log) => {
-      testSupport.createLog(log);
+      this.testSupport.createLog(log);
       browser.sleep(500);
     })
   } // setupQueryByDateTest
 
 
-  setupQueryByNameTest(testSupport: TestSupport) {
-    testSupport.setNames(this.names);
+  setupQueryByNameTest(/*testSupport: TestSupport*/) {
+    this.testSupport.setNames(this.testSupport.names);
 
     // Create a debug, info and error log entry for 1 user but not the other
     // Make sure we can find the one and not the other when searching
@@ -293,7 +272,7 @@ export class LogPage extends BasePage {
 
 
     _.forEach(logs, (log) => {
-      testSupport.createLog(log);
+      this.testSupport.createLog(log);
       browser.sleep(500);
     })
 

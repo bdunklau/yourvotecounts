@@ -3,7 +3,7 @@ import { MainPage } from './main.po';
 import { UsersPage } from './users.po';
 import { browser, logging, /*, element, by*/ } from 'protractor';
 
-describe('Users page', () => {
+fdescribe('Users page', () => {
   let testSupport: TestSupport;
   let page: MainPage;
   let usersPage: UsersPage;
@@ -21,7 +21,33 @@ describe('Users page', () => {
     page.clickUsers();
     expect(usersPage.getSearchByNameField().isPresent()).toBeTruthy('expected the "search by name" field to be present');
     expect(usersPage.getSearchByPhoneField().isPresent()).toBeTruthy('expected the "search by phone" field to be present');
-    page.clickLogout()
+    page.clickLogout();
+  });
+
+
+  fit('should be to able to query for users by name', async () => {
+    testSupport.setNames(testSupport.names);
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickUsers();
+    usersPage.queryForUser(testSupport.names[0].displayName);
+    var actualName = await usersPage.getNameField();
+    expect(actualName === testSupport.names[0].displayName).toBeTruthy('expected the Users page to display the name "'+testSupport.names[0].displayName+'" but actually got: '+actualName);
+    page.clickLogout();
+  });
+
+
+  it('should be to able to query for users by phone', () => {
+    expect(false).toBeTruthy();
+  });
+
+
+  it('should be to able to update a user\' name', () => {
+    expect(false).toBeTruthy();
+  });
+
+
+  it('should be to able to add/remove roles', () => {
+    expect(false).toBeTruthy();
   });
 
 

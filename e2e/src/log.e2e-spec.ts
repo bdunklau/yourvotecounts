@@ -3,7 +3,7 @@ import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { LogPage } from './log.po';
 import * as _ from 'lodash';
-import * as moment from 'moment'
+import * as moment from 'moment';
 
 describe('Log page', () => {
   // let page: PublicPage;
@@ -14,7 +14,7 @@ describe('Log page', () => {
   beforeEach(() => {
     page = new MainPage();
     testSupport = new TestSupport();
-    logPage = new LogPage();
+    logPage = new LogPage(testSupport);
   });
 
   it('should be accessible by hyperlink', () => {
@@ -38,18 +38,18 @@ describe('Log page', () => {
 
   it('should display correct list of users in dropdown', async () => {
 
-    logPage.setupQueryByNameTest(testSupport);
+    logPage.setupQueryByNameTest();
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
 
-    var run1 = [{displayName: logPage.names[0].displayName,
+    var run1 = [{displayName: testSupport.names[0].displayName,
                   case_sensitive: true,
                   expected: true,
-                  failMsg: 'Expected name dropdown to contain '+logPage.names[0].displayName+' but did not'},
-                 {displayName: logPage.names[1].displayName,
+                  failMsg: 'Expected name dropdown to contain '+testSupport.names[0].displayName+' but did not'},
+                 {displayName: testSupport.names[1].displayName,
                   case_sensitive: true,
                   expected: true,
-                  failMsg: 'Expected name dropdown to contain '+logPage.names[1].displayName+' but did not'},
+                  failMsg: 'Expected name dropdown to contain '+testSupport.names[1].displayName+' but did not'},
                  {displayName: 'Mr Fixit',
                   case_sensitive: true,
                   expected: false,
@@ -57,14 +57,14 @@ describe('Log page', () => {
                 ];
 
     // the difference is in the 2nd element
-    var run2 = [{displayName: logPage.names[0].displayName,
+    var run2 = [{displayName: testSupport.names[0].displayName,
                   case_sensitive: true,
                   expected: true,
-                  failMsg: 'Expected name dropdown to contain '+logPage.names[0].displayName+' but did not'},
-                 {displayName: logPage.names[1].displayName,
+                  failMsg: 'Expected name dropdown to contain '+testSupport.names[0].displayName+' but did not'},
+                 {displayName: testSupport.names[1].displayName,
                   case_sensitive: true,
                   expected: false,
-                  failMsg: 'Did not expect name dropdown to contain '+logPage.names[1].displayName+' but it did'},
+                  failMsg: 'Did not expect name dropdown to contain '+testSupport.names[1].displayName+' but it did'},
                  {displayName: 'Mr Fixit',
                   case_sensitive: true,
                   expected: false,
@@ -72,14 +72,14 @@ describe('Log page', () => {
                 ];
 
     // same as run1, except lower case name
-    var run3 = [{displayName: logPage.names[0].displayName.toLowerCase(),
+    var run3 = [{displayName: testSupport.names[0].displayName.toLowerCase(),
                   case_sensitive: false,
                   expected: true,
-                  failMsg: 'Expected name dropdown to contain '+logPage.names[0].displayName+' but did not (case-insensitive)'},
-                 {displayName: logPage.names[1].displayName,
+                  failMsg: 'Expected name dropdown to contain '+testSupport.names[0].displayName+' but did not (case-insensitive)'},
+                 {displayName: testSupport.names[1].displayName,
                  case_sensitive: false,
                   expected: true,
-                  failMsg: 'Expected name dropdown to contain '+logPage.names[1].displayName+' but did not (case-insensitive)'},
+                  failMsg: 'Expected name dropdown to contain '+testSupport.names[1].displayName+' but did not (case-insensitive)'},
                  {displayName: 'Mr Fixit',
                   case_sensitive: false,
                   expected: false,
@@ -156,7 +156,7 @@ describe('Log page', () => {
 
   it('should allow query by date', async () => {
 
-    logPage.setupQueryByDateTest(testSupport);
+    logPage.setupQueryByDateTest();
 
     // Since we're just looking for instances of text on the page, we have to remember that
     // the debug, info and error are also found in the level dropdown and the selected level
@@ -184,7 +184,7 @@ describe('Log page', () => {
 
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
-    _.forEach(logPage.dates, (date) => {
+    _.forEach(testSupport.dates, (date) => {
       logPage.pickFirstDate(date.from);
       browser.sleep(300);
       logPage.pickSecondDate(date.to);
@@ -269,10 +269,10 @@ describe('Log page', () => {
 
 
   it('should allow query by user', async () => {
-    logPage.setupQueryByNameTest(testSupport);
+    logPage.setupQueryByNameTest();
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
-    var theName = logPage.names[0].displayName
+    var theName = testSupport.names[0].displayName
     logPage.queryForUser(theName);
     logPage.getNamesInLog().then(function(elements) {
       var promises = [];

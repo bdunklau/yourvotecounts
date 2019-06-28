@@ -2,8 +2,33 @@ import { browser, by, element } from 'protractor';
 import * as _ from 'lodash';
 import { MyAccountPage } from './my-account.po';
 import { MainPage } from './main.po';
+import * as moment from 'moment';
 
 export class TestSupport {
+
+  names = [
+    {displayName: 'Bre222nt', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2, uid: '1111111111'},
+    {displayName: 'Bre444nt', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER, uid: '222222222'},
+  ]
+
+
+  fmt = 'MM/DD/YYYY';
+  tomorrow = moment(new Date().getTime()).add(1, 'days').toDate();
+  tomorrow_ms = this.tomorrow.getTime();
+  tomorrow_mmddyyyy = moment(this.tomorrow_ms).format(this.fmt);
+
+  dayafter = moment(new Date().getTime()).add(2, 'days').toDate();
+  dayafter_ms = this.dayafter.getTime();
+  dayafter_mmddyyyy = moment(this.dayafter_ms).format(this.fmt);
+
+  day3 = moment(new Date().getTime()).add(3, 'days').toDate();
+  day3_ms = this.day3.getTime();
+  day3_mmddyyyy = moment(this.day3_ms).format(this.fmt);
+
+
+  dates = [{from: this.tomorrow_mmddyyyy, to: this.dayafter_mmddyyyy},
+           {from: this.dayafter_mmddyyyy, to: this.day3_mmddyyyy}];
+
 
   createLog(log) {
     browser.waitForAngularEnabled(false);
