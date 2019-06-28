@@ -5,7 +5,7 @@ import { LogPage } from './log.po';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
-describe('Log page', () => {
+fdescribe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -137,15 +137,15 @@ describe('Log page', () => {
   })
 
 
-  it('should allow date range to be clicked', async () => {
+  fit('should allow date range to be clicked', async () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
     var d1 = logPage.threeDaysBefore();
     var d2 = logPage.threeDaysAfter();
     logPage.pickFirstDate(d1);
-    browser.sleep(300);
+    browser.sleep(2000);
     logPage.pickSecondDate(d2);
-    browser.sleep(300);
+    browser.sleep(2000);
     var exp = d1+' to '+d2;
     logPage.getDateRangeField().then(actualValue => {
       expect(actualValue == exp).toBeTruthy('expected the date range field to be '+exp+' but it was actually '+actualValue);
