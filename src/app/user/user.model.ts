@@ -9,6 +9,7 @@ export class FirebaseUserModel {
   phoneNumber: string;
   roles: Array<String>;
   photoURL: string;
+  date_ms: number;
 
   constructor(){
     this.uid = ""
