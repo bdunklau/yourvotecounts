@@ -3,7 +3,7 @@ import { MainPage } from './main.po';
 import { UsersPage } from './users.po';
 import { browser, logging, /*, element, by*/ } from 'protractor';
 
-fdescribe('Users page', () => {
+describe('Users page', () => {
   let testSupport: TestSupport;
   let page: MainPage;
   let usersPage: UsersPage;
@@ -36,7 +36,7 @@ fdescribe('Users page', () => {
   });
 
 
-  fit('should be to able to query for users by phone', async () => {
+  it('should be to able to query for users by phone', async () => {
     testSupport.setNames(testSupport.names);
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickUsers();
