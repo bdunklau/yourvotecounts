@@ -18,6 +18,7 @@ export class MyAccountComponent implements OnInit {
 
     async ngOnInit() {
       this.user = await this.userService.getCurrentUser();
+      this.user_orig = this.user;
       if(this.user && !this.user.displayName) { // add more criteria as needed
         this.editing = true;
       }
@@ -35,6 +36,12 @@ export class MyAccountComponent implements OnInit {
 
     edit() {
       this.editing = true;
+    }
+
+    cancel() {
+      this.editing = false;
+      this.nameValue = this.user.displayName;
+      this.phoneNumber = this.user.phoneNumber;
     }
 
 }
