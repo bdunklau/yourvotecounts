@@ -15,6 +15,10 @@ export class UsersPage extends BasePage {
     return this.getElement(by.id('nameField')).getAttribute('value');
   }
 
+  getPhoneLabel() {
+    return this.getElement(by.id('phoneLabel')).getText();
+  }
+
   getSearchByNameField() {
     return this.getElement(by.id('nameSearchField'));
   }
@@ -35,6 +39,10 @@ export class UsersPage extends BasePage {
     fld.clear();
     fld.sendKeys(name);
     this.getElement(by.tagName('ngb-highlight')).click();
+  }
+
+  setName(name: string) {
+    this.getElement(by.id('nameField')).clear().sendKeys(name);
   }
 
 }
