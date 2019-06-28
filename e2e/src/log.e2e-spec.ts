@@ -290,15 +290,6 @@ describe('Log page', () => {
   })
 
 
-  // TODO move this to its own spec file
-  it('should be able to get to Users page', () => {
-    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
-    page.clickHome();
-    page.clickUsers();
-    expect(page.getTitleText()).toEqual('Users');
-    page.clickLogout()
-  });
-
   afterEach(async () => {
     // Assert that there are no errors emitted from the browser
     const logs = await browser.manage().logs().get(logging.Type.BROWSER);
