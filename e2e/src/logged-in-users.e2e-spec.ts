@@ -3,7 +3,7 @@ import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { MyAccountPage } from './my-account.po';
 
-describe('Logged in users', () => {
+fdescribe('Logged in users', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let myAccountPage: MyAccountPage;
@@ -15,7 +15,8 @@ describe('Logged in users', () => {
   });
 
   it('should be able to logout', () => {
-    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    // testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    testSupport.login(testSupport.normalUser.phoneNumber);
     page.clickHome();
     page.clickMyAccount();
     expect(page.getMyAccountElement().isDisplayed()).toBeTruthy();
@@ -44,7 +45,20 @@ describe('Logged in users', () => {
     expect(page.getUrl()).toEqual(browser.baseUrl+'/token');
   });
 
-  //
+
+  fit('should be able to see their name', () => {
+    testSupport.setName(testSupport.normalUser);
+    testSupport.login(testSupport.normalUser.phoneNumber);
+    page.clickHome();
+    browser.sleep(200);
+    page.getCurrentUserNameLink().getText().then(currentName => {
+      expect(currentName == testSupport.normalUser.displayName)
+        .toBeTruthy('expected name to be '+currentName+' but it was '+currentName );
+      page.clickLogout();
+    });
+  })
+
+
   it('should be able to edit name', async () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();

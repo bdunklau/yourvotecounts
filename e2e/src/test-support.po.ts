@@ -11,6 +11,10 @@ export class TestSupport {
     {displayName: 'Bre444nt', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER, uid: '222222222'},
   ]
 
+  normalUser = {displayName: 'Bre444nt',
+                phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER,
+                uid: '222222222'}
+
 
   fmt = 'MM/DD/YYYY';
   tomorrow = moment(new Date().getTime()).add(1, 'days').toDate();
@@ -90,20 +94,24 @@ export class TestSupport {
     return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
   }
 
+  setName(obj) {
+    this.login(obj.phoneNumber);
+    let page = new MainPage();
+    let myAccountPage = new MyAccountPage();
+    page.clickHome();
+    page.clickMyAccount();
+    myAccountPage.clickEdit();
+    myAccountPage.enterName(obj.displayName);
+    browser.sleep(300);
+    myAccountPage.clickSubmit();
+    browser.sleep(500); // this sucks - fails without this delay
+    page.clickLogout();
+  }
+
   // a test prep method that sets users names to whatever we pass in
   setNames(names) {
     _.forEach(names, (obj) => {
-      this.login(obj.phoneNumber);
-      let page = new MainPage();
-      let myAccountPage = new MyAccountPage();
-      page.clickHome();
-      page.clickMyAccount();
-      myAccountPage.clickEdit();
-      myAccountPage.enterName(obj.displayName);
-      browser.sleep(300);
-      myAccountPage.clickSubmit();
-      browser.sleep(500); // this sucks - fails without this delay
-      page.clickLogout();
+      this.setName(obj);
     })
   }
 
