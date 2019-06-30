@@ -85,11 +85,6 @@ describe('Users page', () => {
   });
 
 
-  it('should be to able to add/remove roles', () => {
-    expect(false).toBeTruthy();
-  });
-
-
   afterEach(async () => {
     // Assert that there are no errors emitted from the browser
     const logs = await browser.manage().logs().get(logging.Type.BROWSER);
