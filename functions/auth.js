@@ -7,7 +7,7 @@ const log = require('./log')
 var db = admin.firestore();
 
 
-// firebase deploy --only functions:logNewUser,functions:recordNewUser,functions:deleteUser,functions:logDeleteUser,functions:initiateDeleteUser,functions:createCustomToken
+// firebase deploy --only functions:logNewUser,functions:recordNewUser,functions:deleteUser,functions:logDeleteUser,functions:initiateDeleteUser,functions:createCustomToken;functions:updateUser
 
 
 exports.logNewUser = functions.auth.user().onCreate((user) => {
@@ -49,6 +49,23 @@ exports.initiateDeleteUser = functions.https.onRequest(async (req, res) => {
                    'Access-Control-Allow-Methods': 'DELETE',
                    'Access-Control-Allow-Headers': ['access-control-allow-origin', 'authorization', 'content-type'] }).status(200).send({text: "ok"});
 })
+
+// Listen for any change on document `marie` in collection `users`
+exports.updateUser = functions.firestore.document('user/{id}').onUpdate((change, context) => {
+  const newName = change.after.data().displayName;
+  const oldName = change.before.data().displayName;
+  if(newName !== oldName) {
+    var values = {};
+    if(change.after.data().email) values.email = change.after.data().email;
+    if(change.after.data().phoneNumber) values.phoneNumber = change.after.data().phoneNumber;
+    if(change.after.data().emailVerified) values.emailVerified = change.after.data().emailVerified;
+    if(change.after.data().displayName) values.displayName = change.after.data().displayName;
+    if(change.after.data().photoURL) values.photoURL = change.after.data().photoURL;
+    if(change.after.data().disabled) values.disabled = change.after.data().disabled;
+    admin.auth().updateUser(change.after.data().uid, values);
+  }
+  // perform desired operations ...
+});
 
 // pass phoneNumber request parameter without country code and get an auth token
 exports.createCustomToken = functions.https.onRequest(async (req, res) => {

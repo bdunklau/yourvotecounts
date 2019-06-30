@@ -3,7 +3,7 @@ import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { MyAccountPage } from './my-account.po';
 
-fdescribe('Logged in users', () => {
+describe('Logged in users', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let myAccountPage: MyAccountPage;
@@ -46,16 +46,15 @@ fdescribe('Logged in users', () => {
   });
 
 
-  fit('should be able to see their name', () => {
+  it('should be able to see their name', async () => {
     testSupport.setName(testSupport.normalUser);
     testSupport.login(testSupport.normalUser.phoneNumber);
     page.clickHome();
     browser.sleep(200);
-    page.getCurrentUserNameLink().getText().then(currentName => {
-      expect(currentName == testSupport.normalUser.displayName)
-        .toBeTruthy('expected name to be '+currentName+' but it was '+currentName );
-      page.clickLogout();
-    });
+    var currentName = await page.getCurrentUserNameLink().getText()
+    expect(currentName == testSupport.normalUser.displayName)
+      .toBeTruthy('expected name to be '+currentName+' but it was '+currentName );
+    page.clickLogout();
   })
 
 

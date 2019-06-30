@@ -14,7 +14,7 @@ export class UsersComponent implements OnInit {
   roles;
   nameValue;
 
-  constructor(public us: UserService) { }
+  constructor(public userService: UserService) { }
 
   ngOnInit() {
   }
@@ -23,6 +23,8 @@ export class UsersComponent implements OnInit {
   }
 
   onUserSelectedByName(user: FirebaseUserModel) {
+    console.log("onUserSelectedByName(): user = ", user);
+      // console.log("onUserSelectedByName(): user.hasRole('admin') = ", user.hasRole('admin'));
     this.set(user);
   }
 
@@ -36,12 +38,16 @@ export class UsersComponent implements OnInit {
     this.seconds = user.date_ms;
     this.roles = user.roles;
     this.nameValue = user.displayName;
+      console.log("set(): this.user.hasRole('admin') = ", this.user.hasRole('admin'));
   }
 
   async onSubmit() {
     this.user.displayName = this.nameValue;
-    this.userService.updateCurrentUser(this.user);
-    this.editing = false;
+    this.userService.updateUser(this.user);
+  }
+
+  cancel() {
+    this.set(this.user);
   }
 
 }

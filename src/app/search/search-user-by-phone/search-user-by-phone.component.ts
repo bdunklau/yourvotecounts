@@ -55,8 +55,9 @@ export class SearchUserByPhoneComponent implements OnInit {
   // NOTE this:  (selectItem)="itemSelected($event)"
   // in search-by-phone.component.html
   itemSelected($event) {
-    // alert(JSON.stringify($event.item.phoneNumber));
-    this.selectedUser.emit($event.item);
+    let user = new FirebaseUserModel();
+    user.populate($event.item);
+    this.selectedUser.emit(user);
   }
 
   checkEmpty() {

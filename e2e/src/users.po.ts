@@ -5,6 +5,11 @@ import { by } from 'protractor';
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class UsersPage extends BasePage {
 
+
+  clickSubmit() {
+    this.getElement(by.id("submit_user")).click();
+  }
+
   enterPartialName(name, length) {
     var fld = this.getElement(by.id('nameSearchField'));
     fld.clear();
@@ -12,7 +17,11 @@ export class UsersPage extends BasePage {
   }
 
   getNameField() {
-    return this.getElement(by.id('nameField')).getAttribute('value');
+    return this.getElement(by.id('nameField'));
+  }
+
+  async getNameFieldValue() {
+    return await this.getNameField().getAttribute('value');
   }
 
   getPhoneLabel() {
@@ -41,8 +50,10 @@ export class UsersPage extends BasePage {
     this.getElement(by.tagName('ngb-highlight')).click();
   }
 
-  setName(name: string) {
-    this.getElement(by.id('nameField')).clear().sendKeys(name);
+  async setName(name: string) {
+    var fld = this.getNameField();
+    await fld.clear();
+    fld.sendKeys(name);
   }
 
 }

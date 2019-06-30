@@ -31,9 +31,9 @@ export class AppComponent {
 
 
   async ngOnInit() {
-    console.log('AppComponent:ngOnInit()')
     let user = await this.userService.getCurrentUser();
-    this.isAdmin = user && user.hasRole('admin')
+    this.isAdmin = user && user.hasRole('admin');
+    console.log('AppComponent:ngOnInit(): this.isAdmin = ', this.isAdmin)
     this.isLoggedIn = user != null;
     this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
     this.subscription = this.messageService.getUser()

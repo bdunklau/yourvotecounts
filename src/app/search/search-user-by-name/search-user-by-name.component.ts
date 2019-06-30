@@ -53,8 +53,9 @@ export class SearchUserByNameComponent implements OnInit {
   // NOTE this:  (selectItem)="itemSelected($event)"
   // in search-user-by-name.component.html
   itemSelected($event) {
-    console.log('itemSelected: ', $event.item)
-    this.selectedUser.emit($event.item);
+    let user = new FirebaseUserModel();
+    user.populate($event.item);
+    this.selectedUser.emit(user);
   }
 
   checkEmpty($event) {

@@ -18,7 +18,6 @@ export class MyAccountComponent implements OnInit {
 
     async ngOnInit() {
       this.user = await this.userService.getCurrentUser();
-      this.user_orig = this.user;
       if(this.user && !this.user.displayName) { // add more criteria as needed
         this.editing = true;
       }

@@ -30,6 +30,11 @@ export class BasePage {
   }
 
 
+  getCurrentUserNameLink() {
+    return this.getElement(by.id('name_or_phone'));
+  }
+
+
   presenceOfAll(elementArrayFinder) {
     return function () {
         return elementArrayFinder.count(function (count) {

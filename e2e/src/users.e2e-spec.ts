@@ -3,6 +3,12 @@ import { MainPage } from './main.po';
 import { UsersPage } from './users.po';
 import { browser, logging, /*, element, by*/ } from 'protractor';
 
+var verifyUser = async (usersPage, testSupport) => {
+  usersPage.queryByName(testSupport.names[0].displayName);
+  var actualName = await usersPage.getNameFieldValue();
+  expect(actualName === testSupport.names[0].displayName).toBeTruthy('expected the Users page to display the name "'+testSupport.names[0].displayName+'" but actually got: '+actualName);
+}
+
 describe('Users page', () => {
   let testSupport: TestSupport;
   let page: MainPage;
@@ -30,7 +36,7 @@ describe('Users page', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickUsers();
     usersPage.queryByName(testSupport.names[0].displayName);
-    var actualName = await usersPage.getNameField();
+    var actualName = await usersPage.getNameFieldValue();
     expect(actualName === testSupport.names[0].displayName).toBeTruthy('expected the Users page to display the name "'+testSupport.names[0].displayName+'" but actually got: '+actualName);
     page.clickLogout();
   });
@@ -41,7 +47,7 @@ describe('Users page', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickUsers();
     usersPage.queryByPhone(testSupport.names[0].phoneNumber);
-    var actualName = await usersPage.getNameField();
+    var actualName = await usersPage.getNameFieldValue();
     expect(actualName === testSupport.names[0].displayName).toBeTruthy('expected the Users page to display the name "'+testSupport.names[0].displayName+'" but actually got: '+actualName);
     var actualPhone = await usersPage.getPhoneLabel();
     expect((actualPhone === testSupport.names[0].phoneNumber)
@@ -52,26 +58,29 @@ describe('Users page', () => {
 
 
   it('should be able to edit name', async () => {
-    testSupport.setNames(testSupport.names);
+    testSupport.setName(testSupport.normalUser);
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickUsers();
-    usersPage.queryByName(testSupport.names[0].displayName);
-    usersPage.setName('Billy Bob');
+    usersPage.queryByName(testSupport.normalUser.displayName);
+    var expectedName = 'Billy Bob';
+    usersPage.setName(expectedName);
+    usersPage.clickSubmit();
 
-
-
-    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    // you have to logout and login as this person and go to My Account to really verify
+    page.clickLogout();
+    testSupport.login(testSupport.normalUser.phoneNumber);
     page.clickHome();
-    page.clickMyAccount();
-    myAccountPage.clickEdit();
-    myAccountPage.enterName('Bob');
-    myAccountPage.clickSubmit();
-    expect(myAccountPage.getNameLabel().isDisplayed()).toBeTruthy();
-    var name = await myAccountPage.getNameLabel().getText();
-    expect(name == 'Bob').toBeTruthy();
-    myAccountPage.clickEdit();
-    myAccountPage.enterName('Joe');
-    myAccountPage.clickSubmit();
+    var currentName = await page.getCurrentUserNameLink().getText()
+    expect(currentName == expectedName)
+      .toBeTruthy('expected name to be '+expectedName+' but it was '+currentName );
+    page.clickLogout();
+
+    // set name back to what it was
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.clickUsers();
+    usersPage.queryByName(expectedName);
+    usersPage.setName(testSupport.normalUser.displayName);
+    usersPage.clickSubmit();
     page.clickLogout();
   });
 

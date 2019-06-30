@@ -22,6 +22,17 @@ export class FirebaseUserModel {
     this.photoURL = "";
   }
 
+  populate(obj) {
+    this.uid = obj.uid;
+    this.image = obj.image;
+    this.displayName = obj.displayName;
+    this.displayName_lower = obj.displayName_lower;
+    this.provider = obj.provider;
+    this.phoneNumber = obj.phoneNumber;
+    this.roles = obj.roles;
+    this.photoURL = obj.photoURL;
+  }
+
   hasRole(role: string): boolean {
     var idx = _.findIndex(this.roles, function(o) { return o == role; });
     return idx != -1

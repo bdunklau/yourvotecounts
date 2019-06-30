@@ -39,25 +39,6 @@ export class UserService {
     this.messageService.updateUser(this.user);
   }
 
-  searchByName(nameVal, limit) {
-    if(!nameVal || nameVal === '') return [];
-    return this.afs.collection('user', ref => ref
-      .orderBy("displayName_lower")
-      .startAt(nameVal.toLowerCase())
-      .endAt(nameVal.toLowerCase()+"\uf8ff")
-      .limit(limit))
-      .valueChanges();
-  }
-
-  searchByPhone(phoneVal, limit) {
-    return this.afs.collection('user', ref => ref
-      .orderBy("phoneNumber")
-      .startAt(phoneVal)
-      .endAt(phoneVal+"\uf8ff")
-      .limit(limit))
-      .valueChanges();
-  }
-
   async getCurrentUser() : Promise<FirebaseUserModel> {
     if(this.user) {
       // TODO verified on 6//10/19 but not part of automated testing yet.  Need a mock/spy LogService
@@ -79,6 +60,7 @@ export class UserService {
         user.displayName_lower = data[0].displayName_lower;
         user.roles = data[0].roles
         this.user = user
+        console.log('UserService:getCurrentUser(): this.user.hasRole("admin") = ', this.user.hasRole("admin"));
         this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
         resolve(this.user)
       })
@@ -114,6 +96,26 @@ export class UserService {
       })
     })
   }
+
+  searchByName(nameVal, limit) {
+    if(!nameVal || nameVal === '') return [];
+    return this.afs.collection('user', ref => ref
+      .orderBy("displayName_lower")
+      .startAt(nameVal.toLowerCase())
+      .endAt(nameVal.toLowerCase()+"\uf8ff")
+      .limit(limit))
+      .valueChanges();
+  }
+
+  searchByPhone(phoneVal, limit) {
+    return this.afs.collection('user', ref => ref
+      .orderBy("phoneNumber")
+      .startAt(phoneVal)
+      .endAt(phoneVal+"\uf8ff")
+      .limit(limit))
+      .valueChanges();
+  }
+
 
   setFirebaseUser(firebase_auth_currentUser) {
     let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
@@ -163,6 +165,17 @@ export class UserService {
         resolve();
       }, err => reject(err))
     })
+  }
+
+  updateUser(value: FirebaseUserModel) {
+    this.afs.collection('user', rf => rf.where("uid", "==", value.uid)).snapshotChanges().pipe(take(1))
+    .subscribe(data  => {
+      data.forEach(function(dt) {
+          value.displayName_lower = value.displayName.toLowerCase()
+          dt.payload.doc.ref.update({displayName: value.displayName,
+                                     displayName_lower: value.displayName_lower});
+        })
+    });
   }
 
   // any user, not just the current user
