@@ -18,12 +18,17 @@ export class Team {
   }
 
   toObj(): any {
+    var obj = this.toShallowObj();
+    obj['members'] = _.map(this.members, teamMember => teamMember.toObj());
+    return obj;
+  }
+
+  toShallowObj(): any {
     return {name: this.name,
           created: this.created,
           creatorId: this.creatorId,
           creatorName: this.creatorName,
-          creatorPhone: this.creatorPhone,
-          members: _.map(this.members, teamMember => teamMember.toObj())};
+          creatorPhone: this.creatorPhone};
   }
 
   setCreator(user: FirebaseUserModel) {
