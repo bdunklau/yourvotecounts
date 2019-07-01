@@ -28,8 +28,8 @@ export class TeamService {
     let batch = this.afs.firestore.batch();
     var teamRef = this.afs.collection('team').doc(this.afs.createId()).ref;
     batch.set(teamRef, team.toObj());
-    var userRef = this.afs.collection('user').doc(user.id).collection('teams').doc(this.afs.createId()).ref;
-    batch.set(userRef, team.toObj());
+    var userRef = this.afs.collection('user').doc(user.uid).collection('teams').doc(this.afs.createId()).ref;
+    batch.set(userRef, team.toShallowObj());
     batch.commit();
 
     // good example of transactions:

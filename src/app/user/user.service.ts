@@ -29,22 +29,12 @@ export class UserService {
   ){ }
 
   ngOnInit() {
-
+    // isn't this just for components, not services?
   }
 
   ngOnDestroy() {
-    // unsubscribe to all subscriptions here
+    // isn't this just for components, not services?
   }
-
-
-  // addTeam(user: FirebaseUserModel, team: Team) {
-  //   var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
-  //   // the pipe(take(1)) automatically unsubscribes after the first result
-  //   ref.subscribe((data:[FirebaseUserModel]) => {
-  //     console.log('addTeam(): ref.subscribe:  data = ', data)
-  //     if(data && data[0]) user.roles = data[0].roles
-  //   })
-  // }
 
 
   signOut() {
@@ -68,15 +58,21 @@ export class UserService {
     }
 
     return new Promise<FirebaseUserModel>(async (resolve, reject) => {
-      var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
-      var sub = ref.subscribe((data: [FirebaseUserModel]) => {
-        user.displayName_lower = data[0].displayName_lower;
-        user.roles = data[0].roles
-        this.user = user
-        console.log('UserService:getCurrentUser(): this.user.hasRole("admin") = ', this.user.hasRole("admin"));
-        this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
-        resolve(this.user)
-      })
+      var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
+      this.user = user;
+      this.user.populate(userDoc.data());
+      this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
+      resolve(this.user);
+
+      // var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
+      // var sub = ref.subscribe((data: [FirebaseUserModel]) => {
+      //   user.displayName_lower = data[0].displayName_lower;
+      //   user.roles = data[0].roles
+      //   this.user = user
+      //   console.log('UserService:getCurrentUser(): this.user.hasRole("admin") = ', this.user.hasRole("admin"));
+      //   this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
+      //   resolve(this.user);
+      // })
     });
   }
 
@@ -130,28 +126,14 @@ export class UserService {
   }
 
 
-  setFirebaseUser(firebase_auth_currentUser) {
+  async setFirebaseUser(firebase_auth_currentUser) {
     let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
-
-    let users = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).snapshotChanges().pipe(
-      take(1),
-      map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data() as FirebaseUserModel;
-          const id = a.payload.doc.id;
-          return { id, ...data };
-        });
-      })
-    )
-
-    users.subscribe(obj => {
-      if(obj.length > 0) {
-        this.user = new FirebaseUserModel();
-        this.user.populate(obj[0]);
-        console.log('setFirebaseUser(): this.user = ', this.user);
-        this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
-      }
-    })
+    this.user = new FirebaseUserModel();
+    console.log('setFirebaseUser(): user.uid = ', user.uid);
+    var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
+    this.user.populate(userDoc.data());
+    console.log('setFirebaseUser(): this.user = ', this.user);
+    this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
   }
 
   private firebaseUserToFirebaseUserModel(firebase_auth_currentUser):FirebaseUserModel {
@@ -178,13 +160,16 @@ export class UserService {
       }).then( () => {
         // now we have to update the /user node
 
-        var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid)).snapshotChanges().pipe(take(1));
-        ref.subscribe(data  => {
-          data.forEach(function(dt) {
-            dt.payload.doc.ref.update({displayName: value.displayName,
-                                       displayName_lower: value.displayName.toLowerCase()});
-          })
-        });
+        this.afs.collection('user').doc(user.uid).ref.update({displayName: value.displayName,
+                                   displayName_lower: value.displayName.toLowerCase()});
+
+        // var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid)).snapshotChanges().pipe(take(1));
+        // ref.subscribe(data  => {
+        //   data.forEach(function(dt) {
+        //     dt.payload.doc.ref.update({displayName: value.displayName,
+        //                                displayName_lower: value.displayName.toLowerCase()});
+        //   })
+        // });
         this.messageService.updateUser(this.user);
         resolve();
       }, err => reject(err))
@@ -192,14 +177,17 @@ export class UserService {
   }
 
   updateUser(value: FirebaseUserModel) {
-    this.afs.collection('user', rf => rf.where("uid", "==", value.uid)).snapshotChanges().pipe(take(1))
-    .subscribe(data  => {
-      data.forEach(function(dt) {
-          value.displayName_lower = value.displayName.toLowerCase()
-          dt.payload.doc.ref.update({displayName: value.displayName,
-                                     displayName_lower: value.displayName_lower});
-        })
-    });
+    this.afs.collection('user').doc(value.uid).ref.update({displayName: value.displayName,
+                               displayName_lower: value.displayName.toLowerCase()});
+
+    // this.afs.collection('user', rf => rf.where("uid", "==", value.uid)).snapshotChanges().pipe(take(1))
+    // .subscribe(data  => {
+    //   data.forEach(function(dt) {
+    //       value.displayName_lower = value.displayName.toLowerCase()
+    //       dt.payload.doc.ref.update({displayName: value.displayName,
+    //                                  displayName_lower: value.displayName_lower});
+    //     })
+    // });
   }
 
   // any user, not just the current user

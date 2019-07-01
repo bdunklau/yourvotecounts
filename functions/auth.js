@@ -16,7 +16,7 @@ exports.logNewUser = functions.auth.user().onCreate((user) => {
 
 
 exports.recordNewUser = functions.auth.user().onCreate((user) => {
-  return db.collection('user').add({uid: user.uid, phoneNumber: user.phoneNumber, date: admin.firestore.Timestamp.now(), date_ms: admin.firestore.Timestamp.now().toMillis()})
+  return db.collection('user').doc(user.uid).set({uid: user.uid, phoneNumber: user.phoneNumber, date: admin.firestore.Timestamp.now(), date_ms: admin.firestore.Timestamp.now().toMillis()})
 });
 
 

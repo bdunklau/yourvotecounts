@@ -2,8 +2,7 @@ import * as _ from 'lodash';
 import { Team } from '../team/team.model';
 
 export class FirebaseUserModel {
-  id: string; // the doc id
-  uid: string;
+  uid: string; // the doc id
   image: string;
   displayName: string;
   displayName_lower: string;
@@ -15,7 +14,6 @@ export class FirebaseUserModel {
   teams: Team[];
 
   constructor(){
-    this.id = "";
     this.uid = "";
     this.image = "";
     this.displayName = "";
@@ -28,7 +26,6 @@ export class FirebaseUserModel {
   }
 
   populate(obj) {
-    this.id = obj.id;
     this.uid = obj.uid;
     this.image = obj.image;
     this.displayName = obj.displayName;
