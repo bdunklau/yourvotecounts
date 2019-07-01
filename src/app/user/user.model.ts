@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
+import { Team } from '../team/team.model';
 
 export class FirebaseUserModel {
+  id: string; // the doc id
   uid: string;
   image: string;
   displayName: string;
@@ -10,9 +12,11 @@ export class FirebaseUserModel {
   roles: Array<String>;
   photoURL: string;
   date_ms: number;
+  teams: Team[];
 
   constructor(){
-    this.uid = ""
+    this.id = "";
+    this.uid = "";
     this.image = "";
     this.displayName = "";
     this.displayName_lower = "";
@@ -20,9 +24,11 @@ export class FirebaseUserModel {
     this.phoneNumber = "";
     this.roles = [];
     this.photoURL = "";
+    this.teams = [];
   }
 
   populate(obj) {
+    this.id = obj.id;
     this.uid = obj.uid;
     this.image = obj.image;
     this.displayName = obj.displayName;
@@ -31,6 +37,7 @@ export class FirebaseUserModel {
     this.phoneNumber = obj.phoneNumber;
     this.roles = obj.roles;
     this.photoURL = obj.photoURL;
+    this.teams = obj.teams;
   }
 
   hasRole(role: string): boolean {

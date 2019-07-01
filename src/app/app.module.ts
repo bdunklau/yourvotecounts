@@ -25,6 +25,10 @@ import { SearchUserByPhoneComponent } from './search/search-user-by-phone/search
 import { SearchUserByNameComponent } from './search/search-user-by-name/search-user-by-name.component';
 import { SearchLogByLevelComponent } from './search/search-log-by-level/search-log-by-level.component';
 import { DateChooserComponent } from './util/date-chooser/date-chooser.component';
+import { TeamsComponent } from './teams/teams.component';
+import { TeamComponent } from './team/team.component';
+import { TeamListComponent } from './team-list/team-list.component';
+import { TeamEditorComponent } from './team-editor/team-editor.component';
 
 
 @NgModule({
@@ -41,6 +45,10 @@ import { DateChooserComponent } from './util/date-chooser/date-chooser.component
     SearchUserByNameComponent,
     SearchLogByLevelComponent,
     DateChooserComponent,
+    TeamsComponent,
+    TeamComponent,
+    TeamListComponent,
+    TeamEditorComponent,
   ],
   imports: [
     BrowserModule,

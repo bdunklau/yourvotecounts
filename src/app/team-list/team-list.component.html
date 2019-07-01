@@ -1,0 +1,15 @@
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th scope="col">Team Name</th>
+    <th scope="col">Created</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let team of teams">
+    <td>{{team.name}}</td>
+    <td>{{team.created}}</td>
+  </tr>
+  </tbody>
+</table>

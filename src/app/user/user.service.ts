@@ -8,8 +8,11 @@ import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { FirebaseUserModel } from '../user/user.model';
 import { take } from 'rxjs/operators';
+import 'rxjs/add/operator/map'
 import { LogService } from '../log/log.service';
 import { MessageService } from '../core/message.service';
+import { Team } from '../team/team.model';
+import { map } from 'rxjs/operators';
 
 
 @Injectable()
@@ -32,6 +35,16 @@ export class UserService {
   ngOnDestroy() {
     // unsubscribe to all subscriptions here
   }
+
+
+  // addTeam(user: FirebaseUserModel, team: Team) {
+  //   var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
+  //   // the pipe(take(1)) automatically unsubscribes after the first result
+  //   ref.subscribe((data:[FirebaseUserModel]) => {
+  //     console.log('addTeam(): ref.subscribe:  data = ', data)
+  //     if(data && data[0]) user.roles = data[0].roles
+  //   })
+  // }
 
 
   signOut() {
@@ -119,14 +132,25 @@ export class UserService {
 
   setFirebaseUser(firebase_auth_currentUser) {
     let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
-    console.log('setFirebaseUser(): user.uid = ', user.uid);
-    var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
-    // the pipe(take(1)) automatically unsubscribes after the first result
-    ref.subscribe((data:[FirebaseUserModel]) => {
-      console.log('setFirebaseUser(): ref.subscribe:  data = ', data)
-      if(data && data[0]) user.roles = data[0].roles
-      this.user = user
-      this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
+
+    let users = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).snapshotChanges().pipe(
+      take(1),
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data() as FirebaseUserModel;
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        });
+      })
+    )
+
+    users.subscribe(obj => {
+      if(obj.length > 0) {
+        this.user = new FirebaseUserModel();
+        this.user.populate(obj[0]);
+        console.log('setFirebaseUser(): this.user = ', this.user);
+        this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
+      }
     })
   }
 
