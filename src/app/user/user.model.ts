@@ -34,7 +34,12 @@ export class FirebaseUserModel {
     this.phoneNumber = obj.phoneNumber;
     this.roles = obj.roles;
     this.photoURL = obj.photoURL;
-    this.teams = obj.teams;
+    this.teams = obj.teams ? obj.teams : [];
+    console.log('populate():  this.teams = ', this.teams);
+  }
+
+  getTeams() {
+    return this.teams;
   }
 
   hasRole(role: string): boolean {

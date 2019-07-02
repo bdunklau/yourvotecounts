@@ -21,7 +21,8 @@ const routes: Routes = [
   { path: 'log', component: LogComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'login', component: LoginComponent },
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard] },
-  { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard] },
+  { path: 'teams/:teamDocId', component: TeamsComponent, canActivate: [AuthGuard], resolve: { data: UserResolver} },
+  { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard], resolve: { data: UserResolver} },
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'user', component: UserComponent,  resolve: { data: UserResolver}},

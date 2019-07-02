@@ -17,19 +17,22 @@ export class TeamService {
 
   create(teamName: string, user: FirebaseUserModel) {
     let team = new Team();
+    var teamDocId = this.afs.createId();
+    team.id = teamDocId;
     team.name = teamName;
     team.memberCount = 1;
-    team.created = firebase.firestore.Timestamp.now().toDate();
+    team.created = firebase.firestore.Timestamp.now();
     team.setCreator(user);
     let teamMember = new TeamMember(user);
     teamMember.setTeamLeader(true);
     team.members.push(teamMember);
 
     let batch = this.afs.firestore.batch();
-    var teamRef = this.afs.collection('team').doc(this.afs.createId()).ref;
+    var teamRef = this.afs.collection('team').doc(teamDocId).ref;
     batch.set(teamRef, team.toObj());
-    var userRef = this.afs.collection('user').doc(user.uid).collection('teams').doc(this.afs.createId()).ref;
-    batch.set(userRef, team.toShallowObj());
+    user.teams.push(team.toShallowObj());
+    var userRef = this.afs.collection('user').doc(user.uid).ref;
+    batch.update(userRef, {teams: user.teams});
     batch.commit();
 
     // good example of transactions:

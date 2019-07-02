@@ -7,9 +7,9 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let team of teams">
-    <td>{{team.name}}</td>
-    <td>{{team.created}}</td>
+  <tr *ngFor="let team of user.teams">
+    <td><a (click)="editTeam(team)">{{team.name}}</a></td>
+    <td>{{team.created.toDate()}}</td>
   </tr>
   </tbody>
 </table>
