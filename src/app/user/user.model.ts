@@ -11,7 +11,7 @@ export class FirebaseUserModel {
   roles: Array<String>;
   photoURL: string;
   date_ms: number;
-  teams: Team[];
+  // teams: Team[];
 
   constructor(){
     this.uid = "";
@@ -22,7 +22,7 @@ export class FirebaseUserModel {
     this.phoneNumber = "";
     this.roles = [];
     this.photoURL = "";
-    this.teams = [];
+    // this.teams = [];
   }
 
   populate(obj) {
@@ -34,13 +34,13 @@ export class FirebaseUserModel {
     this.phoneNumber = obj.phoneNumber;
     this.roles = obj.roles;
     this.photoURL = obj.photoURL;
-    this.teams = obj.teams ? obj.teams : [];
-    console.log('populate():  this.teams = ', this.teams);
+    // this.teams = obj.teams ? obj.teams : [];
+    // console.log('populate():  this.teams = ', this.teams);
   }
 
-  getTeams() {
-    return this.teams;
-  }
+  // getTeams() {
+  //   return this.teams;
+  // }
 
   hasRole(role: string): boolean {
     var idx = _.findIndex(this.roles, function(o) { return o == role; });

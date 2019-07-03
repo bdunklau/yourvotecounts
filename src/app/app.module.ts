@@ -29,6 +29,7 @@ import { TeamsComponent } from './teams/teams.component';
 import { TeamComponent } from './team/team.component';
 import { TeamListComponent } from './team-list/team-list.component';
 import { TeamEditorComponent } from './team-editor/team-editor.component';
+import { NgbdModalConfirmComponent } from './util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 
 
 @NgModule({
@@ -49,7 +50,9 @@ import { TeamEditorComponent } from './team-editor/team-editor.component';
     TeamComponent,
     TeamListComponent,
     TeamEditorComponent,
+    NgbdModalConfirmComponent,
   ],
+  entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -57,8 +60,8 @@ import { TeamEditorComponent } from './team-editor/team-editor.component';
     AngularFirestoreModule, // imports firebase/firestore, only needed for database features
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features
     FormsModule, ReactiveFormsModule,
-    NgbModule,
-    HttpClientModule
+    NgbModule.forRoot(),
+    HttpClientModule,
   ],
   bootstrap: [AppComponent]
 })

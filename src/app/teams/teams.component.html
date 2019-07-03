@@ -3,8 +3,20 @@
   <h1>Teams</h1>
 
   <div class="row">
-    <div class="col"><app-team-editor [user]="user"></app-team-editor></div>
-    <div class="col"><app-team-list [user]="user"></app-team-list></div>
+    <div class="col">
+      <app-team-editor *ngIf="team"
+                        [teamNameValue]="team.name"
+                        [teamIdValue]="team.teamDocId"
+                        [user]="user"
+                        (editing)="onEditStateChange($event)">
+      </app-team-editor>
+
+      <div *ngIf="!team">
+        <button id="create_team" type="button" (click)="startCreatingTeam()" class="btn btn-primary">Create Team</button>
+      </div>
+
+    </div>
+    <div class="col"><app-team-list *ngIf="user" [selectedTeam]="onTeamSelected($event)" [teamListUser]="user"></app-team-list></div>
   </div>
 
 </div>

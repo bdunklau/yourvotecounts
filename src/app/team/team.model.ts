@@ -12,20 +12,20 @@ export class Team {
   creatorId: string;
   creatorName: string;
   creatorPhone: string;
-  members: TeamMember[];
+  // members: TeamMember[];
   memberCount = 0;
 
   constructor() {
-    this.members = [];
+    // this.members = [];
   }
+
+  // toObj(): any {
+  //   var obj = this.toShallowObj();
+  //   obj['members'] = _.map(this.members, teamMember => teamMember.toObj());
+  //   return obj;
+  // }
 
   toObj(): any {
-    var obj = this.toShallowObj();
-    obj['members'] = _.map(this.members, teamMember => teamMember.toObj());
-    return obj;
-  }
-
-  toShallowObj(): any {
     return {id: this.id,
           name: this.name,
           created: this.created,

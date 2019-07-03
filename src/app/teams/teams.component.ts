@@ -22,14 +22,29 @@ export class TeamsComponent implements OnInit {
   ngOnInit() {
     this.userService.getCurrentUser().then(user => {
       this.user = user;
-      if(this.user) {
-        const id = this.route.snapshot.paramMap.get('teamDocId');
-        if(id) {
-          this.team = _.find(this.user.teams, function(team) {return team.id == id});
-          console.log('this.team = ', this.team);
-        }
-      }
+      // if(this.user) {
+      //   const id = this.route.snapshot.paramMap.get('teamDocId');
+      //   if(id) {
+      //     this.team = _.find(this.user.teams, function(team) {return team.id == id});
+      //     console.log('this.team = ', this.team);
+      //   }
+      // }
     });
+  }
+
+
+  startCreatingTeam() {
+    this.team = new Team();
+  }
+
+
+  onTeamSelected(team: Team) {
+    console.log('onSelectedTeam: team: ', team);
+    this.team = team;
+  }
+
+  onEditStateChange(editing: boolean) {
+    if(!editing) delete this.team;
   }
 
 }

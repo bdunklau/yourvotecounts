@@ -1,13 +1,8 @@
 
-  <div [hidden]="editing">
-    <button id="create_team" type="button" (click)="editing = true;" class="btn btn-primary">Create Team</button>
-  </div>
-
-  <div [hidden]="!editing">
 
     <form (ngSubmit)="onSubmit()" #teamNameForm="ngForm">
       <div class="form-group">
-        <input type="hidden" class="form-control" id="team_id_field" [(ngModel)]="teamIdValue" name="teamId" #teamId="ngModel">
+        <input type="text" class="form-control" id="team_id_field" [(ngModel)]="teamIdValue" name="teamId" #teamId="ngModel">
 
         <input type="text" class="form-control" id="team_name_field" [(ngModel)]="teamNameValue" name="teamName" #teamName="ngModel"
             placeholder="Team Name" required>
@@ -19,8 +14,6 @@
 
       <button id="save_team" type="submit" class="btn btn-success" [disabled]="!teamNameForm.form.valid">Save</button>
       &nbsp;
-      <button id="cancel_team" type="button" (click)="editing = false;" class="btn btn-secondary">Cancel</button>
+      <button id="cancel_team" type="button" (click)="cancelEditing()" class="btn btn-secondary">Cancel</button>
 
     </form>
-
-  </div>
