@@ -45,7 +45,13 @@ export class TeamListComponent implements OnInit {
     )
       .subscribe(objs => {
         console.log(objs);
-        this.teams = _.map(objs, obj => new TeamMember(obj))
+        this.teams = _.map(objs, obj => {
+          new TeamMember(obj)
+          let team = new Team();
+          team.id = obj.teamDocId;
+          team.name = obj.team_name;
+          return team;
+        })
         // _.each(obj, xx => {
         //   console.log(xx.payload.doc.id, ' : ', xx.payload.doc.data());
         // })
@@ -66,9 +72,12 @@ export class TeamListComponent implements OnInit {
     var team_name = team.name;
     const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
     modalRef.result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
+      // the ok/delete case
+      // this.closeResult = `Closed with: ${result}`;
+      this.teamService.deleteTeam(team);
     }, (reason) => {
-      this.closeResult = `Dismissed ${reason}`;
+      // the cancel/dismiss case
+      // this.closeResult = `Dismissed ${reason}`;
     });
 
     modalRef.componentInstance.title = 'Delete Team?';

@@ -1,4 +1,4 @@
-
+{{closeResult}}
 <table class="table table-striped">
   <thead>
   <tr>
@@ -8,9 +8,9 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let team_member of teams">
+  <tr *ngFor="let team of teams">
     <td><a><i class="fa fa-edit fa-2x" aria-hidden="true" (click)="edit(team)"></i></a></td>
-    <td><a (click)="editTeam(team)">{{team_member.team_name}}</a></td>
+    <td><a (click)="editTeam(team)">{{team.name}}</a></td>
     <!-- <td>{{team.created.toDate()}}</td> -->
     <td><a><i class="fa fa-times fa-2x" aria-hidden="true" (click)="confirmDelete(team)"></i></a></td>
   </tr>

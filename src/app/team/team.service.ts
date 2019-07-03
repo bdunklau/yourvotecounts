@@ -55,6 +55,56 @@ export class TeamService {
     // https://stackoverflow.com/questions/47532694/firestore-transaction-update-multiple-documents-in-a-single-transaction?rq=1
   }
 
+  async deleteTeam(team: Team) {
+    let batch = this.afs.firestore.batch();
+    this.afs.collection('team_member', rf => rf.where("teamDocId", "==", team.id)).valueChanges().subscribe(obj => {
+      // console.log('obj = ', obj);
+      _.each(obj, ele => {
+        console.log('ele = ', ele);
+      })
+    })
+
+    ////////////////////////////////////////////
+    // SEE  deleteQueryBatch  for example of how to delete collection
+
+    
+
+
+    // console.log('team_members = ', team_members);
+    // _.each(team_members, team_member => {
+    //   console.log('team_member.ref = ', team_member.ref);
+    //   batch.delete(team_member.ref)
+    // });
+    // var team = this.afs.collection('team').doc(team.id);
+    // batch.delete(team.ref);
+    // batch.commit();
+  }
+
+
+
+
+  // exports.deleteUser = functions.auth.user().onDelete(async (user) => {
+  //   try {
+  //     var users = await db.collection('user').where('uid','==',user.uid).get();
+  //     const batch = db.batch();
+  //     users.forEach(function(user) {batch.delete(user.ref)})
+  //     return batch.commit()
+  //   } catch(err) {
+  //     return log.e({event: 'error deleting user', user: user})
+  //   }
+  // });
+
+
+
+
+
+
+
+
+
+
+
+
   getTeamsForUser(userId: string) {
     var retThis = this.afs.collection('team_member', ref => ref.where("userId", "==", userId)).snapshotChanges();
     return retThis;

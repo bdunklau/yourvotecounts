@@ -16,7 +16,7 @@
       </div>
 
     </div>
-    <div class="col"><app-team-list *ngIf="user" [selectedTeam]="onTeamSelected($event)" [teamListUser]="user"></app-team-list></div>
+    <div class="col"><app-team-list *ngIf="user" (selectedTeam)="onTeamSelected($event)" [teamListUser]="user"></app-team-list></div>
   </div>
 
 </div>
