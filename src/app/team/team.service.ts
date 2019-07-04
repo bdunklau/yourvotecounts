@@ -18,6 +18,18 @@ export class TeamService {
     private afs: AngularFirestore,
     private log: LogService) { }
 
+  addUserToTeam(team: Team, user: FirebaseUserModel) {
+    var teamMemberDocId = this.afs.createId();
+    this.afs.collection('team_member').doc(teamMemberDocId)
+       .set({teamMemberDocId: teamMemberDocId,
+             teamDocId: team.id,
+             created: firebase.firestore.Timestamp.now(),
+             team_name: team.name,
+             userId: user.uid,
+             displayName: user.displayName,
+             leader: false})
+  }
+
   create(teamName: string, user: FirebaseUserModel) {
     let team = new Team();
     var teamDocId = this.afs.createId();
@@ -60,6 +72,17 @@ export class TeamService {
       batch.commit();
     });
 
+  }
+
+
+  deleteTeamMember(team_member: TeamMember) {
+    this.afs.collection('team_member').doc(team_member.teamMemberDocId).ref.delete();
+  }
+
+
+  getMembers(team: Team) {
+    var retThis = this.afs.collection('team_member', ref => ref.where("teamDocId", "==", team.id)).snapshotChanges();
+    return retThis;
   }
 
 

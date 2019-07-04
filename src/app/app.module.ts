@@ -30,6 +30,7 @@ import { TeamComponent } from './team/team.component';
 import { TeamListComponent } from './team-list/team-list.component';
 import { TeamEditorComponent } from './team-editor/team-editor.component';
 import { NgbdModalConfirmComponent } from './util/ngbd-modal-confirm/ngbd-modal-confirm.component';
+import { TeamMemberEditorComponent } from './team-member-editor/team-member-editor.component';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { NgbdModalConfirmComponent } from './util/ngbd-modal-confirm/ngbd-modal-
     TeamListComponent,
     TeamEditorComponent,
     NgbdModalConfirmComponent,
+    TeamMemberEditorComponent,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [

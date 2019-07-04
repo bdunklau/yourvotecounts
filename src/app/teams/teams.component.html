@@ -4,15 +4,28 @@
 
   <div class="row">
     <div class="col">
-      <app-team-editor *ngIf="team"
-                        [teamNameValue]="team.name"
-                        [teamIdValue]="team.id"
-                        [user]="user"
-                        (editing)="onEditStateChange($event)">
-      </app-team-editor>
+      <div class="row">
+        <div class="col">
+          <app-team-editor *ngIf="team"
+                            [teamNameValue]="team.name"
+                            [teamIdValue]="team.id"
+                            [user]="user"
+                            (editing)="onEditStateChange($event)">
+          </app-team-editor>
+        </div>
+      </div>
 
-      <div *ngIf="!team">
-        <button id="create_team" type="button" (click)="startCreatingTeam()" class="btn btn-primary">Create Team</button>
+      <div class="row top-buffer">
+        <div class="col">
+
+          <app-team-member-editor *ngIf="team"
+                            [team]="team">
+          </app-team-member-editor>
+
+          <div *ngIf="!team">
+            <button id="create_team" type="button" (click)="startCreatingTeam()" class="btn btn-primary">Create Team</button>
+          </div>
+        </div>
       </div>
 
     </div>

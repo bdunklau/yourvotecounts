@@ -1,0 +1,16 @@
+
+
+<h5>Members of {{team.name}}</h5>
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th scope="col" colspan="2"><app-search-user-by-name (selectedUser)="onUserSelectedByName($event)"></app-search-user-by-name></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let team_member of team_members">
+    <td>{{team_member.displayName}}</td>
+    <td><a><i class="fa fa-times fa-2x" aria-hidden="true" (click)="confirmDelete(team_member)"></i></a></td>
+  </tr>
+  </tbody>
+</table>

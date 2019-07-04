@@ -1,19 +1,19 @@
 
+<h5>Team Editor</h5>
+<form (ngSubmit)="onSubmit()" #teamNameForm="ngForm">
+  <div class="form-group">
+    <input type="hidden" class="form-control" id="team_id_field" [(ngModel)]="teamIdValue" name="teamId" #teamId="ngModel">
 
-    <form (ngSubmit)="onSubmit()" #teamNameForm="ngForm">
-      <div class="form-group">
-        <input type="text" class="form-control" id="team_id_field" [(ngModel)]="teamIdValue" name="teamId" #teamId="ngModel">
+    <input type="text" class="form-control" id="team_name_field" [(ngModel)]="teamNameValue" name="teamName" #teamName="ngModel"
+        placeholder="Team Name" required>
+    <div [hidden]="teamName.valid || teamName.pristine"
+         class="alert alert-danger">
+      Team name is required
+    </div>
+  </div>
 
-        <input type="text" class="form-control" id="team_name_field" [(ngModel)]="teamNameValue" name="teamName" #teamName="ngModel"
-            placeholder="Team Name" required>
-        <div [hidden]="teamName.valid || teamName.pristine"
-             class="alert alert-danger">
-          Team name is required
-        </div>
-      </div>
+  <button id="save_team" type="submit" class="btn btn-success" [disabled]="!teamNameForm.form.valid">Save</button>
+  &nbsp;
+  <button id="cancel_team" type="button" (click)="cancelEditing()" class="btn btn-secondary">Cancel</button>
 
-      <button id="save_team" type="submit" class="btn btn-success" [disabled]="!teamNameForm.form.valid">Save</button>
-      &nbsp;
-      <button id="cancel_team" type="button" (click)="cancelEditing()" class="btn btn-secondary">Cancel</button>
-
-    </form>
+</form>
