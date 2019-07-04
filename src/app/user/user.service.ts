@@ -7,7 +7,6 @@ import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { FirebaseUserModel } from '../user/user.model';
-import { take } from 'rxjs/operators';
 import 'rxjs/add/operator/map'
 import { LogService } from '../log/log.service';
 import { MessageService } from '../core/message.service';
@@ -63,16 +62,6 @@ export class UserService {
       this.user.populate(userDoc.data());
       this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
       resolve(this.user);
-
-      // var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
-      // var sub = ref.subscribe((data: [FirebaseUserModel]) => {
-      //   user.displayName_lower = data[0].displayName_lower;
-      //   user.roles = data[0].roles
-      //   this.user = user
-      //   console.log('UserService:getCurrentUser(): this.user.hasRole("admin") = ', this.user.hasRole("admin"));
-      //   this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
-      //   resolve(this.user);
-      // })
     });
   }
 
@@ -88,7 +77,6 @@ export class UserService {
 
       }, err => {
         console.log('createFirebaseUserModel(): error: ', err);
-        // this.router.navigate(['/login']);
         return reject(err);
       })
     })
@@ -163,13 +151,6 @@ export class UserService {
         this.afs.collection('user').doc(user.uid).ref.update({displayName: value.displayName,
                                    displayName_lower: value.displayName.toLowerCase()});
 
-        // var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid)).snapshotChanges().pipe(take(1));
-        // ref.subscribe(data  => {
-        //   data.forEach(function(dt) {
-        //     dt.payload.doc.ref.update({displayName: value.displayName,
-        //                                displayName_lower: value.displayName.toLowerCase()});
-        //   })
-        // });
         this.messageService.updateUser(this.user);
         resolve();
       }, err => reject(err))
@@ -179,15 +160,6 @@ export class UserService {
   updateUser(value: FirebaseUserModel) {
     this.afs.collection('user').doc(value.uid).ref.update({displayName: value.displayName,
                                displayName_lower: value.displayName.toLowerCase()});
-
-    // this.afs.collection('user', rf => rf.where("uid", "==", value.uid)).snapshotChanges().pipe(take(1))
-    // .subscribe(data  => {
-    //   data.forEach(function(dt) {
-    //       value.displayName_lower = value.displayName.toLowerCase()
-    //       dt.payload.doc.ref.update({displayName: value.displayName,
-    //                                  displayName_lower: value.displayName_lower});
-    //     })
-    // });
   }
 
   // any user, not just the current user
