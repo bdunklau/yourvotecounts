@@ -6,6 +6,8 @@ import { FirebaseUserModel } from '../user/user.model';
 import { TeamMember } from './team-member.model';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
+import * as _ from 'lodash';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -24,31 +26,20 @@ export class TeamService {
     team.memberCount = 1;
     team.created = firebase.firestore.Timestamp.now();
     team.setCreator(user);
-    // let teamMember = new TeamMember(user);
-    // let teamMember = new TeamMember({teamMemberDocId: this.afs.createId(),
-    //                                  teamDocId: teamDocId,
-    //                                  team_name: teamName,
-    //                                  userId: user.uid,
-    //                                  displayName: user.displayName,
-    //                                  leader: true});
-    // team.members.push(teamMember);
 
     let batch = this.afs.firestore.batch();
     var teamRef = this.afs.collection('team').doc(teamDocId).ref;
     batch.set(teamRef, team.toObj());
 
-    var teamMemberRef = this.afs.collection('team_member').doc(this.afs.createId()).ref;
-    batch.set(teamMemberRef, {teamMemberDocId: this.afs.createId(),
+    var teamMemberDocId = this.afs.createId();
+    var teamMemberRef = this.afs.collection('team_member').doc(teamMemberDocId).ref;
+    batch.set(teamMemberRef, {teamMemberDocId: teamMemberDocId,
                                teamDocId: teamDocId,
                                created: firebase.firestore.Timestamp.now(),
                                team_name: teamName,
                                userId: user.uid,
                                displayName: user.displayName,
                                leader: true});
-
-    // user.teams.push(team.toObj());
-    // var userRef = this.afs.collection('user').doc(user.uid).ref;
-    // batch.update(userRef, {teams: user.teams});
     batch.commit();
 
     // good example of transactions:
@@ -57,52 +48,19 @@ export class TeamService {
 
   async deleteTeam(team: Team) {
     let batch = this.afs.firestore.batch();
-    this.afs.collection('team_member', rf => rf.where("teamDocId", "==", team.id)).valueChanges().subscribe(obj => {
-      // console.log('obj = ', obj);
-      _.each(obj, ele => {
-        console.log('ele = ', ele);
-      })
-    })
 
-    ////////////////////////////////////////////
-    // SEE  deleteQueryBatch  for example of how to delete collection
+    var teamRef = this.afs.collection('team').doc(team.id).ref;
+    batch.delete(teamRef);
 
-    
+    var ref = this.afs.collection('team_member', rf => rf.where("teamDocId", "==", team.id)).snapshotChanges().pipe(take(1));
+    ref.subscribe(data  => {
+      data.forEach(function(dt) {
+        batch.delete(dt.payload.doc.ref);
+      });
+      batch.commit();
+    });
 
-
-    // console.log('team_members = ', team_members);
-    // _.each(team_members, team_member => {
-    //   console.log('team_member.ref = ', team_member.ref);
-    //   batch.delete(team_member.ref)
-    // });
-    // var team = this.afs.collection('team').doc(team.id);
-    // batch.delete(team.ref);
-    // batch.commit();
   }
-
-
-
-
-  // exports.deleteUser = functions.auth.user().onDelete(async (user) => {
-  //   try {
-  //     var users = await db.collection('user').where('uid','==',user.uid).get();
-  //     const batch = db.batch();
-  //     users.forEach(function(user) {batch.delete(user.ref)})
-  //     return batch.commit()
-  //   } catch(err) {
-  //     return log.e({event: 'error deleting user', user: user})
-  //   }
-  // });
-
-
-
-
-
-
-
-
-
-
 
 
   getTeamsForUser(userId: string) {
@@ -111,6 +69,17 @@ export class TeamService {
   }
 
   update(teamId: string, teamName: string, user: FirebaseUserModel) {
-    // this.afs.collection('team').doc(teamId).update(team.toObj());
+    let batch = this.afs.firestore.batch();
+
+    var teamRef = this.afs.collection('team').doc(teamId).ref;
+    batch.update(teamRef, {name: teamName});
+
+    var ref = this.afs.collection('team_member', rf => rf.where("teamDocId", "==", teamId)).snapshotChanges().pipe(take(1));
+    ref.subscribe(data  => {
+      data.forEach(function(dt) {
+        batch.update(dt.payload.doc.ref, {team_name: teamName});
+      });
+      batch.commit();
+    });
   }
 }

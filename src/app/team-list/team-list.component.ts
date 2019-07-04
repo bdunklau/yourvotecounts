@@ -21,7 +21,7 @@ export class TeamListComponent implements OnInit {
   @Input() teamListUser: FirebaseUserModel;
   @Output() selectedTeam = new EventEmitter<Team>();
   phoneVal: string;
-  teams: TeamMember[];
+  teams: Team[];
   private subscription: Subscription;
 
   constructor(private route: ActivatedRoute,
@@ -46,7 +46,6 @@ export class TeamListComponent implements OnInit {
       .subscribe(objs => {
         console.log(objs);
         this.teams = _.map(objs, obj => {
-          new TeamMember(obj)
           let team = new Team();
           team.id = obj.teamDocId;
           team.name = obj.team_name;

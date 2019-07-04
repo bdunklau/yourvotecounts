@@ -6,7 +6,7 @@
     <div class="col">
       <app-team-editor *ngIf="team"
                         [teamNameValue]="team.name"
-                        [teamIdValue]="team.teamDocId"
+                        [teamIdValue]="team.id"
                         [user]="user"
                         (editing)="onEditStateChange($event)">
       </app-team-editor>
