@@ -85,18 +85,6 @@ export class TeamMemberEditorComponent implements OnInit {
       }
     }
     else {
-      // no special handling required when removing someone else because they can't be
-      // the last leader or the last member
-
-      // const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
-      // modalRef.result.then((result) => {
-      //   // the ok/delete case
-      //   // this.closeResult = `Closed with: ${result}`;
-      //   this.teamService.deleteTeamMember(team_member);
-      // }, (reason) => {
-      //   // the cancel/dismiss case
-      //   // this.closeResult = `Dismissed ${reason}`;
-      // });
       var modalRef = this.showDeleteModal(team_member);
 
       modalRef.componentInstance.title = `Remove ${team_member.displayName}?`;
@@ -105,38 +93,12 @@ export class TeamMemberEditorComponent implements OnInit {
       modalRef.componentInstance.warning_you = 'You can add this person at any time';
       modalRef.componentInstance.really_warning_you = '';
     }
-
-
-
-    // var team_name = team_member.team_name;
-    // const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
-    // modalRef.result.then((result) => {
-    //   // the ok/delete case
-    //   // this.closeResult = `Closed with: ${result}`;
-    //   this.teamService.deleteTeamMember(team_member);
-    // }, (reason) => {
-    //   // the cancel/dismiss case
-    //   // this.closeResult = `Dismissed ${reason}`;
-    // });
-    //
-    // if(deletingMyself) {
-    //   modalRef.componentInstance.title = `Remove Yourself?`;
-    //   modalRef.componentInstance.question = 'Are you sure you want to remove yourself';
-    //   modalRef.componentInstance.thing = '';
-    //   modalRef.componentInstance.warning_you = 'You will not be able to add yourself back to this team';
-    //   modalRef.componentInstance.really_warning_you = 'Someone else will have to add you back';
-    // } else {
-    //   modalRef.componentInstance.title = `Remove ${team_member.displayName}?`;
-    //   modalRef.componentInstance.question = 'Are you sure you want to remove ';
-    //   modalRef.componentInstance.thing = team_member.displayName;
-    //   modalRef.componentInstance.warning_you = 'You can add this person at any time';
-    //   modalRef.componentInstance.really_warning_you = '';
-    // }
   }
 
   onUserSelectedByName(user: FirebaseUserModel) {
     console.log("onUserSelectedByName(): user = ", user);
-    this.teamService.addUserToTeam(this.team, user);
+    if(user)
+      this.teamService.addUserToTeam(this.team, user);
   }
 
   showDeleteModal(team_member: TeamMember) {
