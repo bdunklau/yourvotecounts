@@ -62,8 +62,11 @@ export class TeamListComponent implements OnInit {
     this.subscription.unsubscribe();
   }
 
-  edit(team: Team) {
-    this.selectedTeam.emit(team);
+  async edit(notFullyPopulated: Team) {
+    let fullyPopulatedTeam = await this.teamService.getTeamData(notFullyPopulated.id);
+    // console.log('team: ', fullyPopulatedTeam);
+
+    this.selectedTeam.emit(fullyPopulatedTeam);
   }
 
   closeResult: string;

@@ -12,18 +12,11 @@ export class Team {
   creatorId: string;
   creatorName: string;
   creatorPhone: string;
-  // members: TeamMember[];
   memberCount = 0;
+  leaderCount = 0;
 
   constructor() {
-    // this.members = [];
   }
-
-  // toObj(): any {
-  //   var obj = this.toShallowObj();
-  //   obj['members'] = _.map(this.members, teamMember => teamMember.toObj());
-  //   return obj;
-  // }
 
   toObj(): any {
     return {id: this.id,
@@ -31,7 +24,9 @@ export class Team {
           created: this.created,
           creatorId: this.creatorId,
           creatorName: this.creatorName,
-          creatorPhone: this.creatorPhone};
+          creatorPhone: this.creatorPhone,
+          memberCount: this.memberCount,
+          leaderCount: this.leaderCount};
   }
 
   setCreator(user: FirebaseUserModel) {

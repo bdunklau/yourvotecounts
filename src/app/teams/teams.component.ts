@@ -39,7 +39,8 @@ export class TeamsComponent implements OnInit {
 
 
   onTeamSelected(team: Team) {
-    console.log('onSelectedTeam: team: ', team);
+    // console.log('onSelectedTeam: team: ', team);
+    // not a fully populated Team.  no member or leader counts returned
     this.team = team;
   }
 

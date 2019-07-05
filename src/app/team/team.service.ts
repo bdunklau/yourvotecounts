@@ -19,15 +19,20 @@ export class TeamService {
     private log: LogService) { }
 
   addUserToTeam(team: Team, user: FirebaseUserModel) {
+    let batch = this.afs.firestore.batch();
     var teamMemberDocId = this.afs.createId();
-    this.afs.collection('team_member').doc(teamMemberDocId)
-       .set({teamMemberDocId: teamMemberDocId,
-             teamDocId: team.id,
-             created: firebase.firestore.Timestamp.now(),
-             team_name: team.name,
-             userId: user.uid,
-             displayName: user.displayName,
-             leader: false})
+    var teamMemberRef = this.afs.collection('team_member').doc(teamMemberDocId).ref;
+    batch.set(teamMemberRef, {teamMemberDocId: teamMemberDocId,
+                              teamDocId: team.id,
+                              created: firebase.firestore.Timestamp.now(),
+                              team_name: team.name,
+                              userId: user.uid,
+                              displayName: user.displayName,
+                              leader: false});
+
+    var teamRef = this.afs.collection('team').doc(team.id).ref;
+    batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(1)});
+    batch.commit();
   }
 
   create(teamName: string, user: FirebaseUserModel) {
@@ -37,6 +42,8 @@ export class TeamService {
     team.name = teamName;
     team.memberCount = 1;
     team.created = firebase.firestore.Timestamp.now();
+    team.memberCount = 1;
+    team.leaderCount = 1;
     team.setCreator(user);
 
     let batch = this.afs.firestore.batch();
@@ -75,8 +82,22 @@ export class TeamService {
   }
 
 
-  deleteTeamMember(team_member: TeamMember) {
-    this.afs.collection('team_member').doc(team_member.teamMemberDocId).ref.delete();
+  async deleteTeamMember(team_member: TeamMember) {
+    let batch = this.afs.firestore.batch();
+    var teamMemberRef = this.afs.collection('team_member').doc(team_member.teamMemberDocId).ref;
+    var teamRef = this.afs.collection('team').doc(team_member.teamDocId).ref;
+    batch.delete(teamMemberRef);
+    batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(-1)});
+    if(team_member.leader)
+      batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(-1)});
+    await batch.commit();
+    return await this.getTeamData(team_member.teamDocId);
+  }
+
+
+  async getTeamData(teamDocId: string) {
+    var teamDoc = await this.afs.collection('team').doc(teamDocId).ref.get();
+    return teamDoc.data() as Team;
   }
 
 
