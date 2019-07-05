@@ -4,7 +4,11 @@
 <table class="table table-striped">
   <thead>
   <tr>
-    <th scope="col" colspan="2"><app-search-user-by-name (selectedUser)="onUserSelectedByName($event)"></app-search-user-by-name></th>
+    <th scope="col" colspan="2">
+      <app-search-user-by-name (selectedUser)="onUserSelectedByName($event)"
+                                [clearOnSelect]="true">
+      </app-search-user-by-name>
+    </th>
   </tr>
   </thead>
   <tbody>

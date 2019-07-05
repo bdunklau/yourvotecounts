@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter/*, Input*/, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import { Observable, /*of, Subject, Subscription*/ } from 'rxjs';
 import { UserService } from '../../user/user.service';
 import { debounceTime, distinctUntilChanged, switchMap, catchError  } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { FirebaseUserModel } from '../../user/user.model';
 export class SearchUserByNameComponent implements OnInit {
 
   @Output() selectedUser = new EventEmitter<FirebaseUserModel>();
+  @Input() clearOnSelect: string; // clear the search field when a name is selected?
   nameVal: string;
 
   constructor(private userService: UserService) { }
@@ -37,6 +38,7 @@ export class SearchUserByNameComponent implements OnInit {
    * display and list values. Maps `{displayName: "Some User", phoneNumber:"+15555554444" }` into a string
   */
   resultFormatNameListValue(value: any) {
+    // console.log('resultFormatNameListValue: value = ', value);
     return value.displayName;
   }
 
@@ -44,18 +46,25 @@ export class SearchUserByNameComponent implements OnInit {
   * This is what gets called when you make a selection and set the value of the name field
   */
   inputFormatNameListValue(value: any)   {
+    console.log('inputFormatNameListValue: value = ', value, ' this = ', this); // 'this' is an ngbTypeahead, not the SearchUserByNameComponent
     var retVal = value
     if(value.displayName)
       retVal = value.displayName;
     return retVal;
+    // return '';
   }
 
   // NOTE this:  (selectItem)="itemSelected($event)"
   // in search-user-by-name.component.html
   itemSelected($event) {
+    console.log('itemSelected: $event = ', $event, ' this = ', this);
     let user = new FirebaseUserModel();
     user.populate($event.item);
     this.selectedUser.emit(user);
+    if(this.clearOnSelect === 'true') {
+      this.nameVal = '';
+      // delete this.selectedUser;
+    }
   }
 
   checkEmpty($event) {
