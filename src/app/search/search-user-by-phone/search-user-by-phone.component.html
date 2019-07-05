@@ -3,7 +3,7 @@
          name="phoneSearchField"
          placeholder="Phone"
          class="form-control"
-         (blur)="checkEmpty()"
+         (blur)="checkEmpty($event)"
          (selectItem)="itemSelected($event)"
          [(ngModel)]="phoneVal"
          [ngbTypeahead]="search"
