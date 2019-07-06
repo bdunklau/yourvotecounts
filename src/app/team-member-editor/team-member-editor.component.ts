@@ -8,6 +8,7 @@ import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FirebaseUserModel } from '../user/user.model';
 import { UserService } from '../user/user.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-team-member-editor',
@@ -96,8 +97,10 @@ export class TeamMemberEditorComponent implements OnInit {
   }
 
   onUserSelectedByName(user: FirebaseUserModel) {
-    console.log("onUserSelectedByName(): user = ", user);
-    if(user)
+    if(!user) return;
+    var existing = _.find(this.team_members, {userId: user.uid});
+    // console.log("onUserSelectedByName(): user = ", user, ' team_members = ', this.team_members, ' existing = ',existing);
+    if(user && !existing)
       this.teamService.addUserToTeam(this.team, user);
   }
 
