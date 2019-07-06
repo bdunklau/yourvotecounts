@@ -12,7 +12,7 @@ import { FirebaseUserModel } from '../../user/user.model';
 export class SearchUserByNameComponent implements OnInit {
 
   @Output() selectedUser = new EventEmitter<FirebaseUserModel>();
-  @Input() clearOnSelect: string; // clear the search field when a name is selected?
+  @Input() clearOnSelected: string;
   nameVal: string;
 
   constructor(private userService: UserService) { }
@@ -46,12 +46,12 @@ export class SearchUserByNameComponent implements OnInit {
   * This is what gets called when you make a selection and set the value of the name field
   */
   inputFormatNameListValue(value: any)   {
-    console.log('inputFormatNameListValue: value = ', value, ' this = ', this); // 'this' is an ngbTypeahead, not the SearchUserByNameComponent
     var retVal = value
     if(value.displayName)
       retVal = value.displayName;
-    return retVal;
-    // return '';
+    var attr = this._elementRef.nativeElement.parentNode.attributes['ng-reflect-clear-on-selected'];
+    if(attr && attr.value === "true") return '';
+    else return retVal;
   }
 
   // NOTE this:  (selectItem)="itemSelected($event)"
@@ -61,10 +61,6 @@ export class SearchUserByNameComponent implements OnInit {
     let user = new FirebaseUserModel();
     user.populate($event.item);
     this.selectedUser.emit(user);
-    if(this.clearOnSelect === 'true') {
-      this.nameVal = '';
-      // delete this.selectedUser;
-    }
   }
 
   checkEmpty($event) {
