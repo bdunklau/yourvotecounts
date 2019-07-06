@@ -1,0 +1,13 @@
+
+  <input id="nameSearchField" type="text"
+         name="nameSearchField"
+         placeholder="Name"
+         class="form-control"
+         (blur)="checkEmpty($event)"
+         (selectItem)="itemSelected($event)"
+         [(ngModel)]="nameVal"
+         [ngbTypeahead]="searchName"
+         [resultFormatter]="resultFormatNameListValue"
+         [inputFormatter]="inputFormatNameListValue"
+         #instance="ngbTypeahead"
+    />

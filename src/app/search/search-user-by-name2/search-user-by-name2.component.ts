@@ -5,11 +5,11 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError  } from 'rxjs
 import { FirebaseUserModel } from '../../user/user.model';
 
 @Component({
-  selector: 'app-search-user-by-name',
-  templateUrl: './search-user-by-name.component.html',
-  styleUrls: ['./search-user-by-name.component.css']
+  selector: 'app-search-user-by-name2',
+  templateUrl: './search-user-by-name2.component.html',
+  styleUrls: ['./search-user-by-name2.component.css']
 })
-export class SearchUserByNameComponent implements OnInit {
+export class SearchUserByName2Component implements OnInit {
 
   @Output() selectedUser = new EventEmitter<FirebaseUserModel>();
   @Input() clearOnSelected: string;
@@ -46,15 +46,11 @@ export class SearchUserByNameComponent implements OnInit {
   * This is what gets called when you make a selection and set the value of the name field
   */
   inputFormatNameListValue(value: any)   {
-    var retVal = value
-    if(value.displayName)
-      retVal = value.displayName;
-    return retVal;
-    // var tp2 = this as unknown;
-    // var tp = tp2 as NgbTypeahead;
-    // var attr = tp._elementRef.nativeElement.parentNode.attributes['ng-reflect-clear-on-selected'];
-    // if(attr && attr.value === "true") return '';
-    // else return retVal;
+    // var retVal = value
+    // if(value.displayName)
+    //   retVal = value.displayName;
+    // return retVal;
+    return '';
   }
 
   // NOTE this:  (selectItem)="itemSelected($event)"

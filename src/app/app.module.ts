@@ -31,6 +31,7 @@ import { TeamListComponent } from './team-list/team-list.component';
 import { TeamEditorComponent } from './team-editor/team-editor.component';
 import { NgbdModalConfirmComponent } from './util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 import { TeamMemberEditorComponent } from './team-member-editor/team-member-editor.component';
+import { SearchUserByName2Component } from './search/search-user-by-name2/search-user-by-name2.component';
 
 
 @NgModule({
@@ -53,6 +54,7 @@ import { TeamMemberEditorComponent } from './team-member-editor/team-member-edit
     TeamEditorComponent,
     NgbdModalConfirmComponent,
     TeamMemberEditorComponent,
+    SearchUserByName2Component,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [

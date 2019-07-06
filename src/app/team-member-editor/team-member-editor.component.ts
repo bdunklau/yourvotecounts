@@ -2,13 +2,14 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Team } from '../team/team.model';
 import { TeamMember } from '../team/team-member.model';
 import { TeamService } from '../team/team.service';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subject/*, Observable*/, Subscription } from 'rxjs';
+import { /*map,*/ switchMap } from 'rxjs/operators';
 import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FirebaseUserModel } from '../user/user.model';
 import { UserService } from '../user/user.service';
 import * as _ from 'lodash';
+import { MessageService } from '../core/message.service';
 
 @Component({
   selector: 'app-team-member-editor',
@@ -22,27 +23,41 @@ export class TeamMemberEditorComponent implements OnInit {
   team_members: TeamMember[];
   user: FirebaseUserModel;
   private subscription: Subscription;
+  subject = new Subject<any>();
 
   constructor(private teamService: TeamService,
               private userService: UserService,
-              private _modalService: NgbModal) { }
+              private _modalService: NgbModal,
+              private messageService: MessageService) { }
 
   async ngOnInit() {
     this.user = await this.userService.getCurrentUser();
-    this.subscription = this.teamService.getMembers(this.team).pipe(
-      map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data() as TeamMember;
-          return data;
-          // const id = a.payload.doc.id;
-          // var returnThis = { id, ...data };
-          // return returnThis;
-        });
-      })
-    )
-    .subscribe(objs => {
-      this.team_members = objs;
+    // this.subscription = this.teamService.getMembers(this.team).pipe(
+    //   map(actions => {
+    //     return actions.map(a => {
+    //       const data = a.payload.doc.data() as TeamMember;
+    //       return data;
+    //       // const id = a.payload.doc.id;
+    //       // var returnThis = { id, ...data };
+    //       // return returnThis;
+    //     });
+    //   })
+    // )
+    // .subscribe(objs => {
+    //   this.team_members = objs;
+    // });
+
+
+
+    // // aka Dynamic Query
+    this.subscription = this.messageService.getTeamMembers().subscribe((something) => {
+      let xx:TeamMember[] = something as TeamMember[];
+      //console.log('xx = ', xx)
+      this.team_members = xx;
     });
+
+
+
   }
 
   ngOnDestroy() {

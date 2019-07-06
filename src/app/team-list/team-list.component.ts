@@ -6,9 +6,10 @@ import { Team } from '../team/team.model';
 import { TeamMember } from '../team/team-member.model';
 import { Subscription } from 'rxjs';
 import * as _ from 'lodash';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MessageService } from '../core/message.service';
 
 @Component({
   selector: 'app-team-list',
@@ -23,9 +24,11 @@ export class TeamListComponent implements OnInit {
   phoneVal: string;
   teams: Team[];
   private subscription: Subscription;
+  private memberSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
               private teamService: TeamService,
+              private messageService: MessageService,
               private _modalService: NgbModal) { }
 
   ngOnInit() {
@@ -51,22 +54,39 @@ export class TeamListComponent implements OnInit {
           team.name = obj.team_name;
           return team;
         })
-        // _.each(obj, xx => {
-        //   console.log(xx.payload.doc.id, ' : ', xx.payload.doc.data());
-        // })
       });
   }
 
   // always unsubscribe
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    if(this.memberSubscription) this.memberSubscription.unsubscribe();
   }
 
   async edit(notFullyPopulated: Team) {
     let fullyPopulatedTeam = await this.teamService.getTeamData(notFullyPopulated.id);
     // console.log('team: ', fullyPopulatedTeam);
 
-    this.selectedTeam.emit(fullyPopulatedTeam);
+    this.selectedTeam.emit(fullyPopulatedTeam); // TODO get rid of this and use MessageService in  teams.component and team-member-editor.component
+
+    if(this.memberSubscription) this.memberSubscription.unsubscribe();
+    console.log('fullyPopulatedTeam = ', fullyPopulatedTeam);
+    this.memberSubscription = this.teamService.getMembers(fullyPopulatedTeam as Team).pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data() as TeamMember;
+          return data;
+          // const id = a.payload.doc.id;
+          // var returnThis = { id, ...data };
+          // return returnThis;
+        });
+      })
+    )
+    .subscribe(team_members => {
+      console.log('team_members = ', team_members);
+      this.messageService.updateTeamMembers(team_members);
+    });
+
   }
 
   closeResult: string;

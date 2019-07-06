@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FirebaseUserModel } from '../user/user.model';
 import { UserService } from '../user/user.service';
 import * as _ from 'lodash';
@@ -40,7 +40,6 @@ export class TeamsComponent implements OnInit {
 
   onTeamSelected(team: Team) {
     // console.log('onSelectedTeam: team: ', team);
-    // not a fully populated Team.  no member or leader counts returned
     this.team = team;
   }
 
