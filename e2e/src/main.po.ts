@@ -55,6 +55,11 @@ export class MainPage extends BasePage {
     return this.getElement(by.id('myaccount_page'));
   }
 
+  getTeamsLink() {
+    this.pullDownMyMenu();
+    return this.getElement(by.id('teams_link'));
+  }
+
   getTitleText() {
     browser.ignoreSynchronization = true;
     return this.getElement(by.css('app-root h1')).getText() as Promise<string>;

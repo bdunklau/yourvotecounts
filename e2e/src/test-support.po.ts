@@ -60,6 +60,12 @@ export class TestSupport {
     return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/deleteLogs?event='+event+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
   }
 
+  // get a "random" team name
+  getTeamName() {
+    var ms = new Date().getTime();
+    return 'team_'+ms;
+  }
+
   getTitleText() {
     browser.sleep(100);
     browser.ignoreSynchronization = true;

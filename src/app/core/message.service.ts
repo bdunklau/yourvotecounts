@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { FirebaseUserModel } from '../user/user.model';
 import { TeamMember } from '../team/team-member.model';
+import { Team } from '../team/team.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class MessageService {
 
   // private myMessage = new Subject<string>();
   private user = new Subject<FirebaseUserModel>();
-  private team_members = new Subject<Team>();
+  private team_members = new Subject<TeamMember[]>();
 
   constructor() { }
 

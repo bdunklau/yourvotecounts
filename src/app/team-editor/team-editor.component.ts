@@ -38,6 +38,12 @@ export class TeamEditorComponent implements OnInit {
     }
     else
       this.teamService.update(this.teamIdValue, this.teamNameValue, this.user);
+    this.clearFields();
+  }
+
+  private clearFields() {
+    this.teamNameValue = '';
+    this.teamIdValue = '';
   }
 
 }
