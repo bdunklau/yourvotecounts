@@ -7,20 +7,10 @@ import { TestSupport } from './test-support.po';
 
 export class TeamPage extends BasePage {
 
-  async createTeam() {
-    var btn = await this.getCreateTeamButton();
-    console.log('btn = ', btn);
-    btn.click();
-  }
-
   enterTeamName(name: string) {
     var fld = this.getTeamNameField();
     fld.clear();
     fld.sendKeys(name)
-  }
-
-  getCreateTeamButton() {
-    return this.getElement(by.id('create_team'));
   }
 
   getCancelButton() {

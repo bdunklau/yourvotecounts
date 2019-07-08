@@ -18,38 +18,42 @@ fdescribe('Team page', () => {
   });
 
 
-  fit('should be able to create a team', () => {
+  fit('should be able to create a team', async () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.goto('');
-    browser.sleep(5000);
+    // browser.sleep(5000);
     page.pullDownMyMenu();
     page.getElement(by.id('teams_link')).click();
-    expect(teamPage.getElement(by.id('team_name_field')).isPresent()).toBeFalsy('the team name field should not have been displayed because we have not clicked Create Team yet');
-    // expect(teamPage.getCreateTeamButton().isDisplayed()).toBeTruthy('the Create Team button should be displayed')
-    // teamPage.createTeam();
-    // expect(teamPage.getCreateTeamButton().isDisplayed()).toBeFalsy('the Create Team button should not be displayed.  It should disappear when we click it.')
-    // expect(teamPage.getTeamNameField().isDisplayed()).toBeTruthy('the team name field should have been displayed because we clicked Create Team button');
-    // expect(teamPage.getSaveButton().isDisplayed()).toBeTruthy('the save button should be displayed but it wasn\'t');
-    // expect(teamPage.getSaveButton().isEnabled()).toBeFalsy('the save button should be disabled because we have not entered anything into the Team Name field yet');
-    // expect(teamPage.getCancelButton().isDisplayed()).toBeTruthy('the Cancel button should be displayed');
-    // expect(teamPage.getCancelButton().isEnabled()).toBeTruthy('the Cancel button should be enabled');
-    // var teamName = testSupport.getTeamName();
-    // teamPage.enterTeamName(teamName);
-    // // at some point, we'll want to enter more than just the team name
-    // expect(teamPage.getSaveButton().isEnabled()).toBeTruthy('the save button should be enabled because we entered a Team Name');
-    //
-    // teamPage.saveTeam();
-    //
-    // // Verify team is displayed in a list
-    // var teamIdInList = 'team_in_list_'+teamName
-    // var teamElement = teamPage.getElement(by.id(teamIdInList));
-    // expect(teamElement.isPresent()).toBeTruthy('expected the team list to contain an html element with id "'+teamIdInList+'" but did not find it')
-    //
+    expect(element(by.id('team_name_field')).isPresent()).toBeFalsy('the team name field should not have been displayed because we have not clicked Create Team yet');
+    expect(teamPage.getElement(by.id('create_team')).isDisplayed()).toBeTruthy('the Create Team button should be displayed');
+
+    teamPage.getElement(by.id('create_team')).click();
+    expect(element(by.id('create_team')).isPresent()).toBeFalsy('the Create Team button should not be displayed.  It should disappear when we click it.');
+    expect(teamPage.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should have been displayed because we clicked Create Team button');
+    expect(teamPage.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should be displayed but it wasn\'t');
+    expect(teamPage.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled because we have not entered anything into the Team Name field yet');
+    expect(teamPage.getElement(by.id('cancel_team')).isDisplayed()).toBeTruthy('the Cancel button should be displayed');
+    expect(teamPage.getElement(by.id('cancel_team')).isEnabled()).toBeTruthy('the Cancel button should be enabled');
+
+    var teamName = testSupport.getTeamName();
+    teamPage.enterTeamName(teamName);
+    // at some point, we'll want to enter more than just the team name
+    expect(teamPage.getElement(by.id('save_team')).isEnabled()).toBeTruthy('the save button should be enabled because we entered a Team Name');
+
+    teamPage.saveTeam();
+
+    // Verify team is displayed in a list
+    var teamIdInList = 'team_in_list_'+teamName
+    var teamElement = teamPage.getElement(by.id(teamIdInList));
+    expect(teamElement.isPresent()).toBeTruthy('expected the team list to contain an html element with id "'+teamIdInList+'" but did not find it');
+    var val = await teamPage.getElement(by.id('team_name_field')).getText();
+    expect(val === '').toBeTruthy('the team name field should be empty after creating the team'); // but it was: '+txt);
+
     // teamPage.getTeamNameField().getText().then(txt => {
     //   expect(txt === '').toBeTruthy('the team name field should be empty after creating the team but it was: '+txt);
     // })
-    //
-    //
+
+
     // expect(teamPage.getSaveButton().isDisplayed()).toBeTruthy('the save button should be displayed but it wasn\'t');
     // expect(teamPage.getSaveButton().isEnabled()).toBeFalsy('the save button should be disabled because we just saved the team and the name field is now empty');
     //
