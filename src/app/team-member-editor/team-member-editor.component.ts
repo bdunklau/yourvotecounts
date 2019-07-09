@@ -25,6 +25,8 @@ export class TeamMemberEditorComponent implements OnInit {
   private subscription: Subscription;
   private teamSubscription: Subscription;
   subject = new Subject<any>();
+  canAddMembers = false;
+  canDeleteMembers = false;
 
   constructor(private teamService: TeamService,
               private userService: UserService,
@@ -36,16 +38,26 @@ export class TeamMemberEditorComponent implements OnInit {
 
     this.subscription = this.messageService.getTeamMembers().subscribe((something) => {
       let xx:TeamMember[] = something as TeamMember[];
-      //console.log('xx = ', xx)
+      console.log('ngOnInit: this.team_members = xx = ', xx)
       this.team_members = xx;
+      this.setMemberEditPermissions(this.user, this.team, this.team_members);
     });
 
-    this.teamSubscription = this.messageService.getTeam().subscribe(team => {this.team = team});
+    this.teamSubscription = this.messageService.getTeam().subscribe(team => {
+      this.team = team;
+      this.setMemberEditPermissions(this.user, this.team, this.team_members);
+    });
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.teamSubscription.unsubscribe();
+  }
+
+  setMemberEditPermissions(user: FirebaseUserModel, team: Team, team_members: TeamMember[]) {
+    if(!user || !team || !team_members) return false;
+    this.canAddMembers = user.canAddTeamMembers(team, team_members);
+    this.canDeleteMembers = user.canRemoveTeamMembers(team, team_members);
   }
 
   async confirmDelete(team_member: TeamMember) {
@@ -99,8 +111,11 @@ export class TeamMemberEditorComponent implements OnInit {
     if(!user) return;
     var existing = _.find(this.team_members, {userId: user.uid});
     // console.log("onUserSelectedByName(): user = ", user, ' team_members = ', this.team_members, ' existing = ',existing);
-    if(user && !existing)
+    if(user && !existing) {
+      console.log('onUserSelectedByName():  this.team = ', this.team);
+      console.log('onUserSelectedByName():  user = ', user);
       this.teamService.addUserToTeam(this.team, user);
+    }
   }
 
   showDeleteModal(team_member: TeamMember) {

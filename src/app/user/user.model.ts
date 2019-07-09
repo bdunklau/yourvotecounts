@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { Team } from '../team/team.model';
+import { TeamMember } from '../team/team-member.model';
 
 export class FirebaseUserModel {
   uid: string; // the doc id
@@ -45,5 +46,20 @@ export class FirebaseUserModel {
   hasRole(role: string): boolean {
     var idx = _.findIndex(this.roles, function(o) { return o == role; });
     return idx != -1
+  }
+
+  canAddTeamMembers(team: Team, team_members: TeamMember[]): boolean {
+    return this.canRemoveTeamMembers(team, team_members);
+  }
+
+  canRemoveTeamMembers(team: Team, team_members: TeamMember[]): boolean {
+    var findMe = _.find(team_members, {userId: this.uid});
+    if(!findMe) {
+      console.log('return false because findMe is undef')
+      return false;
+    }
+    var val = findMe.leader;
+    console.log('return findMe.leader = ', findMe.leader);
+    return val;
   }
 }

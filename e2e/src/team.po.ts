@@ -19,6 +19,13 @@ export class TeamPage extends BasePage {
     browser.sleep(500);
     // enter the full name, no partial entry - that is tested elsewhere
     this.enterUserByName(this.args.addedPerson.displayName);
+
+
+    // THIS IS A BUG - TAKE THIS OUT FIXME
+    // HACK - for some reason, only in protractor, we have to click the Edit pencil to make the new team member appear.
+    // In real life, the new team member appears as soon as they are selected from the nameSearchField drop-down - weird
+    // NOT IDEAL - if the user ever stopped appearing in real life, this test won't catch it TODO
+    // this.getElement(by.id('edit_team_'+this.args.teamName)).click();
   }
 
   beginDeletePerson() {
@@ -60,6 +67,10 @@ export class TeamPage extends BasePage {
     this.beginDeleteTeam();
     this.getElement(by.id('modal_ok')).click();
     browser.sleep(500);
+  }
+
+  editTeam() {
+    this.getElement(by.id('edit_team_'+this.args.teamName)).click();
   }
 
   enterPartialName(name, length) {
@@ -108,6 +119,12 @@ export class TeamPage extends BasePage {
     expect(this.getElement(by.id(memberIdField)).isPresent()).toBeTruthy('expected the team page to contain an element with id of '+memberIdField+' but it was not present');
     //  ...with a heading containing the team name
     expect(await this.getElement(by.id('team_member_heading')).getText() == 'Members of '+this.args.teamName).toBeTruthy('expected the team member list to display this heading "Members of '+this.args.teamName+'" but it didn\'t');
+  }
+
+
+  verifyMembersCannotBeRemoved() {
+    // make sure delete_team_member_  anywhere on the page
+    browser.sleep(500);
   }
 
 
@@ -184,11 +201,6 @@ export class TeamPage extends BasePage {
 
 
   async verifyPersonAdded() {
-    // HACK - for some reason, only in protractor, we have to click the Edit pencil to make the new team member appear.
-    // In real life, the new team member appears as soon as they are selected from the nameSearchField drop-down - weird
-    // NOT IDEAL - if the user ever stopped appearing in real life, this test won't catch it TODO
-    this.getElement(by.id('edit_team_'+this.args.teamName)).click();
-
     // verify the person was added
     var id = 'team_member_'+this.args.addedPerson.displayName;
     expect(this.getElement(by.id(id)).isDisplayed()).toBeTruthy('expected this new team member to be found on the page by id attribute, but it wasn\'t: '+id);

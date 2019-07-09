@@ -64,11 +64,14 @@ export class TeamListComponent implements OnInit {
   }
 
   async edit(notFullyPopulated: Team) {
+    console.log('notFullyPopulated = ', notFullyPopulated);
     let fullyPopulatedTeam = await this.teamService.getTeamData(notFullyPopulated.id);
     // console.log('team: ', fullyPopulatedTeam);
 
     this.selectedTeam.emit(fullyPopulatedTeam); // TODO get rid of this and use MessageService in  teams.component and team-member-editor.component
 
+
+    // FIXME - I think instead we want to do this as soon as the team is created
     if(this.memberSubscription) this.memberSubscription.unsubscribe();
     console.log('fullyPopulatedTeam = ', fullyPopulatedTeam);
     this.memberSubscription = this.teamService.getMembers(fullyPopulatedTeam as Team).pipe(

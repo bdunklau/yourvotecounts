@@ -2,7 +2,7 @@
 <div id="team_member_editor" *ngIf="team">
 <h5 id="team_member_heading">Members of {{team.name}}</h5>
 <table class="table table-striped">
-  <thead>
+  <thead *ngIf="canAddMembers">
   <tr>
     <th scope="col" colspan="2">
       <app-search-user-by-name2 (selectedUser)="onUserSelectedByName($event)">
@@ -13,7 +13,7 @@
   <tbody>
   <tr *ngFor="let team_member of team_members">
     <td id="team_member_{{team_member.displayName}}">{{team_member.displayName}}</td>
-    <td><a id="delete_team_member_{{team_member.displayName}}">
+    <td><a [hidden]="!canDeleteMembers" id="delete_team_member_{{team_member.displayName}}" class="delete_team_member">
           <i class="fa fa-times fa-2x"
               aria-hidden="true"
               (click)="confirmDelete(team_member)"></i></a>

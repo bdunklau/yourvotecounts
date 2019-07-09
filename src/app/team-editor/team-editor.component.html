@@ -17,8 +17,6 @@
 
   <button id="save_team" type="submit" class="btn btn-success" [disabled]="!teamNameForm.form.valid">Save</button>
   &nbsp;
-  <button id="cancel_team" type="button" (click)="cancelEditing()" class="btn btn-secondary">Cancel</button>
+  <button id="cancel_team" type="button" (click)="cancelEditing(teamNameForm)" class="btn btn-secondary">Cancel</button>
 
-  teamName.valid = {{teamName.valid}}<P>
-  teamName.pristine = {{teamName.pristine}}
 </form>

@@ -64,7 +64,7 @@ describe('Team page', () => {
 
     testSupport.setNames(testSupport.names);
 
-    testSupport.login(testSupport.normalUser.phoneNumber);
+    testSupport.login(testSupport.names[0].phoneNumber);
     browser.sleep(500);
     page.goto('');
     browser.sleep(500);
@@ -102,12 +102,47 @@ describe('Team page', () => {
 
 
   it('should not let non-leaders remove people', async () => {
-    expect(false).toBeTruthy('test not written yet');
+    testSupport.setNames(testSupport.names);
+
+    testSupport.login(testSupport.names[0].phoneNumber);
+    browser.sleep(500);
+    page.goto('');
+    browser.sleep(500);
+
+    page.clickTeams();
+    teamPage.createTeam();
+    teamPage.fillOutForm();
+    teamPage.saveTeam();
+
+    teamPage.addSomeoneToTeam();
+    page.clickLogout();
+
+    testSupport.login(testSupport.normalUser2.phoneNumber); // the "added" person
+    page.goto('');
+    page.clickTeams();
+    teamPage.editTeam();
+    teamPage.verifyMemberListIsDisplayed();
+    teamPage.verifyMembersCannotBeRemoved();
+
+
+    // clean up
+    teamPage.deleteTeam();
+
+    page.clickLogout();
   })
 
 
   it('should not let non-leaders add people', async () => {
     expect(false).toBeTruthy('test not written yet');
+  })
+
+
+  // Click a team to edit
+  // Then cancel
+  // Then click Create Team
+  // Verify the member list is not displayed - this is a bug - it IS currently displayed
+  it('should not show member list when creating team', async () => {
+    expect(false).toBeTruthy('test not written yet - Verify the member list is not displayed - this is a bug - it IS currently displayed');
   })
 
 

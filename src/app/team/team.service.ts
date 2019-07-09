@@ -24,13 +24,14 @@ export class TeamService {
     let batch = this.afs.firestore.batch();
     var teamMemberDocId = this.afs.createId();
     var teamMemberRef = this.afs.collection('team_member').doc(teamMemberDocId).ref;
-    batch.set(teamMemberRef, {teamMemberDocId: teamMemberDocId,
-                              teamDocId: team.id,
-                              created: firebase.firestore.Timestamp.now(),
-                              team_name: team.name,
-                              userId: user.uid,
-                              displayName: user.displayName,
-                              leader: false});
+    var teamMember = {teamMemberDocId: teamMemberDocId,
+                      teamDocId: team.id,
+                      created: firebase.firestore.Timestamp.now(),
+                      team_name: team.name,
+                      userId: user.uid,
+                      displayName: user.displayName,
+                      leader: false}
+    batch.set(teamMemberRef, teamMember);
 
     var teamRef = this.afs.collection('team').doc(team.id).ref;
     batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(1)});
