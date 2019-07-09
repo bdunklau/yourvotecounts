@@ -23,6 +23,11 @@ export class MainPage extends BasePage {
     this.getElement(by.id('myaccount_link')).click();
   }
 
+  clickTeams() {
+    this.pullDownMyMenu();
+    this.getElement(by.id('teams_link')).click();
+  }
+
   clickUser() {
     this.getElement(by.id('user_link')).click();
   }
@@ -55,10 +60,10 @@ export class MainPage extends BasePage {
     return this.getElement(by.id('myaccount_page'));
   }
 
-  getTeamsLink() {
-    this.pullDownMyMenu();
-    return this.getElement(by.id('teams_link'));
-  }
+  // getTeamsLink() {
+  //   this.pullDownMyMenu();
+  //   return this.getElement(by.id('teams_link'));
+  // }
 
   getTitleText() {
     browser.ignoreSynchronization = true;

@@ -23,12 +23,14 @@ fdescribe('Team page', () => {
     browser.sleep(500);
     page.goto('');
     browser.sleep(500);
-    page.pullDownMyMenu();
-    page.getElement(by.id('teams_link')).click();
+    // page.pullDownMyMenu();
+    // page.getElement(by.id('teams_link')).click();
+    page.clickTeams();
     expect(element(by.id('team_name_field')).isPresent()).toBeFalsy('the team name field should not have been displayed because we have not clicked Create Team yet');
     expect(teamPage.getElement(by.id('create_team')).isDisplayed()).toBeTruthy('the Create Team button should be displayed');
 
-    teamPage.getElement(by.id('create_team')).click();
+    // teamPage.getElement(by.id('create_team')).click();
+    teamPage.createTeam();
     expect(element(by.id('create_team')).isPresent()).toBeFalsy('the Create Team button should not be displayed.  It should disappear when we click it.');
     expect(teamPage.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should have been displayed because we clicked Create Team button');
     expect(teamPage.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should be displayed but it wasn\'t');

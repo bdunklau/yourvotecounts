@@ -7,6 +7,10 @@ import { TestSupport } from './test-support.po';
 
 export class TeamPage extends BasePage {
 
+  createTeam() {
+    this.getElement(by.id('create_team')).click();
+  }
+
   enterTeamName(name: string) {
     var fld = this.getTeamNameField();
     fld.clear();
