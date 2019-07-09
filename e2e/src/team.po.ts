@@ -8,15 +8,31 @@ import * as moment from 'moment'
 export class TeamPage extends BasePage {
 
   constructor(private args: {teamName: string,
-                             creator: {displayName: string, phoneNumber: string, uid: string}
+                             creator: {displayName: string, phoneNumber: string, uid: string},
+                             addedPerson: {displayName: string, phoneNumber: string, uid: string}
                             })
   {
     super();
   }
 
+  addSomeoneToTeam() {
+    browser.sleep(500);
+    // enter the full name, no partial entry - that is tested elsewhere
+    this.enterUserByName(this.args.addedPerson.displayName);
+  }
+
+  beginDeletePerson() {
+    var deletePersonId = "delete_team_member_"+this.args.addedPerson.displayName;
+    this.getElement(by.id(deletePersonId)).click();
+  }
+
   beginDeleteTeam() {
     var deleteTeamId = "delete_team_"+this.args.teamName;
     this.getElement(by.id(deleteTeamId)).click();
+  }
+
+  cancelDeletePerson() {
+    this.getElement(by.id('modal_cancel')).click();
   }
 
   cancelDeleteTeam() {
@@ -34,18 +50,35 @@ export class TeamPage extends BasePage {
     this.getElement(by.id('create_team')).click();
   }
 
-  deleteTeam() {
-    // Delete - now proceed with the delete
-    var deleteTeamId = "delete_team_"+this.args.teamName;
-    this.getElement(by.id(deleteTeamId)).click();
+  deletePerson() {
+    this.beginDeletePerson();
     this.getElement(by.id('modal_ok')).click();
     browser.sleep(500);
+  }
+
+  deleteTeam() {
+    this.beginDeleteTeam();
+    this.getElement(by.id('modal_ok')).click();
+    browser.sleep(500);
+  }
+
+  enterPartialName(name, length) {
+    var fld = this.getElement(by.id('nameSearchField'));
+    fld.clear();
+    fld.sendKeys(name.substring(0, length));
   }
 
   enterTeamName(name: string) {
     var fld = this.getTeamNameField();
     fld.clear();
     fld.sendKeys(name)
+  }
+
+  enterUserByName(name) {
+    var fld = this.getElement(by.id('nameSearchField'));
+    fld.clear();
+    fld.sendKeys(name.substring(0, name.length-2));
+    this.getElement(by.tagName('ngb-highlight')).click();
   }
 
   fillOutForm() {
@@ -78,6 +111,13 @@ export class TeamPage extends BasePage {
   }
 
 
+  verifyOnBeginDeletePerson() {
+    // should be a modal displayed
+    expect(this.getElement(by.id('modal_ok')).isPresent()).toBeTruthy('expected modal to be displayed with an OK button but present');
+    expect(this.getElement(by.id('modal_ok')).isDisplayed()).toBeTruthy('expected OK button in modal to be displayed');
+  }
+
+
   verifyPageAfterClearingForm() {
     expect(this.getElement(by.id('team_name_invalid')).isDisplayed()).toBeTruthy('expected validation error on the team name field to be displayed because the team name field is empty');
   }
@@ -103,12 +143,13 @@ export class TeamPage extends BasePage {
   }
 
 
+  verifyPageOnCancelDeletePerson() {
+    // same page as...
+    this.verifyPersonAdded();
+  }
+
+
   async verifyPageOnCancelDeleteTeam() {
-    // verify the form is cleared and the save button is disabled
-    // expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should still be displayed after cancelling the delete');
-    // expect(await this.getElement(by.id('team_name_field')).getText() === '').toBeTruthy('the team name field should have been empty after cancelling the delete');
-    // expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should have been displayed but it wasn\'t');
-    // expect(this.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled because the form was reset and we just cancelled the delete');
     this.verifyTeamEditorSectionIsCorrectAfterSaving()
   }
 
@@ -123,6 +164,15 @@ export class TeamPage extends BasePage {
   }
 
 
+  verifyPageOnDeletePerson() {
+    var teamIdInList = 'team_in_list_'+this.args.teamName;
+    var memberIdField = "team_member_"+this.args.addedPerson.displayName;
+    expect(this.getElement(by.id('team_member_editor')).isDisplayed()).toBeTruthy('the team member list should still be displayed because we only deleted a team member');
+    expect(this.getElement(by.id(teamIdInList)).isDisplayed()).toBeTruthy('expected the team list to contain this html element id="'+teamIdInList+'" because we only deleted a team member');
+    expect(element(by.id(memberIdField)).isPresent()).toBeFalsy('did not expect the team page to contain to team member id='+memberIdField+' because we just deleted this person');
+  }
+
+
   verifyPageOnDeleteTeam() {
     // Verify - the team member section is gone
     var teamIdInList = 'team_in_list_'+this.args.teamName;
@@ -130,6 +180,20 @@ export class TeamPage extends BasePage {
     expect(element(by.id('team_member_editor')).isPresent()).toBeFalsy('the team member list should not be displayed because just deleted a team');
     expect(element(by.id(teamIdInList)).isPresent()).toBeFalsy('did not expect the team list to contain this html element id="'+teamIdInList+'" because we just deleted this team');
     expect(element(by.id(memberIdField)).isPresent()).toBeFalsy('did not expect the team page to contain to team member id='+memberIdField+' because we just deleted the '+this.args.teamName+' team so we shouldn\'t be displaying the member list.');
+  }
+
+
+  async verifyPersonAdded() {
+    // HACK - for some reason, only in protractor, we have to click the Edit pencil to make the new team member appear.
+    // In real life, the new team member appears as soon as they are selected from the nameSearchField drop-down - weird
+    // NOT IDEAL - if the user ever stopped appearing in real life, this test won't catch it TODO
+    this.getElement(by.id('edit_team_'+this.args.teamName)).click();
+
+    // verify the person was added
+    var id = 'team_member_'+this.args.addedPerson.displayName;
+    expect(this.getElement(by.id(id)).isDisplayed()).toBeTruthy('expected this new team member to be found on the page by id attribute, but it wasn\'t: '+id);
+    var nm = await this.getElement(by.id('nameSearchField')).getText()
+    expect(nm === '').toBeTruthy('expected the nameSearchField in the Team Members section to be empty, but it was actually: '+nm);
   }
 
 

@@ -5,7 +5,7 @@ import { TeamPage } from './team.po';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
-fdescribe('Team page', () => {
+describe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -15,11 +15,12 @@ fdescribe('Team page', () => {
     page = new MainPage();
     testSupport = new TestSupport();
     teamPage = new TeamPage({teamName: testSupport.getTeamName(),
-                            creator: testSupport.normalUser});
+                            creator: testSupport.normalUser,
+                            addedPerson: testSupport.normalUser2});
   });
 
 
-  fit('should be able to create a team', async () => {
+  it('should be able to create and delete a team', async () => {
     testSupport.login(testSupport.normalUser.phoneNumber);
     browser.sleep(500);
     page.goto('');
@@ -56,6 +57,57 @@ fdescribe('Team page', () => {
     teamPage.verifyPageOnDeleteTeam();
 
     page.clickLogout();
+  });
+
+
+  it('should be able to add and remove people from a team', () => {
+
+    testSupport.setNames(testSupport.names);
+
+    testSupport.login(testSupport.normalUser.phoneNumber);
+    browser.sleep(500);
+    page.goto('');
+    browser.sleep(500);
+
+    page.clickTeams();
+    teamPage.createTeam();
+    teamPage.fillOutForm();
+    teamPage.saveTeam();
+
+    teamPage.addSomeoneToTeam();
+    teamPage.verifyPersonAdded();
+
+    teamPage.beginDeletePerson();
+    teamPage.verifyOnBeginDeletePerson();
+
+    teamPage.cancelDeletePerson();
+    teamPage.verifyPageOnCancelDeletePerson();
+
+    teamPage.deletePerson();
+    teamPage.verifyPageOnDeletePerson();
+
+    // clean up
+    teamPage.deleteTeam();
+
+    page.clickLogout();
+  })
+
+
+  // We have to test the drop down here because it's a different component than the one
+  // in the log page.  This one clears its contents when a name is chosen
+  it('should display correct list of users in dropdown', async () => {
+    expect(false).toBeTruthy('test not written yet');
+    // see  logPage.getNamesInDropdown()
+  })
+
+
+  it('should not let non-leaders remove people', async () => {
+    expect(false).toBeTruthy('test not written yet');
+  })
+
+
+  it('should not let non-leaders add people', async () => {
+    expect(false).toBeTruthy('test not written yet');
   })
 
 

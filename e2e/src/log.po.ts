@@ -16,12 +16,6 @@ export class LogPage extends BasePage {
     this.getElement(by.css('.btn.btn-outline-secondary.calendar')).click();
   }
 
-  enterPartialName(name, length) {
-    var fld = this.getElement(by.id('nameSearchField'));
-    fld.clear();
-    fld.sendKeys(name.substring(0, length));
-  }
-
   getCalendar() {
     return this.getElement(by.tagName('ngb-datepicker'));
   }
@@ -76,13 +70,6 @@ export class LogPage extends BasePage {
     // elements are still on the page because the calendar can be configured to display them.
     var selector = '[class="ngb-dp-day"][aria-label="'+dt+'"]';
     this.getElement(by.css(selector)).click();
-  }
-
-  queryForUserByName(name) {
-    var fld = this.getElement(by.id('nameSearchField'));
-    fld.clear();
-    fld.sendKeys(name);
-    this.getElement(by.tagName('ngb-highlight')).click();
   }
 
   queryForUserByPhone(name) {

@@ -21,7 +21,7 @@ describe('Normal user', () => {
   it('should not be able to navigate to /log', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
-    browser.sleep(2000);
+    browser.sleep(500);
     page.goto('/log');
     expect(page.getHomeElement().isPresent()).toBeTruthy();
     expect(page.getUrl()).toEqual(browser.baseUrl+'/home');

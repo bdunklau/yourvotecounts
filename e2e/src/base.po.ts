@@ -13,6 +13,19 @@ export class BasePage {
     field.sendKeys(Key.BACK_SPACE);
   }
 
+  enterUserByName(name) {
+    var fld = this.getElement(by.id('nameSearchField'));
+    fld.clear();
+    fld.sendKeys(name);
+    this.getElement(by.tagName('ngb-highlight')).click();
+  }
+
+  enterPartialName(name, length) {
+    var fld = this.getElement(by.id('nameSearchField'));
+    fld.clear();
+    fld.sendKeys(name.substring(0, length));
+  }
+
   getElement(locator) {
     var EC=protractor.ExpectedConditions;
     var ele=element(locator);

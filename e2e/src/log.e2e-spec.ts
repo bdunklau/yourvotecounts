@@ -89,7 +89,7 @@ describe('Log page', () => {
     var func = function(expecteds, len) {
       logPage.enterPartialName(expecteds[0].displayName, len);
       logPage.getNamesInDropdown().then(function(elements) {
-        browser.sleep(1000);
+        browser.sleep(500);
         var promises = [];
         _.forEach(elements, element => {
           promises.push(element.getText());
@@ -273,7 +273,7 @@ describe('Log page', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();
     var theName = testSupport.names[0].displayName
-    logPage.queryForUserByName(theName);
+    logPage.enterUserByName(theName);
     logPage.getNamesInLog().then(function(elements) {
       var promises = [];
       _.forEach(elements, element => {

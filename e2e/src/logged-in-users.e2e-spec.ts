@@ -59,7 +59,7 @@ describe('Logged in users', () => {
 
 
   it('should be able to edit name', async () => {
-    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    testSupport.login(testSupport.normalUser.phoneNumber);
     page.clickHome();
     page.clickMyAccount();
     myAccountPage.clickEdit();

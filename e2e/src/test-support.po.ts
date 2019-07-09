@@ -6,14 +6,19 @@ import * as moment from 'moment';
 
 export class TestSupport {
 
-  names = [
-    {displayName: 'Bre222nt', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2, uid: '1111111111'},
-    {displayName: 'Bre444nt', phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER, uid: '222222222'},
-  ]
-
   normalUser = {displayName: 'Bre444nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER,
                 uid: '222222222'}
+
+
+  normalUser2 = {displayName: 'Bre222nt',
+                phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2,
+                uid: '1111111111'}
+
+  names = [
+    this.normalUser,
+    this.normalUser2,
+  ]
 
 
   fmt = 'MM/DD/YYYY';
@@ -75,6 +80,9 @@ export class TestSupport {
   getToken() {
     browser.sleep(100);
     browser.ignoreSynchronization = true;
+
+    // If this ever throws an not-found error, make sure the user/phone number is actually in the database
+    // under the Authentication section
     return element(by.css('h4')).getText() as Promise<string>;
   }
 
@@ -101,12 +109,16 @@ export class TestSupport {
   }
 
   setName(obj) {
+    console.log('setName():  obj = ', obj);
     this.login(obj.phoneNumber);
     let page = new MainPage();
     let myAccountPage = new MyAccountPage();
     page.clickHome();
+    browser.sleep(500);
     page.clickMyAccount();
+    browser.sleep(500);
     myAccountPage.clickEdit();
+    browser.sleep(500);
     myAccountPage.enterName(obj.displayName);
     browser.sleep(300);
     myAccountPage.clickSubmit();

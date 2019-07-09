@@ -13,9 +13,11 @@
   <tbody>
   <tr *ngFor="let team_member of team_members">
     <td id="team_member_{{team_member.displayName}}">{{team_member.displayName}}</td>
-    <td><a><i class="fa fa-times fa-2x"
+    <td><a id="delete_team_member_{{team_member.displayName}}">
+          <i class="fa fa-times fa-2x"
               aria-hidden="true"
-              (click)="confirmDelete(team_member)"></i></a></td>
+              (click)="confirmDelete(team_member)"></i></a>
+    </td>
   </tr>
   </tbody>
 </table>

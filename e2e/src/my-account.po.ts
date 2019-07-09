@@ -6,6 +6,7 @@ import { BasePage } from './base.po';
 export class MyAccountPage extends BasePage {
 
   clickEdit() {
+    // FAIL?  If this fails, you probably don't have a displayName set for the user, just a phone number 
     this.getElement(by.id('edit_my_account')).click();
   }
 

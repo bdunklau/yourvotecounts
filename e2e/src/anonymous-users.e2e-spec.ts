@@ -17,14 +17,14 @@ describe('Anonymous users', () => {
   it('should be redirected from /user to /login', () => {
     page.goto('/user');
     browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
-    browser.sleep(1000);
+    browser.sleep(300);
     expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
   });
 
   it('should be redirected from /myaccount to /login', () => {
     page.goto('/myaccount');
     browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
-    browser.sleep(1000);
+    browser.sleep(300);
     expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
   });
 
