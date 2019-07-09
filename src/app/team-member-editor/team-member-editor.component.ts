@@ -23,6 +23,7 @@ export class TeamMemberEditorComponent implements OnInit {
   team_members: TeamMember[];
   user: FirebaseUserModel;
   private subscription: Subscription;
+  private teamSubscription: Subscription;
   subject = new Subject<any>();
 
   constructor(private teamService: TeamService,
@@ -32,36 +33,19 @@ export class TeamMemberEditorComponent implements OnInit {
 
   async ngOnInit() {
     this.user = await this.userService.getCurrentUser();
-    // this.subscription = this.teamService.getMembers(this.team).pipe(
-    //   map(actions => {
-    //     return actions.map(a => {
-    //       const data = a.payload.doc.data() as TeamMember;
-    //       return data;
-    //       // const id = a.payload.doc.id;
-    //       // var returnThis = { id, ...data };
-    //       // return returnThis;
-    //     });
-    //   })
-    // )
-    // .subscribe(objs => {
-    //   this.team_members = objs;
-    // });
 
-
-
-    // // aka Dynamic Query
     this.subscription = this.messageService.getTeamMembers().subscribe((something) => {
       let xx:TeamMember[] = something as TeamMember[];
       //console.log('xx = ', xx)
       this.team_members = xx;
     });
 
-
-
+    this.teamSubscription = this.messageService.getTeam().subscribe(team => {this.team = team});
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.teamSubscription.unsubscribe();
   }
 
   async confirmDelete(team_member: TeamMember) {

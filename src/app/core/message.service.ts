@@ -12,6 +12,7 @@ export class MessageService {
   // private myMessage = new Subject<string>();
   private user = new Subject<FirebaseUserModel>();
   private team_members = new Subject<TeamMember[]>();
+  private team = new Subject<Team>();
 
   constructor() { }
 
@@ -23,12 +24,20 @@ export class MessageService {
   //   this.myMessage.next(message);
   // }
 
+  getTeam(): Observable<Team> {
+    return this.team.asObservable();
+  }
+
   getTeamMembers(): Observable<TeamMember[]> {
     return this.team_members.asObservable();
   }
 
   getUser(): Observable<FirebaseUserModel> {
      return this.user.asObservable();
+  }
+
+  updateTeam(team: Team) {
+    this.team.next(team);
   }
 
   updateTeamMembers(team_members: TeamMember[]) {

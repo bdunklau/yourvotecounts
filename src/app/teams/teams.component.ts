@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FirebaseUserModel } from '../user/user.model';
 import { UserService } from '../user/user.service';
 import * as _ from 'lodash';
 import { ActivatedRoute/*, CanActivate, RouterStateSnapshot, Router*/ } from '@angular/router';
 import { Team } from '../team/team.model';
+import { /*Subject, Observable*/ Subscription } from 'rxjs';
 
 
 @Component({
@@ -30,6 +31,9 @@ export class TeamsComponent implements OnInit {
       //   }
       // }
     });
+  }
+
+  ngOnDestroy() {
   }
 
 

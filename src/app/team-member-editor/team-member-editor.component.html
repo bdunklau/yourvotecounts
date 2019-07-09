@@ -1,6 +1,6 @@
 
-
-<h5>Members of {{team.name}}</h5>
+<div id="team_member_editor" *ngIf="team">
+<h5 id="team_member_heading">Members of {{team.name}}</h5>
 <table class="table table-striped">
   <thead>
   <tr>
@@ -19,3 +19,4 @@
   </tr>
   </tbody>
 </table>
+</div>

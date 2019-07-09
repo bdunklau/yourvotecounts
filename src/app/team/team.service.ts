@@ -8,6 +8,7 @@ import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import { take } from 'rxjs/operators';
+import { MessageService } from '../core/message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class TeamService {
 
   constructor(
     private afs: AngularFirestore,
+    private messageService: MessageService,
     private log: LogService) { }
 
   addUserToTeam(team: Team, user: FirebaseUserModel) {
@@ -52,14 +54,18 @@ export class TeamService {
 
     var teamMemberDocId = this.afs.createId();
     var teamMemberRef = this.afs.collection('team_member').doc(teamMemberDocId).ref;
-    batch.set(teamMemberRef, {teamMemberDocId: teamMemberDocId,
-                               teamDocId: teamDocId,
-                               created: firebase.firestore.Timestamp.now(),
-                               team_name: teamName,
-                               userId: user.uid,
-                               displayName: user.displayName,
-                               leader: true});
-    batch.commit();
+    var teamMember = {teamMemberDocId: teamMemberDocId,
+                     teamDocId: teamDocId,
+                     created: firebase.firestore.Timestamp.now(),
+                     team_name: teamName,
+                     userId: user.uid,
+                     displayName: user.displayName,
+                     leader: true}
+    batch.set(teamMemberRef, teamMember);
+    batch.commit().then(() => {
+      this.messageService.updateTeam(team);
+      this.messageService.updateTeamMembers([teamMember as TeamMember]);
+    });
 
     // good example of transactions:
     // https://stackoverflow.com/questions/47532694/firestore-transaction-update-multiple-documents-in-a-single-transaction?rq=1
@@ -76,7 +82,9 @@ export class TeamService {
       data.forEach(function(dt) {
         batch.delete(dt.payload.doc.ref);
       });
-      batch.commit();
+      batch.commit().then(() => {
+        this.messageService.updateTeam(null);
+      });
     });
 
   }

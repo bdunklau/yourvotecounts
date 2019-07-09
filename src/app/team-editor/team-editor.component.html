@@ -1,12 +1,15 @@
 
 <h5>Team Editor</h5>
-<form (ngSubmit)="onSubmit()" #teamNameForm="ngForm">
+<form (ngSubmit)="onSubmit(teamNameForm)" #teamNameForm="ngForm">
   <div class="form-group">
-    <input type="hidden" class="form-control" id="team_id_field" [(ngModel)]="teamIdValue" name="teamId" #teamId="ngModel">
+    <input type="hidden" class="form-control" id="team_id_field" [(ngModel)]="teamIdValue"
+            name="teamId" #teamId="ngModel">
 
-    <input type="text" class="form-control" id="team_name_field" [(ngModel)]="teamNameValue" name="teamName" #teamName="ngModel"
-        placeholder="Team Name" required>
+    <input type="text" class="form-control" id="team_name_field" [(ngModel)]="teamNameValue"
+            name="teamName" #teamName="ngModel" placeholder="Team Name" required>
+
     <div [hidden]="teamName.valid || teamName.pristine"
+         id="team_name_invalid"
          class="alert alert-danger">
       Team name is required
     </div>
@@ -16,4 +19,6 @@
   &nbsp;
   <button id="cancel_team" type="button" (click)="cancelEditing()" class="btn btn-secondary">Cancel</button>
 
+  teamName.valid = {{teamName.valid}}<P>
+  teamName.pristine = {{teamName.pristine}}
 </form>

@@ -11,7 +11,7 @@
     <td><a><i class="fa fa-edit fa-2x" aria-hidden="true" (click)="edit(team)"></i></a></td>
     <td id="team_in_list_{{team.name}}">{{team.name}}</td>
     <!-- <td>{{team.created.toDate()}}</td> -->
-    <td id="delete_team_{{team.name}}"><a><i class="fa fa-times fa-2x" aria-hidden="true" (click)="confirmDelete(team)"></i></a></td>
+    <td><a id="delete_team_{{team.name}}"><i class="fa fa-times fa-2x" aria-hidden="true" (click)="confirmDelete(team)"></i></a></td>
   </tr>
   </tbody>
 </table>

@@ -5,11 +5,12 @@ import * as firebase from 'firebase/app';
 import { FirebaseUserModel } from '../user/user.model';
 import { UserService } from '../user/user.service';
 import { TeamMember } from '../team/team-member.model';
+import { NgForm, /*FormControl, FormGroup*/ } from '@angular/forms';
 
 @Component({
   selector: 'app-team-editor',
   templateUrl: './team-editor.component.html',
-  styleUrls: ['./team-editor.component.css']
+  styleUrls: ['./team-editor.component.css'],
 })
 export class TeamEditorComponent implements OnInit {
 
@@ -18,6 +19,10 @@ export class TeamEditorComponent implements OnInit {
   @Input() teamIdValue: string;
   @Input() user: FirebaseUserModel;
   @Output() editing = new EventEmitter<boolean>();
+  // teamForm = new FormGroup({
+  //   teamId: new FormControl(''),
+  //   teamName: new FormControl(''),
+  // });
 
   constructor(private teamService: TeamService,
               private userService: UserService) { }
@@ -26,11 +31,12 @@ export class TeamEditorComponent implements OnInit {
     // this.editing = false;
   }
 
-  cancelEditing() {
+  cancelEditing(form: NgForm) {
     this.editing.emit(false);
+    form.reset();
   }
 
-  onSubmit() {
+  onSubmit(form: NgForm) {
     // this.editing = false;
     console.log('onSubmit:  this.user = ', this.user);
     if(!this.teamIdValue) {
@@ -38,12 +44,12 @@ export class TeamEditorComponent implements OnInit {
     }
     else
       this.teamService.update(this.teamIdValue, this.teamNameValue, this.user);
-    this.clearFields();
+    form.reset();
   }
 
-  private clearFields() {
-    this.teamNameValue = '';
-    this.teamIdValue = '';
-  }
+  // private clearFields() {
+  //   this.teamNameValue = '';
+  //   this.teamIdValue = '';
+  // }
 
 }
