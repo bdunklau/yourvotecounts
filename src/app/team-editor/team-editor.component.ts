@@ -47,9 +47,4 @@ export class TeamEditorComponent implements OnInit {
     form.reset();
   }
 
-  // private clearFields() {
-  //   this.teamNameValue = '';
-  //   this.teamIdValue = '';
-  // }
-
 }
