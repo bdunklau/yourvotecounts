@@ -22,7 +22,8 @@ export class TeamMemberEditorComponent implements OnInit {
   @Input() team: Team;
   team_members: TeamMember[];
   user: FirebaseUserModel;
-  private subscription: Subscription;
+  private teamMemberSubscription: Subscription;
+  private teamMemberListSubscription: Subscription;
   private teamSubscription: Subscription;
   subject = new Subject<any>();
   canAddMembers = false;
@@ -36,9 +37,16 @@ export class TeamMemberEditorComponent implements OnInit {
   async ngOnInit() {
     this.user = await this.userService.getCurrentUser();
 
-    this.subscription = this.messageService.getTeamMembers().subscribe((something) => {
+    this.teamMemberSubscription = this.messageService.getTeamMember().subscribe((something) => {
+      let team_member = something as TeamMember;
+      console.log('ngOnInit: teamMemberSubscription: team_member = ', team_member);
+      if(!this.team_members) this.team_members = [];
+      this.team_members.push(team_member);
+    })
+
+    this.teamMemberListSubscription = this.messageService.getTeamMembers().subscribe((something) => {
       let xx:TeamMember[] = something as TeamMember[];
-      console.log('ngOnInit: this.team_members = xx = ', xx)
+      console.log('ngOnInit: this.team_members = xx = ', xx);
       this.team_members = xx;
       this.setMemberEditPermissions(this.user, this.team, this.team_members);
     });
@@ -50,7 +58,8 @@ export class TeamMemberEditorComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.teamMemberSubscription.unsubscribe();
+    this.teamMemberListSubscription.unsubscribe();
     this.teamSubscription.unsubscribe();
   }
 

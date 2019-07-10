@@ -35,7 +35,9 @@ export class TeamService {
 
     var teamRef = this.afs.collection('team').doc(team.id).ref;
     batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(1)});
-    batch.commit();
+    batch.commit().then(() => {
+      this.messageService.addTeamMember(teamMember as TeamMember);
+    });
   }
 
   create(teamName: string, user: FirebaseUserModel) {

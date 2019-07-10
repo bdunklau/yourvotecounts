@@ -122,9 +122,15 @@ export class TeamPage extends BasePage {
   }
 
 
+  verifyMembersCannotBeAdded() {
+    // make sure no delete_team_member_  anywhere on the page
+    expect(element(by.id('nameSearchField')).isPresent()).toBeFalsy('unexpectedly found the nameSearchField. Should not have found nameSearchField because the user does not have the permission to add people to the team');
+  }
+
+
   verifyMembersCannotBeRemoved() {
-    // make sure delete_team_member_  anywhere on the page
-    browser.sleep(500);
+    // make sure no delete_team_member_  anywhere on the page
+    expect(element(by.xpath("//*[contains(., 'delete_team_member_')]")).isPresent()).toBeFalsy('unexpectedly found instances of delete_team_member_Xxxx on the page. Should not have found these because the user does not have the permission to remove people from the team');
   }
 
 
@@ -178,6 +184,8 @@ export class TeamPage extends BasePage {
     expect(this.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled because we have not entered anything into the Team Name field yet');
     expect(this.getElement(by.id('cancel_team')).isDisplayed()).toBeTruthy('the Cancel button should be displayed');
     expect(this.getElement(by.id('cancel_team')).isEnabled()).toBeTruthy('the Cancel button should be enabled');
+    // we DON'T want the team member section to be visible yet...
+    expect(element(by.id('team_member_editor')).isPresent()).toBeFalsy('did not expect the team member editor section to be visible. We just started creating a team.');
   }
 
 

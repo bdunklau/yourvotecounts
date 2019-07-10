@@ -38,7 +38,7 @@ export class TeamEditorComponent implements OnInit {
 
   onSubmit(form: NgForm) {
     // this.editing = false;
-    console.log('onSubmit:  this.user = ', this.user);
+    // console.log('onSubmit:  this.user = ', this.user);
     if(!this.teamIdValue) {
       this.teamService.create(this.teamNameValue, this.user);
     }

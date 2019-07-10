@@ -5,7 +5,7 @@ import { TeamPage } from './team.po';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
-describe('Team page', () => {
+fdescribe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -101,7 +101,7 @@ describe('Team page', () => {
   })
 
 
-  it('should not let non-leaders remove people', async () => {
+  fit('should not let non-leaders add and remove people', async () => {
     testSupport.setNames(testSupport.names);
 
     testSupport.login(testSupport.names[0].phoneNumber);
@@ -122,27 +122,21 @@ describe('Team page', () => {
     page.clickTeams();
     teamPage.editTeam();
     teamPage.verifyMemberListIsDisplayed();
+    teamPage.verifyMembersCannotBeAdded();
     teamPage.verifyMembersCannotBeRemoved();
-
+    page.clickLogout();
 
     // clean up
+    testSupport.login(testSupport.names[0].phoneNumber); // the "added" person
+    page.goto('');
+    page.clickTeams();
     teamPage.deleteTeam();
-
     page.clickLogout();
   })
 
 
-  it('should not let non-leaders add people', async () => {
+  it('should not let someone delete a team that did not create it', async () => {
     expect(false).toBeTruthy('test not written yet');
-  })
-
-
-  // Click a team to edit
-  // Then cancel
-  // Then click Create Team
-  // Verify the member list is not displayed - this is a bug - it IS currently displayed
-  it('should not show member list when creating team', async () => {
-    expect(false).toBeTruthy('test not written yet - Verify the member list is not displayed - this is a bug - it IS currently displayed');
   })
 
 

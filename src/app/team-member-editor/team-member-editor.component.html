@@ -1,5 +1,5 @@
 
-<div id="team_member_editor" *ngIf="team">
+<div id="team_member_editor" *ngIf="team && team.id">
 <h5 id="team_member_heading">Members of {{team.name}}</h5>
 <table class="table table-striped">
   <thead *ngIf="canAddMembers">
