@@ -117,9 +117,12 @@ fdescribe('Team page', () => {
     teamPage.addSomeoneToTeam();
     page.clickLogout();
 
-    testSupport.login(testSupport.normalUser2.phoneNumber); // the "added" person
+    testSupport.login(testSupport.names[1].phoneNumber); // the "added" person
+    browser.sleep(500);
     page.goto('');
+    browser.sleep(500);
     page.clickTeams();
+    browser.sleep(500);
     teamPage.editTeam();
     teamPage.verifyMemberListIsDisplayed();
     teamPage.verifyMembersCannotBeAdded();

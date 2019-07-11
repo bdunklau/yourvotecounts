@@ -15,7 +15,7 @@ import { MessageService } from '../core/message.service';
   selector: 'app-team-list',
   templateUrl: './team-list.component.html',
   styleUrls: ['./team-list.component.css'],
-  providers: [NgbActiveModal]
+  providers: [NgbActiveModal, FirebaseUserModel]
 })
 export class TeamListComponent implements OnInit {
 
