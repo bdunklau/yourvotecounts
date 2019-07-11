@@ -29,7 +29,10 @@ export class TeamListComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private teamService: TeamService,
               private messageService: MessageService,
-              private _modalService: NgbModal) { }
+              private _modalService: NgbModal,
+              teamListUser: FirebaseUserModel) {
+    this.teamListUser = teamListUser;
+  }
 
   ngOnInit() {
     this.teams = [];

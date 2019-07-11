@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+// import {CommonServiceModuleStub, AngularFirestoreStub} from './core/common.module';
 import { NgbdModalConfirmComponent } from './ngbd-modal-confirm.component';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 describe('NgbdModalConfirmComponent', () => {
   let component: NgbdModalConfirmComponent;
@@ -8,7 +9,10 @@ describe('NgbdModalConfirmComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NgbdModalConfirmComponent ]
+      declarations: [ NgbdModalConfirmComponent ],
+      providers: [NgbActiveModal
+        // {provide: AngularFirestore, useClass: AngularFirestoreStub}
+      ]
     })
     .compileComponents();
   }));
