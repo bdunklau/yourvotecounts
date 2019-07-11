@@ -5,7 +5,7 @@ import { TeamPage } from './team.po';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
-fdescribe('Team page', () => {
+describe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -101,7 +101,7 @@ fdescribe('Team page', () => {
   })
 
 
-  fit('should not let non-leaders add and remove people', async () => {
+  it('should not let non-leaders add and remove people', async () => {
     testSupport.setNames(testSupport.names);
 
     testSupport.login(testSupport.names[0].phoneNumber);

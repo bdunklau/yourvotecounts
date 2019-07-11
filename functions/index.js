@@ -24,3 +24,6 @@ const ts = require('./test-support/create-log');
 exports.createLog = ts.createLog
 exports.createLogs = ts.createLogs
 exports.deleteLogs = ts.deleteLogs
+
+const user = require('./api/user');
+exports.getUser = user.getUser
