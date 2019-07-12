@@ -1,6 +1,7 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
+import { Api } from './api.po';
 
 describe('Normal user', () => {
   let page: MainPage;
@@ -8,7 +9,7 @@ describe('Normal user', () => {
 
   beforeEach(() => {
     page = new MainPage();
-    testSupport = new TestSupport();
+    testSupport = new TestSupport(new Api());
   });
 
   it( 'should not see a Log link', () => {
@@ -21,7 +22,7 @@ describe('Normal user', () => {
   it('should not be able to navigate to /log', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickHome();
-    browser.sleep(2000);
+    browser.sleep(500);
     page.goto('/log');
     expect(page.getHomeElement().isPresent()).toBeTruthy();
     expect(page.getUrl()).toEqual(browser.baseUrl+'/home');

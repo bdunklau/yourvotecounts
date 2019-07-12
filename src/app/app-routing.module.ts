@@ -10,9 +10,10 @@ import { UserService } from './user/user.service';
 // import { RegisterGuard } from './register/register.guard';
 import { HomeComponent } from './home/home.component';
 import { LogComponent } from './log/log.component';
-import { UsersComponent } from './users/users.component'
-import { TokenComponent } from './token/token.component'
-import { MyAccountComponent } from './my-account/my-account.component'
+import { UsersComponent } from './users/users.component';
+import { TokenComponent } from './token/token.component';
+import { MyAccountComponent } from './my-account/my-account.component';
+import { TeamsComponent } from './teams/teams.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -20,6 +21,8 @@ const routes: Routes = [
   { path: 'log', component: LogComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'login', component: LoginComponent },
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard] },
+  { path: 'teams/:teamDocId', component: TeamsComponent, canActivate: [AuthGuard], resolve: { data: UserResolver} },
+  { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard], resolve: { data: UserResolver} },
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'user', component: UserComponent,  resolve: { data: UserResolver}},

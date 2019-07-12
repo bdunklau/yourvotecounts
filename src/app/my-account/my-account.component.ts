@@ -37,4 +37,10 @@ export class MyAccountComponent implements OnInit {
       this.editing = true;
     }
 
+    cancel() {
+      this.editing = false;
+      this.nameValue = this.user.displayName;
+      this.phoneNumber = this.user.phoneNumber;
+    }
+
 }

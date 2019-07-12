@@ -17,9 +17,14 @@ exports.deleteUser = auth.deleteUser
 exports.logDeleteUser = auth.logDeleteUser
 exports.initiateDeleteUser = auth.initiateDeleteUser
 exports.createCustomToken = auth.createCustomToken
+exports.updateUser = auth.updateUser
 
 // test support, not app code
 const ts = require('./test-support/create-log');
 exports.createLog = ts.createLog
 exports.createLogs = ts.createLogs
 exports.deleteLogs = ts.deleteLogs
+
+const user = require('./api/user');
+exports.getUser = user.getUser;
+exports.setUser = user.setUser

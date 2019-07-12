@@ -25,6 +25,13 @@ import { SearchUserByPhoneComponent } from './search/search-user-by-phone/search
 import { SearchUserByNameComponent } from './search/search-user-by-name/search-user-by-name.component';
 import { SearchLogByLevelComponent } from './search/search-log-by-level/search-log-by-level.component';
 import { DateChooserComponent } from './util/date-chooser/date-chooser.component';
+import { TeamsComponent } from './teams/teams.component';
+import { TeamComponent } from './team/team.component';
+import { TeamListComponent } from './team-list/team-list.component';
+import { TeamEditorComponent } from './team-editor/team-editor.component';
+import { NgbdModalConfirmComponent } from './util/ngbd-modal-confirm/ngbd-modal-confirm.component';
+import { TeamMemberEditorComponent } from './team-member-editor/team-member-editor.component';
+import { SearchUserByName2Component } from './search/search-user-by-name2/search-user-by-name2.component';
 
 
 @NgModule({
@@ -41,7 +48,15 @@ import { DateChooserComponent } from './util/date-chooser/date-chooser.component
     SearchUserByNameComponent,
     SearchLogByLevelComponent,
     DateChooserComponent,
+    TeamsComponent,
+    TeamComponent,
+    TeamListComponent,
+    TeamEditorComponent,
+    NgbdModalConfirmComponent,
+    TeamMemberEditorComponent,
+    SearchUserByName2Component,
   ],
+  entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -49,8 +64,8 @@ import { DateChooserComponent } from './util/date-chooser/date-chooser.component
     AngularFirestoreModule, // imports firebase/firestore, only needed for database features
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features
     FormsModule, ReactiveFormsModule,
-    NgbModule,
-    HttpClientModule
+    NgbModule.forRoot(),
+    HttpClientModule,
   ],
   bootstrap: [AppComponent]
 })

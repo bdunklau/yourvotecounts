@@ -7,9 +7,11 @@ import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { FirebaseUserModel } from '../user/user.model';
-import { take } from 'rxjs/operators';
+import 'rxjs/add/operator/map'
 import { LogService } from '../log/log.service';
 import { MessageService } from '../core/message.service';
+import { Team } from '../team/team.model';
+import { map } from 'rxjs/operators';
 
 
 @Injectable()
@@ -26,17 +28,70 @@ export class UserService {
   ){ }
 
   ngOnInit() {
-
+    // isn't this just for components, not services?
   }
 
   ngOnDestroy() {
-    // unsubscribe to all subscriptions here
+    // isn't this just for components, not services?
   }
 
 
   signOut() {
     this.user = null
     this.messageService.updateUser(this.user);
+  }
+
+  async getCurrentUser() : Promise<FirebaseUserModel> {
+    if(this.user) {
+      // TODO verified on 6//10/19 but not part of automated testing yet.  Need a mock/spy LogService
+      return this.user
+    }
+    var user = await this.createFirebaseUserModel()
+    .catch(function(error) {
+      console.log('getCurrentUser():  error: ', error);
+    })
+
+    if(!user) {
+      console.log('getCurrentUser() user = ', user, '  so return early');
+      return null;
+    }
+
+    return new Promise<FirebaseUserModel>(async (resolve, reject) => {
+      var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
+      this.user = user;
+      this.user.populate(userDoc.data());
+      this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
+      resolve(this.user);
+    });
+  }
+
+
+  // create FirebaseUserModel from firebase.user
+  private createFirebaseUserModel() : Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.getFirebaseUser()
+      .then(res => {
+        console.log("user.service.ts:resolve() res = ", res);
+        let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(res)
+        return resolve(user);
+
+      }, err => {
+        console.log('createFirebaseUserModel(): error: ', err);
+        return reject(err);
+      })
+    })
+  }
+
+  private getFirebaseUser() {
+    return new Promise<any>((resolve, reject) => {
+      var user = firebase.auth().onAuthStateChanged(function(user){
+        if (user) {
+          resolve(user);
+        } else {
+          reject('No user logged in');
+        }
+      })
+    })
   }
 
   searchByName(nameVal, limit) {
@@ -58,74 +113,15 @@ export class UserService {
       .valueChanges();
   }
 
-  async getCurrentUser() : Promise<FirebaseUserModel> {
-    if(this.user) {
-      // TODO verified on 6//10/19 but not part of automated testing yet.  Need a mock/spy LogService
-      return this.user
-    }
-    var user = await this.createFirebaseUserModel()
-    .catch(function(error) {
-      console.log('getCurrentUser():  error: ', error);
-    })
 
-    if(!user) {
-      console.log('getCurrentUser() user = ', user, '  so return early');
-      return null;
-    }
-
-    return new Promise<FirebaseUserModel>(async (resolve, reject) => {
-      var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
-      var sub = ref.subscribe((data: [FirebaseUserModel]) => {
-        user.displayName_lower = data[0].displayName_lower;
-        user.roles = data[0].roles
-        this.user = user
-        this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
-        resolve(this.user)
-      })
-    });
-  }
-
-
-  // create FirebaseUserModel from firebase.user
-  private createFirebaseUserModel() : Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.getFirebaseUser()
-      .then(res => {
-        console.log("user.service.ts:resolve() res = ", res);
-        let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(res)
-        return resolve(user);
-
-      }, err => {
-        console.log('createFirebaseUserModel(): error: ', err);
-        // this.router.navigate(['/login']);
-        return reject(err);
-      })
-    })
-  }
-
-  private getFirebaseUser() {
-    return new Promise<any>((resolve, reject) => {
-      var user = firebase.auth().onAuthStateChanged(function(user){
-        if (user) {
-          resolve(user);
-        } else {
-          reject('No user logged in');
-        }
-      })
-    })
-  }
-
-  setFirebaseUser(firebase_auth_currentUser) {
+  async setFirebaseUser(firebase_auth_currentUser) {
     let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
+    this.user = new FirebaseUserModel();
     console.log('setFirebaseUser(): user.uid = ', user.uid);
-    var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid).limit(1)).valueChanges().pipe(take(1));
-    // the pipe(take(1)) automatically unsubscribes after the first result
-    ref.subscribe((data:[FirebaseUserModel]) => {
-      console.log('setFirebaseUser(): ref.subscribe:  data = ', data)
-      if(data && data[0]) user.roles = data[0].roles
-      this.user = user
-      this.messageService.updateUser(this.user) // how app.component.ts knows we have a user now
-    })
+    var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
+    this.user.populate(userDoc.data());
+    console.log('setFirebaseUser(): this.user = ', this.user);
+    this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
   }
 
   private firebaseUserToFirebaseUserModel(firebase_auth_currentUser):FirebaseUserModel {
@@ -152,17 +148,18 @@ export class UserService {
       }).then( () => {
         // now we have to update the /user node
 
-        var ref = this.afs.collection('user', rf => rf.where("uid", "==", user.uid)).snapshotChanges().pipe(take(1));
-        ref.subscribe(data  => {
-          data.forEach(function(dt) {
-            dt.payload.doc.ref.update({displayName: value.displayName,
-                                       displayName_lower: value.displayName.toLowerCase()});
-          })
-        });
+        this.afs.collection('user').doc(user.uid).ref.update({displayName: value.displayName,
+                                   displayName_lower: value.displayName.toLowerCase()});
+
         this.messageService.updateUser(this.user);
         resolve();
       }, err => reject(err))
     })
+  }
+
+  updateUser(value: FirebaseUserModel) {
+    this.afs.collection('user').doc(value.uid).ref.update({displayName: value.displayName,
+                               displayName_lower: value.displayName.toLowerCase()});
   }
 
   // any user, not just the current user

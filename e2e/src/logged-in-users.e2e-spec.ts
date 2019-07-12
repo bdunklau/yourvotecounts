@@ -2,6 +2,7 @@ import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { MyAccountPage } from './my-account.po';
+import { Api } from './api.po';
 
 describe('Logged in users', () => {
   let page: MainPage;
@@ -10,12 +11,13 @@ describe('Logged in users', () => {
 
   beforeEach(() => {
     page = new MainPage();
-    testSupport = new TestSupport();
+    testSupport = new TestSupport(new Api());
     myAccountPage = new MyAccountPage();
   });
 
   it('should be able to logout', () => {
-    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    // testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    testSupport.login(testSupport.normalUser.phoneNumber);
     page.clickHome();
     page.clickMyAccount();
     expect(page.getMyAccountElement().isDisplayed()).toBeTruthy();
@@ -44,9 +46,21 @@ describe('Logged in users', () => {
     expect(page.getUrl()).toEqual(browser.baseUrl+'/token');
   });
 
-  //
+
+  it('should be able to see their name', async () => {
+    testSupport.setName(testSupport.normalUser);
+    testSupport.login(testSupport.normalUser.phoneNumber);
+    page.clickHome();
+    browser.sleep(200);
+    var currentName = await page.getCurrentUserNameLink().getText()
+    expect(currentName == testSupport.normalUser.displayName)
+      .toBeTruthy('expected name to be '+currentName+' but it was '+currentName );
+    page.clickLogout();
+  })
+
+
   it('should be able to edit name', async () => {
-    testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    testSupport.login(testSupport.normalUser.phoneNumber);
     page.clickHome();
     page.clickMyAccount();
     myAccountPage.clickEdit();

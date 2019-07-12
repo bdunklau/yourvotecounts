@@ -17,7 +17,7 @@ export class UserResolver implements Resolve<FirebaseUserModel> {
       return null;
     }
     if(!user.displayName) {
-      this.router.navigate(['/register']);
+      this.router.navigate(['/myaccount']);
       return null;
     }
     return user;

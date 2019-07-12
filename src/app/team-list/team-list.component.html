@@ -1,0 +1,17 @@
+<h5>My Teams</h5>
+<table class="table table-striped">
+  <!-- <thead>
+  <tr>
+    <th scope="col" colspan="2">My Teams</th>
+    <th scope="col"></th>
+  </tr>
+  </thead> -->
+  <tbody>
+  <tr *ngFor="let team of teams">
+    <td><a id="edit_team_{{team.name}}"><i class="fa fa-edit fa-2x" aria-hidden="true" (click)="edit(team)"></i></a></td>
+    <td id="team_in_list_{{team.name}}">{{team.name}}</td>
+    <!-- <td>{{team.created.toDate()}}</td> -->
+    <td><a id="delete_team_{{team.name}}"><i class="fa fa-times fa-2x" aria-hidden="true" (click)="confirmDelete(team)"></i></a></td>
+  </tr>
+  </tbody>
+</table>
