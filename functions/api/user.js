@@ -33,7 +33,9 @@ exports.setUser = functions.https.onRequest(async (req, res) => {
   if(!authKeyValid)
     return res.status(200).send('<h3>error</h3><br/><h2>not authorized (code 4)</h2>')
 
-  return db.collection('user').doc(req.body.uid).update({displayName: req.body.displayName}).then(() => {
+  var updateValues = {displayName: req.body.displayName,
+                      displayName_lower: req.body.displayName.toLowerCase()};
+  return db.collection('user').doc(req.body.uid).update(updateValues).then(() => {
     return res.status(200).send({'status': 'ok', 'response': 'name changed to '+req.body.displayName});
   })
 })
