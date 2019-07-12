@@ -19,13 +19,6 @@ export class TeamPage extends BasePage {
     browser.sleep(500);
     // enter the full name, no partial entry - that is tested elsewhere
     this.enterUserByName(this.args.addedPerson.displayName);
-
-
-    // THIS IS A BUG - TAKE THIS OUT FIXME
-    // HACK - for some reason, only in protractor, we have to click the Edit pencil to make the new team member appear.
-    // In real life, the new team member appears as soon as they are selected from the nameSearchField drop-down - weird
-    // NOT IDEAL - if the user ever stopped appearing in real life, this test won't catch it TODO
-    // this.getElement(by.id('edit_team_'+this.args.teamName)).click();
   }
 
   beginDeletePerson() {
