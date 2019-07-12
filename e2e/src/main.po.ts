@@ -23,11 +23,6 @@ export class MainPage extends BasePage {
     this.getElement(by.id('myaccount_link')).click();
   }
 
-  clickTeams() {
-    this.pullDownMyMenu();
-    this.getElement(by.id('teams_link')).click();
-  }
-
   clickUser() {
     this.getElement(by.id('user_link')).click();
   }
@@ -86,11 +81,6 @@ export class MainPage extends BasePage {
 
   getUrl() {
     return browser.getCurrentUrl();
-  }
-
-  goto(url) {
-    return browser.get(browser.baseUrl+url) as Promise<any>;
-    browser.sleep(100);
   }
 
   // pullDownMyMenu() {

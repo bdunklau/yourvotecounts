@@ -13,6 +13,11 @@ export class BasePage {
     field.sendKeys(Key.BACK_SPACE);
   }
 
+  clickTeams() {
+    this.pullDownMyMenu();
+    this.getElement(by.id('teams_link')).click();
+  }
+
   enterUserByName(name) {
     var fld = this.getElement(by.id('nameSearchField'));
     fld.clear();
@@ -59,6 +64,11 @@ export class BasePage {
   getNamesInDropdown(): ElementArrayFinder {
     browser.sleep(300);
     return this.getElements(by.tagName('ngb-highlight'));
+  }
+
+  goto(url) {
+    return browser.get(browser.baseUrl+url) as Promise<any>;
+    browser.sleep(100);
   }
 
 

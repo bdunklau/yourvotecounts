@@ -22,7 +22,8 @@ export class TeamListComponent implements OnInit {
   @Input() teamListUser: FirebaseUserModel;
   @Output() selectedTeam = new EventEmitter<Team>();
   phoneVal: string;
-  teams: Team[];
+  // teams: Team[];
+  teams: TeamMember[]; // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
   private subscription: Subscription;
   private memberSubscription: Subscription;
 
@@ -50,12 +51,10 @@ export class TeamListComponent implements OnInit {
       })
     )
       .subscribe(objs => {
-        console.log(objs);
+        // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
         this.teams = _.map(objs, obj => {
-          let team = new Team();
-          team.id = obj.teamDocId;
-          team.name = obj.team_name;
-          return team;
+          let tm = obj as unknown;
+          return tm as TeamMember;
         })
       });
   }
@@ -66,7 +65,9 @@ export class TeamListComponent implements OnInit {
     if(this.memberSubscription) this.memberSubscription.unsubscribe();
   }
 
-  async edit(notFullyPopulated: Team) {
+  // notice ngOnInit() - that's where we make this object TeamMember, not Team
+  async edit(team_member: any /*json of a TeamMember*/) {
+    let notFullyPopulated: Team = this.toTeam(team_member);
     console.log('notFullyPopulated = ', notFullyPopulated);
     let fullyPopulatedTeam = await this.teamService.getTeamData(notFullyPopulated.id);
     // console.log('team: ', fullyPopulatedTeam);
@@ -96,7 +97,10 @@ export class TeamListComponent implements OnInit {
   }
 
   closeResult: string;
-  confirmDelete(team: Team) {
+    // notice ngOnInit() - that's where we make this object TeamMember, not Team
+  confirmDelete(team_member: any /*json of a TeamMember*/) {
+    console.log('confirmDelete:  team_member = ', team_member);
+    let team: Team = this.toTeam(team_member);
     var team_name = team.name;
     const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
     modalRef.result.then((result) => {
@@ -113,6 +117,13 @@ export class TeamListComponent implements OnInit {
     modalRef.componentInstance.thing = team_name;
     modalRef.componentInstance.warning_you = 'All information associated to this team will be permanently deleted.';
     modalRef.componentInstance.really_warning_you = 'This operation can not be undone.';
+  }
+
+  private toTeam(obj: any) {
+    let team: Team = new Team();
+    team.id = obj.teamDocId
+    team.name = obj.team_name;
+    return team;
   }
 
 }

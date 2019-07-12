@@ -3,11 +3,12 @@ import * as protractor from 'protractor';
 import { BasePage } from './base.po';
 import * as _ from 'lodash';
 import * as moment from 'moment'
-// import { TestSupport } from './test-support.po';
+import { TestSupport } from './test-support.po';
 
 export class TeamPage extends BasePage {
 
-  constructor(private args: {teamName: string,
+  constructor(private args: {testSupport: TestSupport,
+                             teamName: string,
                              creator: {displayName: string, phoneNumber: string, uid: string},
                              addedPerson: {displayName: string, phoneNumber: string, uid: string}
                             })
@@ -27,6 +28,7 @@ export class TeamPage extends BasePage {
   }
 
   beginDeleteTeam() {
+    console.log('begin deleting team: '+this.args.teamName)
     var deleteTeamId = "delete_team_"+this.args.teamName;
     this.getElement(by.id(deleteTeamId)).click();
   }
@@ -48,6 +50,20 @@ export class TeamPage extends BasePage {
 
   createTeam() {
     this.getElement(by.id('create_team')).click();
+  }
+
+  createTeamWithTwoPeople() {
+    this.args.testSupport.setNames(this.args.testSupport.names);
+    this.args.testSupport.login(this.args.testSupport.names[0].phoneNumber);
+    browser.sleep(500);
+    this.goto('');
+    browser.sleep(500);
+
+    this.clickTeams();
+    this.createTeam();
+    this.fillOutForm();
+    this.saveTeam();
+    this.addSomeoneToTeam();
   }
 
   deletePerson() {
@@ -80,7 +96,7 @@ export class TeamPage extends BasePage {
   }
 
   fillOutForm() {
-    // var teamName = this.testSupport.getTeamName();
+    // var teamName = this.args.testSupport.getTeamName();
     this.enterTeamName(this.args.teamName);
   }
 
@@ -201,6 +217,12 @@ export class TeamPage extends BasePage {
     expect(this.getElement(by.id(id)).isDisplayed()).toBeTruthy('expected this new team member to be found on the page by id attribute, but it wasn\'t: '+id);
     var nm = await this.getElement(by.id('nameSearchField')).getText()
     expect(nm === '').toBeTruthy('expected the nameSearchField in the Team Members section to be empty, but it was actually: '+nm);
+  }
+
+
+  verifyTeamDeleteLinkDoesNotExist() {
+    console.log('verifying this team cannot be deleted: '+this.args.teamName)
+    expect(element(by.id("delete_team_"+this.args.teamName)).isDisplayed()).toBeFalsy('did not expect the delete team X to be present for delete_team_'+this.args.teamName+' but it was');
   }
 
 

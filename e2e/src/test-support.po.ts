@@ -11,12 +11,12 @@ export class TestSupport {
 
   normalUser = {displayName: 'Bre444nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER,
-                uid: '222222222'}
+                uid: '4444444444'}
 
 
   normalUser2 = {displayName: 'Bre222nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2,
-                uid: '1111111111'}
+                uid: '2222222222'}
 
   names = [
     this.normalUser,

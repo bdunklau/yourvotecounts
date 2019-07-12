@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
 
-fdescribe('Team page', () => {
+describe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -15,7 +15,8 @@ fdescribe('Team page', () => {
   beforeEach(() => {
     page = new MainPage();
     testSupport = new TestSupport(new Api());
-    teamPage = new TeamPage({teamName: testSupport.getTeamName(),
+    teamPage = new TeamPage({testSupport: testSupport,
+                            teamName: testSupport.getTeamName(),
                             creator: testSupport.normalUser,
                             addedPerson: testSupport.normalUser2});
   });
@@ -96,7 +97,7 @@ fdescribe('Team page', () => {
 
   // We have to test the drop down here because it's a different component than the one
   // in the log page.  This one clears its contents when a name is chosen
-  fit('should display correct list of users in dropdown', async () => {
+  it('should display correct list of users in dropdown', async () => {
 
     // create a team
     // type a few letters into the name field to add someone
@@ -202,19 +203,20 @@ fdescribe('Team page', () => {
 
 
   it('should not let non-leaders add and remove people', async () => {
-    testSupport.setNames(testSupport.names);
-
-    testSupport.login(testSupport.names[0].phoneNumber);
-    browser.sleep(500);
-    page.goto('');
-    browser.sleep(500);
-
-    page.clickTeams();
-    teamPage.createTeam();
-    teamPage.fillOutForm();
-    teamPage.saveTeam();
-
-    teamPage.addSomeoneToTeam();
+    // testSupport.setNames(testSupport.names);
+    //
+    // testSupport.login(testSupport.names[0].phoneNumber);
+    // browser.sleep(500);
+    // page.goto('');
+    // browser.sleep(500);
+    //
+    // page.clickTeams();
+    // teamPage.createTeam();
+    // teamPage.fillOutForm();
+    // teamPage.saveTeam();
+    //
+    // teamPage.addSomeoneToTeam();
+    teamPage.createTeamWithTwoPeople();
     page.clickLogout();
 
     testSupport.login(testSupport.names[1].phoneNumber); // the "added" person
@@ -230,7 +232,7 @@ fdescribe('Team page', () => {
     page.clickLogout();
 
     // clean up
-    testSupport.login(testSupport.names[0].phoneNumber); // the "added" person
+    testSupport.login(testSupport.names[0].phoneNumber);
     page.goto('');
     page.clickTeams();
     teamPage.deleteTeam();
@@ -238,8 +240,31 @@ fdescribe('Team page', () => {
   })
 
 
-  xit('should not let someone delete a team that did not create it', async () => {
-    expect(false).toBeTruthy('test not written yet');
+  it('should let leaders delete a team', async () => {
+    teamPage.createTeamWithTwoPeople();
+    teamPage.deleteTeam();
+    teamPage.verifyPageOnDeleteTeam();
+
+    page.clickLogout();
+  })
+
+
+  it('should prevent non-leaders from deleting a team', async () => {
+    teamPage.createTeamWithTwoPeople();
+    page.clickLogout();
+    testSupport.login(testSupport.names[1].phoneNumber);
+    browser.sleep(500);
+    page.clickTeams();
+    browser.sleep(500);
+    teamPage.verifyTeamDeleteLinkDoesNotExist();
+    page.clickLogout();
+
+    // clean up
+    testSupport.login(testSupport.names[0].phoneNumber);
+    page.goto('');
+    page.clickTeams();
+    teamPage.deleteTeam();
+    page.clickLogout();
   })
 
 

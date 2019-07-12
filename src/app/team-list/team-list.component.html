@@ -7,11 +7,11 @@
   </tr>
   </thead> -->
   <tbody>
-  <tr *ngFor="let team of teams">
-    <td><a id="edit_team_{{team.name}}"><i class="fa fa-edit fa-2x" aria-hidden="true" (click)="edit(team)"></i></a></td>
-    <td id="team_in_list_{{team.name}}">{{team.name}}</td>
+  <tr *ngFor="let team of teams"> <!-- object type here is actually TeamMember -->
+    <td><a id="edit_team_{{team.team_name}}"><i class="fa fa-edit fa-2x" aria-hidden="true" (click)="edit(team)"></i></a></td>
+    <td id="team_in_list_{{team.team_name}}">{{team.team_name}}</td>
     <!-- <td>{{team.created.toDate()}}</td> -->
-    <td><a id="delete_team_{{team.name}}"><i class="fa fa-times fa-2x" aria-hidden="true" (click)="confirmDelete(team)"></i></a></td>
+    <td><a [hidden]="!team.leader" id="delete_team_{{team.team_name}}"><i class="fa fa-times fa-2x" aria-hidden="true" (click)="confirmDelete(team)"></i></a></td>
   </tr>
   </tbody>
 </table>
