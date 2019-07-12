@@ -106,7 +106,7 @@ export class TestSupport {
 
   navigateTo(data) {
     var phoneNumber = data.phoneNumber
-    var auth_key = data.auth_key ? '&auth_key='+data.auth_key : '&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
+    var auth_key = data.auth_key ? '&auth_key='+data.auth_key : ''; //'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
     browser.waitForAngularEnabled(false);
     return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
   }
