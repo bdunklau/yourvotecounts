@@ -155,7 +155,7 @@ describe('Log page', () => {
   })
 
 
-  it('should allow query by date', async () => {
+  xit('should allow query by date', async () => {
 
     logPage.setupQueryByDateTest();
 
