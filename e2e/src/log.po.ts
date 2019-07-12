@@ -33,11 +33,6 @@ export class LogPage extends BasePage {
     return this.getElementsByText(level);
   }
 
-  getNamesInDropdown(): ElementArrayFinder {
-    browser.sleep(300);
-    return this.getElements(by.tagName('ngb-highlight'));
-  }
-
   getNamesInLog(): ElementArrayFinder {
     browser.sleep(300);
     return this.getElements(by.css('.log_displayName'));

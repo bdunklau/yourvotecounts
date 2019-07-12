@@ -1,4 +1,4 @@
-import { browser, by, element, Key } from 'protractor';
+import { browser, by, element, Key, ElementArrayFinder } from 'protractor';
 import * as protractor from 'protractor'
 
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
@@ -53,6 +53,12 @@ export class BasePage {
 
   getCurrentUserNameLink() {
     return this.getElement(by.id('name_or_phone'));
+  }
+
+
+  getNamesInDropdown(): ElementArrayFinder {
+    browser.sleep(300);
+    return this.getElements(by.tagName('ngb-highlight'));
   }
 
 

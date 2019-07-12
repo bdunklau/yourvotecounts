@@ -66,12 +66,6 @@ export class TeamPage extends BasePage {
     this.getElement(by.id('edit_team_'+this.args.teamName)).click();
   }
 
-  enterPartialName(name, length) {
-    var fld = this.getElement(by.id('nameSearchField'));
-    fld.clear();
-    fld.sendKeys(name.substring(0, length));
-  }
-
   enterTeamName(name: string) {
     var fld = this.getTeamNameField();
     fld.clear();

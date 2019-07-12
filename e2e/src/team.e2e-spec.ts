@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
 
-describe('Team page', () => {
+fdescribe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -96,9 +96,108 @@ describe('Team page', () => {
 
   // We have to test the drop down here because it's a different component than the one
   // in the log page.  This one clears its contents when a name is chosen
-  xit('should display correct list of users in dropdown', async () => {
-    expect(false).toBeTruthy('test not written yet');
-    // see  logPage.getNamesInDropdown()
+  fit('should display correct list of users in dropdown', async () => {
+
+    // create a team
+    // type a few letters into the name field to add someone
+    // verify the names displayed all start with the same letters
+
+    var run1 = [{displayName: testSupport.names[0].displayName,
+                  case_sensitive: true,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+testSupport.names[0].displayName+' but did not'},
+                 {displayName: testSupport.names[1].displayName,
+                  case_sensitive: true,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+testSupport.names[1].displayName+' but did not'},
+                 {displayName: 'Mr Fixit',
+                  case_sensitive: true,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain Mr Fixit but it did'},
+                ];
+
+
+    // the difference is in the 2nd element
+    var run2 = [{displayName: testSupport.names[0].displayName,
+                  case_sensitive: true,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+testSupport.names[0].displayName+' but did not'},
+                 {displayName: testSupport.names[1].displayName,
+                  case_sensitive: true,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain '+testSupport.names[1].displayName+' but it did'},
+                 {displayName: 'Mr Fixit',
+                  case_sensitive: true,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain Mr Fixit but it did'},
+                ];
+
+    // same as run1, except lower case name
+    var run3 = [{displayName: testSupport.names[0].displayName.toLowerCase(),
+                  case_sensitive: false,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+testSupport.names[0].displayName+' but did not (case-insensitive)'},
+                 {displayName: testSupport.names[1].displayName,
+                 case_sensitive: false,
+                  expected: true,
+                  failMsg: 'Expected name dropdown to contain '+testSupport.names[1].displayName+' but did not (case-insensitive)'},
+                 {displayName: 'Mr Fixit',
+                  case_sensitive: false,
+                  expected: false,
+                  failMsg: 'Did not expect name dropdown to contain Mr Fixit but it did (case-insensitive)'},
+                ];
+
+
+    testSupport.setNames(testSupport.names);
+
+    testSupport.login(testSupport.names[0].phoneNumber);
+    browser.sleep(500);
+    page.goto('');
+    browser.sleep(500);
+
+    page.clickTeams();
+    teamPage.createTeam();
+    teamPage.fillOutForm();
+    teamPage.saveTeam();
+
+    teamPage.enterPartialName(testSupport.names[0].displayName, 3);
+
+
+    var func = function(expecteds, len) {
+      teamPage.enterPartialName(expecteds[0].displayName, len);
+      teamPage.getNamesInDropdown().then(function(elements) {
+        browser.sleep(500);
+        var promises = [];
+        _.forEach(elements, element => {
+          promises.push(element.getText());
+        })
+
+        Promise.all(promises).then(function(names) {
+          for(var i=0; i < expecteds.length; i++) {
+            var index = _.findIndex(names, (name) => {
+              return expecteds[i].case_sensitive ? name === expecteds[i].displayName : name.toLowerCase() === expecteds[i].displayName.toLowerCase();
+            });
+            var actual = index != -1;
+            expect(actual == expecteds[i].expected).toBeTruthy(expecteds[i].failMsg);
+          }
+        })
+        .catch(function(err) {console.log('ERROR: ', err)})
+      })
+    }
+
+
+    func(run1, 3);
+
+    // Now enter the first 4 chars of name and see if one of the users drops out of the dropdown list
+    func(run2, 4);
+
+    // test case-insensitive name search
+    func(run3, 3);
+
+    // clean up
+    teamPage.deleteTeam();
+
+    page.clickLogout();
   })
 
 
