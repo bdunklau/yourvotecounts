@@ -2,11 +2,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
 import { TeamEditorComponent } from './team-editor.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {CommonServiceModuleStub, AngularFirestoreStub} from '../core/common.module';
+import {CommonServiceModuleStub} from '../core/common.module';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { BehaviorSubject } from 'rxjs';
 
 // a stub/mock
 // FYI  https://github.com/angular/angularfire2/issues/1706#issuecomment-394212606

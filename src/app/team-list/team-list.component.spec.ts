@@ -5,6 +5,7 @@ import { Observable, /*of, Subject, Subscription*/ } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { FirebaseUserModel } from '../user/user.model';
 import { map/*, take*/ } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 // a stub/mock
 // FYI  https://github.com/angular/angularfire2/issues/1706#issuecomment-394212606
@@ -16,7 +17,7 @@ const FirestoreStub = {
       }),
 
       snapshotChanges: () => ({
-        pipe: (m: map) => ({
+        pipe: (/*m: map*/) => ({
           subscribe: () => {}
         })
       }),

@@ -3,12 +3,13 @@ import {FormsModule} from '@angular/forms';
 import { SearchUserByName2Component } from './search-user-by-name2.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from '../../user/user.service';
-import {CommonServiceModuleStub, AngularFirestoreStub} from '../../core/common.module';
+import {CommonServiceModuleStub} from '../../core/common.module';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable, /*of, Subject, Subscription*/ } from 'rxjs';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { BehaviorSubject } from 'rxjs';
 
 // a stub/mock
 // FYI  https://github.com/angular/angularfire2/issues/1706#issuecomment-394212606
