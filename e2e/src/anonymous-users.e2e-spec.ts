@@ -1,7 +1,7 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 
-fdescribe('Anonymous users', () => {
+describe('Anonymous users', () => {
   let page: MainPage;
 
   beforeEach(() => {
