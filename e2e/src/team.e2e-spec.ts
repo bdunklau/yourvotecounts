@@ -21,7 +21,7 @@ describe('Team page', () => {
   });
 
 
-  it('should be able to create and delete a team', async () => {
+  xit('should be able to create and delete a team', async () => {
     testSupport.login(testSupport.normalUser.phoneNumber);
     browser.sleep(500);
     page.goto('');
