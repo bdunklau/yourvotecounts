@@ -202,20 +202,7 @@ describe('Team page', () => {
   })
 
 
-  it('should not let non-leaders add and remove people', async () => {
-    // testSupport.setNames(testSupport.names);
-    //
-    // testSupport.login(testSupport.names[0].phoneNumber);
-    // browser.sleep(500);
-    // page.goto('');
-    // browser.sleep(500);
-    //
-    // page.clickTeams();
-    // teamPage.createTeam();
-    // teamPage.fillOutForm();
-    // teamPage.saveTeam();
-    //
-    // teamPage.addSomeoneToTeam();
+  fit('should prevent non-leaders from adding/removing people', async () => {
     teamPage.createTeamWithTwoPeople();
     page.clickLogout();
 
