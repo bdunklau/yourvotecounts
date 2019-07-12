@@ -2,7 +2,7 @@ import { TestSupport } from './test-support.po';
 import { browser, logging } from 'protractor';
 import { Api } from './api.po';
 
-fdescribe('Token Utility ', () => {
+describe('Token Utility ', () => {
   let page: TestSupport;
 
   beforeEach(() => {
