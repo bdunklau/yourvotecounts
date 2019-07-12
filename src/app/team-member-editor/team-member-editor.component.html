@@ -16,8 +16,14 @@
   </thead>
   <tbody>
   <tr *ngFor="let team_member of team_members">
-    // CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2
-    <td><span *ngIf="team_member.leader">leader</span></td>
+     <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
+    <td>
+         <label class="switch ">
+           <input type="checkbox" class="success">
+           <span class="slider round"></span>
+         </label>
+         <span *ngIf="team_member.leader">leader</span>
+    </td>
     <td id="team_member_{{team_member.displayName}}">{{team_member.displayName}}</td>
     <td><a [hidden]="!canDeleteMembers" id="delete_team_member_{{team_member.displayName}}" class="delete_team_member">
           <i class="fa fa-times fa-2x"
