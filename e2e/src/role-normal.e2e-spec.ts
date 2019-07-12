@@ -3,7 +3,7 @@ import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { Api } from './api.po';
 
-describe('Normal user', () => {
+fdescribe('Normal user', () => {
   let page: MainPage;
   let testSupport: TestSupport;
 
