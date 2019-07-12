@@ -4,6 +4,7 @@ import { TestSupport } from './test-support.po';
 import { LogPage } from './log.po';
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import { Api } from './api.po';
 
 describe('Log page', () => {
   // let page: PublicPage;
@@ -13,7 +14,7 @@ describe('Log page', () => {
 
   beforeEach(() => {
     page = new MainPage();
-    testSupport = new TestSupport();
+    testSupport = new TestSupport(new Api());
     logPage = new LogPage(testSupport);
   });
 

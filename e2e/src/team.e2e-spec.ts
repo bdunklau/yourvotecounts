@@ -4,6 +4,7 @@ import { TestSupport } from './test-support.po';
 import { TeamPage } from './team.po';
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import { Api } from './api.po';
 
 describe('Team page', () => {
   // let page: PublicPage;
@@ -13,7 +14,7 @@ describe('Team page', () => {
 
   beforeEach(() => {
     page = new MainPage();
-    testSupport = new TestSupport();
+    testSupport = new TestSupport(new Api());
     teamPage = new TeamPage({teamName: testSupport.getTeamName(),
                             creator: testSupport.normalUser,
                             addedPerson: testSupport.normalUser2});
@@ -138,7 +139,17 @@ describe('Team page', () => {
   })
 
 
-  it('should not let someone delete a team that did not create it', async () => {
+  xit('should not let someone delete a team that did not create it', async () => {
+    expect(false).toBeTruthy('test not written yet');
+  })
+
+
+  xit('should let leaders assign/unassign other leaders', async () => {
+    expect(false).toBeTruthy('test not written yet');
+  })
+
+
+  xit('should prevent non-leaders from assigning/unassigning other leaders', async () => {
     expect(false).toBeTruthy('test not written yet');
   })
 

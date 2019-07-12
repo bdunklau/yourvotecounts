@@ -1,11 +1,12 @@
 import { TestSupport } from './test-support.po';
 import { browser, logging } from 'protractor';
+import { Api } from './api.po';
 
 describe('Token Utility ', () => {
   let page: TestSupport;
 
   beforeEach(() => {
-    page = new TestSupport();
+    page = new TestSupport(new Api());
   });
 
   it('should have env var YOURVOTECOUNTS_AUTH_KEY', () => {

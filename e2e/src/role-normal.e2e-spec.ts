@@ -1,6 +1,7 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
+import { Api } from './api.po';
 
 describe('Normal user', () => {
   let page: MainPage;
@@ -8,7 +9,7 @@ describe('Normal user', () => {
 
   beforeEach(() => {
     page = new MainPage();
-    testSupport = new TestSupport();
+    testSupport = new TestSupport(new Api());
   });
 
   it( 'should not see a Log link', () => {

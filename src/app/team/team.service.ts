@@ -101,7 +101,9 @@ export class TeamService {
     batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(-1)});
     if(team_member.leader)
       batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(-1)});
-    await batch.commit();
+    batch.commit().then(() => {
+      this.messageService.deleteTeamMember(team_member);
+    });
     return await this.getTeamData(team_member.teamDocId);
   }
 

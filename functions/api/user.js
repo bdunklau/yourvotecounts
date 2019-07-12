@@ -7,7 +7,7 @@ const auth = require('../auth');
 //admin.initializeApp(functions.config().firebase);
 var db = admin.firestore();
 
-// firebase deploy --only functions:getUser
+// firebase deploy --only functions:getUser,functions:updateUser
 
 exports.getUser = functions.https.onRequest(async (req, res) => {
   let authKeyValid = await auth.authKeyValidated(req.query.auth_key);
@@ -23,5 +23,17 @@ exports.getUser = functions.https.onRequest(async (req, res) => {
       xxx.push(doc.data());
     });
     return res.status(200).send(xxx[0]);
+  })
+})
+
+
+// "updateUser" already taken by auth.js
+exports.setUser = functions.https.onRequest(async (req, res) => {
+  let authKeyValid = await auth.authKeyValidated(req.query.auth_key);
+  if(!authKeyValid)
+    return res.status(200).send('<h3>error</h3><br/><h2>not authorized (code 4)</h2>')
+
+  return db.collection('user').doc(req.body.uid).update({displayName: req.body.displayName}).then(() => {
+    return res.status(200).send({'status': 'ok', 'response': 'name changed to '+req.body.displayName});
   })
 })

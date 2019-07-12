@@ -26,4 +26,5 @@ exports.createLogs = ts.createLogs
 exports.deleteLogs = ts.deleteLogs
 
 const user = require('./api/user');
-exports.getUser = user.getUser
+exports.getUser = user.getUser;
+exports.setUser = user.setUser

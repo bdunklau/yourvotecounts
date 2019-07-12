@@ -3,8 +3,11 @@ import * as _ from 'lodash';
 import { MyAccountPage } from './my-account.po';
 import { MainPage } from './main.po';
 import * as moment from 'moment';
+import { Api } from './api.po';
 
 export class TestSupport {
+
+  constructor(private api: Api) {  }
 
   normalUser = {displayName: 'Bre444nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER,
@@ -108,22 +111,32 @@ export class TestSupport {
     return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
   }
 
-  setName(obj) {
-    console.log('setName():  obj = ', obj);
-    this.login(obj.phoneNumber);
-    let page = new MainPage();
-    let myAccountPage = new MyAccountPage();
-    page.clickHome();
-    browser.sleep(500);
-    page.clickMyAccount();
-    browser.sleep(500);
-    myAccountPage.clickEdit();
-    browser.sleep(500);
-    myAccountPage.enterName(obj.displayName);
-    browser.sleep(300);
-    myAccountPage.clickSubmit();
-    browser.sleep(500); // this sucks - fails without this delay
-    page.clickLogout();
+  async setName(obj) {
+    // Make an api call and see if we actually need to update the name or not...
+    var json = await this.api.getUser(obj.phoneNumber);
+    if(json['displayName'] === obj.displayName) {
+      // return early, nothing to do
+      console.log('setName(): displayName was already: ', obj.displayName);
+    }
+    else {
+      await this.api.updateDisplayName(json['uid'], obj.displayName);
+    }
+
+    // console.log('setName():  obj = ', obj);
+    // this.login(obj.phoneNumber);
+    // let page = new MainPage();
+    // let myAccountPage = new MyAccountPage();
+    // page.clickHome();
+    // browser.sleep(500);
+    // page.clickMyAccount();
+    // browser.sleep(500);
+    // myAccountPage.clickEdit();
+    // browser.sleep(500);
+    // myAccountPage.enterName(obj.displayName);
+    // browser.sleep(300);
+    // myAccountPage.clickSubmit();
+    // browser.sleep(500); // this sucks - fails without this delay
+    // page.clickLogout();
   }
 
   // a test prep method that sets users names to whatever we pass in

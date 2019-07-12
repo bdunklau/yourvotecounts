@@ -1,21 +1,34 @@
-import { browser, logging, element, by } from 'protractor';
+import { browser, logging, element, by, protractor } from 'protractor';
 import { Api } from './api.po';
 import { TestSupport } from './test-support.po';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
-fdescribe('The API', () => {
+describe('The API', () => {
   let api: Api;
   let testSupport: TestSupport;
 
   beforeEach(() => {
-    testSupport = new TestSupport();
-    api = new Api(testSupport);
+    api = new Api();
+    testSupport = new TestSupport(api);
   });
 
-  fit('should return json for a user', () => {
-    var json = api.getUserJson(testSupport.names[0].phoneNumber);
-    // api.verifyUserJson(json);
+  it('should return json for a user', async () => {
+    var json = await api.getUser(testSupport.names[0].phoneNumber);
+    // console.log('json = ', json);
+    api.verifyUserJson({displayName: testSupport.names[0].displayName, phoneNumber: testSupport.names[0].phoneNumber},
+                      json);
+
+    api.updateDisplayName(json['uid'], json['displayName']+'XXX');
+    json = await api.getUser(testSupport.names[0].phoneNumber);
+    api.verifyUserJson({displayName: testSupport.names[0].displayName+'XXX', phoneNumber: testSupport.names[0].phoneNumber},
+                      json);
+
+
+    api.updateDisplayName(json['uid'], testSupport.names[0].displayName);
+    json = await api.getUser(testSupport.names[0].phoneNumber);
+    api.verifyUserJson({displayName: testSupport.names[0].displayName, phoneNumber: testSupport.names[0].phoneNumber},
+                      json);
   });
 
 

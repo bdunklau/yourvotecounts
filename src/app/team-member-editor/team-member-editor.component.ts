@@ -23,6 +23,7 @@ export class TeamMemberEditorComponent implements OnInit {
   team_members: TeamMember[];
   user: FirebaseUserModel;
   private teamMemberSubscription: Subscription;
+  private teamMemberRemovals: Subscription;
   private teamMemberListSubscription: Subscription;
   private teamSubscription: Subscription;
   subject = new Subject<any>();
@@ -36,6 +37,12 @@ export class TeamMemberEditorComponent implements OnInit {
 
   async ngOnInit() {
     this.user = await this.userService.getCurrentUser();
+
+    this.teamMemberRemovals = this.messageService.getRemovedMember().subscribe(something => {
+      let team_member = something as TeamMember;
+      if(!this.team_members) return;
+      _.remove(this.team_members, {userId: team_member.userId})
+    })
 
     this.teamMemberSubscription = this.messageService.getTeamMember().subscribe((something) => {
       let team_member = something as TeamMember;
@@ -61,6 +68,7 @@ export class TeamMemberEditorComponent implements OnInit {
     this.teamMemberSubscription.unsubscribe();
     this.teamMemberListSubscription.unsubscribe();
     this.teamSubscription.unsubscribe();
+    this.teamMemberRemovals.unsubscribe();
   }
 
   setMemberEditPermissions(user: FirebaseUserModel, team: Team, team_members: TeamMember[]) {
@@ -78,9 +86,10 @@ export class TeamMemberEditorComponent implements OnInit {
 
     var deletingMyself = this.user.uid === team_member.userId;
     console.log('deletingMyself = user.uid === team_member.userId: ', deletingMyself, ' = ', this.user.uid, '===', team_member.userId);
-    if(deletingMyself) {
-      var modalRef = this.showDeleteModal(team_member);
 
+    var modalRef = this.showDeleteModal(team_member);
+
+    if(deletingMyself) {
       // am I the last person?...
       if(this.team.memberCount === 1) {
         // special case - tell the user the team is about to be deleted
@@ -106,8 +115,6 @@ export class TeamMemberEditorComponent implements OnInit {
       }
     }
     else {
-      var modalRef = this.showDeleteModal(team_member);
-
       modalRef.componentInstance.title = `Remove ${team_member.displayName}?`;
       modalRef.componentInstance.question = 'Are you sure you want to remove ';
       modalRef.componentInstance.thing = team_member.displayName;

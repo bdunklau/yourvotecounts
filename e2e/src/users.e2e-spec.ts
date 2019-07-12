@@ -2,6 +2,7 @@ import { TestSupport } from './test-support.po';
 import { MainPage } from './main.po';
 import { UsersPage } from './users.po';
 import { browser, logging, /*, element, by*/ } from 'protractor';
+import { Api } from './api.po';
 
 var verifyUser = async (usersPage, testSupport) => {
   usersPage.queryByName(testSupport.names[0].displayName);
@@ -9,16 +10,25 @@ var verifyUser = async (usersPage, testSupport) => {
   expect(actualName === testSupport.names[0].displayName).toBeTruthy('expected the Users page to display the name "'+testSupport.names[0].displayName+'" but actually got: '+actualName);
 }
 
-describe('Users page', () => {
+describe('Users page (Admins) ', () => {
   let testSupport: TestSupport;
   let page: MainPage;
   let usersPage: UsersPage;
 
   beforeEach(() => {
-    testSupport = new TestSupport();
+    testSupport = new TestSupport(new Api());
     page = new MainPage();
     usersPage = new UsersPage();
   });
+
+
+  xit('should be able to disable any user\'s account', () => {
+    // login as Admin
+    // change someone to disabled
+    // logout and login as that person
+    // verify the site displays some kind of "disabled" message
+    // verify all routes lead to "disabled"
+  })
 
 
   it('should be able to get to Users page', () => {
