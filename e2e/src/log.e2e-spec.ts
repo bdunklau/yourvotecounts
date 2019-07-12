@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
 
-describe('Log page', () => {
+fdescribe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -184,6 +184,7 @@ describe('Log page', () => {
                     ]}  ]
 
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    var destroyTheEvidence = true;
     page.clickLog();
     _.forEach(testSupport.dates, (date) => {
       logPage.pickFirstDate(date.from);
@@ -196,6 +197,8 @@ describe('Log page', () => {
         _.forEach(obj.levels, (logtype) => {
             logPage.getLogEntries(logtype.level).then(function(numbers){
               browser.sleep(500);
+              var careAboutThis = numbers.length != logtype.expected;
+              if(destroyTheEvidence) destroyTheEvidence = !careAboutThis;
               //console.log('In '+selectedLevel+' log, found '+numbers.length+' '+logtype.level+' elements')
               expect(numbers.length == logtype.expected ).toBeTruthy('For '+date.from+' to '+date.to+', expected '+logtype.expected+' instances of "'+logtype.level+'" on '+selectedLevel+' log page but got '+numbers.length);
             });
@@ -209,7 +212,7 @@ describe('Log page', () => {
     page.clickLogout();
 
     _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
-      testSupport.deleteLogs(event);
+      if(destroyTheEvidence) testSupport.deleteLogs(event);
     })
   })
 
