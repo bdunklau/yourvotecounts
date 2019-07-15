@@ -81,8 +81,8 @@ export class TeamEditorComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.routeSubscription.unsubscribe();
-    this.memberSubscription.unsubscribe();
+    if(this.routeSubscription) this.routeSubscription.unsubscribe();
+    if(this.memberSubscription) this.memberSubscription.unsubscribe();
   }
 
   cancelEditing(form: NgForm) {
