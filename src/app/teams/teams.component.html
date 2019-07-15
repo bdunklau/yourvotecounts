@@ -1,8 +1,15 @@
 
 <div class="container">
-  <h1>Teams</h1>
+  <app-team-list *ngIf="user" (selectedTeam)="onTeamSelected($event)" [teamListUser]="user"></app-team-list>
+</div>
 
+  <!--
+<div class="container">
   <div class="row">
+    <div class="col">
+      <app-team-list *ngIf="user" (selectedTeam)="onTeamSelected($event)" [teamListUser]="user"></app-team-list>
+    </div>
+
     <div class="col">
       <div class="row">
         <div class="col">
@@ -22,13 +29,14 @@
           </app-team-member-editor>
 
           <div *ngIf="!team">
-            <button id="create_team" type="button" (click)="startCreatingTeam()" class="btn btn-primary">Create Team</button>
+            <button id="create_teamX" type="button" (click)="startCreatingTeam()" class="btn btn-primary">Create Team</button>
           </div>
         </div>
       </div>
 
     </div>
-    <div class="col"><app-team-list *ngIf="user" (selectedTeam)="onTeamSelected($event)" [teamListUser]="user"></app-team-list></div>
+
   </div>
 
 </div>
+ -->

@@ -22,6 +22,41 @@ describe('Team page', () => {
   });
 
 
+  xit('should not show Delete Team button when creating the team', async () => {
+    expect(false).toBeTruthy('test not written yet');
+    // reason: the team hasn't been created yet, so Delete Team button doesn't make sense 
+  })
+
+
+  xit('should let leaders assign/unassign other leaders', async () => {
+    expect(false).toBeTruthy('test not written yet');
+  })
+
+
+  xit('should prevent non-leaders from assigning/unassigning other leaders', async () => {
+    expect(false).toBeTruthy('test not written yet');
+  })
+
+
+  xit('should alert leaders if they are about to revoke their leadership role', () => {
+    expect(false).toBeTruthy('write this test');
+    // need a ok/cancel modal to alert the user that he is about to revoke his leadership role
+  })
+
+
+  xit('should prevent non-leaders from editing the team attributes', () => {
+    expect(false).toBeTruthy('write this test');
+    // show a label, not a text field containing the team name
+    // don't show the save and cancel buttons
+  })
+
+
+  xit('should allow leaders to edit team attributes', () => {
+    expect(false).toBeTruthy('write this test');
+    // be sure to verify the team name above the member list changes - because right now, it doesn't
+  })
+
+
   it('should be able to create and delete a team', async () => {
     testSupport.login(testSupport.normalUser.phoneNumber);
     browser.sleep(500);
@@ -202,7 +237,7 @@ describe('Team page', () => {
   })
 
 
-  fit('should prevent non-leaders from adding/removing people', async () => {
+  it('should prevent non-leaders from adding/removing people', async () => {
     teamPage.createTeamWithTwoPeople();
     page.clickLogout();
 
@@ -252,16 +287,6 @@ describe('Team page', () => {
     page.clickTeams();
     teamPage.deleteTeam();
     page.clickLogout();
-  })
-
-
-  xit('should let leaders assign/unassign other leaders', async () => {
-    expect(false).toBeTruthy('test not written yet');
-  })
-
-
-  xit('should prevent non-leaders from assigning/unassigning other leaders', async () => {
-    expect(false).toBeTruthy('test not written yet');
   })
 
 

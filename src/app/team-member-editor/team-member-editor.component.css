@@ -46,7 +46,7 @@ input.primary:checked + .slider {
   background-color: #2196F3;
 }
 input.success:checked + .slider {
-  background-color: #8bc34a;
+  background-color: #009900;
 }
 input.info:checked + .slider {
   background-color: #3de0f5;

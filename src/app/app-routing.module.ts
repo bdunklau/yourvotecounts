@@ -14,6 +14,9 @@ import { UsersComponent } from './users/users.component';
 import { TokenComponent } from './token/token.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { TeamsComponent } from './teams/teams.component';
+import { TeamEditorComponent } from './team-editor/team-editor.component';
+import { TeamViewerComponent } from './team-viewer/team-viewer.component';
+import { TeamResolver } from './team/team.resolver';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -21,8 +24,10 @@ const routes: Routes = [
   { path: 'log', component: LogComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'login', component: LoginComponent },
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard] },
-  { path: 'teams/:teamDocId', component: TeamsComponent, canActivate: [AuthGuard], resolve: { data: UserResolver} },
-  { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard], resolve: { data: UserResolver} },
+  { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard] },
+  { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard] },
+  { path: 'teams/edit/:teamDocId', component: TeamEditorComponent, canActivate: [AuthGuard], resolve: {team: TeamResolver, user: UserResolver} },
+  { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard] },
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'user', component: UserComponent,  resolve: { data: UserResolver}},
@@ -37,7 +42,8 @@ const routes: Routes = [
     AuthService,
     // RegisterGuard,
     UserService,
-    UserResolver
+    UserResolver,
+    TeamResolver
   ]
 })
 export class AppRoutingModule { }

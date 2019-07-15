@@ -62,4 +62,8 @@ export class FirebaseUserModel {
     console.log('return findMe.leader = ', findMe.leader);
     return val;
   }
+
+  canSetLeaders(team: Team, team_members: TeamMember[]): boolean {
+    return this.canRemoveTeamMembers(team, team_members);
+  }
 }

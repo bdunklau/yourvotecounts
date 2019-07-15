@@ -23,29 +23,4 @@ export class UserResolver implements Resolve<FirebaseUserModel> {
     return user;
   }
 
-  // resolve(route: ActivatedRouteSnapshot) : Promise<FirebaseUserModel> {
-  //
-  //   let user = new FirebaseUserModel();
-  //
-  //   return new Promise((resolve, reject) => {
-  //     this.userService.getCurrentUser()
-  //     .then(user => {
-  //       if(!user) {
-  //         console.log('UserResolver.resolve(): No user object');
-  //         this.router.navigate(['/login']);
-  //         return reject('No user object');
-  //       }
-  //       if(!user.displayName) {
-  //         this.router.navigate(['/register']);
-  //         return resolve(user);
-  //       }
-  //       return resolve(user);
-  //     }, err => {
-  //       console.log('error: ', err);
-  //       this.router.navigate(['/login']);
-  //       return reject(err);
-  //     })
-  //   })
-  // }
-
 }

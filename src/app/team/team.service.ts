@@ -115,7 +115,12 @@ export class TeamService {
 
 
   getMembers(team: Team) {
-    var retThis = this.afs.collection('team_member', ref => ref.where("teamDocId", "==", team.id)).snapshotChanges();
+    return this.getMembersByTeamId(team.id);
+  }
+
+
+  getMembersByTeamId(id: string) {
+    var retThis = this.afs.collection('team_member', ref => ref.where("teamDocId", "==", id)).snapshotChanges();
     return retThis;
   }
 
@@ -137,6 +142,18 @@ export class TeamService {
         batch.update(dt.payload.doc.ref, {team_name: teamName});
       });
       batch.commit();
+    });
+  }
+
+  updateMember(team_member: TeamMember) {
+    let batch = this.afs.firestore.batch();
+    var teamRef = this.afs.collection('team').doc(team_member.teamDocId).ref;
+    var incrValue = team_member.leader ? 1 : -1;
+    batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(incrValue)});
+    var memberRef = this.afs.collection('team_member').doc(team_member.teamMemberDocId).ref;
+    batch.update(memberRef, {leader: team_member.leader});
+    batch.commit().then(() => {
+      this.messageService.updateTeamMember(team_member)
     });
   }
 }

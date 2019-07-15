@@ -1,4 +1,12 @@
-<h5>My Teams</h5>
+<div class="row">
+  <div class="col">
+    <h2>My Teams</h2>
+  </div>
+  <div class="col text-right">
+    <a id="create_teamXXX" routerLink="/teams/add" class="btn btn-primary">+ Add Team</a>
+  </div>
+</div>
+
 <table class="table table-striped">
   <!-- <thead>
   <tr>
@@ -7,11 +15,21 @@
   </tr>
   </thead> -->
   <tbody>
-  <tr *ngFor="let team of teams"> <!-- object type here is actually TeamMember -->
-    <td><a id="edit_team_{{team.team_name}}"><i class="fa fa-edit fa-2x" aria-hidden="true" (click)="edit(team)"></i></a></td>
+  <tr *ngFor="let team of teams" class="hand" [routerLink]="['/teams', team.teamDocId]"> <!-- object type here is actually TeamMember -->
+    <!-- <td>
+      <a [hidden]="!team.leader" id="delete_team_{{team.team_name}}">
+        <i class="fa fa-times" aria-hidden="true" (click)="confirmDelete(team)"></i>
+      </a>
+    </td> -->
     <td id="team_in_list_{{team.team_name}}">{{team.team_name}}</td>
+    <td class="text-right">
+      <a id="edit_team_{{team.team_name}}">
+        <!-- fa-2x, fa-4x etc if you want bigger icons -->
+        <!-- <i class="fa fa-chevron-right" aria-hidden="true" (click)="edit(team)"></i> -->
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </a>
+    </td>
     <!-- <td>{{team.created.toDate()}}</td> -->
-    <td><a [hidden]="!team.leader" id="delete_team_{{team.team_name}}"><i class="fa fa-times fa-2x" aria-hidden="true" (click)="confirmDelete(team)"></i></a></td>
   </tr>
   </tbody>
 </table>

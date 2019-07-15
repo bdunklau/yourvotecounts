@@ -217,6 +217,7 @@ export class TeamPage extends BasePage {
     expect(this.getElement(by.id(id)).isDisplayed()).toBeTruthy('expected this new team member to be found on the page by id attribute, but it wasn\'t: '+id);
     var nm = await this.getElement(by.id('nameSearchField')).getText()
     expect(nm === '').toBeTruthy('expected the nameSearchField in the Team Members section to be empty, but it was actually: '+nm);
+    expect(false).toBeTruthy('update this test to see if the person added appears more than once. This is a bug fix we need to make sure does not come back.');
   }
 
 

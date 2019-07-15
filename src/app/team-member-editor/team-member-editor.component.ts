@@ -24,11 +24,13 @@ export class TeamMemberEditorComponent implements OnInit {
   user: FirebaseUserModel;
   private teamMemberSubscription: Subscription;
   private teamMemberRemovals: Subscription;
+  private teamMemberUpdates: Subscription;
   private teamMemberListSubscription: Subscription;
   private teamSubscription: Subscription;
   subject = new Subject<any>();
-  canAddMembers = false;
+  canAddTeamMembers = false;
   canDeleteMembers = false;
+  canSetLeaders = false
 
   constructor(private teamService: TeamService,
               private userService: UserService,
@@ -37,6 +39,14 @@ export class TeamMemberEditorComponent implements OnInit {
 
   async ngOnInit() {
     this.user = await this.userService.getCurrentUser();
+
+    this.teamMemberUpdates = this.messageService.getTeamMemberUpdates().subscribe(something => {
+      let team_member = something as TeamMember;
+      let found = _.find(this.team_members, ['teamMemberDocId', team_member.teamMemberDocId]);
+      if(!found) return;
+      found.leader = team_member.leader;
+      // can update more attributes later as needed
+    })
 
     this.teamMemberRemovals = this.messageService.getRemovedMember().subscribe(something => {
       let team_member = something as TeamMember;
@@ -65,16 +75,17 @@ export class TeamMemberEditorComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    this.teamMemberUpdates.unsubscribe();
     this.teamMemberSubscription.unsubscribe();
     this.teamMemberListSubscription.unsubscribe();
     this.teamSubscription.unsubscribe();
     this.teamMemberRemovals.unsubscribe();
   }
 
-  setMemberEditPermissions(user: FirebaseUserModel, team: Team, team_members: TeamMember[]) {
-    if(!user || !team || !team_members) return false;
-    this.canAddMembers = user.canAddTeamMembers(team, team_members);
-    this.canDeleteMembers = user.canRemoveTeamMembers(team, team_members);
+  checked($event, team_member) {
+    // console.log('$event.srcElement.checked = ', $event.srcElement.checked);
+    team_member.leader = $event.srcElement.checked;
+    this.teamService.updateMember(team_member);
   }
 
   async confirmDelete(team_member: TeamMember) {
@@ -132,6 +143,13 @@ export class TeamMemberEditorComponent implements OnInit {
       console.log('onUserSelectedByName():  user = ', user);
       this.teamService.addUserToTeam(this.team, user);
     }
+  }
+
+  setMemberEditPermissions(user: FirebaseUserModel, team: Team, team_members: TeamMember[]) {
+    if(!user || !team || !team_members) return false;
+    this.canAddTeamMembers = user.canAddTeamMembers(team, team_members);
+    this.canDeleteMembers = user.canRemoveTeamMembers(team, team_members);
+    this.canSetLeaders = user.canSetLeaders(team, team_members);
   }
 
   showDeleteModal(team_member: TeamMember) {
