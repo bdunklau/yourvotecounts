@@ -6,6 +6,7 @@ import { TeamService } from '../team/team.service';
 import { map/*, take*/ } from 'rxjs/operators';
 import { MessageService } from '../core/message.service';
 import { TeamMember } from '../team/team-member.model';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-team-viewer',
@@ -16,6 +17,7 @@ export class TeamViewerComponent implements OnInit {
 
   team: Team;
   private routeSubscription: Subscription;
+  team_members: TeamMember[];
   private memberSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
@@ -23,41 +25,61 @@ export class TeamViewerComponent implements OnInit {
               private messageService: MessageService) { }
 
   ngOnInit() {
+    // See TeamResolver and app-routing.module.ts for /teams/edit
+    // You'll see that the team object below is created by TeamResolver
+    this.routeSubscription = this.route.data.subscribe(routeData => {
+      let user = routeData['user'];
+      if (user) {
+        this.user = user;
+      }
 
-  this.routeSubscription = this.route.paramMap.subscribe(async (params) => {
-    var id = params.get('teamDocId');
-    // console.log('routeSubscription: params.teamDocId = ', params.get('teamDocId'));
-    // this.products.forEach((p: Product) => {
-    //   if (p.id == params.teamDocId) {
-    //     this.product = p;
-    //   }
-    // });
+      let team = routeData['team'];
+      if (team) {
+        this.team = team;
+        console.log("team-editor.component.ts  team: ", this.team)
+        //this.createForm(this.user.name);
+        this.memberSubscription = this.teamService.getMembersByTeamId(team.id).pipe(
+          map(actions => {
+            return actions.map(a => {
+              const data = a.payload.doc.data() as TeamMember;
+              const id = a.payload.doc.id;
+              var returnThis = { id, ...data };
+              console.log('returnThis = ', returnThis);
+              return returnThis;
+            });
+          })
+        )
+          .subscribe(objs => {
+            // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
+            this.team_members = _.map(objs, obj => {
+              let tm = obj as unknown;
+              return tm as TeamMember;
+            });
 
-    this.team = await this.teamService.getTeamData(id);
-
-    this.memberSubscription = this.teamService.getMembersByTeamId(id).pipe(
-        map(actions => {
-          return actions.map(a => {
-            const data = a.payload.doc.data() as TeamMember;
-            return data;
-            // const id = a.payload.doc.id;
-            // var returnThis = { id, ...data };
-            // return returnThis;
+            this.setTeamEditPermissions(this.user, this.team, this.team_members);
           });
-        })
-      )
-      .subscribe(team_members => {
-        console.log('team_members = ', team_members);
-        this.messageService.updateTeamMembers(team_members);
-      });
 
-    });
 
+
+
+
+      }
+
+      // let user = routeData['user'];
+      // if(user) {
+      //   this.user = user;
+      // }
+    })
   }
 
   ngOnDestroy() {
     this.routeSubscription.unsubscribe();
     this.memberSubscription.unsubscribe();
+  }
+
+  setTeamEditPermissions(user: FirebaseUserModel, team: Team, team_members: TeamMember[]) {
+    if(!user || !team || !team_members) return false;
+    this.canEditTeam = user.canEditTeam(team, team_members);
   }
 
 }

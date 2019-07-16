@@ -52,6 +52,10 @@ export class FirebaseUserModel {
     return this.canRemoveTeamMembers(team, team_members);
   }
 
+  canEditTeam(team: Team, team_members: TeamMember[]): boolean {
+    return this.canRemoveTeamMembers(team, team_members);
+  }
+
   canRemoveTeamMembers(team: Team, team_members: TeamMember[]): boolean {
     var findMe = _.find(team_members, {userId: this.uid});
     if(!findMe) {

@@ -20,7 +20,7 @@ import { MessageService } from '../core/message.service';
 export class TeamMemberEditorComponent implements OnInit {
 
   @Input() team: Team;
-  team_members: TeamMember[];
+  @Input() team_members: TeamMember[];
   user: FirebaseUserModel;
   private teamMemberSubscription: Subscription;
   private teamMemberRemovals: Subscription;
@@ -29,7 +29,7 @@ export class TeamMemberEditorComponent implements OnInit {
   private teamSubscription: Subscription;
   subject = new Subject<any>();
   canAddTeamMembers = false;
-  canDeleteMembers = false;
+  canRemoveTeamMembers = false;
   canSetLeaders = false
 
   constructor(private teamService: TeamService,
@@ -148,7 +148,7 @@ export class TeamMemberEditorComponent implements OnInit {
   setMemberEditPermissions(user: FirebaseUserModel, team: Team, team_members: TeamMember[]) {
     if(!user || !team || !team_members) return false;
     this.canAddTeamMembers = user.canAddTeamMembers(team, team_members);
-    this.canDeleteMembers = user.canRemoveTeamMembers(team, team_members);
+    this.canRemoveTeamMembers = user.canRemoveTeamMembers(team, team_members);
     this.canSetLeaders = user.canSetLeaders(team, team_members);
   }
 

@@ -12,7 +12,8 @@ export class TeamResolver implements Resolve<Team> {
   async resolve(route: ActivatedRouteSnapshot) : Promise<Team> {
     // console.log('route = ',  route)
     console.log('route.params[teamDocId] = ',  route.params['teamDocId']);
-    return new Team();
+    return await this.teamService.getTeamData(route.params['teamDocId']);
+    // return new Team();
 
     // this.routeSubscription = route.paramMap.subscribe(async (params) => {
     //   var id = params.get('teamDocId');
