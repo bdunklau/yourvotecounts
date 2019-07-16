@@ -10,6 +10,7 @@ import { FirebaseUserModel } from '../user/user.model';
 import { UserService } from '../user/user.service';
 import * as _ from 'lodash';
 import { MessageService } from '../core/message.service';
+import { map, take/*, take, switchMap*/ } from 'rxjs/operators';
 
 @Component({
   selector: 'app-team-member-editor',
@@ -20,13 +21,14 @@ import { MessageService } from '../core/message.service';
 export class TeamMemberEditorComponent implements OnInit {
 
   @Input() team: Team;
-  @Input() team_members: TeamMember[];
+  /*@Input()*/ team_members: TeamMember[];
   user: FirebaseUserModel;
   private teamMemberSubscription: Subscription;
+  private teamMemberSubscription2: Subscription;
   private teamMemberRemovals: Subscription;
   private teamMemberUpdates: Subscription;
   private teamMemberListSubscription: Subscription;
-  private teamSubscription: Subscription;
+  // private teamSubscription: Subscription;
   subject = new Subject<any>();
   canAddTeamMembers = false;
   canRemoveTeamMembers = false;
@@ -40,45 +42,78 @@ export class TeamMemberEditorComponent implements OnInit {
   async ngOnInit() {
     this.user = await this.userService.getCurrentUser();
 
-    this.teamMemberUpdates = this.messageService.getTeamMemberUpdates().subscribe(something => {
-      let team_member = something as TeamMember;
-      let found = _.find(this.team_members, ['teamMemberDocId', team_member.teamMemberDocId]);
-      if(!found) return;
-      found.leader = team_member.leader;
-      // can update more attributes later as needed
-    })
+    if (this.team) {
+      console.log("TeamMemberEditorComponent:  team: ", this.team)
+      //this.createForm(this.user.name);
+      this.teamMemberSubscription2 = this.teamService.getMembersByTeamId(this.team.id).pipe(
+        // take(1),  // this is how you keep the page from updating.  sometimes you want to do this, but not here
+        map(actions => {
+          return actions.map(a => {
+            const data = a.payload.doc.data() as TeamMember;
+            const id = a.payload.doc.id;
+            var returnThis = { id, ...data };
+            console.log('returnThis = ', returnThis);
+            return returnThis;
+          });
+        })
+      )
+        .subscribe(objs => {
+          // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
+          this.team_members = _.map(objs, obj => {
+            let tm = obj as unknown;
+            return tm as TeamMember;
+          });
 
-    this.teamMemberRemovals = this.messageService.getRemovedMember().subscribe(something => {
-      let team_member = something as TeamMember;
-      if(!this.team_members) return;
-      _.remove(this.team_members, {userId: team_member.userId})
-    })
+          // FIXME I'm querying for ALL team members just to see if I am a leader on that team
+          // ALSO HAVE 2 DATABASE READS GOING ON IN THE SAME PAGE - ONE IN THIS COMPONENT AND THE OTHER
+          // IN team-editor.component.ts THAT'S NOT GOOD
+          this.setEditMemberPermissions(this.user, this.team, this.team_members);
 
-    this.teamMemberSubscription = this.messageService.getTeamMember().subscribe((something) => {
-      let team_member = something as TeamMember;
-      console.log('ngOnInit: teamMemberSubscription: team_member = ', team_member);
-      if(!this.team_members) this.team_members = [];
-      this.team_members.push(team_member);
-    })
+          console.log('TeamMemberEditorComponent: team_members: ', this.team_members);
+        });
+    }
 
-    this.teamMemberListSubscription = this.messageService.getTeamMembers().subscribe((something) => {
-      let xx:TeamMember[] = something as TeamMember[];
-      console.log('ngOnInit: this.team_members = xx = ', xx);
-      this.team_members = xx;
-      this.setMemberEditPermissions(this.user, this.team, this.team_members);
-    });
+    // this.teamMemberUpdates = this.messageService.getTeamMemberUpdates().subscribe(something => {
+    //   let team_member = something as TeamMember;
+    //   let found = _.find(this.team_members, ['teamMemberDocId', team_member.teamMemberDocId]);
+    //   if(!found) return;
+    //   found.leader = team_member.leader;
+    //   // can update more attributes later as needed
+    // })
 
-    this.teamSubscription = this.messageService.getTeam().subscribe(team => {
-      this.team = team;
-      this.setMemberEditPermissions(this.user, this.team, this.team_members);
-    });
+    // this.teamMemberRemovals = this.messageService.getRemovedMember().subscribe(something => {
+    //   console.log('ngOnInit: this.teamMemberRemovals: something = ', something);
+    //   let team_member = something as TeamMember;
+    //   if(!this.team_members) return;
+    //   _.remove(this.team_members, {userId: team_member.userId})
+    // })
+
+    // this.teamMemberSubscription = this.messageService.getTeamMember().subscribe((something) => {
+    //   let team_member = something as TeamMember;
+    //   console.log('ngOnInit: teamMemberSubscription: team_member = ', team_member);
+    //   if(!this.team_members) this.team_members = [];
+    //   this.team_members.push(team_member);
+    // })
+
+    // this.teamMemberListSubscription = this.messageService.getTeamMembers().subscribe((something) => {
+    //   let xx:TeamMember[] = something as TeamMember[];
+    //   console.log('ngOnInit: this.team_members = xx = ', xx);
+    //   this.team_members = xx;
+    //   this.setEditMemberPermissions(this.user, this.team, this.team_members);
+    // });
+
+    // this.teamSubscription = this.messageService.getTeam().subscribe(team => {
+    //   this.team = team;
+    //   this.setEditMemberPermissions(this.user, this.team, this.team_members);
+    // });
   }
 
   ngOnDestroy() {
     this.teamMemberUpdates.unsubscribe();
     this.teamMemberSubscription.unsubscribe();
+    this.teamMemberSubscription2.unsubscribe();
     this.teamMemberListSubscription.unsubscribe();
-    this.teamSubscription.unsubscribe();
+    // this.teamSubscription.unsubscribe();
     this.teamMemberRemovals.unsubscribe();
   }
 
@@ -145,7 +180,7 @@ export class TeamMemberEditorComponent implements OnInit {
     }
   }
 
-  setMemberEditPermissions(user: FirebaseUserModel, team: Team, team_members: TeamMember[]) {
+  setEditMemberPermissions(user: FirebaseUserModel, team: Team, team_members: TeamMember[]) {
     if(!user || !team || !team_members) return false;
     this.canAddTeamMembers = user.canAddTeamMembers(team, team_members);
     this.canRemoveTeamMembers = user.canRemoveTeamMembers(team, team_members);
