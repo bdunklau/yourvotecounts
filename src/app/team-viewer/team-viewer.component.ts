@@ -7,6 +7,7 @@ import { map/*, take*/ } from 'rxjs/operators';
 import { MessageService } from '../core/message.service';
 import { TeamMember } from '../team/team-member.model';
 import * as _ from 'lodash';
+import { FirebaseUserModel } from '../user/user.model';
 
 @Component({
   selector: 'app-team-viewer',
@@ -15,10 +16,12 @@ import * as _ from 'lodash';
 })
 export class TeamViewerComponent implements OnInit {
 
+  user: FirebaseUserModel;
   team: Team;
   private routeSubscription: Subscription;
   team_members: TeamMember[];
   private memberSubscription: Subscription;
+  canEditTeam = false;
 
   constructor(private route: ActivatedRoute,
               private teamService: TeamService,
@@ -56,13 +59,11 @@ export class TeamViewerComponent implements OnInit {
               return tm as TeamMember;
             });
 
+            // FIXME I'm querying for ALL team members just to see if I am a leader on that team
+            // ALSO HAVE 2 DATABASE READS GOING ON IN THE SAME PAGE - ONE IN THIS COMPONENT AND THE OTHER
+            // IN team-member-editor.component.ts THAT'S NOT GOOD
             this.setTeamEditPermissions(this.user, this.team, this.team_members);
           });
-
-
-
-
-
       }
 
       // let user = routeData['user'];
