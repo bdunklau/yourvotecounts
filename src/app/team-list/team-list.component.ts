@@ -91,7 +91,7 @@ export class TeamListComponent implements OnInit {
     )
     .subscribe(team_members => {
       console.log('team_members = ', team_members);
-      this.messageService.updateTeamMembers(team_members);
+      // this.messageService.updateTeamMembers(team_members); // only updates the client you're on - not that useful
     });
 
   }
