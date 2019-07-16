@@ -36,7 +36,7 @@ export class TeamService {
     var teamRef = this.afs.collection('team').doc(team.id).ref;
     batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(1)});
     batch.commit().then(() => {
-      this.messageService.addTeamMember(teamMember as TeamMember);
+      // this.messageService.addTeamMember(teamMember as TeamMember); // only updates the client you're on - not that useful
     });
   }
 
@@ -66,8 +66,8 @@ export class TeamService {
                      leader: true}
     batch.set(teamMemberRef, teamMember);
     batch.commit().then(() => {
-      this.messageService.updateTeam(team);
-      this.messageService.updateTeamMembers([teamMember as TeamMember]);
+      // this.messageService.updateTeam(team);                               // only updates the client you're on - not that useful
+      // this.messageService.updateTeamMembers([teamMember as TeamMember]);  // only updates the client you're on - not that useful
     });
 
     // good example of transactions:
@@ -86,7 +86,7 @@ export class TeamService {
         batch.delete(dt.payload.doc.ref);
       });
       batch.commit().then(() => {
-        this.messageService.updateTeam(null);
+        // this.messageService.updateTeam(null); // only updates the client you're on - not that useful
       });
     });
 
@@ -101,9 +101,13 @@ export class TeamService {
     batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(-1)});
     if(team_member.leader)
       batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(-1)});
-    batch.commit().then(() => {
-      this.messageService.deleteTeamMember(team_member);
-    });
+    await batch.commit();//.then(() => {
+    //   console.log('deleteTeamMember: removing ', team_member);
+    //   this.messageService.deleteTeamMember(team_member);
+    // });
+
+    // console.log('deleteTeamMember: removing ', team_member);
+    // this.messageService.deleteTeamMember(team_member);
     return await this.getTeamData(team_member.teamDocId);
   }
 
@@ -153,7 +157,7 @@ export class TeamService {
     var memberRef = this.afs.collection('team_member').doc(team_member.teamMemberDocId).ref;
     batch.update(memberRef, {leader: team_member.leader});
     batch.commit().then(() => {
-      this.messageService.updateTeamMember(team_member)
+      // this.messageService.updateTeamMember(team_member)
     });
   }
 }
