@@ -22,6 +22,10 @@ export class TeamPage extends BasePage {
     this.enterUserByName(this.args.addedPerson.displayName);
   }
 
+  beginCreateTeam() {
+    this.getElement(by.id('create_team')).click();
+  }
+
   beginDeletePerson() {
     var deletePersonId = "delete_team_member_"+this.args.addedPerson.displayName;
     this.getElement(by.id(deletePersonId)).click();
@@ -47,8 +51,15 @@ export class TeamPage extends BasePage {
     browser.sleep(500);
   }
 
-  createTeam() {
-    this.getElement(by.id('create_team')).click();
+  createTeam(phoneNumber: string) {
+    this.args.testSupport.setNames(this.args.testSupport.names);
+    this.args.testSupport.login(this.args.testSupport.names[0].phoneNumber);
+    browser.sleep(500);
+    this.goto('');
+    this.clickTeams();
+    this.beginCreateTeam();
+    this.fillOutForm();
+    this.saveTeam();
   }
 
   createTeamWithTwoPeople() {
@@ -56,10 +67,9 @@ export class TeamPage extends BasePage {
     this.args.testSupport.login(this.args.testSupport.names[0].phoneNumber);
     browser.sleep(500);
     this.goto('');
-    browser.sleep(500);
 
     this.clickTeams();
-    this.createTeam();
+    this.beginCreateTeam();
     this.fillOutForm();
     this.saveTeam();
     this.addSomeoneToTeam();
@@ -144,6 +154,8 @@ export class TeamPage extends BasePage {
     // should be a modal displayed
     expect(this.getElement(by.id('modal_ok')).isPresent()).toBeTruthy('expected modal to be displayed with an OK button but present');
     expect(this.getElement(by.id('modal_ok')).isDisplayed()).toBeTruthy('expected OK button in modal to be displayed');
+    expect(this.getElement(by.id('modal_cancel')).isPresent()).toBeTruthy('expected modal to be displayed with a Cancel button but present');
+    expect(this.getElement(by.id('modal_cancel')).isDisplayed()).toBeTruthy('expected Cancel button in modal to be displayed');
   }
 
 
@@ -215,7 +227,6 @@ export class TeamPage extends BasePage {
     var teamIdInList = 'team_in_list_'+this.args.teamName;
     var memberIdField = "team_member_"+this.args.addedPerson.displayName;
     expect(this.getElement(by.id('team_member_editor')).isDisplayed()).toBeTruthy('the team member list should still be displayed because we only deleted a team member');
-    expect(this.getElement(by.id(teamIdInList)).isDisplayed()).toBeTruthy('expected the team list to contain this html element id="'+teamIdInList+'" because we only deleted a team member');
     expect(element(by.id(memberIdField)).isPresent()).toBeFalsy('did not expect the team page to contain to team member id='+memberIdField+' because we just deleted this person');
   }
 
@@ -231,13 +242,18 @@ export class TeamPage extends BasePage {
   }
 
 
-  async verifyPersonAdded() {
+  verifyPersonAdded() {
     // verify the person was added
     var id = 'team_member_'+this.args.addedPerson.displayName;
     expect(this.getElement(by.id(id)).isDisplayed()).toBeTruthy('expected this new team member to be found on the page by id attribute, but it wasn\'t: '+id);
-    var nm = await this.getElement(by.id('nameSearchField')).getText()
-    expect(nm === '').toBeTruthy('expected the nameSearchField in the Team Members section to be empty, but it was actually: '+nm);
-    expect(false).toBeTruthy('update this test to see if the person added appears more than once. This is a bug fix we need to make sure does not come back.');
+    this.getElement(by.id('nameSearchField')).getAttribute('value').then(nm => {
+      expect(nm === '').toBeTruthy('expected the nameSearchField in the Team Members section to be empty, but it was actually: '+nm);
+    })
+
+    // regression check - verify the person doesn't appear more than once in the member list
+    this.getElements(by.id(id)).then(team_members => {
+      expect(team_members.length === 1).toBeTruthy('expected to find exactly 1 element with id="'+id+'" but actually found '+team_members.length);
+    });
   }
 
 

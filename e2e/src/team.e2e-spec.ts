@@ -57,14 +57,15 @@ fdescribe('Team page', () => {
   })
 
 
-  fit('should be able to create and delete a team', () => {
+  // passed on 7/17/19
+  it('should be able to create and delete a team', () => {
     testSupport.login(testSupport.normalUser.phoneNumber);
     browser.sleep(500);
     page.goto('');
     page.clickTeams();
 
     teamPage.verifyPageBeforeCreatingTeam();
-    teamPage.createTeam();
+    teamPage.beginCreateTeam();
     teamPage.verifyPageOnCreateTeam();
 
     teamPage.fillOutForm();
@@ -97,19 +98,9 @@ fdescribe('Team page', () => {
 
 
   it('should be able to add and remove people from a team', () => {
-
-    testSupport.setNames(testSupport.names);
-
-    testSupport.login(testSupport.names[0].phoneNumber);
-    browser.sleep(500);
-    page.goto('');
-    browser.sleep(500);
-
-    page.clickTeams();
-    teamPage.createTeam();
-    teamPage.fillOutForm();
-    teamPage.saveTeam();
-
+    teamPage.createTeam(testSupport.names[0].phoneNumber);
+    teamPage.selectTeam();
+    teamPage.editTeam();
     teamPage.addSomeoneToTeam();
     teamPage.verifyPersonAdded();
 
@@ -124,7 +115,6 @@ fdescribe('Team page', () => {
 
     // clean up
     teamPage.deleteTeam();
-
     page.clickLogout();
   })
 
@@ -191,7 +181,7 @@ fdescribe('Team page', () => {
     browser.sleep(500);
 
     page.clickTeams();
-    teamPage.createTeam();
+    teamPage.beginCreateTeam();
     teamPage.fillOutForm();
     teamPage.saveTeam();
 
