@@ -4,6 +4,7 @@ import { TeamViewerComponent } from './team-viewer.component';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { BehaviorSubject, of } from 'rxjs';
 
 
 describe('TeamViewerComponent', () => {
