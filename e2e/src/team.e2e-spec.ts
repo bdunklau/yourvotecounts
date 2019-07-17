@@ -57,11 +57,10 @@ fdescribe('Team page', () => {
   })
 
 
-  fit('should be able to create and delete a team', async () => {
+  fit('should be able to create and delete a team', () => {
     testSupport.login(testSupport.normalUser.phoneNumber);
     browser.sleep(500);
     page.goto('');
-    browser.sleep(500);
     page.clickTeams();
 
     teamPage.verifyPageBeforeCreatingTeam();
@@ -71,40 +70,28 @@ fdescribe('Team page', () => {
     teamPage.fillOutForm();
     teamPage.verifyPageAfterFillingOutForm();
 
-    // teamPage.clearForm();
-    // teamPage.verifyPageAfterClearingForm();
-    //
-    // teamPage.fillOutForm();
-    // teamPage.verifyPageAfterFillingOutForm();
+    teamPage.clearForm();
+    teamPage.verifyPageAfterClearingForm();
 
-    // browser.sleep(3000);
+    teamPage.fillOutForm();
+    teamPage.verifyPageAfterFillingOutForm();
+
     teamPage.saveTeam();
-        // browser.sleep(3000);
-    // teamPage.verifyTeamEditorSectionIsCorrectAfterSaving(); // deleted
-
-        browser.sleep(3000);
     teamPage.verifyTeamIsDisplayedInList();
     // teamPage.verifyMemberListIsDisplayed(); // should no longer display team members after saving a new team
 
-        browser.sleep(3000);
     teamPage.selectTeam();
-        browser.sleep(3000);
     teamPage.editTeam();
-        browser.sleep(3000);
     teamPage.beginDeleteTeam();
-        browser.sleep(3000);
     teamPage.verifyPageOnBeginDelete();
-        browser.sleep(3000);
 
-    teamPage.cancelDeleteTeam(); // i think we get this far
-        browser.sleep(15000);
+    teamPage.cancelDeleteTeam();
     teamPage.verifyPageOnCancelDeleteTeam();
-    // teamPage.verifyTeamIsDisplayedInList();
     // teamPage.verifyMemberListIsDisplayed(); // should no longer display team members after saving a new team
 
+    // clean up
     teamPage.deleteTeam();
     teamPage.verifyPageOnDeleteTeam();
-
     teamPage.clickLogout();
   });
 

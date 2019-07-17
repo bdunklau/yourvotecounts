@@ -178,21 +178,24 @@ export class TeamPage extends BasePage {
   }
 
 
-  async verifyPageOnCancelDeleteTeam() {
+  verifyPageOnCancelDeleteTeam() {
     // team_name_field should be displayed
     // team_name_field should contain the team name
     expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should still be displayed');
-    expect(await this.getElement(by.id('team_name_field')).getText() === this.args.teamName).toBeTruthy('the team name field should have contained '+this.args.teamName);
+    this.getElement(by.id('team_name_field')).getAttribute('value').then(val => {
+      expect(val === this.args.teamName).toBeTruthy('the team name field should have contained '+this.args.teamName+' but it actually contained: '+val);
+      // save button should be enabled
+      // cancel button should be enabled
+      // delete button should be enabled
+      expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should have been displayed but it wasn\'t');
+      expect(this.getElement(by.id('save_team')).isEnabled()).toBeTruthy('the save button should be enabled');
+      // browser.sleep(3000);
+      expect(this.getCancelButton().isDisplayed()).toBeTruthy('the cancel button should have been displayed but it wasn\'t');
+      expect(this.getCancelButton().isEnabled()).toBeTruthy('the cancel button should be enabled');
+      expect(this.getElement(by.id('delete_team')).isDisplayed()).toBeTruthy('the delete button should have been displayed but it wasn\'t');
+      expect(this.getElement(by.id('delete_team')).isEnabled()).toBeTruthy('the delete button should be enabled');
+    });
 
-    // save button should be enabled
-    // cancel button should be enabled
-    // delete button should be enabled
-    expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should have been displayed but it wasn\'t');
-    expect(this.getElement(by.id('save_team')).isEnabled()).toBeTruthy('the save button should be enabled');
-    expect(this.getCancelButton().isDisplayed()).toBeTruthy('the cancel button should have been displayed but it wasn\'t');
-    expect(this.getCancelButton().isEnabled()).toBeTruthy('the cancel button should be enabled');
-    expect(this.getElement(by.id('delete_team')).isDisplayed()).toBeTruthy('the delete button should have been displayed but it wasn\'t');
-    expect(this.getElement(by.id('delete_team')).isEnabled()).toBeTruthy('the delete button should be enabled');
   }
 
 
@@ -248,14 +251,5 @@ export class TeamPage extends BasePage {
     var teamElement = this.getElement(by.id(teamIdInList));
     expect(teamElement.isPresent()).toBeTruthy('expected the team list to contain an html element with id "'+teamIdInList+'" but did not find it');
   }
-
-
-  // async verifyTeamEditorSectionIsCorrectAfterSaving() {
-  //   // after saving, verify the form is cleared and the save button is disabled
-  //   expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should still be displayed');
-  //   expect(await this.getElement(by.id('team_name_field')).getText() === '').toBeTruthy('the team name field should have been empty');
-  //   expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should have been displayed but it wasn\'t');
-  //   expect(this.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled');
-  // }
 
 }
