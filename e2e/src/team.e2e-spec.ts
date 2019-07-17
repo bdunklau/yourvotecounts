@@ -221,7 +221,8 @@ fdescribe('Team page', () => {
   })
 
 
-  fit('should prevent non-leaders from adding/removing people', async () => {
+  // passed on 7/17/19
+  it('should prevent non-leaders from adding/removing people', async () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     page.clickLogout();
 
@@ -249,7 +250,11 @@ fdescribe('Team page', () => {
   })
 
 
-  it('should let leaders delete a team', async () => {
+  // As it is now, this is now different from the intial test where we create a team and then delete it.
+  // For this test to be meaningful, we need to add someone to the team and make that person a leader.
+  // Then login as that person and delete the team.
+  // Then make sure the team is removed from both people's list.
+  xit('should let leaders delete a team', async () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     teamPage.deleteTeam();
     teamPage.verifyPageOnDeleteTeam();
