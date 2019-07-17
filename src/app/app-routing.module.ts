@@ -24,7 +24,7 @@ const routes: Routes = [
   { path: 'log', component: LogComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'login', component: LoginComponent },
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard] },
-  { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard] },
+  { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard], resolve: { user: UserResolver} },
   { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard], resolve: {team: TeamResolver, user: UserResolver} },
   { path: 'teams/edit/:teamDocId', component: TeamEditorComponent, canActivate: [AuthGuard], resolve: {team: TeamResolver, user: UserResolver} },
   { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard] },

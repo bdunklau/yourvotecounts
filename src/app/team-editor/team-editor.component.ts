@@ -38,10 +38,13 @@ export class TeamEditorComponent implements OnInit {
 
   ngOnInit() {
 
+    this.team = new Team();
+
     // See TeamResolver and app-routing.module.ts for /teams/edit
     // You'll see that the team object below is created by TeamResolver
     this.routeSubscription = this.route.data.subscribe(routeData => {
       let team = routeData['team'];
+      console.log('routeSubscription: team: ', team);
       if (team) {
         this.team = team;
         console.log("team-editor.component.ts  team: ", this.team)
@@ -52,7 +55,6 @@ export class TeamEditorComponent implements OnInit {
               const data = a.payload.doc.data() as TeamMember;
               const id = a.payload.doc.id;
               var returnThis = { id, ...data };
-              console.log('returnThis = ', returnThis);
               return returnThis;
             });
           })

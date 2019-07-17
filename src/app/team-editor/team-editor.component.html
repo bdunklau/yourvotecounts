@@ -14,16 +14,20 @@
         <div [hidden]="teamName.valid || teamName.pristine"
              id="team_name_invalid"
              class="alert alert-danger">
-          Team name is required
+          Team name is required, valid:{{teamName.valid}}, pristine:{{teamName.pristine}}
         </div>
       </div>
 
       <button id="save_team" type="submit" class="btn btn-success" [disabled]="!teamNameForm.form.valid">Save</button>
       &nbsp;
-      <a id="cancel_team" [routerLink]="['/teams/', team.id]" (click)="cancelEditing(teamNameForm)" class="btn btn-secondary">Cancel</a>
+
+      <a id="cancel_team" *ngIf="!team.id" [routerLink]="['/teams/']" (click)="cancelEditing(teamNameForm)" class="btn btn-secondary">Cancel</a>
+      &nbsp;
+
+      <a id="cancel_team" *ngIf="team.id" [routerLink]="['/teams/', team.id]" (click)="cancelEditing(teamNameForm)" class="btn btn-secondary">Cancel</a>
       &nbsp;
       &nbsp;
-      <button id="delete_team" type="button" (click)="deleteTeam(teamNameForm)" class="btn btn-danger">Delete Team</button>
+      <button id="delete_team" *ngIf="team.id" type="button" (click)="deleteTeam(teamNameForm)" class="btn btn-danger">Delete Team</button>
 
     </form>
   </div>

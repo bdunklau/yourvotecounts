@@ -23,11 +23,11 @@ export class TeamMemberEditorComponent implements OnInit {
   @Input() team: Team;
   /*@Input()*/ team_members: TeamMember[];
   user: FirebaseUserModel;
-  private teamMemberSubscription: Subscription;
+  // private teamMemberSubscription: Subscription;
   private teamMemberSubscription2: Subscription;
-  private teamMemberRemovals: Subscription;
-  private teamMemberUpdates: Subscription;
-  private teamMemberListSubscription: Subscription;
+  // private teamMemberRemovals: Subscription;
+  // private teamMemberUpdates: Subscription;
+  // private teamMemberListSubscription: Subscription;
   // private teamSubscription: Subscription;
   subject = new Subject<any>();
   canAddTeamMembers = false;
@@ -42,7 +42,7 @@ export class TeamMemberEditorComponent implements OnInit {
   async ngOnInit() {
     this.user = await this.userService.getCurrentUser();
 
-    if (this.team) {
+    if (this.team && this.team.id) {
       console.log("TeamMemberEditorComponent:  team: ", this.team)
       //this.createForm(this.user.name);
       this.teamMemberSubscription2 = this.teamService.getMembersByTeamId(this.team.id).pipe(
@@ -109,12 +109,12 @@ export class TeamMemberEditorComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.teamMemberUpdates.unsubscribe();
-    this.teamMemberSubscription.unsubscribe();
-    this.teamMemberSubscription2.unsubscribe();
-    this.teamMemberListSubscription.unsubscribe();
+    // this.teamMemberUpdates.unsubscribe();
+    // this.teamMemberSubscription.unsubscribe();
+    if(this.teamMemberSubscription2) this.teamMemberSubscription2.unsubscribe();
+    // this.teamMemberListSubscription.unsubscribe();
     // this.teamSubscription.unsubscribe();
-    this.teamMemberRemovals.unsubscribe();
+    // this.teamMemberRemovals.unsubscribe();
   }
 
   checked($event, team_member) {
