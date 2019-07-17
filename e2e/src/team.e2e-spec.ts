@@ -97,6 +97,7 @@ fdescribe('Team page', () => {
   });
 
 
+  // passed on 7/17/19
   it('should be able to add and remove people from a team', () => {
     teamPage.createTeam(testSupport.names[0].phoneNumber);
     teamPage.selectTeam();
@@ -121,7 +122,7 @@ fdescribe('Team page', () => {
 
   // We have to test the drop down here because it's a different component than the one
   // in the log page.  This one clears its contents when a name is chosen
-  it('should display correct list of users in dropdown', async () => {
+  fit('should display correct list of users in dropdown', async () => {
 
     // create a team
     // type a few letters into the name field to add someone
@@ -173,18 +174,9 @@ fdescribe('Team page', () => {
                 ];
 
 
-    testSupport.setNames(testSupport.names);
-
-    testSupport.login(testSupport.names[0].phoneNumber);
-    browser.sleep(500);
-    page.goto('');
-    browser.sleep(500);
-
-    page.clickTeams();
-    teamPage.beginCreateTeam();
-    teamPage.fillOutForm();
-    teamPage.saveTeam();
-
+    teamPage.createTeam(testSupport.names[0].phoneNumber);
+    browser.sleep(300);
+    teamPage.selectTeam();
     teamPage.enterPartialName(testSupport.names[0].displayName, 3);
 
 
@@ -220,8 +212,8 @@ fdescribe('Team page', () => {
     func(run3, 3);
 
     // clean up
+    teamPage.editTeam();
     teamPage.deleteTeam();
-
     page.clickLogout();
   })
 
