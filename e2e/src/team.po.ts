@@ -28,8 +28,7 @@ export class TeamPage extends BasePage {
   }
 
   beginDeleteTeam() {
-    console.log('begin deleting team: '+this.args.teamName)
-    var deleteTeamId = "delete_team_"+this.args.teamName;
+    var deleteTeamId = "delete_team";
     this.getElement(by.id(deleteTeamId)).click();
   }
 
@@ -79,7 +78,7 @@ export class TeamPage extends BasePage {
   }
 
   editTeam() {
-    this.getElement(by.id('edit_team_'+this.args.teamName)).click();
+    this.getElement(by.id('edit_team')).click();
   }
 
   enterTeamName(name: string) {
@@ -114,6 +113,10 @@ export class TeamPage extends BasePage {
 
   saveTeam() {
     this.getSaveButton().click();
+  }
+
+  selectTeam() {
+    this.getElement(by.id('select_team_'+this.args.teamName)).click();
   }
 
 
@@ -176,7 +179,20 @@ export class TeamPage extends BasePage {
 
 
   async verifyPageOnCancelDeleteTeam() {
-    this.verifyTeamEditorSectionIsCorrectAfterSaving()
+    // team_name_field should be displayed
+    // team_name_field should contain the team name
+    expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should still be displayed');
+    expect(await this.getElement(by.id('team_name_field')).getText() === this.args.teamName).toBeTruthy('the team name field should have contained '+this.args.teamName);
+
+    // save button should be enabled
+    // cancel button should be enabled
+    // delete button should be enabled
+    expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should have been displayed but it wasn\'t');
+    expect(this.getElement(by.id('save_team')).isEnabled()).toBeTruthy('the save button should be enabled');
+    expect(this.getCancelButton().isDisplayed()).toBeTruthy('the cancel button should have been displayed but it wasn\'t');
+    expect(this.getCancelButton().isEnabled()).toBeTruthy('the cancel button should be enabled');
+    expect(this.getElement(by.id('delete_team')).isDisplayed()).toBeTruthy('the delete button should have been displayed but it wasn\'t');
+    expect(this.getElement(by.id('delete_team')).isEnabled()).toBeTruthy('the delete button should be enabled');
   }
 
 
@@ -185,8 +201,8 @@ export class TeamPage extends BasePage {
     expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should have been displayed because we clicked Create Team button');
     expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should be displayed but it wasn\'t');
     expect(this.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled because we have not entered anything into the Team Name field yet');
-    expect(this.getElement(by.id('cancel_team')).isDisplayed()).toBeTruthy('the Cancel button should be displayed');
-    expect(this.getElement(by.id('cancel_team')).isEnabled()).toBeTruthy('the Cancel button should be enabled');
+    expect(this.getCancelButton().isDisplayed()).toBeTruthy('the Cancel button should be displayed');
+    expect(this.getCancelButton().isEnabled()).toBeTruthy('the Cancel button should be enabled');
     // we DON'T want the team member section to be visible yet...
     expect(element(by.id('team_member_editor')).isPresent()).toBeFalsy('did not expect the team member editor section to be visible. We just started creating a team.');
   }
@@ -201,6 +217,7 @@ export class TeamPage extends BasePage {
   }
 
 
+  // After a team is deleted, the user should see the list of his teams
   verifyPageOnDeleteTeam() {
     // Verify - the team member section is gone
     var teamIdInList = 'team_in_list_'+this.args.teamName;
@@ -226,21 +243,19 @@ export class TeamPage extends BasePage {
     expect(element(by.id("delete_team_"+this.args.teamName)).isDisplayed()).toBeFalsy('did not expect the delete team X to be present for delete_team_'+this.args.teamName+' but it was');
   }
 
-
-  async verifyTeamEditorSectionIsCorrectAfterSaving() {
-    // after saving, verify the form is cleared and the save button is disabled
-    expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should still be displayed');
-    expect(await this.getElement(by.id('team_name_field')).getText() === '').toBeTruthy('the team name field should have been empty');
-    expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should have been displayed but it wasn\'t');
-    expect(this.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled');
-  }
-
   async verifyTeamIsDisplayedInList() {
     var teamIdInList = 'team_in_list_'+this.args.teamName
     var teamElement = this.getElement(by.id(teamIdInList));
     expect(teamElement.isPresent()).toBeTruthy('expected the team list to contain an html element with id "'+teamIdInList+'" but did not find it');
-    var val = await this.getElement(by.id('team_name_field')).getText();
-    expect(val === '').toBeTruthy('the team name field should be empty');
   }
+
+
+  // async verifyTeamEditorSectionIsCorrectAfterSaving() {
+  //   // after saving, verify the form is cleared and the save button is disabled
+  //   expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should still be displayed');
+  //   expect(await this.getElement(by.id('team_name_field')).getText() === '').toBeTruthy('the team name field should have been empty');
+  //   expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should have been displayed but it wasn\'t');
+  //   expect(this.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled');
+  // }
 
 }

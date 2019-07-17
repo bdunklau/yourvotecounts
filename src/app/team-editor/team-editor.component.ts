@@ -10,11 +10,15 @@ import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { map/*, take*/ } from 'rxjs/operators';
 import { MessageService } from '../core/message.service';
 import * as _ from 'lodash';
+import { Router } from "@angular/router";
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 
 @Component({
   selector: 'app-team-editor',
   templateUrl: './team-editor.component.html',
   styleUrls: ['./team-editor.component.css'],
+  providers: [NgbActiveModal/*, FirebaseUserModel*/]
 })
 export class TeamEditorComponent implements OnInit {
 
@@ -23,7 +27,7 @@ export class TeamEditorComponent implements OnInit {
   // @Input() teamNameValue: string;
   // @Input() teamIdValue: string;
   @Input() user: FirebaseUserModel;
-  @Output() editing = new EventEmitter<boolean>();
+  // @Output() editing = new EventEmitter<boolean>();
   team_members: TeamMember[];
   // teamForm = new FormGroup({
   //   teamId: new FormControl(''),
@@ -34,6 +38,8 @@ export class TeamEditorComponent implements OnInit {
 
   constructor(private teamService: TeamService,
               private route: ActivatedRoute,
+              private router: Router,
+              private _modalService: NgbModal,
               private messageService: MessageService) { }
 
   ngOnInit() {
@@ -83,24 +89,61 @@ export class TeamEditorComponent implements OnInit {
   }
 
   cancelEditing(form: NgForm) {
-    this.editing.emit(false);
+    // this.editing.emit(false);
     form.reset();
   }
 
   deleteTeam(form: NgForm) {
-    this.editing.emit(false);
+    // this.editing.emit(false);
+    this.teamService.deleteTeam(this.team);
     form.reset();
+  }
+
+  closeResult: string;
+  confirmDelete(form: NgForm, team_member: any /*json of a TeamMember*/) {
+    let team: Team = this.toTeam(team_member);
+    var team_name = team.name;
+    console.log('confirmDelete:  team_member = ', team_member);
+    console.log('confirmDelete:  team = ', team);
+    const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
+    modalRef.result.then((result) => {
+      // the ok/delete case
+      // this.closeResult = `Closed with: ${result}`;
+      this.teamService.deleteTeam(team);
+      form.reset();
+      this.router.navigate(['/teams']);
+    }, (reason) => {
+      // the cancel/dismiss case
+      // this.closeResult = `Dismissed ${reason}`;
+    });
+
+    modalRef.componentInstance.title = 'Delete Team?';
+    modalRef.componentInstance.question = 'Are you sure you want to delete the team ';
+    modalRef.componentInstance.thing = team_name;
+    modalRef.componentInstance.warning_you = 'All information associated to this team will be permanently deleted.';
+    modalRef.componentInstance.really_warning_you = 'This operation can not be undone.';
   }
 
   onSubmit(form: NgForm) {
     // this.editing = false;
     // console.log('onSubmit:  this.user = ', this.user);
+    var teamId = null;
     if(!this.team.id) {
-      this.teamService.create(this.team.name, this.user);
+      teamId = this.teamService.create(this.team.name, this.user);
     }
-    else
+    else {
       this.teamService.update(this.team.id, this.team.name, this.user);
+      teamId = this.team.id;
+    }
+    this.router.navigate(['/teams', teamId]);
     form.reset();
+  }
+
+  private toTeam(obj: any) {
+    let team: Team = new Team();
+    team.id = obj.id
+    team.name = obj.name;
+    return team;
   }
 
 }

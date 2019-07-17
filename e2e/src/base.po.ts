@@ -13,6 +13,11 @@ export class BasePage {
     field.sendKeys(Key.BACK_SPACE);
   }
 
+  clickLogout() {
+    this.pullDownMyMenu();
+    this.getLogoutLink().click();
+  }
+
   clickTeams() {
     this.pullDownMyMenu();
     this.getElement(by.id('teams_link')).click();
@@ -58,6 +63,11 @@ export class BasePage {
 
   getCurrentUserNameLink() {
     return this.getElement(by.id('name_or_phone'));
+  }
+
+
+  getLogoutLink() {
+    return this.getElement(by.id('logout_link'));
   }
 
 

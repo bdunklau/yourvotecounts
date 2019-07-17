@@ -8,14 +8,14 @@ import { Subscription } from 'rxjs';
 import * as _ from 'lodash';
 import { map, take } from 'rxjs/operators';
 import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from '../core/message.service';
 
 @Component({
   selector: 'app-team-list',
   templateUrl: './team-list.component.html',
   styleUrls: ['./team-list.component.css'],
-  providers: [NgbActiveModal, FirebaseUserModel]
+  providers: [/*NgbActiveModal,*/ FirebaseUserModel]
 })
 export class TeamListComponent implements OnInit {
 
@@ -30,7 +30,7 @@ export class TeamListComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private teamService: TeamService,
               private messageService: MessageService,
-              private _modalService: NgbModal,
+              // private _modalService: NgbModal,
               teamListUser: FirebaseUserModel) {
     this.teamListUser = teamListUser;
   }
@@ -96,28 +96,28 @@ export class TeamListComponent implements OnInit {
 
   }
 
-  closeResult: string;
+  // closeResult: string;
     // notice ngOnInit() - that's where we make this object TeamMember, not Team
-  confirmDelete(team_member: any /*json of a TeamMember*/) {
-    console.log('confirmDelete:  team_member = ', team_member);
-    let team: Team = this.toTeam(team_member);
-    var team_name = team.name;
-    const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
-    modalRef.result.then((result) => {
-      // the ok/delete case
-      // this.closeResult = `Closed with: ${result}`;
-      this.teamService.deleteTeam(team);
-    }, (reason) => {
-      // the cancel/dismiss case
-      // this.closeResult = `Dismissed ${reason}`;
-    });
-
-    modalRef.componentInstance.title = 'Delete Team?';
-    modalRef.componentInstance.question = 'Are you sure you want to delete the team ';
-    modalRef.componentInstance.thing = team_name;
-    modalRef.componentInstance.warning_you = 'All information associated to this team will be permanently deleted.';
-    modalRef.componentInstance.really_warning_you = 'This operation can not be undone.';
-  }
+  // confirmDelete(team_member: any /*json of a TeamMember*/) {
+  //   console.log('confirmDelete:  team_member = ', team_member);
+  //   let team: Team = this.toTeam(team_member);
+  //   var team_name = team.name;
+  //   const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
+  //   modalRef.result.then((result) => {
+  //     // the ok/delete case
+  //     // this.closeResult = `Closed with: ${result}`;
+  //     this.teamService.deleteTeam(team);
+  //   }, (reason) => {
+  //     // the cancel/dismiss case
+  //     // this.closeResult = `Dismissed ${reason}`;
+  //   });
+  //
+  //   modalRef.componentInstance.title = 'Delete Team?';
+  //   modalRef.componentInstance.question = 'Are you sure you want to delete the team ';
+  //   modalRef.componentInstance.thing = team_name;
+  //   modalRef.componentInstance.warning_you = 'All information associated to this team will be permanently deleted.';
+  //   modalRef.componentInstance.really_warning_you = 'This operation can not be undone.';
+  // }
 
   private toTeam(obj: any) {
     let team: Team = new Team();

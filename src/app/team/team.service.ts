@@ -40,7 +40,7 @@ export class TeamService {
     });
   }
 
-  create(teamName: string, user: FirebaseUserModel) {
+  async create(teamName: string, user: FirebaseUserModel): Promise<string> {
     let team = new Team();
     var teamDocId = this.afs.createId();
     team.id = teamDocId;
@@ -65,10 +65,8 @@ export class TeamService {
                      displayName: user.displayName,
                      leader: true}
     batch.set(teamMemberRef, teamMember);
-    batch.commit().then(() => {
-      // this.messageService.updateTeam(team);                               // only updates the client you're on - not that useful
-      // this.messageService.updateTeamMembers([teamMember as TeamMember]);  // only updates the client you're on - not that useful
-    });
+    await batch.commit();
+    return teamDocId;
 
     // good example of transactions:
     // https://stackoverflow.com/questions/47532694/firestore-transaction-update-multiple-documents-in-a-single-transaction?rq=1
