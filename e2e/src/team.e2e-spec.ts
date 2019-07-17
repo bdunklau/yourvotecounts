@@ -100,7 +100,7 @@ fdescribe('Team page', () => {
 
 
   // passed on 7/17/19
-  it('should be able to add and remove people from a team', () => {
+  fit('should be able to add and remove people from a team', () => {
     teamPage.createTeam(testSupport.names[0].phoneNumber);
     teamPage.selectTeam();
     teamPage.editTeam();
@@ -125,7 +125,7 @@ fdescribe('Team page', () => {
   // passed on 7/17/19
   // We have to test the drop down here because it's a different component than the one
   // in the log page.  This one clears its contents when a name is chosen
-  it('should display correct list of users in dropdown', async () => {
+  fit('should display correct list of users in dropdown', async () => {
 
     // create a team
     // type a few letters into the name field to add someone
