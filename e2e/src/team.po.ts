@@ -53,7 +53,7 @@ export class TeamPage extends BasePage {
 
   createTeam(phoneNumber: string) {
     this.args.testSupport.setNames(this.args.testSupport.names);
-    this.args.testSupport.login(this.args.testSupport.names[0].phoneNumber);
+    this.args.testSupport.login(phoneNumber);
     browser.sleep(500);
     this.goto('');
     this.clickTeams();
@@ -62,16 +62,19 @@ export class TeamPage extends BasePage {
     this.saveTeam();
   }
 
-  createTeamWithTwoPeople() {
-    this.args.testSupport.setNames(this.args.testSupport.names);
-    this.args.testSupport.login(this.args.testSupport.names[0].phoneNumber);
-    browser.sleep(500);
-    this.goto('');
-
-    this.clickTeams();
-    this.beginCreateTeam();
-    this.fillOutForm();
-    this.saveTeam();
+  createTeamWithTwoPeople(phoneNumber: string) {
+    // this.args.testSupport.setNames(this.args.testSupport.names);
+    // this.args.testSupport.login(this.args.testSupport.names[0].phoneNumber);
+    // browser.sleep(500);
+    // this.goto('');
+    //
+    // this.clickTeams();
+    // this.beginCreateTeam();
+    // this.fillOutForm();
+    // this.saveTeam();
+    this.createTeam(phoneNumber);
+    browser.sleep(300);
+    this.selectTeam();
     this.addSomeoneToTeam();
   }
 
@@ -134,7 +137,7 @@ export class TeamPage extends BasePage {
     var memberIdField = "team_member_"+this.args.creator.displayName;
     expect(this.getElement(by.id(memberIdField)).isPresent()).toBeTruthy('expected the team page to contain an element with id of '+memberIdField+' but it was not present');
     //  ...with a heading containing the team name
-    expect(await this.getElement(by.id('team_member_heading')).getText() == 'Members of '+this.args.teamName).toBeTruthy('expected the team member list to display this heading "Members of '+this.args.teamName+'" but it didn\'t');
+    expect(await this.getElement(by.id('team_member_heading')).getText() == 'Members').toBeTruthy('expected the team member list to display this heading "Members" but it didn\'t');
   }
 
 

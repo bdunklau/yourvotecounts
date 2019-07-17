@@ -58,7 +58,7 @@ fdescribe('Team page', () => {
 
 
   // passed on 7/17/19
-  fit('should be able to create and delete a team', () => {
+  it('should be able to create and delete a team', () => {
     testSupport.login(testSupport.normalUser.phoneNumber);
     browser.sleep(500);
     page.goto('');
@@ -100,7 +100,7 @@ fdescribe('Team page', () => {
 
 
   // passed on 7/17/19
-  fit('should be able to add and remove people from a team', () => {
+  it('should be able to add and remove people from a team', () => {
     teamPage.createTeam(testSupport.names[0].phoneNumber);
     teamPage.selectTeam();
     teamPage.editTeam();
@@ -125,7 +125,7 @@ fdescribe('Team page', () => {
   // passed on 7/17/19
   // We have to test the drop down here because it's a different component than the one
   // in the log page.  This one clears its contents when a name is chosen
-  fit('should display correct list of users in dropdown', async () => {
+  it('should display correct list of users in dropdown', async () => {
 
     // create a team
     // type a few letters into the name field to add someone
@@ -221,8 +221,8 @@ fdescribe('Team page', () => {
   })
 
 
-  it('should prevent non-leaders from adding/removing people', async () => {
-    teamPage.createTeamWithTwoPeople();
+  fit('should prevent non-leaders from adding/removing people', async () => {
+    teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     page.clickLogout();
 
     testSupport.login(testSupport.names[1].phoneNumber); // the "added" person
@@ -231,7 +231,8 @@ fdescribe('Team page', () => {
     browser.sleep(500);
     page.clickTeams();
     browser.sleep(500);
-    teamPage.editTeam();
+    teamPage.selectTeam();
+    browser.sleep(500);
     teamPage.verifyMemberListIsDisplayed();
     teamPage.verifyMembersCannotBeAdded();
     teamPage.verifyMembersCannotBeRemoved();
@@ -241,13 +242,15 @@ fdescribe('Team page', () => {
     testSupport.login(testSupport.names[0].phoneNumber);
     page.goto('');
     page.clickTeams();
+    teamPage.selectTeam();
+    teamPage.editTeam();
     teamPage.deleteTeam();
     page.clickLogout();
   })
 
 
   it('should let leaders delete a team', async () => {
-    teamPage.createTeamWithTwoPeople();
+    teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     teamPage.deleteTeam();
     teamPage.verifyPageOnDeleteTeam();
 
@@ -256,11 +259,13 @@ fdescribe('Team page', () => {
 
 
   it('should prevent non-leaders from deleting a team', async () => {
-    teamPage.createTeamWithTwoPeople();
+    teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     page.clickLogout();
     testSupport.login(testSupport.names[1].phoneNumber);
     browser.sleep(500);
     page.clickTeams();
+    browser.sleep(500);
+    teamPage.selectTeam();
     browser.sleep(500);
     teamPage.verifyTeamDeleteLinkDoesNotExist();
     page.clickLogout();
