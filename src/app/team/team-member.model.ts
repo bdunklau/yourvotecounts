@@ -1,4 +1,5 @@
 import { FirebaseUserModel } from '../user/user.model';
+import { Team } from './team.model';
 
 export class TeamMember {
 

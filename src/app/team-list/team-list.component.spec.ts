@@ -6,6 +6,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { FirebaseUserModel } from '../user/user.model';
 import { map/*, take*/ } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 // a stub/mock
 // FYI  https://github.com/angular/angularfire2/issues/1706#issuecomment-394212606
@@ -34,6 +35,7 @@ describe('TeamListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ TeamListComponent ],
+      schemas: [ NO_ERRORS_SCHEMA ],
       providers: [FirebaseUserModel,
                   {
                     provide: ActivatedRoute,

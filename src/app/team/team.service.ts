@@ -36,11 +36,11 @@ export class TeamService {
     var teamRef = this.afs.collection('team').doc(team.id).ref;
     batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(1)});
     batch.commit().then(() => {
-      this.messageService.addTeamMember(teamMember as TeamMember);
+      // this.messageService.addTeamMember(teamMember as TeamMember); // only updates the client you're on - not that useful
     });
   }
 
-  create(teamName: string, user: FirebaseUserModel) {
+  async create(teamName: string, user: FirebaseUserModel): Promise<string> {
     let team = new Team();
     var teamDocId = this.afs.createId();
     team.id = teamDocId;
@@ -65,10 +65,8 @@ export class TeamService {
                      displayName: user.displayName,
                      leader: true}
     batch.set(teamMemberRef, teamMember);
-    batch.commit().then(() => {
-      this.messageService.updateTeam(team);
-      this.messageService.updateTeamMembers([teamMember as TeamMember]);
-    });
+    await batch.commit();
+    return teamDocId;
 
     // good example of transactions:
     // https://stackoverflow.com/questions/47532694/firestore-transaction-update-multiple-documents-in-a-single-transaction?rq=1
@@ -86,7 +84,7 @@ export class TeamService {
         batch.delete(dt.payload.doc.ref);
       });
       batch.commit().then(() => {
-        this.messageService.updateTeam(null);
+        // this.messageService.updateTeam(null); // only updates the client you're on - not that useful
       });
     });
 
@@ -101,9 +99,13 @@ export class TeamService {
     batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(-1)});
     if(team_member.leader)
       batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(-1)});
-    batch.commit().then(() => {
-      this.messageService.deleteTeamMember(team_member);
-    });
+    await batch.commit();//.then(() => {
+    //   console.log('deleteTeamMember: removing ', team_member);
+    //   this.messageService.deleteTeamMember(team_member);
+    // });
+
+    // console.log('deleteTeamMember: removing ', team_member);
+    // this.messageService.deleteTeamMember(team_member);
     return await this.getTeamData(team_member.teamDocId);
   }
 
@@ -115,7 +117,12 @@ export class TeamService {
 
 
   getMembers(team: Team) {
-    var retThis = this.afs.collection('team_member', ref => ref.where("teamDocId", "==", team.id)).snapshotChanges();
+    return this.getMembersByTeamId(team.id);
+  }
+
+
+  getMembersByTeamId(id: string) {
+    var retThis = this.afs.collection('team_member', ref => ref.where("teamDocId", "==", id)).snapshotChanges();
     return retThis;
   }
 
@@ -138,5 +145,16 @@ export class TeamService {
       });
       batch.commit();
     });
+  }
+
+  // Return a Promise that the caller can do its own thing in its own then()
+  updateMember(team_member: TeamMember): Promise<any> {
+    let batch = this.afs.firestore.batch();
+    var teamRef = this.afs.collection('team').doc(team_member.teamDocId).ref;
+    var incrValue = team_member.leader ? 1 : -1;
+    batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(incrValue)});
+    var memberRef = this.afs.collection('team_member').doc(team_member.teamMemberDocId).ref;
+    batch.update(memberRef, {leader: team_member.leader});
+    return batch.commit();
   }
 }

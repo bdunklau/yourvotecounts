@@ -13,19 +13,9 @@ export class MainPage extends BasePage {
     this.getLogLink().click();
   }
 
-  clickLogout() {
-    this.pullDownMyMenu();
-    this.getLogoutLink().click();
-  }
-
   clickMyAccount() {
     this.pullDownMyMenu();
     this.getElement(by.id('myaccount_link')).click();
-  }
-
-  clickTeams() {
-    this.pullDownMyMenu();
-    this.getElement(by.id('teams_link')).click();
   }
 
   clickUser() {
@@ -50,10 +40,6 @@ export class MainPage extends BasePage {
 
   getLogLink() {
     return this.getElement(by.id('log_link'));
-  }
-
-  getLogoutLink() {
-    return this.getElement(by.id('logout_link'));
   }
 
   getMyAccountElement() {
@@ -86,11 +72,6 @@ export class MainPage extends BasePage {
 
   getUrl() {
     return browser.getCurrentUrl();
-  }
-
-  goto(url) {
-    return browser.get(browser.baseUrl+url) as Promise<any>;
-    browser.sleep(100);
   }
 
   // pullDownMyMenu() {

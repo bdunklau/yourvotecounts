@@ -3,11 +3,12 @@ import * as protractor from 'protractor';
 import { BasePage } from './base.po';
 import * as _ from 'lodash';
 import * as moment from 'moment'
-// import { TestSupport } from './test-support.po';
+import { TestSupport } from './test-support.po';
 
 export class TeamPage extends BasePage {
 
-  constructor(private args: {teamName: string,
+  constructor(private args: {testSupport: TestSupport,
+                             teamName: string,
                              creator: {displayName: string, phoneNumber: string, uid: string},
                              addedPerson: {displayName: string, phoneNumber: string, uid: string}
                             })
@@ -19,13 +20,10 @@ export class TeamPage extends BasePage {
     browser.sleep(500);
     // enter the full name, no partial entry - that is tested elsewhere
     this.enterUserByName(this.args.addedPerson.displayName);
+  }
 
-
-    // THIS IS A BUG - TAKE THIS OUT FIXME
-    // HACK - for some reason, only in protractor, we have to click the Edit pencil to make the new team member appear.
-    // In real life, the new team member appears as soon as they are selected from the nameSearchField drop-down - weird
-    // NOT IDEAL - if the user ever stopped appearing in real life, this test won't catch it TODO
-    // this.getElement(by.id('edit_team_'+this.args.teamName)).click();
+  beginCreateTeam() {
+    this.getElement(by.id('create_team')).click();
   }
 
   beginDeletePerson() {
@@ -34,8 +32,13 @@ export class TeamPage extends BasePage {
   }
 
   beginDeleteTeam() {
-    var deleteTeamId = "delete_team_"+this.args.teamName;
+    var deleteTeamId = "delete_team";
     this.getElement(by.id(deleteTeamId)).click();
+  }
+
+  // click cancel on modal dialog
+  cancel() {
+    this.getElement(by.id('modal_cancel')).click();
   }
 
   cancelDeletePerson() {
@@ -53,8 +56,22 @@ export class TeamPage extends BasePage {
     browser.sleep(500);
   }
 
-  createTeam() {
-    this.getElement(by.id('create_team')).click();
+  createTeam(phoneNumber: string) {
+    this.args.testSupport.setNames(this.args.testSupport.names);
+    this.args.testSupport.login(phoneNumber);
+    browser.sleep(500);
+    this.goto('');
+    this.clickTeams();
+    this.beginCreateTeam();
+    this.fillOutForm();
+    this.saveTeam();
+  }
+
+  createTeamWithTwoPeople(phoneNumber: string) {
+    this.createTeam(phoneNumber);
+    browser.sleep(1000);
+    this.selectTeam();
+    this.addSomeoneToTeam();
   }
 
   deletePerson() {
@@ -70,13 +87,7 @@ export class TeamPage extends BasePage {
   }
 
   editTeam() {
-    this.getElement(by.id('edit_team_'+this.args.teamName)).click();
-  }
-
-  enterPartialName(name, length) {
-    var fld = this.getElement(by.id('nameSearchField'));
-    fld.clear();
-    fld.sendKeys(name.substring(0, length));
+    this.getElement(by.id('edit_team')).click();
   }
 
   enterTeamName(name: string) {
@@ -93,7 +104,7 @@ export class TeamPage extends BasePage {
   }
 
   fillOutForm() {
-    // var teamName = this.testSupport.getTeamName();
+    // var teamName = this.args.testSupport.getTeamName();
     this.enterTeamName(this.args.teamName);
   }
 
@@ -109,8 +120,50 @@ export class TeamPage extends BasePage {
     return this.getElement(by.id('team_name_field'));
   }
 
+  makeOtherPersonLeader() {
+    this.getElement(by.id('leader_switch_'+this.args.addedPerson.displayName)).click();
+  }
+
+  // click ok on modal dialog
+  ok() {
+    this.getElement(by.id('modal_ok')).click();
+  }
+
   saveTeam() {
     this.getSaveButton().click();
+  }
+
+  selectTeam() {
+    this.getElement(by.id('select_team_'+this.args.teamName)).click();
+  }
+
+
+  setTeamName(newname: string) {
+    this.enterTeamName(newname);
+    this.saveTeam();
+    browser.sleep(1000);
+  }
+
+
+  tryToRevokeMyLeaderAccess() {
+    this.getElement(by.id('leader_switch_'+this.args.creator.displayName)).click();
+  }
+
+
+  async verifyCannotRevokeMyLeaderAccess() {
+    let title = await this.getElement(by.id('modal-title')).getText();
+    expect(title === 'Not Allowed').toBeTruthy('expected there to be a modal dialog with title "Not Allowed" but it was not found');
+  }
+
+
+  async verifyIAmLeader() {
+    let checked = await element(by.id('leader_checkbox_'+this.args.creator.displayName)).getAttribute('checked');
+    expect(checked).toBeTruthy('expected my leader checkbox/switch to still be true but it was not');
+  }
+
+  verifyIAmNotLeader() {
+    expect(element(by.id('leader_checkbox_'+this.args.creator.displayName)).isPresent()).toBeFalsy('did not expect my leader checkbox to still be present but it was');
+    expect(element(by.id('edit_team')).isPresent()).toBeFalsy('did not expect the Edit Team button to still be present but it was');
   }
 
 
@@ -118,7 +171,7 @@ export class TeamPage extends BasePage {
     var memberIdField = "team_member_"+this.args.creator.displayName;
     expect(this.getElement(by.id(memberIdField)).isPresent()).toBeTruthy('expected the team page to contain an element with id of '+memberIdField+' but it was not present');
     //  ...with a heading containing the team name
-    expect(await this.getElement(by.id('team_member_heading')).getText() == 'Members of '+this.args.teamName).toBeTruthy('expected the team member list to display this heading "Members of '+this.args.teamName+'" but it didn\'t');
+    expect(await this.getElement(by.id('team_member_heading')).getText() == 'Members').toBeTruthy('expected the team member list to display this heading "Members" but it didn\'t');
   }
 
 
@@ -138,6 +191,8 @@ export class TeamPage extends BasePage {
     // should be a modal displayed
     expect(this.getElement(by.id('modal_ok')).isPresent()).toBeTruthy('expected modal to be displayed with an OK button but present');
     expect(this.getElement(by.id('modal_ok')).isDisplayed()).toBeTruthy('expected OK button in modal to be displayed');
+    expect(this.getElement(by.id('modal_cancel')).isPresent()).toBeTruthy('expected modal to be displayed with a Cancel button but present');
+    expect(this.getElement(by.id('modal_cancel')).isDisplayed()).toBeTruthy('expected Cancel button in modal to be displayed');
   }
 
 
@@ -172,8 +227,24 @@ export class TeamPage extends BasePage {
   }
 
 
-  async verifyPageOnCancelDeleteTeam() {
-    this.verifyTeamEditorSectionIsCorrectAfterSaving()
+  verifyPageOnCancelDeleteTeam() {
+    // team_name_field should be displayed
+    // team_name_field should contain the team name
+    expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should still be displayed');
+    this.getElement(by.id('team_name_field')).getAttribute('value').then(val => {
+      expect(val === this.args.teamName).toBeTruthy('the team name field should have contained '+this.args.teamName+' but it actually contained: '+val);
+      // save button should be enabled
+      // cancel button should be enabled
+      // delete button should be enabled
+      expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should have been displayed but it wasn\'t');
+      expect(this.getElement(by.id('save_team')).isEnabled()).toBeTruthy('the save button should be enabled');
+      // browser.sleep(3000);
+      expect(this.getCancelButton().isDisplayed()).toBeTruthy('the cancel button should have been displayed but it wasn\'t');
+      expect(this.getCancelButton().isEnabled()).toBeTruthy('the cancel button should be enabled');
+      expect(this.getElement(by.id('delete_team')).isDisplayed()).toBeTruthy('the delete button should have been displayed but it wasn\'t');
+      expect(this.getElement(by.id('delete_team')).isEnabled()).toBeTruthy('the delete button should be enabled');
+    });
+
   }
 
 
@@ -182,8 +253,9 @@ export class TeamPage extends BasePage {
     expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should have been displayed because we clicked Create Team button');
     expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should be displayed but it wasn\'t');
     expect(this.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled because we have not entered anything into the Team Name field yet');
-    expect(this.getElement(by.id('cancel_team')).isDisplayed()).toBeTruthy('the Cancel button should be displayed');
-    expect(this.getElement(by.id('cancel_team')).isEnabled()).toBeTruthy('the Cancel button should be enabled');
+    expect(this.getCancelButton().isDisplayed()).toBeTruthy('the Cancel button should be displayed');
+    expect(this.getCancelButton().isEnabled()).toBeTruthy('the Cancel button should be enabled');
+    expect(element(by.id('delete_team')).isPresent()).toBeFalsy('the delete button should not have been displayed because we are creating a new team. Deleting teams only means something after the team has been created.');
     // we DON'T want the team member section to be visible yet...
     expect(element(by.id('team_member_editor')).isPresent()).toBeFalsy('did not expect the team member editor section to be visible. We just started creating a team.');
   }
@@ -193,11 +265,11 @@ export class TeamPage extends BasePage {
     var teamIdInList = 'team_in_list_'+this.args.teamName;
     var memberIdField = "team_member_"+this.args.addedPerson.displayName;
     expect(this.getElement(by.id('team_member_editor')).isDisplayed()).toBeTruthy('the team member list should still be displayed because we only deleted a team member');
-    expect(this.getElement(by.id(teamIdInList)).isDisplayed()).toBeTruthy('expected the team list to contain this html element id="'+teamIdInList+'" because we only deleted a team member');
     expect(element(by.id(memberIdField)).isPresent()).toBeFalsy('did not expect the team page to contain to team member id='+memberIdField+' because we just deleted this person');
   }
 
 
+  // After a team is deleted, the user should see the list of his teams
   verifyPageOnDeleteTeam() {
     // Verify - the team member section is gone
     var teamIdInList = 'team_in_list_'+this.args.teamName;
@@ -208,29 +280,45 @@ export class TeamPage extends BasePage {
   }
 
 
-  async verifyPersonAdded() {
+  verifyPersonAdded() {
     // verify the person was added
     var id = 'team_member_'+this.args.addedPerson.displayName;
     expect(this.getElement(by.id(id)).isDisplayed()).toBeTruthy('expected this new team member to be found on the page by id attribute, but it wasn\'t: '+id);
-    var nm = await this.getElement(by.id('nameSearchField')).getText()
-    expect(nm === '').toBeTruthy('expected the nameSearchField in the Team Members section to be empty, but it was actually: '+nm);
+    this.getElement(by.id('nameSearchField')).getAttribute('value').then(nm => {
+      expect(nm === '').toBeTruthy('expected the nameSearchField in the Team Members section to be empty, but it was actually: '+nm);
+    })
+
+    // regression check - verify the person doesn't appear more than once in the member list
+    this.getElements(by.id(id)).then(team_members => {
+      expect(team_members.length === 1).toBeTruthy('expected to find exactly 1 element with id="'+id+'" but actually found '+team_members.length);
+    });
   }
 
 
-  async verifyTeamEditorSectionIsCorrectAfterSaving() {
-    // after saving, verify the form is cleared and the save button is disabled
-    expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should still be displayed');
-    expect(await this.getElement(by.id('team_name_field')).getText() === '').toBeTruthy('the team name field should have been empty');
-    expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should have been displayed but it wasn\'t');
-    expect(this.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled');
+  verifyTeamDoesNotExist() {
+    var teamIdInList = 'team_in_list_'+this.args.teamName
+    expect(element(by.id(teamIdInList)).isPresent()).toBeFalsy('did not expect the team list to contain '+this.args.teamName+' but it did');
+  }
+
+
+  verifyTeamEditLinkDoesNotExist() {
+    expect(element(by.id("edit_team")).isPresent()).toBeFalsy('did not expect the Edit Team button to be present but it was');
   }
 
   async verifyTeamIsDisplayedInList() {
     var teamIdInList = 'team_in_list_'+this.args.teamName
     var teamElement = this.getElement(by.id(teamIdInList));
     expect(teamElement.isPresent()).toBeTruthy('expected the team list to contain an html element with id "'+teamIdInList+'" but did not find it');
-    var val = await this.getElement(by.id('team_name_field')).getText();
-    expect(val === '').toBeTruthy('the team name field should be empty');
+  }
+
+  async verifyTeamName(expected_name: string) {
+    let actual_name = await this.getElement(by.id('team_name')).getText();
+    expect(actual_name === 'Team: '+expected_name).toBeTruthy('expected the team name to be: '+expected_name+' but it was actually: '+actual_name );
+  }
+
+  async verifyWarningOnRevokeMyLeaderAccess() {
+    let title = await this.getElement(by.id('modal-title')).getText();
+    expect(title === 'Revoke Yourself?').toBeTruthy('expected the modal dialog title to be "Revoke Yourself?" but it was: '+title);
   }
 
 }

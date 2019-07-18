@@ -1,23 +1,46 @@
 
 <div id="team_member_editor" *ngIf="team && team.id">
-<h5 id="team_member_heading">Members of {{team.name}}</h5>
+<h5 id="team_member_heading">Members</h5>
+
+<span *ngIf="canAddTeamMembers">
+  <app-search-user-by-name2 (selectedUser)="onUserSelectedByName($event)"
+                            [placeholder]="'Add Someone'">
+  </app-search-user-by-name2>
+</span>
+
 <table class="table table-striped">
-  <thead *ngIf="canAddMembers">
+  <thead *ngIf="canAddTeamMembers">
   <tr>
-    <th scope="col" colspan="2">
-      <app-search-user-by-name2 (selectedUser)="onUserSelectedByName($event)">
-      </app-search-user-by-name2>
+    <th scope="col" colspan="2">Name
+    </th>
+    <th scope="col" class="text-right">Leader (Y/N)
     </th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let team_member of team_members">
-    <td id="team_member_{{team_member.displayName}}">{{team_member.displayName}}</td>
-    <td><a [hidden]="!canDeleteMembers" id="delete_team_member_{{team_member.displayName}}" class="delete_team_member">
-          <i class="fa fa-times fa-2x"
+    <td><a [hidden]="!canRemoveTeamMembers" id="delete_team_member_{{team_member.displayName}}" class="delete_team_member">
+          <i class="fa fa-times fa-1x"
               aria-hidden="true"
               (click)="confirmDelete(team_member)"></i></a>
     </td>
+
+    <td id="team_member_{{team_member.displayName}}">{{team_member.displayName}}</td>
+
+    <td>
+      <span *ngIf="!canSetLeaders">
+         <span *ngIf="team_member.leader">leader</span>
+      </span>
+      <span *ngIf="canSetLeaders">
+        <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
+        <label class="switch" id="leader_switch_{{team_member.displayName}}">
+          <input id="leader_checkbox_{{team_member.displayName}}" type="checkbox" class="success" [checked]="team_member.leader" (click)="checked($event, team_member)">
+          <span class="slider round"></span>
+        </label>
+      </span>
+    </td>
+
+
   </tr>
   </tbody>
 </table>

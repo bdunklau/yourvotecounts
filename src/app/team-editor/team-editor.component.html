@@ -1,22 +1,52 @@
-
+<div class="container">
 <h5>Team Editor</h5>
-<form (ngSubmit)="onSubmit(teamNameForm)" #teamNameForm="ngForm">
-  <div class="form-group">
-    <input type="hidden" class="form-control" id="team_id_field" [(ngModel)]="teamIdValue"
-            name="teamId" #teamId="ngModel">
 
-    <input type="text" class="form-control" id="team_name_field" [(ngModel)]="teamNameValue"
-            name="teamName" #teamName="ngModel" placeholder="Team Name" required>
+<div class="row">
+  <div class="col">
+    <form (ngSubmit)="onSubmit(teamNameForm)" #teamNameForm="ngForm">
+      <div class="form-group">
+        <input type="hidden" class="form-control" id="team_id_field" [(ngModel)]="team.id"
+                name="teamId" #teamId="ngModel">
 
-    <div [hidden]="teamName.valid || teamName.pristine"
-         id="team_name_invalid"
-         class="alert alert-danger">
-      Team name is required
-    </div>
+        <input type="text" class="form-control" id="team_name_field" [(ngModel)]="team.name"
+                name="teamName" #teamName="ngModel" placeholder="Team Name" required>
+
+        <div [hidden]="teamName.valid || teamName.pristine"
+             id="team_name_invalid"
+             class="alert alert-danger">
+          Team name is required
+        </div>
+      </div>
+
+      <button id="save_team" type="submit" class="btn btn-success" [disabled]="!teamNameForm.form.valid">Save</button>
+      &nbsp;
+
+      <a id="cancel_team" *ngIf="!team.id" [routerLink]="['/teams/']" (click)="cancelEditing(teamNameForm)" class="btn btn-secondary">Cancel</a>
+      &nbsp;
+
+      <a id="cancel_team" *ngIf="team.id" [routerLink]="['/teams/', team.id]" (click)="cancelEditing(teamNameForm)" class="btn btn-secondary">Cancel</a>
+      &nbsp;
+      &nbsp;
+      <!-- <button id="delete_team" *ngIf="team.id" type="button" [routerLink]="['/teams/']" (click)="deleteTeam(teamNameForm)" class="btn btn-danger">Delete Team</button> -->
+      <button id="delete_team" *ngIf="team.id" type="button" (click)="confirmDelete(teamNameForm, team)" class="btn btn-danger">Delete Team</button>
+
+    </form>
   </div>
+</div>
 
-  <button id="save_team" type="submit" class="btn btn-success" [disabled]="!teamNameForm.form.valid">Save</button>
-  &nbsp;
-  <button id="cancel_team" type="button" (click)="cancelEditing(teamNameForm)" class="btn btn-secondary">Cancel</button>
 
-</form>
+
+<div class="row top-buffer">
+  <div class="col">
+
+      <app-team-member-editor
+          [team]="team">
+      </app-team-member-editor>
+
+  </div>
+</div>
+
+
+
+
+</div>

@@ -32,6 +32,8 @@ import { TeamEditorComponent } from './team-editor/team-editor.component';
 import { NgbdModalConfirmComponent } from './util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 import { TeamMemberEditorComponent } from './team-member-editor/team-member-editor.component';
 import { SearchUserByName2Component } from './search/search-user-by-name2/search-user-by-name2.component';
+import { TeamViewerComponent } from './team-viewer/team-viewer.component';
+// import { TeamResolver } from './team/team.resolver';
 
 
 @NgModule({
@@ -55,6 +57,7 @@ import { SearchUserByName2Component } from './search/search-user-by-name2/search
     NgbdModalConfirmComponent,
     TeamMemberEditorComponent,
     SearchUserByName2Component,
+    TeamViewerComponent,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [
@@ -66,6 +69,7 @@ import { SearchUserByName2Component } from './search/search-user-by-name2/search
     FormsModule, ReactiveFormsModule,
     NgbModule.forRoot(),
     HttpClientModule,
+    // TeamResolver,
   ],
   bootstrap: [AppComponent]
 })

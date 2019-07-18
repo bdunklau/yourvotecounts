@@ -1,34 +1,4 @@
 
 <div class="container">
-  <h1>Teams</h1>
-
-  <div class="row">
-    <div class="col">
-      <div class="row">
-        <div class="col">
-          <app-team-editor *ngIf="team"
-                            [teamNameValue]="team.name"
-                            [teamIdValue]="team.id"
-                            [user]="user"
-                            (editing)="onEditStateChange($event)">
-          </app-team-editor>
-        </div>
-      </div>
-
-      <div class="row top-buffer">
-        <div class="col">
-
-          <app-team-member-editor [team]="team">
-          </app-team-member-editor>
-
-          <div *ngIf="!team">
-            <button id="create_team" type="button" (click)="startCreatingTeam()" class="btn btn-primary">Create Team</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-    <div class="col"><app-team-list *ngIf="user" (selectedTeam)="onTeamSelected($event)" [teamListUser]="user"></app-team-list></div>
-  </div>
-
+  <app-team-list *ngIf="user" (selectedTeam)="onTeamSelected($event)" [teamListUser]="user"></app-team-list>
 </div>

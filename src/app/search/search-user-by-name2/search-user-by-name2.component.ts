@@ -12,8 +12,9 @@ import { FirebaseUserModel } from '../../user/user.model';
 export class SearchUserByName2Component implements OnInit {
 
   @Output() selectedUser = new EventEmitter<FirebaseUserModel>();
-  @Input() clearOnSelected: string;
+  // @Input() clearOnSelected: string;  // delete this
   nameVal: string;
+  @Input() placeholder: string
 
   constructor(private userService: UserService) { }
 

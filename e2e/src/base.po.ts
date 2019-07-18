@@ -1,4 +1,4 @@
-import { browser, by, element, Key } from 'protractor';
+import { browser, by, element, Key, ElementArrayFinder } from 'protractor';
 import * as protractor from 'protractor'
 
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
@@ -11,6 +11,16 @@ export class BasePage {
     field.sendKeys(' ');
     browser.sleep(500);
     field.sendKeys(Key.BACK_SPACE);
+  }
+
+  clickLogout() {
+    this.pullDownMyMenu();
+    this.getLogoutLink().click();
+  }
+
+  clickTeams() {
+    this.pullDownMyMenu();
+    this.getElement(by.id('teams_link')).click();
   }
 
   enterUserByName(name) {
@@ -53,6 +63,22 @@ export class BasePage {
 
   getCurrentUserNameLink() {
     return this.getElement(by.id('name_or_phone'));
+  }
+
+
+  getLogoutLink() {
+    return this.getElement(by.id('logout_link'));
+  }
+
+
+  getNamesInDropdown(): ElementArrayFinder {
+    browser.sleep(300);
+    return this.getElements(by.tagName('ngb-highlight'));
+  }
+
+  goto(url) {
+    return browser.get(browser.baseUrl+url) as Promise<any>;
+    browser.sleep(100);
   }
 
 

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FirebaseUserModel } from '../user/user.model';
+import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user',
@@ -10,6 +11,7 @@ import { FirebaseUserModel } from '../user/user.model';
 export class UserComponent implements OnInit {
 
   user: FirebaseUserModel = new FirebaseUserModel();
+  subscription: Subscription;
 
   constructor(private route: ActivatedRoute) { }
 
@@ -18,7 +20,7 @@ export class UserComponent implements OnInit {
     console.log("user.component.ts: ngOnInit(): this.route = ", this.route)
     console.log("user.component.ts: ngOnInit(): this.route.data = ", this.route.data)
     console.log("user.component.ts: ngOnInit(): this.route.snapshot = ", this.route.snapshot)
-    this.route.data.subscribe(routeData => {
+    this.subscription = this.route.data.subscribe(routeData => {
       let data = routeData['data'];
       if (data) {
         this.user = data;
@@ -26,6 +28,10 @@ export class UserComponent implements OnInit {
         //this.createForm(this.user.name);
       }
     })
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 }
