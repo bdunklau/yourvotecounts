@@ -155,6 +155,7 @@ describe('Log page', () => {
   })
 
 
+  // passed 7/18/19
   it('should allow query by date', async () => {
 
     // delete any log entries that may have been hanging around from a previous run
