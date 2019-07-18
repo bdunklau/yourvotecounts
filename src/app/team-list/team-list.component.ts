@@ -45,7 +45,7 @@ export class TeamListComponent implements OnInit {
           const data = a.payload.doc.data() as TeamMember;
           const id = a.payload.doc.id;
           var returnThis = { id, ...data };
-          console.log('returnThis = ', returnThis);
+          // console.log('returnThis = ', returnThis);
           return returnThis;
         });
       })
@@ -95,29 +95,6 @@ export class TeamListComponent implements OnInit {
     });
 
   }
-
-  // closeResult: string;
-    // notice ngOnInit() - that's where we make this object TeamMember, not Team
-  // confirmDelete(team_member: any /*json of a TeamMember*/) {
-  //   console.log('confirmDelete:  team_member = ', team_member);
-  //   let team: Team = this.toTeam(team_member);
-  //   var team_name = team.name;
-  //   const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
-  //   modalRef.result.then((result) => {
-  //     // the ok/delete case
-  //     // this.closeResult = `Closed with: ${result}`;
-  //     this.teamService.deleteTeam(team);
-  //   }, (reason) => {
-  //     // the cancel/dismiss case
-  //     // this.closeResult = `Dismissed ${reason}`;
-  //   });
-  //
-  //   modalRef.componentInstance.title = 'Delete Team?';
-  //   modalRef.componentInstance.question = 'Are you sure you want to delete the team ';
-  //   modalRef.componentInstance.thing = team_name;
-  //   modalRef.componentInstance.warning_you = 'All information associated to this team will be permanently deleted.';
-  //   modalRef.componentInstance.really_warning_you = 'This operation can not be undone.';
-  // }
 
   private toTeam(obj: any) {
     let team: Team = new Team();

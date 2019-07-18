@@ -38,20 +38,78 @@ fdescribe('Team page', () => {
   })
 
 
-  xit('should alert leaders if they are about to revoke their leadership role', () => {
-    expect(false).toBeTruthy('write this test');
-    // need a ok/cancel modal to alert the user that he is about to revoke his leadership role
+  fit('should alert leaders if they are about to revoke their leadership role', () => {
+    let pause = 1000;
+    teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
+                                        browser.sleep(500);
+    teamPage.makeOtherPersonLeader();
+                                        browser.sleep(pause);
+
+    teamPage.tryToRevokeMyLeaderAccess();
+                                        browser.sleep(pause);
+    teamPage.verifyWarningOnRevokeMyLeaderAccess();
+                                        browser.sleep(pause);
+    teamPage.cancel();
+                                        browser.sleep(pause);
+    teamPage.verifyIAmLeader();
+                                        browser.sleep(pause);
+
+    teamPage.tryToRevokeMyLeaderAccess();
+                                        browser.sleep(pause);
+    teamPage.verifyWarningOnRevokeMyLeaderAccess();
+                                        browser.sleep(pause);
+    teamPage.ok();
+                                        browser.sleep(pause);
+    teamPage.verifyIAmNotLeader();
+                                        browser.sleep(pause);
+    teamPage.clickLogout();
+
+    // clean up
+    testSupport.login(testSupport.names[1].phoneNumber);
+    browser.sleep(500);
+    page.goto('');
+    page.clickTeams();
+    teamPage.selectTeam();
+    teamPage.editTeam();
+    teamPage.deleteTeam();
+    page.clickLogout();
   })
 
 
-  xit('should prevent non-leaders from editing the team attributes', () => {
-    expect(false).toBeTruthy('write this test');
-    // show a label, not a text field containing the team name
-    // don't show the save and cancel buttons
+  // passed on 7/17/19
+  it('should not allow team to be leader-less', () => {
+    // create a team with just you
+    // try to revoke your own leader access - verify not allowed
+    // add someone to the team
+    // try to revoke your own leader access - verify not allowed
+    teamPage.createTeam(testSupport.names[0].phoneNumber);
+    teamPage.selectTeam();
+
+    teamPage.tryToRevokeMyLeaderAccess();
+    teamPage.verifyCannotRevokeMyLeaderAccess();
+    teamPage.cancel();
+    teamPage.verifyIAmLeader();
+
+    teamPage.tryToRevokeMyLeaderAccess();
+    teamPage.verifyCannotRevokeMyLeaderAccess();
+    teamPage.ok();
+    teamPage.verifyIAmLeader();
+
+    teamPage.addSomeoneToTeam();
+    teamPage.tryToRevokeMyLeaderAccess();
+    teamPage.verifyCannotRevokeMyLeaderAccess();
+    teamPage.ok();
+    teamPage.verifyIAmLeader();
+
+    // clean up
+    teamPage.editTeam();
+    teamPage.deleteTeam();
+    teamPage.clickLogout();
   })
 
 
-  fit('should allow leaders to edit team attributes', () => {
+  // passed on 7/17/19
+  it('should allow leaders to edit team attributes', () => {
     teamPage.createTeam(testSupport.names[0].phoneNumber);
     teamPage.selectTeam();
     teamPage.editTeam();
@@ -110,7 +168,7 @@ fdescribe('Team page', () => {
   it('should be able to add and remove people from a team', () => {
     teamPage.createTeam(testSupport.names[0].phoneNumber);
     teamPage.selectTeam();
-    teamPage.editTeam();
+    // teamPage.editTeam(); // don't have to click Edit Team to add team members
     teamPage.addSomeoneToTeam();
     teamPage.verifyPersonAdded();
 
@@ -290,7 +348,7 @@ fdescribe('Team page', () => {
 
 
   // passed on 7/17/19
-  it('should prevent non-leaders from deleting a team', () => {
+  it('should prevent non-leaders from editing or deleting a team', () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     page.clickLogout();
     testSupport.login(testSupport.names[1].phoneNumber);

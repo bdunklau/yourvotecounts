@@ -36,6 +36,11 @@ export class TeamPage extends BasePage {
     this.getElement(by.id(deleteTeamId)).click();
   }
 
+  // click cancel on modal dialog
+  cancel() {
+    this.getElement(by.id('modal_cancel')).click();
+  }
+
   cancelDeletePerson() {
     this.getElement(by.id('modal_cancel')).click();
   }
@@ -64,7 +69,7 @@ export class TeamPage extends BasePage {
 
   createTeamWithTwoPeople(phoneNumber: string) {
     this.createTeam(phoneNumber);
-    browser.sleep(300);
+    browser.sleep(1000);
     this.selectTeam();
     this.addSomeoneToTeam();
   }
@@ -116,7 +121,12 @@ export class TeamPage extends BasePage {
   }
 
   makeOtherPersonLeader() {
-    element(by.id('leader_switch_'+this.args.addedPerson.displayName)).click();
+    this.getElement(by.id('leader_switch_'+this.args.addedPerson.displayName)).click();
+  }
+
+  // click ok on modal dialog
+  ok() {
+    this.getElement(by.id('modal_ok')).click();
   }
 
   saveTeam() {
@@ -131,6 +141,28 @@ export class TeamPage extends BasePage {
   setTeamName(newname: string) {
     this.enterTeamName(newname);
     this.saveTeam();
+  }
+
+
+  tryToRevokeMyLeaderAccess() {
+    this.getElement(by.id('leader_switch_'+this.args.creator.displayName)).click();
+  }
+
+
+  async verifyCannotRevokeMyLeaderAccess() {
+    let title = await this.getElement(by.id('modal-title')).getText();
+    expect(title === 'Not Allowed').toBeTruthy('expected there to be a modal dialog with title "Not Allowed" but it was not found');
+  }
+
+
+  async verifyIAmLeader() {
+    let checked = await element(by.id('leader_checkbox_'+this.args.creator.displayName)).getAttribute('checked');
+    expect(checked).toBeTruthy('expected my leader checkbox/switch to still be true but it was not');
+  }
+
+  verifyIAmNotLeader() {
+    expect(element(by.id('leader_checkbox_'+this.args.creator.displayName)).isPresent()).toBeFalsy('did not expect my leader checkbox to still be present but it was');
+    expect(element(by.id('edit_team')).isPresent()).toBeFalsy('did not expect the Edit Team button to still be present but it was');
   }
 
 
@@ -280,6 +312,11 @@ export class TeamPage extends BasePage {
   async verifyTeamName(expected_name: string) {
     let actual_name = await this.getElement(by.id('team_name')).getText();
     expect(actual_name === 'Team: '+expected_name).toBeTruthy('expected the team name to be: '+expected_name+' but it was actually: '+actual_name );
+  }
+
+  async verifyWarningOnRevokeMyLeaderAccess() {
+    let title = await this.getElement(by.id('modal-title')).getText();
+    expect(title === 'Revoke Yourself?').toBeTruthy('expected the modal dialog title to be "Revoke Yourself?" but it was: '+title);
   }
 
 }

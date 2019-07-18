@@ -119,7 +119,7 @@ export class TeamEditorComponent implements OnInit {
 
     modalRef.componentInstance.title = 'Delete Team?';
     modalRef.componentInstance.question = 'Are you sure you want to delete the team ';
-    modalRef.componentInstance.thing = team_name;
+    modalRef.componentInstance.thing = team_name+' ?';
     modalRef.componentInstance.warning_you = 'All information associated to this team will be permanently deleted.';
     modalRef.componentInstance.really_warning_you = 'This operation can not be undone.';
   }

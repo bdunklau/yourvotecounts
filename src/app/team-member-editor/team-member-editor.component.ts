@@ -23,12 +23,7 @@ export class TeamMemberEditorComponent implements OnInit {
   @Input() team: Team;
   /*@Input()*/ team_members: TeamMember[];
   user: FirebaseUserModel;
-  // private teamMemberSubscription: Subscription;
   private teamMemberSubscription2: Subscription;
-  // private teamMemberRemovals: Subscription;
-  // private teamMemberUpdates: Subscription;
-  // private teamMemberListSubscription: Subscription;
-  // private teamSubscription: Subscription;
   subject = new Subject<any>();
   canAddTeamMembers = false;
   canRemoveTeamMembers = false;
@@ -52,7 +47,7 @@ export class TeamMemberEditorComponent implements OnInit {
             const data = a.payload.doc.data() as TeamMember;
             const id = a.payload.doc.id;
             var returnThis = { id, ...data };
-            console.log('returnThis = ', returnThis);
+            // console.log('returnThis = ', returnThis);
             return returnThis;
           });
         })
@@ -72,55 +67,50 @@ export class TeamMemberEditorComponent implements OnInit {
           console.log('TeamMemberEditorComponent: team_members: ', this.team_members);
         });
     }
-
-    // this.teamMemberUpdates = this.messageService.getTeamMemberUpdates().subscribe(something => {
-    //   let team_member = something as TeamMember;
-    //   let found = _.find(this.team_members, ['teamMemberDocId', team_member.teamMemberDocId]);
-    //   if(!found) return;
-    //   found.leader = team_member.leader;
-    //   // can update more attributes later as needed
-    // })
-
-    // this.teamMemberRemovals = this.messageService.getRemovedMember().subscribe(something => {
-    //   console.log('ngOnInit: this.teamMemberRemovals: something = ', something);
-    //   let team_member = something as TeamMember;
-    //   if(!this.team_members) return;
-    //   _.remove(this.team_members, {userId: team_member.userId})
-    // })
-
-    // this.teamMemberSubscription = this.messageService.getTeamMember().subscribe((something) => {
-    //   let team_member = something as TeamMember;
-    //   console.log('ngOnInit: teamMemberSubscription: team_member = ', team_member);
-    //   if(!this.team_members) this.team_members = [];
-    //   this.team_members.push(team_member);
-    // })
-
-    // this.teamMemberListSubscription = this.messageService.getTeamMembers().subscribe((something) => {
-    //   let xx:TeamMember[] = something as TeamMember[];
-    //   console.log('ngOnInit: this.team_members = xx = ', xx);
-    //   this.team_members = xx;
-    //   this.setEditMemberPermissions(this.user, this.team, this.team_members);
-    // });
-
-    // this.teamSubscription = this.messageService.getTeam().subscribe(team => {
-    //   this.team = team;
-    //   this.setEditMemberPermissions(this.user, this.team, this.team_members);
-    // });
   }
 
   ngOnDestroy() {
-    // this.teamMemberUpdates.unsubscribe();
-    // this.teamMemberSubscription.unsubscribe();
     if(this.teamMemberSubscription2) this.teamMemberSubscription2.unsubscribe();
-    // this.teamMemberListSubscription.unsubscribe();
-    // this.teamSubscription.unsubscribe();
-    // this.teamMemberRemovals.unsubscribe();
   }
 
   checked($event, team_member) {
-    // console.log('$event.srcElement.checked = ', $event.srcElement.checked);
+    $event.preventDefault();
+    // console.log('$event.srcElement = ', $event.srcElement); // the html <input> element
     team_member.leader = $event.srcElement.checked;
-    this.teamService.updateMember(team_member);
+    if(this.user.uid === team_member.userId) {
+      if(this.team.leaderCount === 1) {
+        // don't allow the user to revoke his own leader access because that would make the team leader-less
+        // Instead, tell the user that he must first make someone else a leader before revoking his own access.
+        var ok2 = function() { /*noop*/ }
+        var modalRef = this.showOkCancel(ok2);
+        modalRef.componentInstance.title = `Not Allowed`;
+        modalRef.componentInstance.question = 'You are not allowed to revoke your own leader access because you are the only leader on this team';
+        modalRef.componentInstance.thing = '';
+        modalRef.componentInstance.warning_you = 'You must first make someone else a leader before you can revoke your leader access.';
+        modalRef.componentInstance.really_warning_you = '';
+      }
+      else {
+        // warn about revoking your own leader role
+        var ok = function() {
+          this.teamService.updateMember(team_member).then(async () => {
+            this.team = await this.teamService.getTeamData(this.team.id);// to get updated leaderCount and memberCount
+            console.log('this.team = ', this.team);
+          });
+        }.bind(this);
+        var modalRef = this.showOkCancel(ok);
+        modalRef.componentInstance.title = `Revoke Yourself?`;
+        modalRef.componentInstance.question = 'Are you sure you want to revoke your own leader access?';
+        modalRef.componentInstance.thing = '';
+        modalRef.componentInstance.warning_you = 'If you proceed, you will not be able to edit the team or its members.';
+        modalRef.componentInstance.really_warning_you = 'Are you sure?';
+      }
+    }
+    else {
+      this.teamService.updateMember(team_member).then(async () => {
+        this.team = await this.teamService.getTeamData(this.team.id);// to get updated leaderCount and memberCount
+        console.log('this.team = ', this.team);
+      });
+    }
   }
 
   async confirmDelete(team_member: TeamMember) {
@@ -133,28 +123,29 @@ export class TeamMemberEditorComponent implements OnInit {
     var deletingMyself = this.user.uid === team_member.userId;
     console.log('deletingMyself = user.uid === team_member.userId: ', deletingMyself, ' = ', this.user.uid, '===', team_member.userId);
 
-    var modalRef = this.showDeleteModal(team_member);
+    // var modalRef = this.showOkCancel(team_member);
+    var modalRef = this.showOkCancel(async () => {this.team = await this.teamService.deleteTeamMember(team_member);});
 
     if(deletingMyself) {
       // am I the last person?...
       if(this.team.memberCount === 1) {
         // special case - tell the user the team is about to be deleted
         modalRef.componentInstance.title = `Remove Yourself?`;
-        modalRef.componentInstance.question = 'Are you sure you want to remove yourself';
+        modalRef.componentInstance.question = 'Are you sure you want to remove yourself?';
         modalRef.componentInstance.thing = '';
         modalRef.componentInstance.warning_you = 'You are the only person on this team.';
         modalRef.componentInstance.really_warning_you = 'Removing yourself will cause the team to be deleted.  This cannot be undone.';
       } else if(this.team.leaderCount === 1) {
         // special case - should not allow the user to delete himself in this case because there would be no more leaders
         modalRef.componentInstance.title = `Remove Yourself?`;
-        modalRef.componentInstance.question = 'Are you sure you want to remove yourself';
+        modalRef.componentInstance.question = 'Are you sure you want to remove yourself?';
         modalRef.componentInstance.thing = '';
         modalRef.componentInstance.warning_you = 'You are the only person on this team that can add new people. If you remove yourself, no one else will be able to manage this team. You should assign another leader first before removing yourself.';
         modalRef.componentInstance.really_warning_you = 'You are advised to Cancel.';
       } else {
         // tell the user he won't be able to get back in on his own
         modalRef.componentInstance.title = `Remove Yourself?`;
-        modalRef.componentInstance.question = 'Are you sure you want to remove yourself';
+        modalRef.componentInstance.question = 'Are you sure you want to remove yourself?';
         modalRef.componentInstance.thing = '';
         modalRef.componentInstance.warning_you = 'If you want to re-join this team, one of the other team members will have to add you back.';
         modalRef.componentInstance.really_warning_you = 'You will not be able to get back in on your own.';
@@ -163,8 +154,8 @@ export class TeamMemberEditorComponent implements OnInit {
     else {
       modalRef.componentInstance.title = `Remove ${team_member.displayName}?`;
       modalRef.componentInstance.question = 'Are you sure you want to remove ';
-      modalRef.componentInstance.thing = team_member.displayName;
-      modalRef.componentInstance.warning_you = 'You can add this person at any time';
+      modalRef.componentInstance.thing = team_member.displayName+' ?';
+      modalRef.componentInstance.warning_you = 'You can add this person back at any time';
       modalRef.componentInstance.really_warning_you = '';
     }
   }
@@ -187,14 +178,15 @@ export class TeamMemberEditorComponent implements OnInit {
     this.canSetLeaders = user.canSetLeaders(team, team_members);
   }
 
-  showDeleteModal(team_member: TeamMember) {
+  showOkCancel(callback) {
     const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
     modalRef.result.then(async (result) => {
       // the ok/delete case
       // this.closeResult = `Closed with: ${result}`;
 
       // so that we get updated memberCount and leaderCount
-      this.team = await this.teamService.deleteTeamMember(team_member);
+      // this.team = await this.teamService.deleteTeamMember(team_member);
+      callback();
     }, (reason) => {
       // the cancel/dismiss case
       // this.closeResult = `Dismissed ${reason}`;

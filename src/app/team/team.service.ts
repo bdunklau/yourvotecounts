@@ -147,15 +147,14 @@ export class TeamService {
     });
   }
 
-  updateMember(team_member: TeamMember) {
+  // Return a Promise that the caller can do its own thing in its own then()
+  updateMember(team_member: TeamMember): Promise<any> {
     let batch = this.afs.firestore.batch();
     var teamRef = this.afs.collection('team').doc(team_member.teamDocId).ref;
     var incrValue = team_member.leader ? 1 : -1;
     batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(incrValue)});
     var memberRef = this.afs.collection('team_member').doc(team_member.teamMemberDocId).ref;
     batch.update(memberRef, {leader: team_member.leader});
-    batch.commit().then(() => {
-      // this.messageService.updateTeamMember(team_member)
-    });
+    return batch.commit();
   }
 }
