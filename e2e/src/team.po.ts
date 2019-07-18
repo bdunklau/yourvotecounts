@@ -141,6 +141,7 @@ export class TeamPage extends BasePage {
   setTeamName(newname: string) {
     this.enterTeamName(newname);
     this.saveTeam();
+    browser.sleep(1000);
   }
 
 
@@ -254,6 +255,7 @@ export class TeamPage extends BasePage {
     expect(this.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled because we have not entered anything into the Team Name field yet');
     expect(this.getCancelButton().isDisplayed()).toBeTruthy('the Cancel button should be displayed');
     expect(this.getCancelButton().isEnabled()).toBeTruthy('the Cancel button should be enabled');
+    expect(element(by.id('delete_team')).isPresent()).toBeFalsy('the delete button should not have been displayed because we are creating a new team. Deleting teams only means something after the team has been created.');
     // we DON'T want the team member section to be visible yet...
     expect(element(by.id('team_member_editor')).isPresent()).toBeFalsy('did not expect the team member editor section to be visible. We just started creating a team.');
   }
