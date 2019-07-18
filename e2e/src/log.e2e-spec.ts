@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
 
-describe('Log page', () => {
+fdescribe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -155,7 +155,12 @@ describe('Log page', () => {
   })
 
 
-  it('should allow query by date', async () => {
+  fit('should allow query by date', async () => {
+
+    // delete any log entries that may have been hanging around from a previous run
+    _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
+      testSupport.deleteLogs(event);
+    })
 
     logPage.setupQueryByDateTest();
 
