@@ -47,11 +47,11 @@ describe('Team page', () => {
     // teamPage.verifyMemberListIsDisplayed(); // should no longer display team members after saving a new team
 
     teamPage.selectTeam();
-      browser.sleep(3000);
+      browser.sleep(1000);
     teamPage.editTeam();
-      browser.sleep(3000);
+      browser.sleep(1000);
     teamPage.beginDeleteTeam();
-      browser.sleep(3000);
+      browser.sleep(1000);
     teamPage.verifyPageOnBeginDelete();
 
     teamPage.cancelDeleteTeam();
