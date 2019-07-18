@@ -1,7 +1,7 @@
 <div class="container" *ngIf="team">
 
 <div class="row">
-  <div class="col"><h5>Team: {{team.name}}</h5>
+  <div class="col" id="team_name"><h5>Team: {{team.name}}</h5>
   </div>
   <div class="col"><a id="edit_team" *ngIf="canEditTeam" [routerLink]="['/teams/edit/', team.id]" class="btn btn-primary">Edit Team</a>
   </div>

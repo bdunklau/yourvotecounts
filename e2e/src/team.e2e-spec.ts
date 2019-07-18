@@ -51,9 +51,16 @@ fdescribe('Team page', () => {
   })
 
 
-  xit('should allow leaders to edit team attributes', () => {
-    expect(false).toBeTruthy('write this test');
-    // be sure to verify the team name above the member list changes - because right now, it doesn't
+  fit('should allow leaders to edit team attributes', () => {
+    teamPage.createTeam(testSupport.names[0].phoneNumber);
+    teamPage.selectTeam();
+    teamPage.editTeam();
+    teamPage.setTeamName('abc123');
+    teamPage.verifyTeamName('abc123');
+    // clean up
+    teamPage.editTeam();
+    teamPage.deleteTeam();
+    teamPage.clickLogout();
   })
 
 
@@ -250,11 +257,12 @@ fdescribe('Team page', () => {
   })
 
 
+  // passed on 7/17/19
   // As it is now, this is now different from the intial test where we create a team and then delete it.
   // For this test to be meaningful, we need to add someone to the team and make that person a leader.
   // Then login as that person and delete the team.
   // Then make sure the team is removed from both people's list.
-  fit('should let leaders delete a team', async () => {
+  it('should let leaders delete a team', async () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     browser.sleep(500);
     teamPage.makeOtherPersonLeader();
@@ -281,6 +289,7 @@ fdescribe('Team page', () => {
   })
 
 
+  // passed on 7/17/19
   it('should prevent non-leaders from deleting a team', () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     page.clickLogout();

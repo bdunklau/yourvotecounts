@@ -128,6 +128,12 @@ export class TeamPage extends BasePage {
   }
 
 
+  setTeamName(newname: string) {
+    this.enterTeamName(newname);
+    this.saveTeam();
+  }
+
+
   async verifyMemberListIsDisplayed() {
     var memberIdField = "team_member_"+this.args.creator.displayName;
     expect(this.getElement(by.id(memberIdField)).isPresent()).toBeTruthy('expected the team page to contain an element with id of '+memberIdField+' but it was not present');
@@ -269,6 +275,11 @@ export class TeamPage extends BasePage {
     var teamIdInList = 'team_in_list_'+this.args.teamName
     var teamElement = this.getElement(by.id(teamIdInList));
     expect(teamElement.isPresent()).toBeTruthy('expected the team list to contain an html element with id "'+teamIdInList+'" but did not find it');
+  }
+
+  async verifyTeamName(expected_name: string) {
+    let actual_name = await this.getElement(by.id('team_name')).getText();
+    expect(actual_name === 'Team: '+expected_name).toBeTruthy('expected the team name to be: '+expected_name+' but it was actually: '+actual_name );
   }
 
 }
