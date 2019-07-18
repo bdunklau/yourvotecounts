@@ -63,15 +63,6 @@ export class TeamPage extends BasePage {
   }
 
   createTeamWithTwoPeople(phoneNumber: string) {
-    // this.args.testSupport.setNames(this.args.testSupport.names);
-    // this.args.testSupport.login(this.args.testSupport.names[0].phoneNumber);
-    // browser.sleep(500);
-    // this.goto('');
-    //
-    // this.clickTeams();
-    // this.beginCreateTeam();
-    // this.fillOutForm();
-    // this.saveTeam();
     this.createTeam(phoneNumber);
     browser.sleep(300);
     this.selectTeam();
@@ -260,9 +251,8 @@ export class TeamPage extends BasePage {
   }
 
 
-  verifyTeamDeleteLinkDoesNotExist() {
-    console.log('verifying this team cannot be deleted: '+this.args.teamName)
-    expect(element(by.id("delete_team_"+this.args.teamName)).isDisplayed()).toBeFalsy('did not expect the delete team X to be present for delete_team_'+this.args.teamName+' but it was');
+  verifyTeamEditLinkDoesNotExist() {
+    expect(element(by.id("edit_team")).isPresent()).toBeFalsy('did not expect the Edit Team button to be present but it was');
   }
 
   async verifyTeamIsDisplayedInList() {

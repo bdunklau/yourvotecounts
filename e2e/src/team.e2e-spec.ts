@@ -263,22 +263,23 @@ fdescribe('Team page', () => {
   })
 
 
-  it('should prevent non-leaders from deleting a team', async () => {
+  fit('should prevent non-leaders from deleting a team', () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     page.clickLogout();
     testSupport.login(testSupport.names[1].phoneNumber);
-    browser.sleep(500);
+    page.goto('');
     page.clickTeams();
-    browser.sleep(500);
     teamPage.selectTeam();
-    browser.sleep(500);
-    teamPage.verifyTeamDeleteLinkDoesNotExist();
+    teamPage.verifyTeamEditLinkDoesNotExist();
     page.clickLogout();
 
     // clean up
     testSupport.login(testSupport.names[0].phoneNumber);
+    browser.sleep(1000);
     page.goto('');
     page.clickTeams();
+    teamPage.selectTeam();
+    teamPage.editTeam();
     teamPage.deleteTeam();
     page.clickLogout();
   })
