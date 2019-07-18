@@ -3,6 +3,7 @@ const admin = require('firebase-admin');
 const log = require('../log');
 const auth = require('../auth');
 const moment = require('moment');
+const _ = require('lodash');
 
 // can only call this once globally and we already do that in index.js
 //admin.initializeApp(functions.config().firebase);
@@ -66,18 +67,41 @@ exports.createLogs = functions.https.onRequest(async (req, res) => {
     console.log('date = ', date);
   }
 
-  var kv1 = {event: 'test event', user: {uid:'111111', displayName:'User1', phoneNumber:'+11115551111'}}
-  var kv2 = {event: 'test event', user: {uid:'222222', displayName:'User2', phoneNumber:'+11115552222'}}
-  var kv3 = {event: 'test event', user: {uid:'333333', displayName:'User3', phoneNumber:'+11115553333'}}
-  var kv4 = {event: 'test event', user: {uid:'444444', displayName:'User4', phoneNumber:'+11115554444'}}
-  var kv5 = {event: 'test event', user: {uid:'555555', displayName:'User5', phoneNumber:'+11115555555'}}
-  var kv6 = {event: 'test event', user: {uid:'666666', displayName:'User6', phoneNumber:'+11115556666'}}
-  log.logit2(kv1, 'debug', date, date.toMillis()),
-  log.logit2(kv2, 'debug', date, date.toMillis()),
-  log.logit2(kv3, 'info', date, date.toMillis()),
-  log.logit2(kv4, 'info', date, date.toMillis()),
-  log.logit2(kv5, 'error', date, date.toMillis()),
-  log.logit2(kv6, 'error', date, date.toMillis()),
+  var levels = ['debug', 'info', 'error'];
+  if(req.query.levels) {
+    levels = _.split(req.query.levels, ',');
+  }
+
+  var count = 1;
+  if(req.query.count) count = parseInt(req.query.count);
+
+  var sampleUsers = [
+    {uid:'111111', displayName:'User1', phoneNumber:'+11115551111'},
+    {uid:'222222', displayName:'User2', phoneNumber:'+11115552222'},
+  ];
+
+
+  for(var i=0; i < count; i++) {
+    _.each(levels, (level) => {
+      _.each(sampleUsers, (su) => {
+        var entry = {level: level, event: 'test event', date: date, date_ms: date_ms, uid: su.uid, displayName: su.displayName, phoneNumber: su.phoneNumber};
+        log.logit3(entry);
+      })
+    })
+  }
+
+  // var kv1 = {event: 'test event', user: {uid:'111111', displayName:'User1', phoneNumber:'+11115551111'}}
+  // var kv2 = {event: 'test event', user: {uid:'222222', displayName:'User2', phoneNumber:'+11115552222'}}
+  // var kv3 = {event: 'test event', user: {uid:'333333', displayName:'User3', phoneNumber:'+11115553333'}}
+  // var kv4 = {event: 'test event', user: {uid:'444444', displayName:'User4', phoneNumber:'+11115554444'}}
+  // var kv5 = {event: 'test event', user: {uid:'555555', displayName:'User5', phoneNumber:'+11115555555'}}
+  // var kv6 = {event: 'test event', user: {uid:'666666', displayName:'User6', phoneNumber:'+11115556666'}}
+  // log.logit2(kv1, 'debug', date, date.toMillis()),
+  // log.logit2(kv2, 'debug', date, date.toMillis()),
+  // log.logit2(kv3, 'info', date, date.toMillis()),
+  // log.logit2(kv4, 'info', date, date.toMillis()),
+  // log.logit2(kv5, 'error', date, date.toMillis()),
+  // log.logit2(kv6, 'error', date, date.toMillis()),
   res.status(200).send('<div>test logs written</div>');
 
 })

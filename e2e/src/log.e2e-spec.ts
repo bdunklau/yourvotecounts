@@ -225,7 +225,7 @@ describe('Log page', () => {
   it('should allow query by level', async () => {
 
     // db setup - have to log error, info and debug entries so we have something to test
-    testSupport.createLogs();
+    testSupport.createLogs({});
 
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickLog();

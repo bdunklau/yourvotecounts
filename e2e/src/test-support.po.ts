@@ -53,9 +53,11 @@ export class TestSupport {
     return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLog?'+logParm+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
   }
 
-  createLogs() {
+  createLogs(options: any) {
     browser.waitForAngularEnabled(false);
-    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLogs?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
+    var url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLogs?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
+    if(options.millis) url += '&millis='+options.millis;
+    return browser.get(url) as Promise<any>;
   }
 
   createLogsWithDate(millis) {
@@ -121,22 +123,6 @@ export class TestSupport {
     else {
       await this.api.updateDisplayName(json['uid'], obj.displayName);
     }
-
-    // console.log('setName():  obj = ', obj);
-    // this.login(obj.phoneNumber);
-    // let page = new MainPage();
-    // let myAccountPage = new MyAccountPage();
-    // page.clickHome();
-    // browser.sleep(500);
-    // page.clickMyAccount();
-    // browser.sleep(500);
-    // myAccountPage.clickEdit();
-    // browser.sleep(500);
-    // myAccountPage.enterName(obj.displayName);
-    // browser.sleep(300);
-    // myAccountPage.clickSubmit();
-    // browser.sleep(500); // this sucks - fails without this delay
-    // page.clickLogout();
   }
 
   // a test prep method that sets users names to whatever we pass in
