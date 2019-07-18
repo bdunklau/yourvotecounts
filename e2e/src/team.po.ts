@@ -115,6 +115,10 @@ export class TeamPage extends BasePage {
     return this.getElement(by.id('team_name_field'));
   }
 
+  makeOtherPersonLeader() {
+    element(by.id('leader_switch_'+this.args.addedPerson.displayName)).click();
+  }
+
   saveTeam() {
     this.getSaveButton().click();
   }
@@ -248,6 +252,12 @@ export class TeamPage extends BasePage {
     this.getElements(by.id(id)).then(team_members => {
       expect(team_members.length === 1).toBeTruthy('expected to find exactly 1 element with id="'+id+'" but actually found '+team_members.length);
     });
+  }
+
+
+  verifyTeamDoesNotExist() {
+    var teamIdInList = 'team_in_list_'+this.args.teamName
+    expect(element(by.id(teamIdInList)).isPresent()).toBeFalsy('did not expect the team list to contain '+this.args.teamName+' but it did');
   }
 
 

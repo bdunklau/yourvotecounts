@@ -254,16 +254,34 @@ fdescribe('Team page', () => {
   // For this test to be meaningful, we need to add someone to the team and make that person a leader.
   // Then login as that person and delete the team.
   // Then make sure the team is removed from both people's list.
-  xit('should let leaders delete a team', async () => {
+  fit('should let leaders delete a team', async () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
+    browser.sleep(500);
+    teamPage.makeOtherPersonLeader();
+    page.clickLogout();
+
+    // now login as the person that was just made leader
+    testSupport.login(testSupport.names[1].phoneNumber);
+    browser.sleep(500);
+    page.goto('');
+    page.clickTeams();
+    teamPage.selectTeam();
+    teamPage.editTeam();
     teamPage.deleteTeam();
     teamPage.verifyPageOnDeleteTeam();
+    page.clickLogout();
 
+    // login as original user and make sure the team doesn't exist for him either
+    testSupport.login(testSupport.names[1].phoneNumber);
+    browser.sleep(500);
+    page.goto('');
+    page.clickTeams();
+    teamPage.verifyTeamDoesNotExist();
     page.clickLogout();
   })
 
 
-  fit('should prevent non-leaders from deleting a team', () => {
+  it('should prevent non-leaders from deleting a team', () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     page.clickLogout();
     testSupport.login(testSupport.names[1].phoneNumber);

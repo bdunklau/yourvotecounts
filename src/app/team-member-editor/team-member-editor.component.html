@@ -33,7 +33,7 @@
       </span>
       <span *ngIf="canSetLeaders">
         <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
-        <label class="switch">
+        <label class="switch" id="leader_switch_{{team_member.displayName}}">
           <input type="checkbox" class="success" [checked]="team_member.leader" (click)="checked($event, team_member)">
           <span class="slider round"></span>
         </label>
