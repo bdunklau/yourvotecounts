@@ -1,0 +1,47 @@
+
+<form (ngSubmit)="onSubmit()" #testLogForm="ngForm">
+  <div class="form-group">
+    <div class="row">
+      <div class="col">
+        <input type="text"
+                class="form-control"
+                id="log_levels_field" [(ngModel)]="levelsValue"
+                name="levels"
+                #token="ngModel">
+      </div>
+      <div class="col">
+        <input type="text"
+                class="form-control"
+                id="log_year_field" [(ngModel)]="yearValue"
+                name="year"
+                #token="ngModel">
+      </div>
+      <div class="col">
+        <input type="text"
+                class="form-control"
+                id="log_month_field" [(ngModel)]="monthValue"
+                name="month"
+                #token="ngModel">
+      </div>
+      <div class="col">
+        <input type="text"
+                class="form-control"
+                id="log_day_field" [(ngModel)]="dayValue"
+                name="day"
+                #token="ngModel">
+      </div>
+      <div class="col">
+        <input type="text"
+                class="form-control"
+                id="log_event_field" [(ngModel)]="eventValue"
+                name="event"
+                #token="ngModel">
+      </div>
+    </div>
+
+
+  </div>
+
+  <button id="submit_test_log" type="submit" class="btn btn-success" [disabled]="!testLogForm.form.valid">Submit</button>
+
+</form>

@@ -33,6 +33,7 @@ import { NgbdModalConfirmComponent } from './util/ngbd-modal-confirm/ngbd-modal-
 import { TeamMemberEditorComponent } from './team-member-editor/team-member-editor.component';
 import { SearchUserByName2Component } from './search/search-user-by-name2/search-user-by-name2.component';
 import { TeamViewerComponent } from './team-viewer/team-viewer.component';
+import { LogFormComponent } from './log/log-form/log-form.component';
 // import { TeamResolver } from './team/team.resolver';
 
 
@@ -58,6 +59,7 @@ import { TeamViewerComponent } from './team-viewer/team-viewer.component';
     TeamMemberEditorComponent,
     SearchUserByName2Component,
     TeamViewerComponent,
+    LogFormComponent,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [
