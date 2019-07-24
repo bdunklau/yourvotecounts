@@ -17,7 +17,7 @@ import { TeamsComponent } from './teams/teams.component';
 import { TeamEditorComponent } from './team-editor/team-editor.component';
 import { TeamViewerComponent } from './team-viewer/team-viewer.component';
 import { TeamResolver } from './team/team.resolver';
-import { DisabledGuard } from './core/disabled.guard';
+import { DisabledGuard } from './disabled/disabled.guard';
 import { DisabledComponent } from './disabled/disabled.component';
 
 const routes: Routes = [

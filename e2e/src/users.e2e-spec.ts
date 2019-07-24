@@ -96,6 +96,25 @@ describe('Users page (Admins) ', () => {
   })
 
 
+  xit('should be able to disable everyone else\'s account with one action', () => {
+    // login as Admin
+    // disable everyone but me
+    // logout and login as 2 or 3 other people
+    // verify the site displays some kind of "disabled" message
+    // verify all routes lead to "disabled" for all affected users
+  })
+
+
+  xit('should not be able to disable your own account', () => {
+    // login as Admin
+    // look up someone's account
+    // change someone to disabled
+    // logout and login as that person
+    // verify the site displays some kind of "disabled" message
+    // verify all routes lead to "disabled"
+  })
+
+
   afterEach(async () => {
     // Assert that there are no errors emitted from the browser
     const logs = await browser.manage().logs().get(logging.Type.BROWSER);
