@@ -22,15 +22,6 @@ describe('Users page (Admins) ', () => {
   });
 
 
-  xit('should be able to disable any user\'s account', () => {
-    // login as Admin
-    // change someone to disabled
-    // logout and login as that person
-    // verify the site displays some kind of "disabled" message
-    // verify all routes lead to "disabled"
-  })
-
-
   it('should be able to get to Users page', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.clickHome();
@@ -93,6 +84,16 @@ describe('Users page (Admins) ', () => {
     usersPage.clickSubmit();
     page.clickLogout();
   });
+
+
+  xit('should be able to disable any user\'s account', () => {
+    // login as Admin
+    // look up someone's account
+    // change someone to disabled
+    // logout and login as that person
+    // verify the site displays some kind of "disabled" message
+    // verify all routes lead to "disabled"
+  })
 
 
   afterEach(async () => {

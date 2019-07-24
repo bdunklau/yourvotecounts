@@ -17,21 +17,24 @@ import { TeamsComponent } from './teams/teams.component';
 import { TeamEditorComponent } from './team-editor/team-editor.component';
 import { TeamViewerComponent } from './team-viewer/team-viewer.component';
 import { TeamResolver } from './team/team.resolver';
+import { DisabledGuard } from './core/disabled.guard';
+import { DisabledComponent } from './disabled/disabled.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'disabled', component: DisabledComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'log', component: LogComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
+  { path: 'log', component: LogComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'login', component: LoginComponent },
-  { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard] },
-  { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard], resolve: { user: UserResolver} },
-  { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard], resolve: {team: TeamResolver, user: UserResolver} },
-  { path: 'teams/edit/:teamDocId', component: TeamEditorComponent, canActivate: [AuthGuard], resolve: {team: TeamResolver, user: UserResolver} },
-  { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard] },
+  { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard, DisabledGuard] },
+  { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard], resolve: { user: UserResolver} },
+  { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard, DisabledGuard], resolve: {team: TeamResolver, user: UserResolver} },
+  { path: 'teams/edit/:teamDocId', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard], resolve: {team: TeamResolver, user: UserResolver} },
+  { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard, DisabledGuard] },
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'user', component: UserComponent,  resolve: { data: UserResolver}},
-  { path: 'users', component: UsersComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'admin'} },
+  { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
 ];
 
 @NgModule({

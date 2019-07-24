@@ -37,6 +37,19 @@
           <input type="text" class="form-control" id="nameField" placeholder="Name"
                   [(ngModel)]="nameValue" name="name" #name="ngModel" required>
       </div>
+      <div class="col">
+        <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
+        <label class="switch" id="disabled_switch_{{user.displayName}}">
+          <input id="disabled_checkbox_{{user.displayName}}" type="checkbox" class="success" [checked]="user.isDisabled" (click)="checked($event, user)">
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+
+
+
+
+
     </div>
     <div class="row">
       <div class="col">Phone:</div>

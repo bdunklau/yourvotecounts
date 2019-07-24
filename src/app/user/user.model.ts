@@ -12,6 +12,7 @@ export class FirebaseUserModel {
   roles: Array<String>;
   photoURL: string;
   date_ms: number;
+  isDisabled: boolean = false;
   // teams: Team[];
 
   constructor(){
@@ -23,6 +24,7 @@ export class FirebaseUserModel {
     this.phoneNumber = "";
     this.roles = [];
     this.photoURL = "";
+    this.isDisabled = false;
     // this.teams = [];
   }
 
@@ -35,6 +37,8 @@ export class FirebaseUserModel {
     this.phoneNumber = obj.phoneNumber;
     this.roles = obj.roles;
     this.photoURL = obj.photoURL;
+    if(obj.isDisabled === true || obj.isDisabled === false) this.isDisabled = obj.isDisabled;
+    else this.isDisabled = false;
     // this.teams = obj.teams ? obj.teams : [];
     // console.log('populate():  this.teams = ', this.teams);
   }
