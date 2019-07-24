@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
+import { /*map,*/ take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,23 @@ export class LogService {
 
   constructor(
     public db: AngularFirestore,) { }
+
+  private xxx(logtype, eventValue) {
+    let batch = this.db.firestore.batch();
+    var ref = this.db.collection(logtype, rf => rf.where("event", "==", eventValue)).snapshotChanges().pipe(take(1));
+    ref.subscribe(data  => {
+      data.forEach(function(dt) {
+        batch.delete(dt.payload.doc.ref);
+      });
+      batch.commit();
+    });
+  }
+
+  deleteLogs(eventValue: string) {
+    this.xxx('log_debug', eventValue);
+    this.xxx('log_info', eventValue);
+    this.xxx('log_error', eventValue);
+  }
 
   async login(user) {
     console.log('LogService.login()  user: ', user)
@@ -27,6 +45,10 @@ export class LogService {
     await this.i(entry);
   }
 
+  async e(keyvals) {
+    this.logit(keyvals, 'error')
+  }
+
   async d(keyvals) {
     this.logit(keyvals, 'debug')
   }
@@ -35,15 +57,16 @@ export class LogService {
     this.logit(keyvals, 'info')
   }
 
-  private async logit(keyvals, level) {
+  // call d() e() and i() - not this function, except for testing
+  async logit(keyvals, level) {
     let entry = {}
     if(keyvals.event) entry['event'] = keyvals.event
     if(keyvals.uid) entry['uid'] = keyvals.uid
     if(keyvals.phoneNumber) entry['phoneNumber'] = keyvals.phoneNumber
     if(keyvals.displayName) entry['displayName'] = keyvals.displayName
     if(level) entry['level'] = level
-    entry['date'] = firebase.firestore.Timestamp.now().toDate()
-    entry['date_ms'] = firebase.firestore.Timestamp.now().toMillis()
+    entry['date'] = keyvals.date ? keyvals.date : firebase.firestore.Timestamp.now().toDate();
+    entry['date_ms'] = keyvals.date_ms ? keyvals.date_ms : firebase.firestore.Timestamp.now().toMillis();
     if(level === 'error') {
       await Promise.all([
         this.db.collection('log_error').add(entry),
@@ -63,4 +86,5 @@ export class LogService {
       ])
     }
   }
+
 }
