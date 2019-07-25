@@ -18,6 +18,11 @@ export class BasePage {
     this.getLogoutLink().click();
   }
 
+  clickMyAccount() {
+    this.pullDownMyMenu();
+    this.getElement(by.id('myaccount_link')).click();
+  }
+
   clickTeams() {
     this.pullDownMyMenu();
     this.getElement(by.id('teams_link')).click();
@@ -70,6 +75,10 @@ export class BasePage {
     return this.getElement(by.id('logout_link'));
   }
 
+
+  getMyAccountElement() {
+    return this.getElement(by.id('myaccount_page'));
+  }
 
   getNamesInDropdown(): ElementArrayFinder {
     browser.sleep(300);

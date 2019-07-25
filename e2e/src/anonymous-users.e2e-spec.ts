@@ -1,11 +1,14 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
+import { Api } from './api.po';
+import { TestSupport } from './test-support.po';
 
 describe('Anonymous users', () => {
   let page: MainPage;
 
   beforeEach(() => {
-    page = new MainPage();
+    testSupport = new TestSupport(new Api());
+    page = new MainPage(testSupport);
   });
 
   it('should see Login link', () => {

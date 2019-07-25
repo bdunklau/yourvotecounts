@@ -10,6 +10,10 @@ export class UsersPage extends BasePage {
     this.getElement(by.id("submit_user")).click();
   }
 
+  disableAccount() {
+    this.getElement(by.id('disabled_checkbox_'+this.args.addedPerson.displayName)).click();
+  }
+
   enterPartialName(name, length) {
     var fld = this.getElement(by.id('nameSearchField'));
     fld.clear();
@@ -34,6 +38,10 @@ export class UsersPage extends BasePage {
 
   getSearchByPhoneField() {
     return this.getElement(by.id('phoneSearchField'));
+  }
+
+  lookUpSomeone() {
+    this.queryByName(this.testSupport.names[0].displayName);
   }
 
   queryByName(name) {

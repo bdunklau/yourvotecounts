@@ -17,7 +17,7 @@ describe('Users page (Admins) ', () => {
 
   beforeEach(() => {
     testSupport = new TestSupport(new Api());
-    page = new MainPage();
+    page = new MainPage(testSupport);
     usersPage = new UsersPage();
   });
 
@@ -87,12 +87,25 @@ describe('Users page (Admins) ', () => {
 
 
   xit('should be able to disable any user\'s account', () => {
+    testSupport.setNames(testSupport.names);
+
     // login as Admin
+    page.loginAdmin();
     // look up someone's account
+    page.clickUsers();
+    usersPage.lookUpSomeone();
     // change someone to disabled
+    usersPage.disableAccount();
     // logout and login as that person
-    // verify the site displays some kind of "disabled" message
+    page.clickLogout();
+    page.loginAsSomeone();
     // verify all routes lead to "disabled"
+    page.verifyPagesDisabled();
+
+    page.clickLogout();
+    page.loginAsSomeoneElse();
+    page.verifyPagesEnabled();
+    page.clickLogout();
   })
 
 

@@ -13,8 +13,8 @@ describe('Team page', () => {
   let teamPage: TeamPage;
 
   beforeEach(() => {
-    page = new MainPage();
     testSupport = new TestSupport(new Api());
+    page = new MainPage(testSupport);
     teamPage = new TeamPage({testSupport: testSupport,
                             teamName: testSupport.getTeamName(),
                             creator: testSupport.normalUser,

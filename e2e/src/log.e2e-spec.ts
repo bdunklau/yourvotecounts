@@ -13,8 +13,8 @@ describe('Log page', () => {
   let logPage: LogPage;
 
   beforeEach(() => {
-    page = new MainPage();
     testSupport = new TestSupport(new Api());
+    page = new MainPage(testSupport);
     logPage = new LogPage(testSupport);
   });
 

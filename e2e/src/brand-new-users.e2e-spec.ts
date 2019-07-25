@@ -10,8 +10,8 @@ describe('Brand new users', () => {
   let testSupport: TestSupport;
 
   beforeEach(() => {
-    page = new MainPage();
     testSupport = new TestSupport(new Api());
+    page = new MainPage(testSupport);
     myAccountPage = new MyAccountPage();
   });
 
