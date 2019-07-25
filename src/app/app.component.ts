@@ -38,7 +38,7 @@ export class AppComponent {
     this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
     this.subscription = this.messageService.getUser()
       .subscribe(user => {
-        console.log('AppComponent: user from service: ', user);
+        // console.log('AppComponent: user from service: ', user);
         this.isAdmin = user && user.hasRole('admin')
         this.isLoggedIn = user != null;
         this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
