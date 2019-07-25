@@ -1,6 +1,22 @@
 
 <div class="container">
 <h1>Users</h1>
+
+
+<div class="row">
+  <div class="col-xs-2 pad20 text18">disable everyone
+  </div>
+  <div class="col-xs-1">
+    <label class="switch" id="disable_everyone">
+      <input id="disable_everyone" type="checkbox" class="success" [checked]="allDisabled()" (click)="disableAll($event, settings)">
+      <span class="slider round"></span>
+    </label>
+  </div>
+</div>
+
+
+
+
 <!--
 <table class="table table-striped">
   <thead>
@@ -29,7 +45,17 @@
 
 
 
-<form (ngSubmit)="onSubmit()" #userForm="ngForm">
+
+
+
+
+
+
+
+
+
+
+<form [hidden]="!user.displayName" (ngSubmit)="onSubmit()" #userForm="ngForm">
   <div class="form-group">
     <div class="row">
       <div class="col">Name:</div>
@@ -37,20 +63,18 @@
           <input type="text" class="form-control" id="nameField" placeholder="Name"
                   [(ngModel)]="nameValue" name="name" #name="ngModel" required>
       </div>
-      <div class="col">
+
+      <div class="col-xs-1 pad20 text18" [hidden]="!user.uid || me.uid === user.uid">disabled
+      </div>
+      <div class="col-xs-1" [hidden]="!user.uid || me.uid === user.uid">
         <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
         <label class="switch" id="disabled_switch_{{user.displayName}}">
           <input id="disabled_checkbox_{{user.displayName}}" type="checkbox" class="success" [checked]="user.isDisabled" (click)="checked($event, user)">
           <span class="slider round"></span>
         </label>
       </div>
-
-
-
-
-
-
     </div>
+
     <div class="row">
       <div class="col">Phone:</div>
       <div class="col" id="phoneLabel">{{user.phoneNumber}}</div>
@@ -74,5 +98,6 @@
   <button id="cancel_user" type="button" (click)="cancel()" class="btn btn-secondary">Cancel</button>
 
 </form>
+
 
 </div>

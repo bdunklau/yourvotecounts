@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseUserModel } from '../user/user.model';
 import { UserService } from '../user/user.service';
+import { SettingsService } from '../settings/settings.service';
+import { Settings } from '../settings/settings.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-users',
@@ -10,17 +13,60 @@ import { UserService } from '../user/user.service';
 export class UsersComponent implements OnInit {
 
   user = new FirebaseUserModel();
+  me:FirebaseUserModel;
   seconds = 0;
   roles;
   nameValue;
+  settings: Settings;
+  private subscription: Subscription;
 
-  constructor(public userService: UserService) { }
+  constructor(public userService: UserService,
+              private settingsService: SettingsService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    console.log('user = ', this.user);
+    this.me = await this.userService.getCurrentUser();
+
+    this.subscription = this.settingsService.getSettings()
+      .subscribe(obj => {
+        this.settings = obj as Settings;
+        console.log('getSettings():  this.settings = ', this.settings);
+      });
   }
 
   ngOnDestroy() {
+    if(this.subscription) this.subscription.unsubscribe();
   }
+
+
+  allDisabled() {
+    return this.settings ? this.settings.disabled : false;
+  }
+
+
+  checked($event, user) {
+    user.isDisabled = $event.srcElement.checked;
+    this.userService.updateUser(user).then(async () => {
+      this.user = user;
+      // could override the user's selection if the database update returned
+      // a true/false value you didn't expect.  Keeps the toggle in sync with the database
+      $event.srcElement.checked = this.user.isDisabled;
+      console.log('updateUser(): this.user.isDisabled = ', this.user.isDisabled);
+    });
+  }
+
+
+  disableAll($event, settings) {
+    settings.disabled = $event.srcElement.checked;
+    this.settingsService.updateSettings(settings).then(async () => {
+      this.settings = settings;
+      // could override the user's selection if the database update returned
+      // a true/false value you didn't expect.  Keeps the toggle in sync with the database
+      $event.srcElement.checked = this.settings.disabled;
+      console.log('updateSettings(): this.settings.disabled = ', this.settings.disabled);
+    });
+  }
+
 
   onUserSelectedByName(user: FirebaseUserModel) {
     console.log("onUserSelectedByName(): user = ", user);
@@ -33,6 +79,7 @@ export class UsersComponent implements OnInit {
   }
 
   private set(user: FirebaseUserModel) {
+    console.log("set(): user = ", user);
     if(!user) return;
     this.user = user;
     this.seconds = user.date_ms;

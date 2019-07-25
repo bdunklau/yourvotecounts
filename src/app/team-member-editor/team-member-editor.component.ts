@@ -74,8 +74,9 @@ export class TeamMemberEditorComponent implements OnInit {
   }
 
   checked($event, team_member) {
+    // don't toggle the switch position based on the user's click
+    // change it based on the value that comes back from the updateMember() call
     $event.preventDefault();
-    // console.log('$event.srcElement = ', $event.srcElement); // the html <input> element
     team_member.leader = $event.srcElement.checked;
     if(this.user.uid === team_member.userId) {
       if(this.team.leaderCount === 1) {
