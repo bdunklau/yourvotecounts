@@ -24,7 +24,7 @@ export class UsersComponent implements OnInit {
               private settingsService: SettingsService) { }
 
   async ngOnInit() {
-    console.log('user = ', this.user);
+    // console.log('user = ', this.user);
     this.me = await this.userService.getCurrentUser();
 
     this.subscription = this.settingsService.getSettings()
@@ -56,7 +56,7 @@ export class UsersComponent implements OnInit {
   }
 
 
-  disableAll($event, settings) {
+  checkDisableAll($event, settings) {
     settings.disabled = $event.srcElement.checked;
     this.settingsService.updateSettings(settings).then(async () => {
       this.settings = settings;
