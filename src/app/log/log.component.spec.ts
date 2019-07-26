@@ -13,6 +13,7 @@ import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@ang
 import { AngularFireAuth } from '@angular/fire/auth';
 import { DateChooserComponent } from '../util/date-chooser/date-chooser.component';
 import { SearchUserByNameComponent } from '../search/search-user-by-name/search-user-by-name.component';
+import { LogFormComponent } from './log-form/log-form.component';
 
 
 describe('LogComponent', () => {
@@ -38,7 +39,8 @@ describe('LogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ /*CommonServiceModuleStub, */ FormsModule, ReactiveFormsModule, NgbModule],
-      declarations: [ LogComponent, SearchLogByLevelComponent, SearchUserByPhoneComponent, SearchUserByNameComponent, DateChooserComponent ],
+      declarations: [ LogComponent, SearchLogByLevelComponent, SearchUserByPhoneComponent, SearchUserByNameComponent, DateChooserComponent,
+                      LogFormComponent ],
       providers: [ UserService,
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },

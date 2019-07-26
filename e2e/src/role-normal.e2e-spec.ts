@@ -8,8 +8,8 @@ describe('Normal user', () => {
   let testSupport: TestSupport;
 
   beforeEach(() => {
-    page = new MainPage();
     testSupport = new TestSupport(new Api());
+    page = new MainPage(testSupport);
   });
 
   it( 'should not see a Log link', () => {

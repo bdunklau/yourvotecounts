@@ -3,32 +3,41 @@ import { MainPage } from './main.po';
 import { UsersPage } from './users.po';
 import { browser, logging, /*, element, by*/ } from 'protractor';
 import { Api } from './api.po';
+import { TeamPage } from './team.po';
+import { MyAccountPage } from './my-account.po';
 
-var verifyUser = async (usersPage, testSupport) => {
-  usersPage.queryByName(testSupport.names[0].displayName);
-  var actualName = await usersPage.getNameFieldValue();
-  expect(actualName === testSupport.names[0].displayName).toBeTruthy('expected the Users page to display the name "'+testSupport.names[0].displayName+'" but actually got: '+actualName);
+
+var verifyPagesEnabled = function(page, myAccountPage, teamPage, sleep) {
+  // verify pages enabled
+  page.clickMyAccount();
+                                  browser.sleep(sleep);
+  myAccountPage.verifyPage();
+
+  page.clickTeams();
+  teamPage.verifyPageBeforeCreatingTeam();
 }
+
 
 describe('Users page (Admins) ', () => {
   let testSupport: TestSupport;
   let page: MainPage;
   let usersPage: UsersPage;
+  let teamPage: TeamPage;
+  let myAccountPage: MyAccountPage;
 
   beforeEach(() => {
     testSupport = new TestSupport(new Api());
-    page = new MainPage();
-    usersPage = new UsersPage();
+    page = new MainPage(testSupport);
+    usersPage = new UsersPage({testSupport: testSupport,
+                            someone: testSupport.normalUser,
+                            someoneElse: testSupport.normalUser2});
+
+    teamPage = new TeamPage({testSupport: testSupport,
+                            teamName: testSupport.getTeamName(),
+                            creator: testSupport.normalUser,
+                            addedPerson: testSupport.normalUser2});
+    myAccountPage = new MyAccountPage();
   });
-
-
-  xit('should be able to disable any user\'s account', () => {
-    // login as Admin
-    // change someone to disabled
-    // logout and login as that person
-    // verify the site displays some kind of "disabled" message
-    // verify all routes lead to "disabled"
-  })
 
 
   it('should be able to get to Users page', () => {
@@ -93,6 +102,100 @@ describe('Users page (Admins) ', () => {
     usersPage.clickSubmit();
     page.clickLogout();
   });
+
+
+  it('should be able to disable any user\'s account', () => {
+    testSupport.setNames(testSupport.names);
+    var sleep = 300;
+    // login as Admin
+    page.loginAdmin();
+    // look up someone's account
+    page.clickUsers();
+                                    browser.sleep(sleep);
+    usersPage.lookUpSomeone();
+                                    browser.sleep(sleep);
+    // change someone to disabled
+    usersPage.disableAccount();
+                                    browser.sleep(sleep);
+    // logout and login as that person
+    page.clickLogout();
+                                    browser.sleep(sleep);
+    page.loginAsSomeone();
+                                    browser.sleep(sleep);
+    // verify all routes lead to "disabled"
+    page.verifyPagesDisabled(sleep);
+
+    page.clickLogout();
+    page.loginAsSomeoneElse();
+
+    // verify pages enabled
+    verifyPagesEnabled(page, myAccountPage, teamPage, sleep);
+
+    page.clickLogout();
+
+    // restore by re-enabling the user
+    page.loginAdmin();
+    // look up someone's account
+    page.clickUsers();
+                                    browser.sleep(sleep);
+    usersPage.lookUpSomeone();
+                                    browser.sleep(sleep);
+    // change someone to disabled
+    usersPage.enableAccount();
+                                    browser.sleep(sleep);
+
+    page.clickLogout();
+
+  })
+
+
+  it('should be able to disable everyone else\'s account with one action', () => {
+    testSupport.setNames(testSupport.names);
+    var sleep = 200;
+    // login as Admin
+    page.loginAdmin();
+
+    // disable everyone but me
+    page.clickUsers();
+                                    browser.sleep(sleep);
+    usersPage.disableAll();
+    page.clickLogout();
+
+
+    // logout and login as 2 other people
+    page.loginAsSomeone();
+                              browser.sleep(sleep);
+    // verify all routes lead to "disabled"
+    page.verifyPagesDisabled(sleep);
+    page.clickLogout();
+
+
+    page.loginAsSomeoneElse();
+                              browser.sleep(sleep);
+    page.verifyPagesDisabled(sleep);
+    page.clickLogout();
+
+
+    // make sure you didn't disable yourself
+    page.loginAdmin();
+
+    // verify pages enabled
+    verifyPagesEnabled(page, myAccountPage, teamPage, sleep);
+
+    // restore - re-enable everyone
+    page.clickUsers();
+                                    browser.sleep(sleep);
+    usersPage.enableAll();
+                                    browser.sleep(sleep);
+    page.clickLogout();
+
+  })
+
+
+  it('should not be able to disable your own account', () => {
+    // actually covered at the end of the test above
+    expect(true).toBeTruthy();
+  })
 
 
   afterEach(async () => {

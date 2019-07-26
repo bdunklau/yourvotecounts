@@ -36,9 +36,56 @@ export class UserService {
   }
 
 
-  signOut() {
-    this.user = null
-    this.messageService.updateUser(this.user);
+  // create FirebaseUserModel from firebase.user
+  private createFirebaseUserModel() : Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.getFirebaseUser()
+      .then(res => {
+        console.log("user.service.ts:resolve() res = ", res);
+        let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(res)
+        return resolve(user);
+
+      }, err => {
+        console.log('createFirebaseUserModel(): error: ', err);
+        return reject(err);
+      })
+    })
+  }
+
+  // any user, not just the current user
+  deleteUser(uid): Observable<void> {
+
+      let url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/initiateDeleteUser'
+      // let url = 'http://localhost:5001/yourvotecounts-bd737/us-central1/initiateDeleteUser'
+
+      // not for GET's - I don't think
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'my-auth-token',
+          'Access-Control-Allow-Origin': '*'
+        }),
+        params: new HttpParams().set('uid', uid)
+      };
+
+      // ref:  Angular HttpClient   https://angular.io/guide/http
+      return this.http.delete<void>(url, httpOptions)
+              .pipe(catchError(this.handleError))
+  }
+
+  private firebaseUserToFirebaseUserModel(firebase_auth_currentUser):FirebaseUserModel {
+    let user = new FirebaseUserModel();
+    if(firebase_auth_currentUser.providerData[0].providerId == 'password'){
+      user.image = 'https://via.placeholder.com/400x300';
+    }
+    else{
+      user.image = firebase_auth_currentUser.photoURL;
+    }
+    user.displayName = firebase_auth_currentUser.displayName;
+    user.provider = firebase_auth_currentUser.providerData[0].providerId;
+    if(firebase_auth_currentUser.phoneNumber) user.phoneNumber = firebase_auth_currentUser.phoneNumber;
+    user.uid = firebase_auth_currentUser.uid;
+    return user;
   }
 
   async getCurrentUser() : Promise<FirebaseUserModel> {
@@ -65,23 +112,6 @@ export class UserService {
     });
   }
 
-
-  // create FirebaseUserModel from firebase.user
-  private createFirebaseUserModel() : Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.getFirebaseUser()
-      .then(res => {
-        console.log("user.service.ts:resolve() res = ", res);
-        let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(res)
-        return resolve(user);
-
-      }, err => {
-        console.log('createFirebaseUserModel(): error: ', err);
-        return reject(err);
-      })
-    })
-  }
-
   private getFirebaseUser() {
     return new Promise<any>((resolve, reject) => {
       var user = firebase.auth().onAuthStateChanged(function(user){
@@ -92,6 +122,11 @@ export class UserService {
         }
       })
     })
+  }
+
+  handleError(err: HttpErrorResponse) {
+    console.log("handleError:  err = ", err)
+    return throwError("oh man - problem")
   }
 
   searchByName(nameVal, limit) {
@@ -124,19 +159,10 @@ export class UserService {
     this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
   }
 
-  private firebaseUserToFirebaseUserModel(firebase_auth_currentUser):FirebaseUserModel {
-    let user = new FirebaseUserModel();
-    if(firebase_auth_currentUser.providerData[0].providerId == 'password'){
-      user.image = 'https://via.placeholder.com/400x300';
-    }
-    else{
-      user.image = firebase_auth_currentUser.photoURL;
-    }
-    user.displayName = firebase_auth_currentUser.displayName;
-    user.provider = firebase_auth_currentUser.providerData[0].providerId;
-    if(firebase_auth_currentUser.phoneNumber) user.phoneNumber = firebase_auth_currentUser.phoneNumber;
-    user.uid = firebase_auth_currentUser.uid;
-    return user;
+
+  signOut() {
+    this.user = null
+    this.messageService.updateUser(this.user);
   }
 
   updateCurrentUser(value: FirebaseUserModel) {
@@ -158,33 +184,9 @@ export class UserService {
   }
 
   updateUser(value: FirebaseUserModel) {
-    this.afs.collection('user').doc(value.uid).ref.update({displayName: value.displayName,
-                               displayName_lower: value.displayName.toLowerCase()});
-  }
-
-  // any user, not just the current user
-  deleteUser(uid): Observable<void> {
-
-      let url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/initiateDeleteUser'
-      // let url = 'http://localhost:5001/yourvotecounts-bd737/us-central1/initiateDeleteUser'
-
-      // not for GET's - I don't think
-      const httpOptions = {
-        headers: new HttpHeaders({
-          'Content-Type':  'application/json',
-          'Authorization': 'my-auth-token',
-          'Access-Control-Allow-Origin': '*'
-        }),
-        params: new HttpParams().set('uid', uid)
-      };
-
-      // ref:  Angular HttpClient   https://angular.io/guide/http
-      return this.http.delete<void>(url, httpOptions)
-              .pipe(catchError(this.handleError))
-  }
-
-  handleError(err: HttpErrorResponse) {
-    console.log("handleError:  err = ", err)
-    return throwError("oh man - problem")
+    return this.afs.collection('user').doc(value.uid).ref
+      .update({displayName: value.displayName,
+               displayName_lower: value.displayName.toLowerCase(),
+               isDisabled: value.isDisabled});
   }
 }

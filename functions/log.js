@@ -32,16 +32,35 @@ exports.logit2 = function(keyvals, level, date, date_ms) {
     if(keyvals.user.displayName) entry.displayName = keyvals.user.displayName;
     if(keyvals.user.phoneNumber) entry.phoneNumber = keyvals.user.phoneNumber;
   }
-  if(level === 'error') {
+  // if(level === 'error') {
+  //   db.collection('log_error').add(entry);
+  //   db.collection('log_info').add(entry);
+  //   db.collection('log_debug').add(entry);
+  // }
+  // else if(level === 'info') {
+  //   db.collection('log_info').add(entry);
+  //   db.collection('log_debug').add(entry);
+  // }
+  // else if(level === 'debug') {
+  //   db.collection('log_debug').add(entry);
+  // }
+
+  exports.logit3(entry)
+
+  return;
+}
+
+exports.logit3 = function(entry) {
+  if(entry.level === 'error') {
     db.collection('log_error').add(entry);
     db.collection('log_info').add(entry);
     db.collection('log_debug').add(entry);
   }
-  else if(level === 'info') {
+  else if(entry.level === 'info') {
     db.collection('log_info').add(entry);
     db.collection('log_debug').add(entry);
   }
-  else if(level === 'debug') {
+  else if(entry.level === 'debug') {
     db.collection('log_debug').add(entry);
   }
   return;

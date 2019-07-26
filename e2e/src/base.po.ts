@@ -18,6 +18,11 @@ export class BasePage {
     this.getLogoutLink().click();
   }
 
+  clickMyAccount() {
+    this.pullDownMyMenu();
+    this.getElement(by.id('myaccount_link')).click();
+  }
+
   clickTeams() {
     this.pullDownMyMenu();
     this.getElement(by.id('teams_link')).click();
@@ -71,6 +76,10 @@ export class BasePage {
   }
 
 
+  getMyAccountElement() {
+    return this.getElement(by.id('myaccount_page'));
+  }
+
   getNamesInDropdown(): ElementArrayFinder {
     browser.sleep(300);
     return this.getElements(by.tagName('ngb-highlight'));
@@ -79,11 +88,6 @@ export class BasePage {
   goto(url) {
     return browser.get(browser.baseUrl+url) as Promise<any>;
     browser.sleep(100);
-  }
-
-
-  isPresent(id) {
-    return element(by.id(id)).isPresent();
   }
 
 

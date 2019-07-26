@@ -1,9 +1,12 @@
 import { browser, by, element } from 'protractor';
 import * as protractor from 'protractor';
 import { BasePage } from './base.po';
+import { TestSupport } from './test-support.po';
 
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class MainPage extends BasePage {
+
+  constructor(private testSupport: TestSupport) { super(); }
 
   clickHome() {
     this.getHomeLink().click()
@@ -11,11 +14,6 @@ export class MainPage extends BasePage {
 
   clickLog() {
     this.getLogLink().click();
-  }
-
-  clickMyAccount() {
-    this.pullDownMyMenu();
-    this.getElement(by.id('myaccount_link')).click();
   }
 
   clickUser() {
@@ -40,10 +38,6 @@ export class MainPage extends BasePage {
 
   getLogLink() {
     return this.getElement(by.id('log_link'));
-  }
-
-  getMyAccountElement() {
-    return this.getElement(by.id('myaccount_page'));
   }
 
   // getTeamsLink() {
@@ -72,6 +66,42 @@ export class MainPage extends BasePage {
 
   getUrl() {
     return browser.getCurrentUrl();
+  }
+
+  loginAdmin() {
+    this.testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+  }
+
+  loginAsSomeone() {
+    this.testSupport.login(this.testSupport.names[0].phoneNumber);
+  }
+
+  loginAsSomeoneElse() {
+    this.testSupport.login(this.testSupport.names[1].phoneNumber);
+  }
+
+  verifyDisabledPage(pageName: string) {
+    expect(this.getElement(by.id('disabled_page')).isDisplayed()).toBeTruthy('The disabled page should have been displayed instead of the '+pageName+' page');
+  }
+
+  verifyMyAccountDisabled() {
+    this.clickMyAccount();
+    this.verifyDisabledPage('My Account');
+  }
+
+  verifyPagesDisabled(sleep: number) {
+  browser.sleep(sleep);
+    this.goto('');
+    browser.sleep(sleep);
+    this.verifyMyAccountDisabled();
+      browser.sleep(sleep);
+    this.verifyTeamsDisabled();
+    // add more as more pages are added
+  }
+
+  verifyTeamsDisabled() {
+    this.clickTeams();
+    this.verifyDisabledPage('Teams');
   }
 
   // pullDownMyMenu() {

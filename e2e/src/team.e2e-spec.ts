@@ -6,15 +6,15 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
 
-describe('Team page', () => {
+fdescribe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
   let teamPage: TeamPage;
 
   beforeEach(() => {
-    page = new MainPage();
     testSupport = new TestSupport(new Api());
+    page = new MainPage(testSupport);
     teamPage = new TeamPage({testSupport: testSupport,
                             teamName: testSupport.getTeamName(),
                             creator: testSupport.normalUser,
@@ -23,9 +23,10 @@ describe('Team page', () => {
 
 
   // passed on 7/17/19
-  it('should be able to create and delete a team', () => {
+  fit('should be able to create and delete a team', () => {
     testSupport.login(testSupport.normalUser.phoneNumber);
-    browser.sleep(500);
+    var sleep = 300;
+    browser.sleep(sleep);
     page.goto('');
     page.clickTeams();
 
@@ -47,18 +48,15 @@ describe('Team page', () => {
     // teamPage.verifyMemberListIsDisplayed(); // should no longer display team members after saving a new team
 
     teamPage.selectTeam();
-      browser.sleep(1000);
+      browser.sleep(sleep);
     teamPage.editTeam();
-      browser.sleep(1000);
+      browser.sleep(sleep);
     teamPage.beginDeleteTeam();
-      browser.sleep(1000);
+      browser.sleep(sleep);
     teamPage.verifyPageOnBeginDelete();
 
     teamPage.cancelDeleteTeam();
     teamPage.verifyPageOnCancelDeleteTeam();
-
-
-    // teamPage.verifyMemberListIsDisplayed(); // should no longer display team members after saving a new team
 
     // clean up
     teamPage.deleteTeam();
