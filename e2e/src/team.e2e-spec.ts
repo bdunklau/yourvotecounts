@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
 
-describe('Team page', () => {
+fdescribe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -23,7 +23,7 @@ describe('Team page', () => {
 
 
   // passed on 7/17/19
-  it('should be able to create and delete a team', () => {
+  fit('should be able to create and delete a team', () => {
     testSupport.login(testSupport.normalUser.phoneNumber);
     var sleep = 300;
     browser.sleep(sleep);
