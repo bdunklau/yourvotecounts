@@ -106,7 +106,7 @@ fdescribe('Users page (Admins) ', () => {
 
   it('should be able to disable any user\'s account', () => {
     testSupport.setNames(testSupport.names);
-    var sleep = 200;
+    var sleep = 300;
     // login as Admin
     page.loginAdmin();
     // look up someone's account

@@ -30,7 +30,7 @@ export class MyAccountPage extends BasePage {
 
   // just a check to make sure we are on this page
   verifyPage() {
-    expect(element(by.id('myaccount_page')).isPresent()).toBeTruthy('expected the My Account page to displayed, but it is not');
+    expect(this.getElement(by.id('myaccount_page')).isPresent()).toBeTruthy('expected the My Account page to be displayed, but it is not');
   }
 
 }
