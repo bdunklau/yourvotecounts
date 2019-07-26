@@ -6,7 +6,7 @@ import { BasePage } from './base.po';
 export class MyAccountPage extends BasePage {
 
   clickEdit() {
-    // FAIL?  If this fails, you probably don't have a displayName set for the user, just a phone number 
+    // FAIL?  If this fails, you probably don't have a displayName set for the user, just a phone number
     this.getElement(by.id('edit_my_account')).click();
   }
 
@@ -26,6 +26,11 @@ export class MyAccountPage extends BasePage {
 
   getNameLabel() {
     return this.getElement(by.id('myaccount_name_label'));
+  }
+
+  // just a check to make sure we are on this page
+  verifyPage() {
+    expect(element(by.id('myaccount_page')).isPresent()).toBeTruthy('expected the My Account page to displayed, but it is not');
   }
 
 }

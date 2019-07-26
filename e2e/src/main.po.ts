@@ -6,7 +6,7 @@ import { TestSupport } from './test-support.po';
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class MainPage extends BasePage {
 
-  constructor(private testSupport: TestSupport) {  }
+  constructor(private testSupport: TestSupport) { super(); }
 
   clickHome() {
     this.getHomeLink().click()
@@ -73,47 +73,35 @@ export class MainPage extends BasePage {
   }
 
   loginAsSomeone() {
-    this.testSupport.login(testSupport.names[0].phoneNumber);
+    this.testSupport.login(this.testSupport.names[0].phoneNumber);
   }
 
   loginAsSomeoneElse() {
-    this.testSupport.login(testSupport.names[1].phoneNumber);
+    this.testSupport.login(this.testSupport.names[1].phoneNumber);
   }
 
-  verifyDisabledPage() {
-    expect(element(by.id('disabled_page')).isPresent()).isTruthy('The disabled page should have been displayed but it wasn\'t');
+  verifyDisabledPage(pageName: string) {
+    expect(this.getElement(by.id('disabled_page')).isDisplayed()).toBeTruthy('The disabled page should have been displayed instead of the '+pageName+' page');
   }
 
   verifyMyAccountDisabled() {
     this.clickMyAccount();
-    this.verifyDisabledPage();
+    this.verifyDisabledPage('My Account');
   }
 
-  verifyMyAccountEnabled() {
-    this.clickMyAccount();
-    // TODO check the page is good
-  }
-
-  verifyPagesDisabled() {
+  verifyPagesDisabled(sleep: number) {
+  browser.sleep(sleep);
+    this.goto('');
+    browser.sleep(sleep);
     this.verifyMyAccountDisabled();
+      browser.sleep(sleep);
     this.verifyTeamsDisabled();
-    // add more as more pages are added
-  }
-
-  verifyPagesEnabled() {
-    this.verifyMyAccountEnabled();
-    this.verifyTeamsEnabled();
     // add more as more pages are added
   }
 
   verifyTeamsDisabled() {
     this.clickTeams();
-    this.verifyDisabledPage();
-  }
-
-  verifyTeamsEnabled() {
-    this.clickTeams();
-  // TODO check the page is good
+    this.verifyDisabledPage('Teams');
   }
 
   // pullDownMyMenu() {

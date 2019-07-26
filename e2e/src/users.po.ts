@@ -1,9 +1,23 @@
 import { BasePage } from './base.po';
 import { by } from 'protractor';
+import { TestSupport } from './test-support.po';
 
 
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class UsersPage extends BasePage {
+
+  constructor(private args: {testSupport: TestSupport,
+                             someone: {displayName: string, phoneNumber: string, uid: string},
+                             someoneElse: {displayName: string, phoneNumber: string, uid: string}
+                            })
+  {
+    super();
+  }
+
+
+  clickEnabledCheckbox() {
+    this.getElement(by.id('disabled_switch_'+this.args.someone.displayName)).click();
+  }
 
 
   clickSubmit() {
@@ -11,7 +25,19 @@ export class UsersPage extends BasePage {
   }
 
   disableAccount() {
-    this.getElement(by.id('disabled_checkbox_'+this.args.addedPerson.displayName)).click();
+    this.clickEnabledCheckbox();
+  }
+
+  disableAll() {
+    this.getElement(by.id('disable_everyone')).click();
+  }
+
+  enableAll() {
+    this.disableAll(); // just a toggle function
+  }
+
+  enableAccount() {
+    this.clickEnabledCheckbox();
   }
 
   enterPartialName(name, length) {
@@ -41,7 +67,7 @@ export class UsersPage extends BasePage {
   }
 
   lookUpSomeone() {
-    this.queryByName(this.testSupport.names[0].displayName);
+    this.queryByName(this.args.someone.displayName);
   }
 
   queryByName(name) {

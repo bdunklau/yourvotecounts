@@ -5,6 +5,7 @@ import { TestSupport } from './test-support.po';
 
 describe('Anonymous users', () => {
   let page: MainPage;
+  let testSupport: TestSupport;
 
   beforeEach(() => {
     testSupport = new TestSupport(new Api());
