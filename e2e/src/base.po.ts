@@ -91,11 +91,6 @@ export class BasePage {
   }
 
 
-  isPresent(id) {
-    return element(by.id(id)).isPresent();
-  }
-
-
   presenceOfAll(elementArrayFinder) {
     return function () {
         return elementArrayFinder.count(function (count) {

@@ -249,7 +249,6 @@ export class TeamPage extends BasePage {
 
 
   verifyPageOnCreateTeam() {
-    expect(this.isPresent('create_team')).toBeFalsy('the Create Team button should not be displayed.  It should disappear when we click it.');
     expect(this.getElement(by.id('team_name_field')).isDisplayed()).toBeTruthy('the team name field should have been displayed because we clicked Create Team button');
     expect(this.getElement(by.id('save_team')).isDisplayed()).toBeTruthy('the save button should be displayed but it wasn\'t');
     expect(this.getElement(by.id('save_team')).isEnabled()).toBeFalsy('the save button should be disabled because we have not entered anything into the Team Name field yet');
