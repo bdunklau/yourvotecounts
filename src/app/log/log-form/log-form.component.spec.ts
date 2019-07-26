@@ -23,7 +23,7 @@ describe('LogFormComponent', () => {
       }),
     };
 
-  beforeEach(async(() => {
+  beforeEach(async() => {
     TestBed.configureTestingModule({
       declarations: [ LogFormComponent ],
       imports: [ FormsModule/*, NgbModule*/],
@@ -34,7 +34,7 @@ describe('LogFormComponent', () => {
                 ],
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LogFormComponent);
