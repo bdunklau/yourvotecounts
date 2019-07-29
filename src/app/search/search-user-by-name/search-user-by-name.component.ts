@@ -66,10 +66,15 @@ export class SearchUserByNameComponent implements OnInit {
     this.selectedUser.emit(user);
   }
 
+  // don't remember what this is supposed to be doing
   checkEmpty($event) {
     console.log('checkEmpty: $event = ', $event);
-    this.nameVal = '';
-    this.selectedUser.emit(null);
+    console.log('checkEmpty: this.nameVal = ', this.nameVal, ' empty string: ', (this.nameVal === ''));
+    if(this.nameVal === '') delete this.nameVal;
+
+    // 7/27/19 - took this out because I want the name left in the name field when searching logs
+    // this.nameVal = '';
+    // this.selectedUser.emit(null);
   }
 
 }

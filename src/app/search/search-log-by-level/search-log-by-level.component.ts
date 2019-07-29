@@ -16,7 +16,9 @@ export class SearchLogByLevelComponent implements OnInit {
     // initializes the /log screen to show the info view
     // see log.component.ts : onLevelChosen()
     // see log.component.html : onLevelChosen attribute
-    this.chooseLevel('info')
+
+    // We COULD do this, but instead let's make the user choose a log level to get the first batch of log entries
+    // this.chooseLevel('info')
   }
 
   chooseLevel(level) {

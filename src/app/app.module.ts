@@ -7,7 +7,6 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 import { LoginComponent } from './login/login.component';
-import { UserComponent } from './user/user.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 // currently there is a bug while building the app with --prod
 // - https://github.com/RaphaelJenni/FirebaseUI-Angular/issues/76
@@ -35,6 +34,9 @@ import { SearchUserByName2Component } from './search/search-user-by-name2/search
 import { TeamViewerComponent } from './team-viewer/team-viewer.component';
 import { LogFormComponent } from './log/log-form/log-form.component';
 import { DisabledComponent } from './disabled/disabled.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ScrollableDirective } from './scrollable.directive';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 // import { TeamResolver } from './team/team.resolver';
 
 
@@ -42,7 +44,6 @@ import { DisabledComponent } from './disabled/disabled.component';
   declarations: [
     AppComponent,
     LoginComponent,
-    UserComponent,
     HomeComponent,
     LogComponent,
     UsersComponent,
@@ -62,6 +63,8 @@ import { DisabledComponent } from './disabled/disabled.component';
     TeamViewerComponent,
     LogFormComponent,
     DisabledComponent,
+    ScrollableDirective,
+    LoadingSpinnerComponent,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [
@@ -73,6 +76,7 @@ import { DisabledComponent } from './disabled/disabled.component';
     FormsModule, ReactiveFormsModule,
     NgbModule.forRoot(),
     HttpClientModule,
+    BrowserAnimationsModule,
     // TeamResolver,
   ],
   bootstrap: [AppComponent]

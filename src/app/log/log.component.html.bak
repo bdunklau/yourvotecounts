@@ -21,34 +21,9 @@
   </div>
 </div>
 
-
-<!-- <div class="content" appScrollable (scrollPosition)="scrollHandler($event)">
-
-  <div class="row" *ngFor="let logentry of page.data | async">
-    <div class="col-xs-12">
-      <div class="row">
-        <div class="col"><small>{{logentry.date.toDate()}}</small></div>
-      </div>
-      <div class="row">
-        <div class="col">{{logentry.level}}</div>
-        <div class="col">{{logentry.displayName}}</div>
-        <div class="col">{{logentry.phoneNumber}}</div>
-        <div class="col">{{logentry.event}}</div>
-      </div>
-    </div>
-
-  </div>
-
-  <p *ngIf="page.done | async">no more logs</p>
-</div> -->
-
-
-
-
-<div class="content" appScrollable (scrollPosition)="scrollHandler($event)">
 <table class="table table-striped">
   <tbody>
-  <tr *ngFor="let logentry of page.data | async">
+  <tr *ngFor="let logentry of log">
     <td colspan="4">
       <small>{{ logentry.date.toDate() }}</small>
       <br/>
@@ -57,11 +32,8 @@
       <span class="log_element log_phoneNumber">{{ logentry.phoneNumber }} </span>
       <span class="log_element log_event">{{ logentry.event }}</span>
     </td>
+    <!-- <td>{{ logentry.uid }}</td> -->
   </tr>
   </tbody>
 </table>
-  <p *ngIf="page.done | async">no more logs</p>
-</div>
-
-
 </div>

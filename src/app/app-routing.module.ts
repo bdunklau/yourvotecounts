@@ -4,7 +4,6 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './core/auth.guard';
 import { RoleGuard } from './core/role.guard';
 import { AuthService } from './core/auth.service';
-import { UserComponent } from './user/user.component';
 import { UserResolver } from './user/user.resolver';
 import { UserService } from './user/user.service';
 // import { RegisterGuard } from './register/register.guard';
@@ -33,7 +32,6 @@ const routes: Routes = [
   { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard, DisabledGuard] },
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
-  { path: 'user', component: UserComponent,  resolve: { data: UserResolver}},
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
 ];
 
