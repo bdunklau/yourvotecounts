@@ -168,12 +168,6 @@ export class LogComponent implements OnInit {
   }
 
 
-  queryInitialX(ref: CollectionReference): Query {
-
-    return ref.orderBy('date_ms', this.reverse ? 'desc' : 'asc').limit(this.limit);
-  }
-
-
   // use instead of queryInitialX()
   queryInitial(ref/*: CollectionReference*/): Query {
     var fname = 'queryInitial';
