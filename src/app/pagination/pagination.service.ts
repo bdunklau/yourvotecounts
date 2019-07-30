@@ -26,9 +26,9 @@ interface QueryConfig {
 export class PaginationService {
 
   // source data
-  private _done = new BehaviorSubject(false);
-  private _loading = new BehaviorSubject(false);
-  private _data; // = new BehaviorSubject([]);
+  private _done;// = new BehaviorSubject(false);
+  private _loading;// = new BehaviorSubject(false);
+  private _data;// = new BehaviorSubject([]);
   private query: QueryConfig;
 
 
@@ -50,6 +50,8 @@ export class PaginationService {
         queryMoreFn: (ref:CollectionReference) => Query,
         opts?) {
 
+    this._loading = new BehaviorSubject(false);
+    this._done = new BehaviorSubject(false);
     this.done = this._done.asObservable();
     this.loading = this._loading.asObservable();
     // this.col = col;
@@ -67,10 +69,10 @@ export class PaginationService {
 
     this.queryFn = queryFn;
     this.queryMoreFn = queryMoreFn;
+    this._data = new BehaviorSubject([]);
 
     this.mapAndUpdate(this.afs.collection(this.query.path, this.queryFn));
 
-    this._data = new BehaviorSubject([]);
     this.data = this._data.asObservable()
           .scan((acc, val) => {
             return this.query.prepend ? val.concat(acc) : acc.concat(val);
