@@ -61,6 +61,7 @@
   </tbody>
 </table>
   <p *ngIf="page.done | async">no more logs</p>
+  <app-loading-spinner *ngIf="page.loading | async"></app-loading-spinner>
 </div>
 
 

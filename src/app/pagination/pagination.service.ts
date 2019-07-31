@@ -27,14 +27,14 @@ export class PaginationService {
 
   // source data
   private _done;// = new BehaviorSubject(false);
-  private _loading;// = new BehaviorSubject(false);
+  private _loading = new BehaviorSubject(false);
   private _data;// = new BehaviorSubject([]);
   private query: QueryConfig;
 
 
   data: [];
   done: Observable<boolean>;// = this._done.asObservable();
-  loading: Observable<boolean>;// = this._loading.asObservable();
+  loading: Observable<boolean> = this._loading.asObservable();
   // col: AngularFirestoreCollection<any>;
   queryFn: (ref:CollectionReference) => Query
   queryMoreFn: (ref:CollectionReference) => Query
@@ -50,10 +50,10 @@ export class PaginationService {
         queryMoreFn: (ref:CollectionReference) => Query,
         opts?) {
 
-    this._loading = new BehaviorSubject(false);
+    // this._loading = new BehaviorSubject(false);
     this._done = new BehaviorSubject(false);
     this.done = this._done.asObservable();
-    this.loading = this._loading.asObservable();
+    // this.loading = this._loading.asObservable();
     // this.col = col;
     this.query = {
       path,
