@@ -18,6 +18,7 @@ export class DateChooserComponent {
     @Output() dateRangeSelection = new EventEmitter<{ from: Date, to: Date }>();
     hoveredDate: Date;
     isOpen = false;
+    displayFormat: string = 'MM/DD'
 
     @HostListener('document:click', ['$event.target']) onClick(element) {
       const host = document.getElementById('dateRangePicker');
@@ -68,15 +69,15 @@ export class DateChooserComponent {
 
     get formattedDateRange(): string {
       if (!this.from) {
-        return `click to search by date`;
+        return `date search`;
       }
 
-      const fromFormatted = moment(this.from).format('MM/DD/YYYY');
+      const fromFormatted = moment(this.from).format(this.displayFormat);
 
       return this.to
         ? `${fromFormatted}`
         + ` to `
-        + `${moment(this.to).format('MM/DD/YYYY')}`
+        + `${moment(this.to).format(this.displayFormat)}`
         : `${fromFormatted}`;
     }
 
