@@ -2,84 +2,58 @@
 <div class="container">
 <h1>Log</h1>
 
-<app-log-form></app-log-form>
-
-<P></P>
-
-
 <div class="row">
-  <div class="col-lg-3 col-xs-12">
-      <div class="row">
+  <div class="col-md-4 col-lg-3">
+      <div class="row padbottom10">
         <div class="col-lg-12">
           <app-search-log-by-level (level)="onLevelChosen($event)"></app-search-log-by-level>
         </div>
       </div>
-      <div class="row">
+      <div class="row padbottom10">
         <div class="col-lg-12">
           <app-date-chooser [from]="defaultFrom" [to]="defaultTo" (dateRangeSelection)="onDateRangeSelection($event)"></app-date-chooser>
         </div>
       </div>
-      <div class="row">
-        <div class="col-lg-12">
-          <app-search-user-by-phone (selectedUser)="onUserSelectedByPhone($event)"></app-search-user-by-phone>
-        </div>
-      </div>
-      <div class="row">
+      <div class="row padbottom10">
         <div class="col-lg-12">
           <app-search-user-by-name (selectedUser)="onUserSelectedByName($event)"></app-search-user-by-name>
         </div>
       </div>
+      <div class="row padbottom10">
+        <div class="col-lg-12">
+          <app-search-user-by-phone (selectedUser)="onUserSelectedByPhone($event)"></app-search-user-by-phone>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12">
+          <a id="goto_test_log" routerLink="/test/log" class="btn btn-primary">+ Add Logs</a>
+        </div>
+      </div>
   </div>
 
-  <div class="col-lg-9 col-xs-12">
+  <div class="col-md-8 col-lg-9">
       <div class="content" appScrollable (scrollPosition)="scrollHandler($event)">
-      <table class="table table-striped">
-        <tbody>
-        <tr *ngFor="let logentry of page.data | async">
-          <td colspan="4">
-            <small>{{ logentry.date.toDate() }}</small>
-            <br/>
-            <span class="log_element log_level">{{ logentry.level }}</span>
-            <span class="log_element log_displayName">{{ logentry.displayName }} </span>
-            <span class="log_element log_phoneNumber">{{ logentry.phoneNumber }} </span>
-            <span class="log_element log_event">{{ logentry.event }}</span>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-        <p *ngIf="page.done | async">no more logs</p>
-        <app-loading-spinner *ngIf="page.loading | async"></app-loading-spinner>
+          <p *ngIf="page.done | async" class="text-center"><b>NO MORE ENTRIES</b></p>
+          <app-loading-spinner *ngIf="page.loading | async"></app-loading-spinner>
+          <table class="table table-striped">
+            <tbody>
+            <tr *ngFor="let logentry of page.data | async">
+              <td colspan="4">
+                <small>{{ logentry.date.toDate() }}</small>
+                <br/>
+                <span class="log_element log_displayName">{{ logentry.displayName }} </span>
+                <span class="log_element log_phoneNumber">{{ logentry.phoneNumber }} </span>
+                <br/>
+                <span class="log_element log_level">{{ logentry.level }}</span>
+                <span class="log_element log_event">{{ logentry.event }}</span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
       </div>
   </div>
 </div>
-
-
-
-
-
-<!-- <div class="content" appScrollable (scrollPosition)="scrollHandler($event)">
-
-  <div class="row" *ngFor="let logentry of page.data | async">
-    <div class="col-xs-12">
-      <div class="row">
-        <div class="col"><small>{{logentry.date.toDate()}}</small></div>
-      </div>
-      <div class="row">
-        <div class="col">{{logentry.level}}</div>
-        <div class="col">{{logentry.displayName}}</div>
-        <div class="col">{{logentry.phoneNumber}}</div>
-        <div class="col">{{logentry.event}}</div>
-      </div>
-    </div>
-
-  </div>
-
-  <p *ngIf="page.done | async">no more logs</p>
-</div> -->
-
-
-
-
 
 
 </div>

@@ -69,7 +69,7 @@ export class DateChooserComponent {
 
     get formattedDateRange(): string {
       if (!this.from) {
-        return `date search`;
+        return `search by date`;
       }
 
       const fromFormatted = moment(this.from).format(this.displayFormat);

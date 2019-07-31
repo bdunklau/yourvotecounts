@@ -16,17 +16,14 @@ export class ScrollableDirective {
       // console.log('onScroll(): event=', event);
     try {
       const top = event.srcElement.scrollingElement.scrollTop;
-      const height = event.srcElement.scrollingElement.scrollHeight;//this.el.nativeElement.scrollHeight;
-      const offset = event.srcElement.scrollingElement.offsetHeight;//this.el.nativeElement.offsetHeight;
+      const height = event.srcElement.scrollingElement.scrollHeight;
+      const offset = event.srcElement.scrollingElement.offsetHeight;
       if(top > height - offset - 1) {
-        // console.log('top: ', top, ' height: ', height, ' offset: ', offset);
-        // console.log('this.el = ', this.el);
-        this.scrollPosition.emit('bottom');
+        this.scrollPosition.emit('bottom'); // see log.component.ts:scrollHandler()
 
       }
       if(top === 0) {
-        console.log(event)
-        this.scrollPosition.emit('top');
+        this.scrollPosition.emit('top'); // see log.component.ts:scrollHandler()
       }
     } catch(err) {}
   }

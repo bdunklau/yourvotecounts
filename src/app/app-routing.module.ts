@@ -18,6 +18,7 @@ import { TeamViewerComponent } from './team-viewer/team-viewer.component';
 import { TeamResolver } from './team/team.resolver';
 import { DisabledGuard } from './disabled/disabled.guard';
 import { DisabledComponent } from './disabled/disabled.component';
+import { LogFormComponent } from './log/log-form/log-form.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -30,6 +31,7 @@ const routes: Routes = [
   { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard, DisabledGuard], resolve: {team: TeamResolver, user: UserResolver} },
   { path: 'teams/edit/:teamDocId', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard], resolve: {team: TeamResolver, user: UserResolver} },
   { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard, DisabledGuard] },
+  { path: 'test/log', component: LogFormComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },

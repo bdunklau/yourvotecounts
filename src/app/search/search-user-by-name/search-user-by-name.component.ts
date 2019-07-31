@@ -50,17 +50,11 @@ export class SearchUserByNameComponent implements OnInit {
     if(value.displayName)
       retVal = value.displayName;
     return retVal;
-    // var tp2 = this as unknown;
-    // var tp = tp2 as NgbTypeahead;
-    // var attr = tp._elementRef.nativeElement.parentNode.attributes['ng-reflect-clear-on-selected'];
-    // if(attr && attr.value === "true") return '';
-    // else return retVal;
   }
 
   // NOTE this:  (selectItem)="itemSelected($event)"
   // in search-user-by-name.component.html
   itemSelected($event) {
-    // console.log('itemSelected: input: ', input, ' $event = ', $event, ' this = ', this);
     let user = new FirebaseUserModel();
     user.populate($event.item);
     this.selectedUser.emit(user);

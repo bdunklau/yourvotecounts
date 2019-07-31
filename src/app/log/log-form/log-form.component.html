@@ -1,19 +1,13 @@
+
 <!-- dateString: {{dateString}}
 <P>msString: {{msString}} -->
+<div class="container">
+<h3>Test Log</h3>
+
 <form (ngSubmit)="onSubmit(testLogForm)" #testLogForm="ngForm">
   <div class="form-group">
     <div class="row">
-      <div class="col-xs-1">
-        <input type="text"
-                class="form-control"
-                id="log_levels_field" [(ngModel)]="levelsValue"
-                name="levels"
-                #token="ngModel">
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-1">
+      <div class="col-sm-2">
         <input type="text"
                 class="form-control tiny"
                 id="log_month_field" [(ngModel)]="monthValue"
@@ -21,7 +15,7 @@
                 #token="ngModel">
       </div>
 
-      <div class="col-xs-1">
+      <div class="col-sm-2">
         <input type="text"
                 class="form-control tiny"
                 id="log_day_field" [(ngModel)]="dayValue"
@@ -29,8 +23,7 @@
                 #token="ngModel">
       </div>
 
-
-      <div class="col-xs-1">
+      <div class="col-sm-2">
         <input type="text"
                 class="form-control short"
                 id="log_year_field" [(ngModel)]="yearValue"
@@ -38,43 +31,14 @@
                 #token="ngModel">
       </div>
 
-
-      <div class="col-xs-1">
+      <div class="col-sm-4">
         <input type="text"
                 class="form-control"
-                id="log_displayName_field" [(ngModel)]="displayNameValue"
-                name="displayName"
+                id="log_levels_field" [(ngModel)]="levelsValue"
+                name="levels"
                 #token="ngModel">
       </div>
-
-      <div class="col-xs-1">
-        <input type="text"
-                class="form-control"
-                id="log_uid_field" [(ngModel)]="uidValue"
-                name="uid"
-                #token="ngModel">
-      </div>
-
-
-      <div class="col-xs-1">
-        <input type="text"
-                class="form-control"
-                id="log_phoneNumber_field" [(ngModel)]="phoneNumberValue"
-                name="phoneNumber"
-                #token="ngModel">
-      </div>
-
-
-      <div class="col-xs-1">
-        <input type="text"
-                class="form-control"
-                id="log_event_field" [(ngModel)]="eventValue"
-                name="event"
-                #token="ngModel">
-      </div>
-
-
-      <div class="col-xs-1">
+      <div class="col-sm-2">
         <input type="text"
                 class="form-control tiny"
                 id="log_count_field" [(ngModel)]="countValue"
@@ -83,11 +47,55 @@
       </div>
     </div>
 
+    <div class="row">
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <input type="text"
+                class="form-control"
+                id="log_displayName_field" [(ngModel)]="displayNameValue"
+                name="displayName"
+                #token="ngModel">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <input type="text"
+                class="form-control"
+                id="log_uid_field" [(ngModel)]="uidValue"
+                name="uid"
+                #token="ngModel">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <input type="text"
+                class="form-control"
+                id="log_phoneNumber_field" [(ngModel)]="phoneNumberValue"
+                name="phoneNumber"
+                #token="ngModel">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <input type="text"
+                class="form-control"
+                id="log_event_field" [(ngModel)]="eventValue"
+                name="event"
+                #token="ngModel">
+      </div>
+    </div>
 
   </div>
+  
 
-  <button id="submit_test_log" type="submit" class="btn btn-success" [disabled]="!testLogForm.form.valid">Submit</button>
+  <button id="submit_test_log" type="submit" [routerLink]="['/log']" class="btn btn-success" [disabled]="!testLogForm.form.valid">Submit</button>
   &nbsp;
-  <button id="delete_test_log" type="submit" (click)="doDelete=true" class="btn btn-danger">Delete</button>
+  <button id="delete_test_log" type="submit" [routerLink]="['/log']" (click)="doDelete=true" class="btn btn-danger">Delete</button>
 
 </form>
+</div>

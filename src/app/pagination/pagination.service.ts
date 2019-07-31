@@ -44,7 +44,6 @@ export class PaginationService {
   // initial query sets options and defines the Observable
   // init(path, field, phoneVal, nameVal, dates, opts?) {
   init(
-        // col:AngularFirestoreCollection<any>,
         path: string,
         queryFn: (ref:CollectionReference) => Query,
         queryMoreFn: (ref:CollectionReference) => Query,
@@ -62,8 +61,8 @@ export class PaginationService {
       // nameVal,
       // dates,
       limit: 10,
-      reverse: false,
-      prepend: false,
+      reverse: opts.reverse,
+      prepend: opts.prepend,
       ...opts
     }
 
@@ -114,60 +113,23 @@ export class PaginationService {
       })
       .take(1)
       .subscribe();
-      // .subscribe((arr) => { // arr is an array of {type:"added", payload:{...QueryDocumentSnapshot...}}
-      //   this.data = this._data.asObservable()
-      //         .scan((acc, val) => {
-      //           return this.query.prepend ? val.concat(acc) : acc.concat(val);
-      //         })
-      // })
   }
 
   getCursor() {
     const current = this._data.value;
     if(current.length) {
-      console.log('getCursor():  returning something - thats good');
       return this.query.prepend ? current[0].doc : current[current.length - 1].doc;
     }
-    console.log('getCursor():  return null');
     return null;
   }
 
   // retrieves additional data from firestore
   more() {
     const cursor = this.getCursor();
-    // const more = this.afs.collection(this.query.path, ref => {
-    // ref is CollectionReference {_query: Query, firestore: Firestore}
-    //   var ret /*Query object*/ = ref.orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc')
-    //             .limit(this.query.limit)
-    //             .startAfter(cursor);
-    //   console.log('ret = ', ret);
-    //   return ret;
-    // })
-
-
-    // const more = this.afs.collection('log_info', ref => {
-    //   // ref is CollectionReference {_query: Query, firestore: Firestore}
-    //   var ret /*Query object*/ = ref.orderBy('date_ms', this.query.reverse ? 'desc' : 'asc')
-    //             .limit(this.query.limit)
-    //             .startAfter(cursor);
-    //
-    //   console.log('ref = ', ref);
-    //   return ret;
-    // })
-
 
     const more = this.afs.collection(this.query.path, this.queryMoreFn);
 
     this.mapAndUpdate(more);
   }
 
-  // xxxx(ref: CollectionReference): Query {
-  //   const cursor = this.getCursor();
-  //   var ret /*Query object*/ = ref.orderBy('date_ms', this.query.reverse ? 'desc' : 'asc')
-  //             .limit(this.query.limit)
-  //             .startAfter(cursor);
-  //
-  //   console.log('xxxx:  ref = ', ref);
-  //   return ret;
-  // }
 }
