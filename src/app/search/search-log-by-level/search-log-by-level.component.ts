@@ -8,7 +8,7 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 export class SearchLogByLevelComponent implements OnInit {
 
   @Output() level = new EventEmitter<string>();
-  levelValue: string;
+  levelValue: string = 'level';
 
   constructor() { }
 
