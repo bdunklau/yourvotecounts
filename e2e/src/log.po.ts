@@ -282,15 +282,16 @@ export class LogPage extends BasePage {
   } // setupQueryByNameTest
 
 
+  shortFormat: string = 'MM/DD';
   threeDaysBefore() {
     var date = moment().add(-3, 'days').toDate();
-    return this.toDateString(date, 'MM/DD/YYYY');
+    return this.toDateString(date, this.shortFormat);
   }
 
 
   threeDaysAfter() {
     var date = moment().add(3, 'days').toDate();
-    return this.toDateString(date, 'MM/DD/YYYY');
+    return this.toDateString(date, this.shortFormat);
   }
 
 

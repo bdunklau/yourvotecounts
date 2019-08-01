@@ -35,6 +35,7 @@ const routes: Routes = [
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
+  { path: '**', component: LoginComponent },
 ];
 
 @NgModule({

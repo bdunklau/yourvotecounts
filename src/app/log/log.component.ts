@@ -27,7 +27,7 @@ export class LogComponent implements OnInit {
   dates: any;
   reverse: boolean = true;
   prepend: boolean = true;
-  limit: number = 10;
+  limit: number = 20; // if you make this lower, e2e tests might fail like "should allow query by date"
 
   constructor(private afs: AngularFirestore,
               private logService: LogService,
