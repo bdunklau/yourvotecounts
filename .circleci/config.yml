@@ -9,9 +9,9 @@ jobs:
       # specify the version you desire here
       # https://circleci.com/docs/2.0/circleci-images/
       # also...   https://circleci.com/docs/2.0/docker-image-tags.json
-      - image: circleci/node:12.7.0-browsers
-        # environment:
-        #   CHROME_BIN: /usr/bin/google-chrome
+      - image: circleci/12.7.0:latest #10-browsers
+        environment:
+          CHROME_BIN: /usr/bin/google-chrome
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
