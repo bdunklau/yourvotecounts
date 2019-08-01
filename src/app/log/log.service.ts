@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import { /*map,*/ take } from 'rxjs/operators';
+import { UserService } from '../user/user.service';
+import { FirebaseUserModel } from '../user/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +11,8 @@ import { /*map,*/ take } from 'rxjs/operators';
 export class LogService {
 
   constructor(
-    public db: AngularFirestore,) { }
+    public db: AngularFirestore,
+    private userService: UserService) { }
 
   private xxx(logtype, eventValue) {
     let batch = this.db.firestore.batch();
@@ -22,6 +25,24 @@ export class LogService {
     });
   }
 
+  async beginCreateTeam(user) {
+    await this.info(user, 'begin creating team');
+  }
+
+  async createdTeam(user, team) {
+    await this.info(user, 'created team: "'+team.name+'"  (team ID: '+team.id+') ');
+  }
+
+  async deletedTeam(team: Team) {
+    const user = await this.userService.getCurrentUser();
+    await this.info(user, 'deleted team: '+team.name+' (team ID: '+team.id+')');
+  }
+
+  async deletedTeamMember(team_member: TeamMember) {
+    const user = await this.userService.getCurrentUser();
+    await this.info(user, 'deleted "'+team_member.displayName+'"  (ID: '+team_member.userId+') from team: '+team_name+' (team ID: '+team_member.teamDocId+')');
+  }
+
   deleteLogs(eventValue: string) {
     this.xxx('log_debug', eventValue);
     this.xxx('log_info', eventValue);
@@ -29,20 +50,11 @@ export class LogService {
   }
 
   async login(user) {
-    console.log('LogService.login()  user: ', user)
-    var entry = {event: 'login'}
-    if(user.uid) entry['uid'] = user.uid;
-    if(user.displayName) entry['displayName'] = user.displayName;
-    if(user.phoneNumber) entry['phoneNumber'] = user.phoneNumber;
-    await this.i(entry);
+    await this.info(user, 'login');
   }
 
   async logout(user) {
-    var entry = {event: 'logout'}
-    if(user.uid) entry['uid'] = user.uid;
-    if(user.displayName) entry['displayName'] = user.displayName;
-    if(user.phoneNumber) entry['phoneNumber'] = user.phoneNumber;
-    await this.i(entry);
+    await this.info(user, 'logout');
   }
 
   async e(keyvals) {
@@ -55,6 +67,14 @@ export class LogService {
 
   async i(keyvals) {
     this.logit(keyvals, 'info')
+  }
+
+  private async info(user, event: string) {
+    var entry = {event: event}
+    if(user.uid) entry['uid'] = user.uid;
+    if(user.displayName) entry['displayName'] = user.displayName;
+    if(user.phoneNumber) entry['phoneNumber'] = user.phoneNumber;
+    await this.i(entry);
   }
 
   // call d() e() and i() - not this function, except for testing
@@ -85,6 +105,10 @@ export class LogService {
         this.db.collection('log_debug').add(entry),
       ])
     }
+  }
+
+  async updatedTeam(user, teamName, teamId) {
+    await this.info(user, 'updated team: "'+teamName+'"  (team ID: '+teamId+') ');
   }
 
 }

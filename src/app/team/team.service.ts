@@ -18,7 +18,7 @@ export class TeamService {
   constructor(
     private afs: AngularFirestore,
     private messageService: MessageService,
-    private log: LogService) { }
+    private log: LogService,) { }
 
   addUserToTeam(team: Team, user: FirebaseUserModel) {
     let batch = this.afs.firestore.batch();
@@ -66,6 +66,7 @@ export class TeamService {
                      leader: true}
     batch.set(teamMemberRef, teamMember);
     await batch.commit();
+    this.log.createdTeam(user, team);
     return teamDocId;
 
     // good example of transactions:
@@ -84,7 +85,7 @@ export class TeamService {
         batch.delete(dt.payload.doc.ref);
       });
       batch.commit().then(() => {
-        // this.messageService.updateTeam(null); // only updates the client you're on - not that useful
+        this.log.deletedTeam(team);
       });
     });
 
@@ -99,13 +100,8 @@ export class TeamService {
     batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(-1)});
     if(team_member.leader)
       batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(-1)});
-    await batch.commit();//.then(() => {
-    //   console.log('deleteTeamMember: removing ', team_member);
-    //   this.messageService.deleteTeamMember(team_member);
-    // });
-
-    // console.log('deleteTeamMember: removing ', team_member);
-    // this.messageService.deleteTeamMember(team_member);
+    await batch.commit();
+    this.log.deletedTeamMember(team_member);
     return await this.getTeamData(team_member.teamDocId);
   }
 
@@ -143,7 +139,9 @@ export class TeamService {
       data.forEach(function(dt) {
         batch.update(dt.payload.doc.ref, {team_name: teamName});
       });
-      batch.commit();
+      batch.commit().then(() => {
+        this.log.updatedTeam(user, teamName, teamId);
+      });
     });
   }
 

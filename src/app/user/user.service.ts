@@ -8,7 +8,6 @@ import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { FirebaseUserModel } from '../user/user.model';
 import 'rxjs/add/operator/map'
-import { LogService } from '../log/log.service';
 import { MessageService } from '../core/message.service';
 import { Team } from '../team/team.model';
 import { map } from 'rxjs/operators';
@@ -23,7 +22,6 @@ export class UserService {
     private afs: AngularFirestore,
     private http: HttpClient,
     public afAuth: AngularFireAuth,
-    private log: LogService,
     private messageService: MessageService
   ){ }
 

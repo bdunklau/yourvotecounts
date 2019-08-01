@@ -13,6 +13,7 @@ import * as _ from 'lodash';
 import { Router } from "@angular/router";
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
+import { LogService } from '../log/log.service';
 
 @Component({
   selector: 'app-team-editor',
@@ -40,7 +41,8 @@ export class TeamEditorComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private _modalService: NgbModal,
-              private messageService: MessageService) { }
+              private messageService: MessageService,
+              private log: LogService) { }
 
   ngOnInit() {
 
@@ -77,6 +79,7 @@ export class TeamEditorComponent implements OnInit {
       let user = routeData['user'];
       if(user) {
         this.user = user;
+        this.log.beginCreateTeam(user);
       }
     })
 
