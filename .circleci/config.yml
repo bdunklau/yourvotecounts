@@ -9,7 +9,7 @@ jobs:
       # specify the version you desire here
       # https://circleci.com/docs/2.0/circleci-images/
       # also...   https://circleci.com/docs/2.0/docker-image-tags.json
-      - image: circleci/current-browsers #10-browsers
+      - image: circleci/node:current-browsers #10-browsers
         environment:
           CHROME_BIN: /usr/bin/google-chrome
 
