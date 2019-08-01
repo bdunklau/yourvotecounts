@@ -3,7 +3,7 @@ import { browser, logging, element, by } from 'protractor';
 import { Api } from './api.po';
 import { TestSupport } from './test-support.po';
 
-fdescribe('Anonymous users', () => {
+describe('Anonymous users', () => {
   let page: MainPage;
   let testSupport: TestSupport;
 
@@ -18,7 +18,7 @@ fdescribe('Anonymous users', () => {
     expect(login_link.isDisplayed()).toBeTruthy();
   });
 
-  fit('should be redirected from /junkurl to /login', () => {
+  it('should be redirected from /junkurl to /login', () => {
     page.goto('/junkurl');
     browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
     browser.sleep(300);
