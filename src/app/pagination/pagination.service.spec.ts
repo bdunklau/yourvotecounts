@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { PaginationService } from './pagination.service';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { BehaviorSubject, of } from 'rxjs';
 
 
 describe('PaginationService', () => {
