@@ -4,7 +4,6 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './core/auth.guard';
 import { RoleGuard } from './core/role.guard';
 import { AuthService } from './core/auth.service';
-import { UserComponent } from './user/user.component';
 import { UserResolver } from './user/user.resolver';
 import { UserService } from './user/user.service';
 // import { RegisterGuard } from './register/register.guard';
@@ -19,6 +18,7 @@ import { TeamViewerComponent } from './team-viewer/team-viewer.component';
 import { TeamResolver } from './team/team.resolver';
 import { DisabledGuard } from './disabled/disabled.guard';
 import { DisabledComponent } from './disabled/disabled.component';
+import { LogFormComponent } from './log/log-form/log-form.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -31,10 +31,11 @@ const routes: Routes = [
   { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard, DisabledGuard], resolve: {team: TeamResolver, user: UserResolver} },
   { path: 'teams/edit/:teamDocId', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard], resolve: {team: TeamResolver, user: UserResolver} },
   { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard, DisabledGuard] },
+  { path: 'test/log', component: LogFormComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
-  { path: 'user', component: UserComponent,  resolve: { data: UserResolver}},
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
+  { path: '**', component: LoginComponent },
 ];
 
 @NgModule({

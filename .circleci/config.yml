@@ -23,5 +23,5 @@ jobs:
       - checkout
       - run: npm install
       - run: npm test
-      - run: npm run e2e "yourvotecounts-e2e" "--protractorConfig=e2e/protractor-headless.conf.js"
+      #- run: npm run e2e "yourvotecounts-e2e" "--protractorConfig=e2e/protractor-headless.conf.js"
 #

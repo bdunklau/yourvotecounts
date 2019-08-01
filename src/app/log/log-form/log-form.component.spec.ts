@@ -3,6 +3,9 @@ import {FormsModule} from '@angular/forms';
 import { LogFormComponent } from './log-form.component';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject, of } from 'rxjs';
+import { Router } from '@angular/router';
+import { LoadingSpinnerComponent } from '../../loading-spinner/loading-spinner.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 
 describe('LogFormComponent', () => {
@@ -25,11 +28,13 @@ describe('LogFormComponent', () => {
 
   beforeEach(async() => {
     TestBed.configureTestingModule({
-      declarations: [ LogFormComponent ],
+      declarations: [ LogFormComponent, LoadingSpinnerComponent ],
       imports: [ FormsModule/*, NgbModule*/],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [ //UserService,
                   // { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
+                  { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); } },
                   // { provide: AngularFireAuth, useValue: {} }
                 ],
     })

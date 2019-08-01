@@ -41,7 +41,7 @@ export class UserService {
     return new Promise((resolve, reject) => {
       this.getFirebaseUser()
       .then(res => {
-        console.log("user.service.ts:resolve() res = ", res);
+        // console.log("user.service.ts:resolve() res = ", res);
         let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(res)
         return resolve(user);
 

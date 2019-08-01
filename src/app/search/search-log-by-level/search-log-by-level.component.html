@@ -1,6 +1,6 @@
 
-    <div ngbDropdown class="d-inline-block">
-      <button class="btn btn-outline-primary" id="levelDropdown" ngbDropdownToggle>{{levelValue}}</button>
+    <div ngbDropdown class="d-inline-block" style="width:100%">
+      <button class="btn btn-outline-primary" id="levelDropdown" ngbDropdownToggle style="width:100%">{{levelValue}}</button>
       <div ngbDropdownMenu aria-labelledby="levelDropdown">
         <button id="debugLevel" ngbDropdownItem (click)="chooseLevel('debug')">debug</button>
         <button id="infoLevel" ngbDropdownItem (click)="chooseLevel('info')">info</button>

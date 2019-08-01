@@ -14,6 +14,9 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { DateChooserComponent } from '../util/date-chooser/date-chooser.component';
 import { SearchUserByNameComponent } from '../search/search-user-by-name/search-user-by-name.component';
 import { LogFormComponent } from './log-form/log-form.component';
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
+import { Router } from '@angular/router';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 
 describe('LogComponent', () => {
@@ -39,12 +42,15 @@ describe('LogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ /*CommonServiceModuleStub, */ FormsModule, ReactiveFormsModule, NgbModule],
-      declarations: [ LogComponent, SearchLogByLevelComponent, SearchUserByPhoneComponent, SearchUserByNameComponent, DateChooserComponent,
+      declarations: [ LogComponent, SearchLogByLevelComponent, SearchUserByPhoneComponent,
+                      SearchUserByNameComponent, DateChooserComponent, LoadingSpinnerComponent,
                       LogFormComponent ],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [ UserService,
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
-                  { provide: AngularFireAuth, useValue: {} }
+                  { provide: AngularFireAuth, useValue: {} },
+                  { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); } },
                 ],
     })
     .compileComponents();

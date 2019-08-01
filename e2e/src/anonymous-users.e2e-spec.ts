@@ -18,11 +18,12 @@ describe('Anonymous users', () => {
     expect(login_link.isDisplayed()).toBeTruthy();
   });
 
-  it('should be redirected from /user to /login', () => {
-    page.goto('/user');
+  it('should be redirected from /junkurl to /login', () => {
+    page.goto('/junkurl');
     browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
     browser.sleep(300);
-    expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
+    expect(page.getUrl()).toEqual(browser.baseUrl+'/junkurl');
+    page.containsLoginBox();
   });
 
   it('should be redirected from /myaccount to /login', () => {
