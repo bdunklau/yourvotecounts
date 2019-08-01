@@ -143,11 +143,13 @@ describe('Log page', () => {
     page.clickLog();
     var d1 = logPage.threeDaysBefore();
     var d2 = logPage.threeDaysAfter();
+    var d1_short = logPage.threeDaysBefore_short();
+    var d2_short = logPage.threeDaysAfter_short();
     logPage.pickFirstDate(d1);
     browser.sleep(500);
-    logPage.pickSecondDate(d2);
+    logPage.pickSecondDate(d1, d2);
     browser.sleep(500);
-    var exp = d1+' to '+d2;
+    var exp = d1_short+' to '+d2_short;
     logPage.getDateRangeField().then(actualValue => {
       expect(actualValue == exp).toBeTruthy('expected the date range field to be '+exp+' but it was actually '+actualValue);
       page.clickLogout();
@@ -195,7 +197,7 @@ describe('Log page', () => {
     _.forEach(testSupport.dates, (date) => {
       logPage.pickFirstDate(date.from);
       browser.sleep(300);
-      logPage.pickSecondDate(date.to);
+      logPage.pickSecondDate(date.from, date.to);
       browser.sleep(300);
       _.forEach(levels, (obj) => {
         var selectedLevel = obj.level;
