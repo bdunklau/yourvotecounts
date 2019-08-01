@@ -56,7 +56,16 @@ export class LogPage extends BasePage {
     this.getElement(by.css(selector)).click();
   }
 
-  pickSecondDate(mmddyyyy: string) {
+  // weird/unfortunate behavior: If the "from" date is in a DIFFERENT month than the current month,
+  // then the calendar will be dismissed when clicking the "from" date.  As a result, you will have to click
+  // the date range field again to get the calendar back.  Soooo we have to figure out if the "from" date
+  // is or isn't in the same month as the current month.
+  pickSecondDate(from: string, mmddyyyy: string) {
+    var fromMonth = moment(from, 'MM/DD/YYYY').month();
+    var currentMonth = moment().month();
+    if(fromMonth < currentMonth) {
+      this.getElement(by.id('dateRange')).click();
+    }
     var dt = this.toLongDateFormat(mmddyyyy);
     // Have to add class="ngb-dp-day" to make sure we select the VISIBLE date element.
     // Some date strings can appear as aria-labels twice on a page.  The first instance will be a hidden element.
@@ -283,13 +292,24 @@ export class LogPage extends BasePage {
 
 
   shortFormat: string = 'MM/DD';
+  longFormat: string = 'MM/DD/YYYY';
   threeDaysBefore() {
+    var date = moment().add(-3, 'days').toDate();
+    return this.toDateString(date, this.longFormat);
+  }
+
+  threeDaysBefore_short() {
     var date = moment().add(-3, 'days').toDate();
     return this.toDateString(date, this.shortFormat);
   }
 
 
   threeDaysAfter() {
+    var date = moment().add(3, 'days').toDate();
+    return this.toDateString(date, this.longFormat);
+  }
+
+  threeDaysAfter_short() {
     var date = moment().add(3, 'days').toDate();
     return this.toDateString(date, this.shortFormat);
   }

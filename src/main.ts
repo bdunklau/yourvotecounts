@@ -1,4 +1,4 @@
-import 'hammerjs';
+// import 'hammerjs';  // what is this for?  Angular material something?
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 

@@ -118,7 +118,7 @@ export class TestSupport {
     var json = await this.api.getUser(obj.phoneNumber);
     if(json['displayName'] === obj.displayName) {
       // return early, nothing to do
-      console.log('setName(): displayName was already: ', obj.displayName);
+      // console.log('setName(): displayName was already: ', obj.displayName);
     }
     else {
       await this.api.updateDisplayName(json['uid'], obj.displayName);
