@@ -8,7 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       # https://circleci.com/docs/2.0/circleci-images/
-      - image: circleci/node:10-browsers
+      - image: circleci/node:latest #10-browsers
         environment:
           CHROME_BIN: /usr/bin/google-chrome
 
