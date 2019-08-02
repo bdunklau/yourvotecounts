@@ -41,4 +41,8 @@ export class TeamMember {
             displayName: this.displayName,
             leader: this.leader};
   }
+
+  debug() {
+    return this.displayName+' in team "'+this.team_name+'"'
+  }
 }

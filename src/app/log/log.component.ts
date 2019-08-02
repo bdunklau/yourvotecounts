@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, CollectionReference, Query } from '@angular/fire/firestore';
 import { LogEntry } from './logentry'
 import { Subject, Observable, Subscription } from 'rxjs';
@@ -28,6 +28,7 @@ export class LogComponent implements OnInit {
   reverse: boolean = true;
   prepend: boolean = true;
   limit: number = 20; // if you make this lower, e2e tests might fail like "should allow query by date"
+  @ViewChild('scrollBottom') private scrollBottom: ElementRef;
 
   constructor(private afs: AngularFirestore,
               private logService: LogService,
@@ -35,6 +36,10 @@ export class LogComponent implements OnInit {
 
   // helpful for getting queries working:  https://www.youtube.com/watch?v=SGQGFO_zkx4&t=409s
   ngOnInit() {
+  }
+
+  ngAfterContentInit(){
+    this.scrollToBottom();
   }
 
   ngOnDestroy() {
@@ -50,7 +55,7 @@ export class LogComponent implements OnInit {
     console.log('onLevelChosen: level = ', level, ' this.nameVal = ',this.nameVal, ' this=', this);
     this.level = level;
     // this.log$.next({level: level});
-    this.page.init('log_'+this.level, this.queryInitial.bind(this), this.querySubsequent.bind(this), {reverse: this.reverse, prepend: this.prepend /* why false? */});
+    this.page.init('log_'+this.level, this.queryInitial.bind(this), this.querySubsequent.bind(this), {reverse: this.reverse, prepend: this.prepend, scrollFn: this.scrollToBottom.bind(this) /* why false? */});
   }
 
   onUserSelectedByPhone(user: FirebaseUserModel) {
@@ -138,6 +143,14 @@ export class LogComponent implements OnInit {
     if(e === threshold) {
       this.page.more();
     }
+  }
+
+
+  scrollToBottom(): void {
+      try {
+              console.log('calling scrollToBottom() -----------', this.scrollBottom);
+          this.scrollBottom.nativeElement.scrollTop = this.scrollBottom.nativeElement.scrollHeight;
+      } catch(err) { console.log('error: ', err); }
   }
 
 }

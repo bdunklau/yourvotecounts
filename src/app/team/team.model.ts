@@ -34,4 +34,8 @@ export class Team {
     this.creatorName = user.displayName;
     this.creatorPhone = user.phoneNumber;
   }
+
+  debug() {
+    return ' "'+this.name+'"'
+  }
 }

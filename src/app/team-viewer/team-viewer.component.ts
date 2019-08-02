@@ -40,8 +40,9 @@ export class TeamViewerComponent implements OnInit {
 
       let team = routeData['team'];
       if (team) {
-        this.team = team;
-        this.log.i('viewing team "'+team.name+'" ('+team.id+')')
+        this.team = team as Team;
+        console.log('this.team = ', this.team);
+        this.log.i('viewing team '+this.team.debug());
         //this.createForm(this.user.name);
         this.memberSubscription = this.teamService.getMembersByTeamId(team.id).pipe(
           map(actions => {
@@ -76,8 +77,8 @@ export class TeamViewerComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.routeSubscription.unsubscribe();
-    this.memberSubscription.unsubscribe();
+    if(this.routeSubscription) this.routeSubscription.unsubscribe();
+    if(this.memberSubscription) this.memberSubscription.unsubscribe();
   }
 
   setTeamEditPermissions(user: FirebaseUserModel, team: Team, team_members: TeamMember[]) {

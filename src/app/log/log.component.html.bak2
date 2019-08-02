@@ -1,7 +1,6 @@
 
 <app-loading-spinner *ngIf="page.loading"></app-loading-spinner>
 <div class="content" appScrollable (scrollPosition)="scrollHandler($event)">
-  <!-- <div style="height: 2000px"></div> -->
 
 <!-- got all this from    https://angularfirebase.com/lessons/infinite-scroll-firestore-angular/ -->
 <!-- page.data: {{page.data | async}} -->

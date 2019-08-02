@@ -69,7 +69,7 @@ export class TeamService {
                      leader: true}
     batch.set(teamMemberRef, teamMember);
     await batch.commit();
-    this.log.i('created team "'+team.name+'"  ('+team.id+') ');
+    this.log.i('created team '+team.debug());
     return teamDocId;
 
     // good example of transactions:
@@ -88,7 +88,7 @@ export class TeamService {
         batch.delete(dt.payload.doc.ref);
       });
       batch.commit().then(() => {
-        this.log.i('deleted team "'+team.name+'" ('+team.id+')');
+        this.log.i('deleted team '+team.debug());
       });
     });
 
@@ -104,14 +104,21 @@ export class TeamService {
     if(team_member.leader)
       batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(-1)});
     await batch.commit();
-    this.log.i('deleted '+team_member.displayName+'  ('+team_member.userId+') from team "'+team_member.team_name+'" ('+team_member.teamDocId+')');
+    this.log.i('deleted '+team_member.debug());
     return await this.getTeamData(team_member.teamDocId);
   }
 
 
   async getTeamData(teamDocId: string) {
     var teamDoc = await this.afs.collection('team').doc(teamDocId).ref.get();
-    return teamDoc.data() as Team;
+    const team = new Team();
+    team.id = teamDoc.data().id;
+    team.name = teamDoc.data().name;
+    team.created = teamDoc.data().created;
+    team.creatorId = teamDoc.data().creatorId;
+    team.creatorName = teamDoc.data().creatorName;
+    team.creatorPhone = teamDoc.data().creatorPhone;
+    return team;
   }
 
 
@@ -145,7 +152,7 @@ export class TeamService {
         batch.update(dt.payload.doc.ref, {team_name: teamName});
       });
       batch.commit().then(() => {
-        this.log.i('updated team "'+teamName+'"  ('+teamId+') ');
+        this.log.i('updated team '+team.debug());
       });
     });
   }
