@@ -38,7 +38,7 @@
   </div>
 
   <div class="col-md-8 col-lg-9">
-      <div class="content" appScrollable (scrollPosition)="scrollHandler($event)" #scrollBottom>
+      <div class="content autoscrollable" appScrollable (scrollPosition)="scrollHandler($event)" #scrollBottom>  <!-- doesn't work - figure out later why (8/2/19) -->
           <p *ngIf="page.done | async" class="text-center"><b>NO MORE ENTRIES</b></p>
           <app-loading-spinner *ngIf="page.loading | async"></app-loading-spinner>
           <table class="table table-striped">

@@ -39,7 +39,7 @@ export class LogComponent implements OnInit {
   }
 
   ngAfterContentInit(){
-    this.scrollToBottom();
+    // this.scrollToBottom();  // don't have log entries yet, pointless to call here
   }
 
   ngOnDestroy() {
@@ -146,9 +146,12 @@ export class LogComponent implements OnInit {
   }
 
 
+  // doesn't work - figure out later why (8/2/19)
   scrollToBottom(): void {
       try {
-              console.log('calling scrollToBottom() -----------', this.scrollBottom);
+          console.log('calling scrollToBottom() -----------', this.scrollBottom);
+          console.log('this.scrollBottom.nativeElement.scrollTop = ', this.scrollBottom.nativeElement.scrollTop);
+          console.log('this.scrollBottom.nativeElement.scrollHeight = ', this.scrollBottom.nativeElement.scrollHeight);
           this.scrollBottom.nativeElement.scrollTop = this.scrollBottom.nativeElement.scrollHeight;
       } catch(err) { console.log('error: ', err); }
   }

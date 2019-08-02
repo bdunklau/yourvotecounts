@@ -64,7 +64,7 @@ export class PaginationService {
       limit: 10,
       reverse: opts.reverse,
       prepend: opts.prepend,
-      scrollFn: opts.scollFn,
+      scrollFn: opts.scrollFn,
       ...opts
     }
 
