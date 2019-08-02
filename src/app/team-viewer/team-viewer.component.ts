@@ -8,6 +8,7 @@ import { MessageService } from '../core/message.service';
 import { TeamMember } from '../team/team-member.model';
 import * as _ from 'lodash';
 import { FirebaseUserModel } from '../user/user.model';
+import { LogService } from '../log/log.service';
 
 @Component({
   selector: 'app-team-viewer',
@@ -25,7 +26,8 @@ export class TeamViewerComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private teamService: TeamService,
-              private messageService: MessageService) { }
+              private messageService: MessageService,
+              private log: LogService) { }
 
   ngOnInit() {
     // See TeamResolver and app-routing.module.ts for /teams/edit
@@ -39,7 +41,7 @@ export class TeamViewerComponent implements OnInit {
       let team = routeData['team'];
       if (team) {
         this.team = team;
-        console.log("team-editor.component.ts  team: ", this.team)
+        this.log.i('viewing team "'+team.name+'" ('+team.id+')')
         //this.createForm(this.user.name);
         this.memberSubscription = this.teamService.getMembersByTeamId(team.id).pipe(
           map(actions => {

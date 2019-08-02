@@ -79,7 +79,7 @@ export class TeamEditorComponent implements OnInit {
       let user = routeData['user'];
       if(user) {
         this.user = user;
-        this.log.beginCreateTeam(user);
+        this.log.i('begin creating team');
       }
     })
 
@@ -132,10 +132,10 @@ export class TeamEditorComponent implements OnInit {
     // console.log('onSubmit:  this.user = ', this.user);
     var teamId = null;
     if(!this.team.id) {
-      teamId = this.teamService.create(this.team.name, this.user);
+      teamId = this.teamService.create(this.team);
     }
     else {
-      this.teamService.update(this.team.id, this.team.name, this.user);
+      this.teamService.update(this.team);
       teamId = this.team.id;
     }
     this.router.navigate(['/teams', teamId]);

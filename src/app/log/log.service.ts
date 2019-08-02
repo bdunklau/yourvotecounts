@@ -25,36 +25,10 @@ export class LogService {
     });
   }
 
-  async beginCreateTeam(user) {
-    await this.info(user, 'begin creating team');
-  }
-
-  async createdTeam(user, team) {
-    await this.info(user, 'created team: "'+team.name+'"  (team ID: '+team.id+') ');
-  }
-
-  async deletedTeam(team: Team) {
-    const user = await this.userService.getCurrentUser();
-    await this.info(user, 'deleted team: '+team.name+' (team ID: '+team.id+')');
-  }
-
-  async deletedTeamMember(team_member: TeamMember) {
-    const user = await this.userService.getCurrentUser();
-    await this.info(user, 'deleted "'+team_member.displayName+'"  (ID: '+team_member.userId+') from team: '+team_name+' (team ID: '+team_member.teamDocId+')');
-  }
-
   deleteLogs(eventValue: string) {
     this.xxx('log_debug', eventValue);
     this.xxx('log_info', eventValue);
     this.xxx('log_error', eventValue);
-  }
-
-  async login(user) {
-    await this.info(user, 'login');
-  }
-
-  async logout(user) {
-    await this.info(user, 'logout');
   }
 
   async e(keyvals) {
@@ -65,16 +39,17 @@ export class LogService {
     this.logit(keyvals, 'debug')
   }
 
-  async i(keyvals) {
+  async ii(keyvals) {
     this.logit(keyvals, 'info')
   }
 
-  private async info(user, event: string) {
+  async i(event: string) {
+    const user = await this.userService.getCurrentUser();
     var entry = {event: event}
     if(user.uid) entry['uid'] = user.uid;
     if(user.displayName) entry['displayName'] = user.displayName;
     if(user.phoneNumber) entry['phoneNumber'] = user.phoneNumber;
-    await this.i(entry);
+    await this.ii(entry);
   }
 
   // call d() e() and i() - not this function, except for testing
@@ -105,10 +80,6 @@ export class LogService {
         this.db.collection('log_debug').add(entry),
       ])
     }
-  }
-
-  async updatedTeam(user, teamName, teamId) {
-    await this.info(user, 'updated team: "'+teamName+'"  (team ID: '+teamId+') ');
   }
 
 }

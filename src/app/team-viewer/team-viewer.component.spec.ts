@@ -5,6 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject, of } from 'rxjs';
+import { UserService } from '../user/user.service';
+import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 
 describe('TeamViewerComponent', () => {
@@ -27,7 +30,10 @@ describe('TeamViewerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ TeamViewerComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
-      providers: [ {provide: ActivatedRoute,
+      providers: [ UserService,
+                  { provide: HttpClient, useValue: {} },
+                  { provide: AngularFireAuth, useValue: {} },
+                   {provide: ActivatedRoute,
                     useValue: {
                       params: Observable.from([{id: 1}]),
                       data: { "mock2": "mock2", subscribe: () => {} }
