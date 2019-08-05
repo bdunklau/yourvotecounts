@@ -1,7 +1,7 @@
 <!--The content below is only a placeholder and can be replaced.-->
 
-<!--
-<nav class="navbar navbar-expand-md navbar-light bg-faded">
+
+<!-- <nav class="navbar navbar-expand-md navbar-light bg-faded">
   <button class="navbar-toggler navbar-toggler-right" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
   </button>
@@ -34,20 +34,28 @@
 
     </ul>
   </div>
-</nav>
- -->
+</nav> -->
 
 
+
+<!-- https://www.w3schools.com/howto/howto_js_sidenav.asp -->
  <div id="mySidenav" class="sidenav">
-   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-   <a href="#">About</a>
-   <a href="#">Services</a>
-   <a href="#">Clients</a>
-   <a href="#">Contact</a>
+   <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
+   <a id="home_link" class="nav-link" routerLink="/home"><i class="fa fa-home"></i> Home</a>
+   <a [hidden]="isLoggedIn" id="login_link" class="nav-link" (click)="closeNav()" routerLink="/login">Login</a>
+   <a [hidden]="!isLoggedIn" id="myaccount_link" class="nav-link" (click)="closeNav()" routerLink="/myaccount">My Account</a>
+   <a [hidden]="!isLoggedIn" id="teams_link" class="nav-link" (click)="closeNav()" [routerLink]="['/teams']">Teams</a>
+   <a [hidden]="!isAdmin" id="log_link" class="nav-link" (click)="closeNav()" routerLink="/log">Log</a>
+   <a [hidden]="!isAdmin" id="users_link" class="nav-link" (click)="closeNav()" routerLink="/users">Users</a>
+   <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()">Logout</a>
  </div>
 
  <!-- Use any element to open the sidenav -->
- <span onclick="openNav()">open</span>
- 
+ <span (click)="openNav()">
+   <button class="navbar-toggler navbar-toggler-right" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+       <span class="navbar-toggler-icon">Menu</span>
+   </button>
+ </span>
+
 
 <router-outlet></router-outlet>

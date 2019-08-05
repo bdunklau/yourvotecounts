@@ -52,6 +52,19 @@ export class AppComponent {
   }
 
 
+  // https://www.w3schools.com/howto/howto_js_sidenav.asp
+  /* Set the width of the side navigation to 250px */
+  openNav(event) {
+    document.getElementById("mySidenav").style.width = "250px";
+  }
+
+  // https://www.w3schools.com/howto/howto_js_sidenav.asp
+  /* Set the width of the side navigation to 0 */
+  closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+  }
+
+
   setAdmin(isAdmin: boolean) {
     this.isAdmin = isAdmin;
   }
