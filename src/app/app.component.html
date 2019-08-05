@@ -1,5 +1,6 @@
 <!--The content below is only a placeholder and can be replaced.-->
 
+<!--
 <nav class="navbar navbar-expand-md navbar-light bg-faded">
   <button class="navbar-toggler navbar-toggler-right" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -32,14 +33,21 @@
       </li>
 
     </ul>
-    <!-- search box for later if we want it
-
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-    -->
   </div>
 </nav>
+ -->
+
+
+ <div id="mySidenav" class="sidenav">
+   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+   <a href="#">About</a>
+   <a href="#">Services</a>
+   <a href="#">Clients</a>
+   <a href="#">Contact</a>
+ </div>
+
+ <!-- Use any element to open the sidenav -->
+ <span onclick="openNav()">open</span>
+ 
 
 <router-outlet></router-outlet>
