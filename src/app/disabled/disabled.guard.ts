@@ -28,11 +28,14 @@ export class DisabledGuard implements CanActivate {
       // RULE: admins cannot be disabled via the global setting
       // RULE: admins CAN be disabled individually
       // RULE: But you can't disable your own account
-      var all = globalDisabled && user && !user.hasRole('admin');
+      var allDisabled = globalDisabled && user && !user.hasRole('admin');
+
+      let reroute = user && user.isDisabled || allDisabled
+      console.log('user=', user, ' user.isDisabled=', user.isDisabled, ' allDisabled=', allDisabled, ' reroute=', reroute);
 
       // if there's no user, then send the user to /login and return false
       // otherwise return true
-      if(user && user.isDisabled || all) {
+      if(reroute) {
         this.router.navigate(['/disabled']);
         return false
       }

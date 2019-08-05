@@ -20,6 +20,7 @@ export class FirebaseUserModel {
     this.image = "";
     this.displayName = "";
     this.displayName_lower = "";
+    this.date_ms = 0;
     this.provider = "";
     this.phoneNumber = "";
     this.roles = [];
@@ -33,12 +34,14 @@ export class FirebaseUserModel {
     this.image = obj.image;
     this.displayName = obj.displayName;
     this.displayName_lower = obj.displayName_lower;
+    this.date_ms = obj.date_ms;
     this.provider = obj.provider;
     this.phoneNumber = obj.phoneNumber;
     this.roles = obj.roles;
     this.photoURL = obj.photoURL;
     if(obj.isDisabled === true || obj.isDisabled === false) this.isDisabled = obj.isDisabled;
     else this.isDisabled = false;
+    console.log('populate: obj = ', obj);
     // this.teams = obj.teams ? obj.teams : [];
     // console.log('populate():  this.teams = ', this.teams);
   }

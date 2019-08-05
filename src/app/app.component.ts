@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { AuthService } from './core/auth.service';
 import { UserService } from './user/user.service';
 import { Router } from "@angular/router";
-import { MessageService } from './core/message.service';
+// import { MessageService } from './core/message.service';
 import { Subscription } from 'rxjs';
 import { NgbDatepickerConfig, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser-formatter"
@@ -27,27 +27,28 @@ export class AppComponent {
     private authService: AuthService,
     private userService: UserService,
     private router: Router,
-    private messageService: MessageService) {  }
+    // private messageService: MessageService
+  ) {  }
 
 
   async ngOnInit() {
+
+    this.subscription = await this.userService.subscribeCurrentUser(obj => {
+      if(obj && obj.length > 0 && obj[0].isDisabled) {
+        this.router.navigate(['/disabled']);
+      }
+    });
     let user = await this.userService.getCurrentUser();
     this.isAdmin = user && user.hasRole('admin');
     console.log('AppComponent:ngOnInit(): this.isAdmin = ', this.isAdmin)
     this.isLoggedIn = user != null;
     this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
-    this.subscription = this.messageService.getUser()
-      .subscribe(user => {
-        // console.log('AppComponent: user from service: ', user);
-        this.isAdmin = user && user.hasRole('admin')
-        this.isLoggedIn = user != null;
-        this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
-      })
   }
 
   // always unsubscribe
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    console.log('ngOnDestroy:  this.subscription.unsubscribe()')
   }
 
 

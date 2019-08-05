@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../user/user.service';
+import { Router } from "@angular/router";
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-disabled',
@@ -7,9 +11,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DisabledComponent implements OnInit {
 
-  constructor() { }
+  private subscription: Subscription;
 
-  ngOnInit() {
+  constructor(private userService: UserService,
+              private router: Router) { }
+
+  async ngOnInit() {
+    this.subscription = await this.userService.subscribeCurrentUser(obj => {
+      console.log('ngOnInit:  subscribeCurrentUser: obj: ', obj)
+      if(obj && obj.length > 0 && !obj[0].isDisabled) {
+        this.router.navigate(['/myaccount']);
+      }
+    });
+  }
+
+
+  // always unsubscribe
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    console.log('ngOnDestroy:  this.subscription.unsubscribe()');
   }
 
 }
