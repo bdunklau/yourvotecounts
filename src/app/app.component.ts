@@ -45,8 +45,8 @@ export class AppComponent {
     console.log('AppComponent:ngOnInit(): this.isAdmin = ', this.isAdmin)
     this.isLoggedIn = user != null;
     this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
-    var mc = new Hammer.Pan(document.getElementById("mySidenav"));
-    mc.on('pan-x', function(ev) { this.closeNav(); })
+    var hammer = new Hammer(document.getElementById("mySidenav"));
+    hammer.on('pan', function(ev) { this.closeNav(); })
   }
 
   // always unsubscribe
