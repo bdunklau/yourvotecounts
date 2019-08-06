@@ -7,7 +7,9 @@ import { Router } from "@angular/router";
 // import { MessageService } from './core/message.service';
 import { Subscription } from 'rxjs';
 import { NgbDatepickerConfig, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser-formatter"
+import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser-formatter";
+import Hammer from 'hammerjs'; // to capture touch events
+
 
 @Component({
   selector: 'app-root',
@@ -43,6 +45,8 @@ export class AppComponent {
     console.log('AppComponent:ngOnInit(): this.isAdmin = ', this.isAdmin)
     this.isLoggedIn = user != null;
     this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
+    var mc = new Hammer.Pan(document.getElementById("mySidenav"));
+    mc.on('pan-x', function(ev) { this.closeNav(); })
   }
 
   // always unsubscribe
@@ -51,18 +55,24 @@ export class AppComponent {
     console.log('ngOnDestroy:  this.subscription.unsubscribe()')
   }
 
-
   // https://www.w3schools.com/howto/howto_js_sidenav.asp
   /* Set the width of the side navigation to 250px */
   openNav(event) {
     document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("thebody").addEventListener('click', this.closeNav, true);
   }
 
   // https://www.w3schools.com/howto/howto_js_sidenav.asp
   /* Set the width of the side navigation to 0 */
   closeNav() {
     document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("thebody").removeEventListener('click', this.closeNav);
   }
+
+  // closeListener(): () => void {
+  //   const fn = this.closeNav;//.bind(this)
+  //   return fn;
+  // }
 
 
   setAdmin(isAdmin: boolean) {

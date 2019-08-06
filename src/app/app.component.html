@@ -38,7 +38,9 @@
 
 
 
-<!-- https://www.w3schools.com/howto/howto_js_sidenav.asp -->
+<nav class="navbar navbar-expand-md navbar-light bg-faded">
+
+ <!-- https://www.w3schools.com/howto/howto_js_sidenav.asp -->
  <div id="mySidenav" class="sidenav">
    <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
    <a id="home_link" class="nav-link" routerLink="/home"><i class="fa fa-home"></i> Home</a>
@@ -52,10 +54,11 @@
 
  <!-- Use any element to open the sidenav -->
  <span (click)="openNav()">
-   <button class="navbar-toggler navbar-toggler-right" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-       <span class="navbar-toggler-icon">Menu</span>
-   </button>
+   <i class="fa fa-2x fa-bars"></i>
  </span>
 
+ <a class="navbar-brand" style="padding-left:10px" href="#">{{ title }}</a>
+
+</nav>
 
 <router-outlet></router-outlet>
