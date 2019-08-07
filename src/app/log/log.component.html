@@ -54,6 +54,7 @@
                     <span class="log_element log_displayName">{{ logentry.displayName }} </span>
                     <!-- <span class="log_element log_phoneNumber">{{ logentry.phoneNumber }} </span> -->
                     <span class="log_element log_event">{{ logentry.event }}</span>
+                    <span [hidden]="true" class="log_element log_phoneNumber" title="{{logentry.phoneNumber}}">{{ logentry.phoneNumber }}</span>
                   </div>
                 </div>
               </td>
