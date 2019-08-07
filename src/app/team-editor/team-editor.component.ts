@@ -25,8 +25,8 @@ export class TeamEditorComponent implements OnInit {
 
   // editing: boolean;
   team: Team;
-  // @Input() teamNameValue: string;
-  // @Input() teamIdValue: string;
+  /*@Input()*/ teamNameValue: string;
+  /*@Input()*/ teamIdValue: string;
   @Input() user: FirebaseUserModel;
   // @Output() editing = new EventEmitter<boolean>();
   team_members: TeamMember[];
@@ -55,6 +55,8 @@ export class TeamEditorComponent implements OnInit {
       console.log('routeSubscription: team: ', team);
       if (team) {
         this.team = team;
+        this.teamIdValue = team.id;
+        this.teamNameValue = team.name;
         console.log("team-editor.component.ts  team: ", this.team)
         //this.createForm(this.user.name);
         this.memberSubscription = this.teamService.getMembersByTeamId(team.id).pipe(
@@ -131,6 +133,8 @@ export class TeamEditorComponent implements OnInit {
     // this.editing = false;
     // console.log('onSubmit:  this.user = ', this.user);
     var teamId = null;
+    if(this.teamIdValue) this.team.id = this.teamIdValue;
+    this.team.name = this.teamNameValue.trim();
     if(!this.team.id) {
       teamId = this.teamService.create(this.team);
     }

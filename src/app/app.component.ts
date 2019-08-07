@@ -2,13 +2,14 @@ import { Component, Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Location } from '@angular/common';
 import { AuthService } from './core/auth.service';
-import { UserService } from './user/user.service';
+// import { UserService } from './user/user.service';
 import { Router } from "@angular/router";
-// import { MessageService } from './core/message.service';
+import { MessageService } from './core/message.service';
 import { Subscription } from 'rxjs';
 import { NgbDatepickerConfig, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser-formatter";
 import Hammer from 'hammerjs'; // to capture touch events
+// import { BrowserModule } from '@angular/platform-browser';
 
 
 @Component({
@@ -27,26 +28,43 @@ export class AppComponent {
   constructor(db: AngularFirestore,
     private location : Location,
     private authService: AuthService,
-    private userService: UserService,
+    // private userService: UserService,
     private router: Router,
-    // private messageService: MessageService
+    private messageService: MessageService
   ) {  }
-
 
   async ngOnInit() {
 
-    this.subscription = await this.userService.subscribeCurrentUser(obj => {
-      if(obj && obj.length > 0 && obj[0].isDisabled) {
-        this.router.navigate(['/disabled']);
-      }
-    });
-    let user = await this.userService.getCurrentUser();
-    this.isAdmin = user && user.hasRole('admin');
-    console.log('AppComponent:ngOnInit(): this.isAdmin = ', this.isAdmin)
-    this.isLoggedIn = user != null;
-    this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
-    var hammer = new Hammer(document.getElementById("mySidenav"));
-    hammer.on('pan', function(ev) { this.closeNav(); })
+    // this.subscription = await this.userService.subscribeCurrentUser(obj => {
+    //   if(obj && obj.length > 0) {
+    //     console.log('obj[0] = ', obj[0]);
+    //     if(obj[0].isDisabled) {
+    //       this.router.navigate(['/disabled']);
+    //     }
+    //   }
+    // });
+
+    this.subscription = this.messageService.getUser().subscribe(user => {
+      this.isAdmin = user && user.hasRole('admin');
+      this.isLoggedIn = user != null;
+      this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
+    })
+
+    // let user = await this.userService.getCurrentUser();
+    // this.isAdmin = user && user.hasRole('admin');
+    // console.log('AppComponent:ngOnInit(): this.isAdmin = ', this.isAdmin)
+    // this.isLoggedIn = user != null;
+    // this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
+    var hammer = new Hammer.Manager(document.getElementById("mySidenav"));
+    var swipe = new Hammer.Swipe();
+    hammer.add(swipe);
+    hammer.on('swipeleft', this.closeNav);
+
+    // var hammer2 = new Hammer.Manager(document.getElementById("thebody"));
+    // hammer2.add( new Hammer.Tap({ event: 'singletap' }) );
+    // hammer2.on("singletap doubletap", function(ev) {
+    //     window.alert("ev type: " += ev.type +" ");
+    // });
   }
 
   // always unsubscribe
@@ -59,14 +77,16 @@ export class AppComponent {
   /* Set the width of the side navigation to 250px */
   openNav(event) {
     document.getElementById("mySidenav").style.width = "250px";
-    document.getElementById("thebody").addEventListener('click', this.closeNav, true);
+    // document.getElementById("thebody").addEventListener('click', this.closeNav, true);
+    // document.body.addEventListener('click', this.fn, true);
+    // document.body.addEventListener('click', function() {window.alert('body clicked')})
   }
 
   // https://www.w3schools.com/howto/howto_js_sidenav.asp
   /* Set the width of the side navigation to 0 */
   closeNav() {
     document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("thebody").removeEventListener('click', this.closeNav);
+    // document.getElementById("thebody").removeEventListener('click', this.closeNav);
   }
 
   // closeListener(): () => void {
@@ -81,6 +101,7 @@ export class AppComponent {
 
 
   logout(){
+    this.closeNav();
     this.authService.doLogout()
     .then((res) => {
       this.router.navigate(['/']);

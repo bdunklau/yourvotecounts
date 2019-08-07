@@ -66,7 +66,7 @@ export class FirebaseUserModel {
   canRemoveTeamMembers(team: Team, team_members: TeamMember[]): boolean {
     var findMe = _.find(team_members, {userId: this.uid});
     if(!findMe) {
-      console.log('return false because findMe is undef')
+      // console.log('return false because findMe is undef')
       return false;
     }
     var val = findMe.leader;

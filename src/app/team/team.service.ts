@@ -118,6 +118,7 @@ export class TeamService {
     team.creatorId = teamDoc.data().creatorId;
     team.creatorName = teamDoc.data().creatorName;
     team.creatorPhone = teamDoc.data().creatorPhone;
+    console.log('teamDoc.data() = ', teamDoc.data());
     return team;
   }
 
