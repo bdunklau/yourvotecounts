@@ -6,6 +6,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { of } from 'rxjs/observable/of';
 
 
 describe('DisabledComponent', () => {
