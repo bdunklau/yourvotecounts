@@ -87,8 +87,6 @@ export class MainPage extends BasePage {
 
   verifyPagesDisabled(sleep: number) {
     browser.sleep(sleep);
-    this.goto('');
-    browser.sleep(sleep);
     this.verifyMyAccountDisabled();
       browser.sleep(sleep);
     this.verifyTeamsDisabled();
