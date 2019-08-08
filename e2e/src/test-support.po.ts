@@ -57,6 +57,8 @@ export class TestSupport {
     browser.waitForAngularEnabled(false);
     var url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLogs?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
     if(options.millis) url += '&millis='+options.millis;
+    if(options.levels) url += '&levels='+options.levels;
+    if(options.count) url += '&count='+options.count;
     return browser.get(url) as Promise<any>;
   }
 
