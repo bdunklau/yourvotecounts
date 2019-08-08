@@ -11,6 +11,7 @@ import 'rxjs/add/operator/map'
 import { MessageService } from '../core/message.service';
 import { Team } from '../team/team.model';
 import { map } from 'rxjs/operators';
+import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 
 
 @Injectable()
@@ -110,26 +111,27 @@ export class UserService {
     });
   }
 
-  async subscribeCurrentUser(fn: (obj) => void) {
-
-    var user = await this.createFirebaseUserModel();
-    var obj = this.afs.collection('user', ref => ref.where('uid', '==', user.uid)).snapshotChanges().pipe(
-      map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data();// as TeamMember;
-          let user = new FirebaseUserModel();
-          user.populate(data);
-          // const id = a.payload.doc.id;
-          // var returnThis = { id, ...data };
-          // console.log('data = ', data);
-          // console.log('returnThis = ', returnThis);
-          return user;
-        });
-      })
-    ).subscribe(fn);
-
-    return obj;
-  }
+  // async subscribeCurrentUser(fn: (obj) => void): Promise<Subscription> {
+  //
+  //   var user = await this.createFirebaseUserModel();
+  //   if(!user) return null;
+  //   var obj = this.afs.collection('user', ref => ref.where('uid', '==', user.uid)).snapshotChanges().pipe(
+  //     map(actions => {
+  //       return actions.map(a => {
+  //         const data = a.payload.doc.data();// as TeamMember;
+  //         let user = new FirebaseUserModel();
+  //         user.populate(data);
+  //         // const id = a.payload.doc.id;
+  //         // var returnThis = { id, ...data };
+  //         // console.log('data = ', data);
+  //         // console.log('returnThis = ', returnThis);
+  //         return user;
+  //       });
+  //     })
+  //   ).subscribe(fn);
+  //
+  //   return obj;
+  // }
 
   private getFirebaseUser() {
     return new Promise<any>((resolve, reject) => {

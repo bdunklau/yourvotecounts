@@ -79,6 +79,11 @@ export class BasePage {
     return this.getElement(by.id('logout_link'));
   }
 
+  getLoginLink() {
+    this.getElement(by.id('hamburger_menu_icon')).click();
+    return this.getElement(by.id('login_link'));
+  }
+
 
   getMyAccountElement() {
     return this.getElement(by.id('myaccount_page'));
@@ -105,7 +110,7 @@ export class BasePage {
 
 
   pullDownMyMenu() {
-    this.getElement(by.id('name_or_phone')).click();
+    this.getElement(by.id('hamburger_menu_icon')).click();
   }
 
 }

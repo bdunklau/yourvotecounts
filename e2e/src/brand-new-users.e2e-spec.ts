@@ -16,11 +16,14 @@ describe('Brand new users', () => {
   });
 
 
+  // passed 8/7
   it('should be required to enter name', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_BRAND_NEW_USER)
     // page.goto('/home');
     page.clickMyAccount();
+    browser.sleep(200);
     expect(myAccountPage.getNameField().isDisplayed()).toBeTruthy();
+    browser.sleep(200);
     page.clickLogout();
   });
 

@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
 
-describe('Log page', () => {
+fdescribe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -18,16 +18,20 @@ describe('Log page', () => {
     logPage = new LogPage(testSupport);
   });
 
+  // passed 8/7
   it('should be accessible by hyperlink', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
-    page.clickHome();
+    page.pullDownMyMenu();
     page.clickLog();
+    browser.sleep(200);
     expect(page.getTitleText()).toEqual('Log');
     page.clickLogout();
   });
 
+  // passed 8/7
   it('should have a click-able calendar', async () => {
       testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+      page.pullDownMyMenu();
       page.clickLog();
       // Can't get the value of the datepicker <input> field.  It's not your typical
       // <input> field.  Inspect it via Chrome and you'll see
@@ -37,10 +41,12 @@ describe('Log page', () => {
   })
 
 
+  // passed 8/7
   it('should display correct list of users in dropdown', async () => {
 
     logPage.setupQueryByNameTest();
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.pullDownMyMenu();
     page.clickLog();
 
     var run1 = [{displayName: testSupport.names[0].displayName,
@@ -138,8 +144,10 @@ describe('Log page', () => {
   })
 
 
+  // passed 8/7
   it('should allow date range to be clicked', async () => {
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.pullDownMyMenu();
     page.clickLog();
     var d1 = logPage.threeDaysBefore();
     var d2 = logPage.threeDaysAfter();
@@ -158,7 +166,7 @@ describe('Log page', () => {
 
 
   // passed 7/18/19
-  it('should allow query by date', async () => {
+  xit('should allow query by date', async () => {
 
     // delete any log entries that may have been hanging around from a previous run
     _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
@@ -193,6 +201,7 @@ describe('Log page', () => {
 
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     var destroyTheEvidence = true;
+    page.pullDownMyMenu();
     page.clickLog();
     _.forEach(testSupport.dates, (date) => {
       logPage.pickFirstDate(date.from);
@@ -230,6 +239,7 @@ describe('Log page', () => {
     testSupport.createLogs({});
 
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.pullDownMyMenu();
     page.clickLog();
     var actualLevel;
     logPage.setLevel('error');
@@ -282,6 +292,7 @@ describe('Log page', () => {
   it('should allow query by user name', async () => {
     logPage.setupQueryByNameTest();
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.pullDownMyMenu();
     page.clickLog();
     var theName = testSupport.names[0].displayName
     logPage.enterUserByName(theName);
@@ -301,16 +312,17 @@ describe('Log page', () => {
   })
 
 
-  it('should allow query by user phone', async () => {
+  fit('should allow query by user phone', async () => {
     logPage.setupQueryByNameTest();
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.pullDownMyMenu();
     page.clickLog();
     var phoneNumber = testSupport.names[0].phoneNumber
     logPage.queryForUserByPhone(phoneNumber);
     logPage.getPhonesInLog().then(function(elements) {
       var promises = [];
       _.forEach(elements, element => {
-        promises.push(element.getText());
+        promises.push(element.getAttribute('title')); // put the phone number in title attribute of <span> tag because the phone number itself is present but hidden on log.component.html
       })
       Promise.all(promises).then(function(phones) {
         _.forEach(phones, (phone) => {

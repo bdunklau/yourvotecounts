@@ -5,10 +5,10 @@
   <div class="col">
     <form (ngSubmit)="onSubmit(teamNameForm)" #teamNameForm="ngForm">
       <div class="form-group">
-        <input type="hidden" class="form-control" id="team_id_field" [(ngModel)]="team.id"
+        <input type="hidden" class="form-control" id="team_id_field" [(ngModel)]="teamIdValue"
                 name="teamId" #teamId="ngModel">
 
-        <input type="text" class="form-control" id="team_name_field" [(ngModel)]="team.name"
+        <input type="text" class="form-control" id="team_name_field" [(ngModel)]="teamNameValue"
                 name="teamName" #teamName="ngModel" placeholder="Team Name" required>
 
         <div [hidden]="teamName.valid || teamName.pristine"

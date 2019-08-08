@@ -32,10 +32,6 @@ export class MainPage extends BasePage {
     return this.getElement(by.id('home_link'));
   }
 
-  getLoginLink() {
-    return this.getElement(by.id('login_link'));
-  }
-
   getLogLink() {
     return this.getElement(by.id('log_link'));
   }
@@ -47,7 +43,7 @@ export class MainPage extends BasePage {
 
   getTitleText() {
     browser.ignoreSynchronization = true;
-    return this.getElement(by.css('app-root h1')).getText() as Promise<string>;
+    return this.getElement(by.css('app-root h3')).getText() as Promise<string>;
   }
 
   getTokenLink() {

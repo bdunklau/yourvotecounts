@@ -17,19 +17,19 @@ export class DisabledComponent implements OnInit {
               private router: Router) { }
 
   async ngOnInit() {
-    this.subscription = await this.userService.subscribeCurrentUser(obj => {
-      console.log('ngOnInit:  subscribeCurrentUser: obj: ', obj)
-      if(obj && obj.length > 0 && !obj[0].isDisabled) {
-        this.router.navigate(['/myaccount']);
-      }
-    });
+    // this.subscription = await this.userService.subscribeCurrentUser(obj => {
+    //   console.log('ngOnInit:  subscribeCurrentUser: obj: ', obj)
+    //   if(obj && obj.length > 0 && !obj[0].isDisabled) {
+    //     this.router.navigate(['/myaccount']);
+    //   }
+    // });
   }
 
 
   // always unsubscribe
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    console.log('ngOnDestroy:  this.subscription.unsubscribe()');
+    // this.subscription.unsubscribe();
+    // console.log('ngOnDestroy:  this.subscription.unsubscribe()');
   }
 
 }

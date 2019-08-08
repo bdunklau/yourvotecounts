@@ -12,6 +12,7 @@ describe('Anonymous users', () => {
     page = new MainPage(testSupport);
   });
 
+  // passed 8/7
   it('should see Login link', () => {
     page.goto('');
     var login_link = page.getLoginLink();
@@ -33,23 +34,9 @@ describe('Anonymous users', () => {
     expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
   });
 
-
-  // We don't want the UI to display a "Token" link.  That's only for e2e testing.
-  it('should not display a "Token" link', async () => {
-    page.goto('');
-    var home_link = page.getHomeLink(); // sanity check
-    expect(home_link.isDisplayed()).toBeTruthy();
-
-    var token_link = element(by.xpath("//*[. = 'Token']"));
-    expect(token_link.isPresent()).toBeFalsy();
-  });
-
-  // We DO want to make sure we can always point the browser to /token however
+  // passed 8/7
+  // We want to make sure we can always point the browser to /token however
   it('should be able to point browser to /token', async () => {
-    page.goto('');
-    var home_link = element(by.id('home_link')); // sanity check
-    expect(home_link.isDisplayed()).toBeTruthy();
-
     page.gotoTestSupport();
     expect(page.getUrl()).toEqual(browser.baseUrl+'/token');
   });
