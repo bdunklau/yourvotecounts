@@ -1,7 +1,7 @@
 import { TestSupport } from './test-support.po';
 import { MainPage } from './main.po';
 import { UsersPage } from './users.po';
-import { browser, logging, /*, element, by*/ } from 'protractor';
+import { browser, by, logging, /*, element, by*/ } from 'protractor';
 import { Api } from './api.po';
 import { TeamPage } from './team.po';
 import { MyAccountPage } from './my-account.po';
@@ -13,12 +13,13 @@ var verifyPagesEnabled = function(page, myAccountPage, teamPage, sleep) {
                                   browser.sleep(sleep);
   myAccountPage.verifyPage();
 
-  page.clickTeams();
+  // page.clickTeams();
+  page.getElement(by.id('teams_link')).click();
   teamPage.verifyPageBeforeCreatingTeam();
 }
 
 
-fdescribe('Users page (Admins) ', () => {
+describe('Users page (Admins) ', () => {
   let testSupport: TestSupport;
   let page: MainPage;
   let usersPage: UsersPage;
@@ -78,8 +79,8 @@ fdescribe('Users page (Admins) ', () => {
   });
 
 
-  // FAILED this will take some work because the middle section is no longer valid
-  xit('should be able to edit name', async () => {
+  // passed 8/8
+  it('should be able to edit name', async () => {
     testSupport.setName(testSupport.normalUser);
     page.loginAdmin();
     page.pullDownMyMenu();
@@ -88,19 +89,20 @@ fdescribe('Users page (Admins) ', () => {
     var expectedName = 'Billy Bob';
     usersPage.setName(expectedName);
     usersPage.clickSubmit();
+    page.clickLogout();
 
     // you have to logout and login as this person and go to My Account to really verify
-    page.clickLogout();
     testSupport.login(testSupport.normalUser.phoneNumber);
-    page.pullDownMyMenu();
-    page.clickHome();
-    var currentName = await page.getCurrentUserNameLink().getText()
-    expect(currentName == expectedName)
-      .toBeTruthy('expected name to be '+expectedName+' but it was '+currentName );
+    browser.sleep(300);
+    page.clickMyAccount();
+    expect(myAccountPage.getNameLabel().isDisplayed()).toBeTruthy(testSupport.normalUser.displayName+'\'s name should have been displayed on the My Account page, but it wasn\'t');
+    var name = await myAccountPage.getNameLabel().getText();
+    expect(name == expectedName).toBeTruthy('Expected to see the name '+expectedName+' displayed but instead we saw '+name);
     page.clickLogout();
 
     // set name back to what it was
     page.loginAdmin();
+    browser.sleep(300);
     page.pullDownMyMenu();
     page.clickUsers();
     usersPage.queryByName(expectedName);
@@ -110,7 +112,8 @@ fdescribe('Users page (Admins) ', () => {
   });
 
 
-  fit('should be able to disable any user\'s account', () => {
+    // passed 8/8
+  it('should be able to disable any user\'s account', () => {
     testSupport.setNames(testSupport.names);
     var sleep = 300;
     // login as Admin
@@ -158,6 +161,7 @@ fdescribe('Users page (Admins) ', () => {
   })
 
 
+  // passed 8/8
   it('should be able to disable everyone else\'s account with one action', () => {
     testSupport.setNames(testSupport.names);
     var sleep = 200;
@@ -188,12 +192,13 @@ fdescribe('Users page (Admins) ', () => {
 
     // make sure you didn't disable yourself
     page.loginAdmin();
+                              browser.sleep(sleep);
 
     // verify pages enabled
-    page.pullDownMyMenu();
     verifyPagesEnabled(page, myAccountPage, teamPage, sleep);
 
     // restore - re-enable everyone
+    page.pullDownMyMenu();
     page.clickUsers();
                                     browser.sleep(sleep);
     usersPage.enableAll();

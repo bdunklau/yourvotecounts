@@ -42,7 +42,7 @@
 
  <!-- https://www.w3schools.com/howto/howto_js_sidenav.asp -->
  <div id="mySidenav" class="sidenav">
-   <a href="javascript:void(0)" class="closebtn" (click)="closeNav()"><i class="fa fa-close"></i></a>
+   <a href="javascript:void(0)" class="closebtn" id="closeNav" (click)="closeNav()"><i class="fa fa-close"></i></a>
    <div class="nav-heading">Main Menu</div>
    <a id="home_link" class="nav-link" routerLink="/home"><i class="fa fa-home"></i> Home</a>
    <a [hidden]="!isLoggedIn" id="myaccount_link" class="nav-link" (click)="closeNav()" routerLink="/myaccount"><i class="fa fa-user-circle-o"></i> My Account</a>

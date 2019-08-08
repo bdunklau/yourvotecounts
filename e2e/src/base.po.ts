@@ -29,6 +29,10 @@ export class BasePage {
     this.getElement(by.id('teams_link')).click();
   }
 
+  closeNav() {
+    this.getElement(by.id('closeNav')).click();
+  }
+
   containsLoginBox() {
     expect(this.getElement(by.id('firebaseui-auth-container')).isDisplayed()).toBeTruthy('expected to find the firebaseui-auth-container element on this page but did not');
   }
