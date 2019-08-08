@@ -36,7 +36,7 @@ export class TokenComponent implements OnInit {
 
     if(firebase_auth_user && firebase_auth_user.user) {
       var user = firebase_auth_user.user
-      this.log.login(user);
+      this.log.i('login');
       this.userService.setFirebaseUser(user);
     }
 

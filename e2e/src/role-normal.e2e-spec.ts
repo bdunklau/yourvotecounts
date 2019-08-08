@@ -14,13 +14,16 @@ describe('Normal user', () => {
 
   it( 'should not see a Log link', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
-    page.clickHome();
+    page.clickMyAccount();
+    browser.sleep(200);
     expect(element(by.id('log_link')).isDisplayed()).toBeFalsy();
     page.clickLogout()
   });
 
   it('should not be able to navigate to /log', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    page.clickMyAccount();
+    browser.sleep(200);
     page.clickHome();
     browser.sleep(500);
     page.goto('/log');
@@ -31,6 +34,8 @@ describe('Normal user', () => {
 
   it('should not see a Users link', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER)
+    page.clickMyAccount();
+    browser.sleep(200);
     page.clickHome();
     expect(element(by.id('users_link')).isDisplayed()).toBeFalsy();
     page.clickLogout()
@@ -38,6 +43,8 @@ describe('Normal user', () => {
 
   it('should not be able to navigate to /users', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
+    page.clickMyAccount();
+    browser.sleep(200);
     page.clickHome();
     page.goto('/users');
     expect(page.getHomeElement().isDisplayed()).toBeTruthy();

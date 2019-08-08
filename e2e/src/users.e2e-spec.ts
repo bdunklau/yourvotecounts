@@ -1,7 +1,7 @@
 import { TestSupport } from './test-support.po';
 import { MainPage } from './main.po';
 import { UsersPage } from './users.po';
-import { browser, logging, /*, element, by*/ } from 'protractor';
+import { browser, by, logging, /*, element, by*/ } from 'protractor';
 import { Api } from './api.po';
 import { TeamPage } from './team.po';
 import { MyAccountPage } from './my-account.po';
@@ -13,7 +13,8 @@ var verifyPagesEnabled = function(page, myAccountPage, teamPage, sleep) {
                                   browser.sleep(sleep);
   myAccountPage.verifyPage();
 
-  page.clickTeams();
+  // page.clickTeams();
+  page.getElement(by.id('teams_link')).click();
   teamPage.verifyPageBeforeCreatingTeam();
 }
 
@@ -41,8 +42,8 @@ describe('Users page (Admins) ', () => {
 
 
   it('should be able to get to Users page', () => {
-    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
-    page.clickHome();
+    page.loginAdmin();
+    page.pullDownMyMenu();
     page.clickUsers();
     expect(usersPage.getSearchByNameField().isPresent()).toBeTruthy('expected the "search by name" field to be present');
     expect(usersPage.getSearchByPhoneField().isPresent()).toBeTruthy('expected the "search by phone" field to be present');
@@ -52,7 +53,8 @@ describe('Users page (Admins) ', () => {
 
   it('should be to able to query for users by name', async () => {
     testSupport.setNames(testSupport.names);
-    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.loginAdmin();
+    page.pullDownMyMenu();
     page.clickUsers();
     usersPage.queryByName(testSupport.names[0].displayName);
     var actualName = await usersPage.getNameFieldValue();
@@ -63,7 +65,8 @@ describe('Users page (Admins) ', () => {
 
   it('should be to able to query for users by phone', async () => {
     testSupport.setNames(testSupport.names);
-    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.loginAdmin();
+    page.pullDownMyMenu();
     page.clickUsers();
     usersPage.queryByPhone(testSupport.names[0].phoneNumber);
     var actualName = await usersPage.getNameFieldValue();
@@ -76,26 +79,31 @@ describe('Users page (Admins) ', () => {
   });
 
 
+  // passed 8/8
   it('should be able to edit name', async () => {
     testSupport.setName(testSupport.normalUser);
-    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.loginAdmin();
+    page.pullDownMyMenu();
     page.clickUsers();
     usersPage.queryByName(testSupport.normalUser.displayName);
     var expectedName = 'Billy Bob';
     usersPage.setName(expectedName);
     usersPage.clickSubmit();
+    page.clickLogout();
 
     // you have to logout and login as this person and go to My Account to really verify
-    page.clickLogout();
     testSupport.login(testSupport.normalUser.phoneNumber);
-    page.clickHome();
-    var currentName = await page.getCurrentUserNameLink().getText()
-    expect(currentName == expectedName)
-      .toBeTruthy('expected name to be '+expectedName+' but it was '+currentName );
+    browser.sleep(300);
+    page.clickMyAccount();
+    expect(myAccountPage.getNameLabel().isDisplayed()).toBeTruthy(testSupport.normalUser.displayName+'\'s name should have been displayed on the My Account page, but it wasn\'t');
+    var name = await myAccountPage.getNameLabel().getText();
+    expect(name == expectedName).toBeTruthy('Expected to see the name '+expectedName+' displayed but instead we saw '+name);
     page.clickLogout();
 
     // set name back to what it was
-    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.loginAdmin();
+    browser.sleep(300);
+    page.pullDownMyMenu();
     page.clickUsers();
     usersPage.queryByName(expectedName);
     usersPage.setName(testSupport.normalUser.displayName);
@@ -104,12 +112,14 @@ describe('Users page (Admins) ', () => {
   });
 
 
+    // passed 8/8
   it('should be able to disable any user\'s account', () => {
     testSupport.setNames(testSupport.names);
     var sleep = 300;
     // login as Admin
     page.loginAdmin();
     // look up someone's account
+    page.pullDownMyMenu();
     page.clickUsers();
                                     browser.sleep(sleep);
     usersPage.lookUpSomeone();
@@ -127,6 +137,7 @@ describe('Users page (Admins) ', () => {
 
     page.clickLogout();
     page.loginAsSomeoneElse();
+                                    browser.sleep(sleep);
 
     // verify pages enabled
     verifyPagesEnabled(page, myAccountPage, teamPage, sleep);
@@ -136,6 +147,7 @@ describe('Users page (Admins) ', () => {
     // restore by re-enabling the user
     page.loginAdmin();
     // look up someone's account
+    page.pullDownMyMenu();
     page.clickUsers();
                                     browser.sleep(sleep);
     usersPage.lookUpSomeone();
@@ -149,6 +161,7 @@ describe('Users page (Admins) ', () => {
   })
 
 
+  // passed 8/8
   it('should be able to disable everyone else\'s account with one action', () => {
     testSupport.setNames(testSupport.names);
     var sleep = 200;
@@ -156,6 +169,7 @@ describe('Users page (Admins) ', () => {
     page.loginAdmin();
 
     // disable everyone but me
+    page.pullDownMyMenu();
     page.clickUsers();
                                     browser.sleep(sleep);
     usersPage.disableAll();
@@ -178,11 +192,13 @@ describe('Users page (Admins) ', () => {
 
     // make sure you didn't disable yourself
     page.loginAdmin();
+                              browser.sleep(sleep);
 
     // verify pages enabled
     verifyPagesEnabled(page, myAccountPage, teamPage, sleep);
 
     // restore - re-enable everyone
+    page.pullDownMyMenu();
     page.clickUsers();
                                     browser.sleep(sleep);
     usersPage.enableAll();

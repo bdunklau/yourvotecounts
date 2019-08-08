@@ -7,6 +7,9 @@ import { FirebaseUserModel } from '../user/user.model';
 import { map/*, take*/ } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { UserService } from '../user/user.service';
+import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 // a stub/mock
 // FYI  https://github.com/angular/angularfire2/issues/1706#issuecomment-394212606
@@ -36,7 +39,9 @@ describe('TeamListComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ TeamListComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
-      providers: [FirebaseUserModel,
+      providers: [FirebaseUserModel, UserService,
+                  { provide: HttpClient, useValue: {} },
+                  { provide: AngularFireAuth, useValue: {} },
                   {
                     provide: ActivatedRoute,
                     useValue: {

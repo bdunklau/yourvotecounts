@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import { /*map,*/ take } from 'rxjs/operators';
+import { UserService } from '../user/user.service';
+import { FirebaseUserModel } from '../user/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,11 +11,14 @@ import { /*map,*/ take } from 'rxjs/operators';
 export class LogService {
 
   constructor(
-    public db: AngularFirestore,) { }
+    public db: AngularFirestore,
+    private userService: UserService) { }
 
-  private xxx(logtype, eventValue) {
+  // private xxx(logtype, eventValue) {
+  private xxx(opts: {logtype: string, by: string, value: string}) {
+    let logtype = opts.logtype;
     let batch = this.db.firestore.batch();
-    var ref = this.db.collection(logtype, rf => rf.where("event", "==", eventValue)).snapshotChanges().pipe(take(1));
+    var ref = this.db.collection(logtype, rf => rf.where(opts.by, "==", opts.value)).snapshotChanges().pipe(take(1));
     ref.subscribe(data  => {
       data.forEach(function(dt) {
         batch.delete(dt.payload.doc.ref);
@@ -22,27 +27,15 @@ export class LogService {
     });
   }
 
-  deleteLogs(eventValue: string) {
-    this.xxx('log_debug', eventValue);
-    this.xxx('log_info', eventValue);
-    this.xxx('log_error', eventValue);
-  }
+  // deleteLogs(eventValue: string) {
+  deleteLogs(opts: {by: string, value: string}) {
+    this.xxx({logtype: 'log_debug', by: opts.by, value: opts.value});
+    this.xxx({logtype: 'log_info', by: opts.by, value: opts.value});
+    this.xxx({logtype: 'log_error', by: opts.by, value: opts.value});
 
-  async login(user) {
-    console.log('LogService.login()  user: ', user)
-    var entry = {event: 'login'}
-    if(user.uid) entry['uid'] = user.uid;
-    if(user.displayName) entry['displayName'] = user.displayName;
-    if(user.phoneNumber) entry['phoneNumber'] = user.phoneNumber;
-    await this.i(entry);
-  }
-
-  async logout(user) {
-    var entry = {event: 'logout'}
-    if(user.uid) entry['uid'] = user.uid;
-    if(user.displayName) entry['displayName'] = user.displayName;
-    if(user.phoneNumber) entry['phoneNumber'] = user.phoneNumber;
-    await this.i(entry);
+    // this.xxx('log_debug', eventValue);
+    // this.xxx('log_info', eventValue);
+    // this.xxx('log_error', eventValue);
   }
 
   async e(keyvals) {
@@ -53,8 +46,17 @@ export class LogService {
     this.logit(keyvals, 'debug')
   }
 
-  async i(keyvals) {
+  async ii(keyvals) {
     this.logit(keyvals, 'info')
+  }
+
+  async i(event: string) {
+    const user = await this.userService.getCurrentUser();
+    var entry = {event: event}
+    if(user.uid) entry['uid'] = user.uid;
+    if(user.displayName) entry['displayName'] = user.displayName;
+    if(user.phoneNumber) entry['phoneNumber'] = user.phoneNumber;
+    await this.ii(entry);
   }
 
   // call d() e() and i() - not this function, except for testing

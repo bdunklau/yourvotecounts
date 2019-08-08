@@ -17,6 +17,7 @@ interface QueryConfig {
   limit?: number;
   reverse?: boolean;
   prepend?: boolean; // true if you want stuff added to the beginning of the array
+  // scrollFn?: () => void;
 }
 
 
@@ -63,6 +64,7 @@ export class PaginationService {
       limit: 10,
       reverse: opts.reverse,
       prepend: opts.prepend,
+      // scrollFn: opts.scrollFn,
       ...opts
     }
 
@@ -105,6 +107,8 @@ export class PaginationService {
         // update source with new values, done loading
         this._data.next(values);
         this._loading.next(false);
+
+        // this.query.scrollFn();
 
         // no more values, mark done
         if(!values.length) {

@@ -9,6 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import { take } from 'rxjs/operators';
 import { MessageService } from '../core/message.service';
+import { UserService } from '../user/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class TeamService {
   constructor(
     private afs: AngularFirestore,
     private messageService: MessageService,
-    private log: LogService) { }
+    private userService: UserService,
+    private log: LogService,) { }
 
   addUserToTeam(team: Team, user: FirebaseUserModel) {
     let batch = this.afs.firestore.batch();
@@ -40,8 +42,8 @@ export class TeamService {
     });
   }
 
-  async create(teamName: string, user: FirebaseUserModel): Promise<string> {
-    let team = new Team();
+  async create(team: Team): Promise<string> {
+    let teamName = team.name
     var teamDocId = this.afs.createId();
     team.id = teamDocId;
     team.name = teamName;
@@ -49,6 +51,7 @@ export class TeamService {
     team.created = firebase.firestore.Timestamp.now();
     team.memberCount = 1;
     team.leaderCount = 1;
+    const user = await this.userService.getCurrentUser();
     team.setCreator(user);
 
     let batch = this.afs.firestore.batch();
@@ -66,6 +69,7 @@ export class TeamService {
                      leader: true}
     batch.set(teamMemberRef, teamMember);
     await batch.commit();
+    this.log.i('created team '+team.debug());
     return teamDocId;
 
     // good example of transactions:
@@ -84,7 +88,7 @@ export class TeamService {
         batch.delete(dt.payload.doc.ref);
       });
       batch.commit().then(() => {
-        // this.messageService.updateTeam(null); // only updates the client you're on - not that useful
+        this.log.i('deleted team '+team.debug());
       });
     });
 
@@ -99,20 +103,26 @@ export class TeamService {
     batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(-1)});
     if(team_member.leader)
       batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(-1)});
-    await batch.commit();//.then(() => {
-    //   console.log('deleteTeamMember: removing ', team_member);
-    //   this.messageService.deleteTeamMember(team_member);
-    // });
-
-    // console.log('deleteTeamMember: removing ', team_member);
-    // this.messageService.deleteTeamMember(team_member);
+    await batch.commit();
+    console.log('team_member = ', team_member);
+    this.log.i('deleted '+team_member.debug());
     return await this.getTeamData(team_member.teamDocId);
   }
 
 
   async getTeamData(teamDocId: string) {
     var teamDoc = await this.afs.collection('team').doc(teamDocId).ref.get();
-    return teamDoc.data() as Team;
+    const team = new Team();
+    team.id = teamDoc.data().id;
+    team.name = teamDoc.data().name;
+    team.created = teamDoc.data().created;
+    team.creatorId = teamDoc.data().creatorId;
+    team.creatorName = teamDoc.data().creatorName;
+    team.creatorPhone = teamDoc.data().creatorPhone;
+    team.leaderCount = teamDoc.data().leaderCount; // e2e testing caught this omission :)
+    team.memberCount = teamDoc.data().memberCount; // e2e testing caught this omission :)
+    console.log('teamDoc.data() = ', teamDoc.data());
+    return team;
   }
 
 
@@ -132,7 +142,9 @@ export class TeamService {
     return retThis;
   }
 
-  update(teamId: string, teamName: string, user: FirebaseUserModel) {
+  update(team: Team) {
+    let teamId = team.id;
+    let teamName = team.name
     let batch = this.afs.firestore.batch();
 
     var teamRef = this.afs.collection('team').doc(teamId).ref;
@@ -143,7 +155,9 @@ export class TeamService {
       data.forEach(function(dt) {
         batch.update(dt.payload.doc.ref, {team_name: teamName});
       });
-      batch.commit();
+      batch.commit().then(() => {
+        this.log.i('updated team '+team.debug());
+      });
     });
   }
 

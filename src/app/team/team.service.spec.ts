@@ -2,6 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { TeamService } from './team.service';
 import { BehaviorSubject } from 'rxjs';
+import { UserService } from '../user/user.service';
+import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 
 // a stub/mock
@@ -19,7 +22,9 @@ const FirestoreStub = {
 
 describe('TeamService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    providers: [
+    providers: [ UserService,
+                { provide: HttpClient, useValue: {} },
+                { provide: AngularFireAuth, useValue: {} },
                 {provide: AngularFirestore, useValue: FirestoreStub}
               ]
   }));

@@ -1,9 +1,14 @@
 
+<!-- notice how #list is declared here and also used here -->
 <div class="container">
-<h1>Log</h1>
 
 <div class="row">
   <div class="col-md-4 col-lg-3">
+      <div class="row padbottom10">
+        <div class="col-lg-12">
+          <h3>Log</h3>
+        </div>
+      </div>
       <div class="row padbottom10">
         <div class="col-lg-12">
           <app-search-log-by-level (level)="onLevelChosen($event)"></app-search-log-by-level>
@@ -33,20 +38,25 @@
   </div>
 
   <div class="col-md-8 col-lg-9">
-      <div class="content" appScrollable (scrollPosition)="scrollHandler($event)">
+      <div class="content autoscrollable" appScrollable (scrollPosition)="scrollHandler($event)" #scrollBottom>  <!-- doesn't work - figure out later why (8/2/19) -->
           <p *ngIf="page.done | async" class="text-center"><b>NO MORE ENTRIES</b></p>
           <app-loading-spinner *ngIf="page.loading | async"></app-loading-spinner>
           <table class="table table-striped">
             <tbody>
             <tr *ngFor="let logentry of page.data | async">
-              <td colspan="4">
-                <small>{{ logentry.date.toDate() }}</small>
-                <br/>
-                <span class="log_element log_displayName">{{ logentry.displayName }} </span>
-                <span class="log_element log_phoneNumber">{{ logentry.phoneNumber }} </span>
-                <br/>
-                <span class="log_element log_level">{{ logentry.level }}</span>
-                <span class="log_element log_event">{{ logentry.event }}</span>
+              <td class="{{logentry.level}}">
+                <div class="row">
+                  <div class="col-md-10"><small>{{ logentry.date.toDate() | date:'MM/dd/yyyy h:mm:ss z' }}</small></div>
+                  <div class="col-md-2 text-right"><small><span class="log_element log_level">{{ logentry.level }}</span></small></div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <span class="log_element log_displayName">{{ logentry.displayName }} </span>
+                    <!-- <span class="log_element log_phoneNumber">{{ logentry.phoneNumber }} </span> -->
+                    <span class="log_element log_event">{{ logentry.event }}</span>
+                    <span [hidden]="true" class="log_element log_phoneNumber" title="{{logentry.phoneNumber}}">{{ logentry.phoneNumber }}</span>
+                  </div>
+                </div>
               </td>
             </tr>
             </tbody>

@@ -8,7 +8,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoginComponent ]
+      declarations: [ LoginComponent ],
     })
     .compileComponents();
   }));
@@ -19,6 +19,8 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
   });
 
+  // firebase ui and auth libraries make is so you can't create this component
+  // MAYBE if the mock objects above were defined differently ???
   xit('should create', () => {
     expect(component).toBeTruthy();
   });

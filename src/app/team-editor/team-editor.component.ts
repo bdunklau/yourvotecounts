@@ -13,6 +13,7 @@ import * as _ from 'lodash';
 import { Router } from "@angular/router";
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
+import { LogService } from '../log/log.service';
 
 @Component({
   selector: 'app-team-editor',
@@ -24,8 +25,8 @@ export class TeamEditorComponent implements OnInit {
 
   // editing: boolean;
   team: Team;
-  // @Input() teamNameValue: string;
-  // @Input() teamIdValue: string;
+  /*@Input()*/ teamNameValue: string;
+  /*@Input()*/ teamIdValue: string;
   @Input() user: FirebaseUserModel;
   // @Output() editing = new EventEmitter<boolean>();
   team_members: TeamMember[];
@@ -40,7 +41,8 @@ export class TeamEditorComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private _modalService: NgbModal,
-              private messageService: MessageService) { }
+              private messageService: MessageService,
+              private log: LogService) { }
 
   ngOnInit() {
 
@@ -53,6 +55,8 @@ export class TeamEditorComponent implements OnInit {
       console.log('routeSubscription: team: ', team);
       if (team) {
         this.team = team;
+        this.teamIdValue = team.id;
+        this.teamNameValue = team.name;
         console.log("team-editor.component.ts  team: ", this.team)
         //this.createForm(this.user.name);
         this.memberSubscription = this.teamService.getMembersByTeamId(team.id).pipe(
@@ -77,6 +81,7 @@ export class TeamEditorComponent implements OnInit {
       let user = routeData['user'];
       if(user) {
         this.user = user;
+        this.log.i('begin creating team');
       }
     })
 
@@ -128,11 +133,13 @@ export class TeamEditorComponent implements OnInit {
     // this.editing = false;
     // console.log('onSubmit:  this.user = ', this.user);
     var teamId = null;
+    if(this.teamIdValue) this.team.id = this.teamIdValue;
+    this.team.name = this.teamNameValue.trim();
     if(!this.team.id) {
-      teamId = this.teamService.create(this.team.name, this.user);
+      teamId = this.teamService.create(this.team);
     }
     else {
-      this.teamService.update(this.team.id, this.team.name, this.user);
+      this.teamService.update(this.team);
       teamId = this.team.id;
     }
     this.router.navigate(['/teams', teamId]);

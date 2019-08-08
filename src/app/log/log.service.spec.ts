@@ -3,6 +3,9 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { LogService } from './log.service';
 import {BehaviorSubject} from 'rxjs';
 import { of } from 'rxjs/observable/of';
+import { UserService } from '../user/user.service';
+import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 
 // // from:   https://atom-morgan.github.io/how-to-test-angular-canactivate-guards/
@@ -29,7 +32,11 @@ describe('LogService', () => {
       async () => {
          TestBed.configureTestingModule({
              // I used 'useValue' because it is just a json. If it was class, I'd use 'useClass'
-             providers: [{provide: AngularFirestore, useValue: AngularFirestoreStub},]
+             providers: [ UserService,
+                         { provide: HttpClient, useValue: {} },
+                         { provide: AngularFireAuth, useValue: {} },
+                          {provide: AngularFirestore, useValue: AngularFirestoreStub},
+                        ]
          }).compileComponents();
       }
   );

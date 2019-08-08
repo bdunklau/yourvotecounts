@@ -1,3 +1,7 @@
+.autoscrollable { overflow: auto }
+
+.error { background-color: #ff8888 }
+
 .log_element { margin-right:25px; }
 
 .padbottom10 { padding-bottom:10px; }

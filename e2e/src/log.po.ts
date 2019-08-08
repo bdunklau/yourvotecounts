@@ -91,7 +91,7 @@ export class LogPage extends BasePage {
 
 
   debug_user0_tomorrow = { level: 'debug',
-    event: 'dbg event',
+    event: 'debug_user0_tomorrow',
     uid: this.testSupport.names[0]['uid'],
     displayName: this.testSupport.names[0]['displayName'],
     phoneNumber: this.testSupport.names[0]['phoneNumber'],
@@ -99,7 +99,7 @@ export class LogPage extends BasePage {
   }
 
   info_user0_tomorrow = { level: 'info',
-    event: 'nfo event',
+    event: 'info_user0_tomorrow',
     uid: this.testSupport.names[0]['uid'],
     displayName: this.testSupport.names[0]['displayName'],
     phoneNumber: this.testSupport.names[0]['phoneNumber'],
@@ -107,7 +107,7 @@ export class LogPage extends BasePage {
   }
 
   error_user0_tomorrow = { level: 'error',
-    event: 'err event',
+    event: 'error_user0_tomorrow',
     uid: this.testSupport.names[0]['uid'],
     displayName: this.testSupport.names[0]['displayName'],
     phoneNumber: this.testSupport.names[0]['phoneNumber'],
@@ -115,7 +115,7 @@ export class LogPage extends BasePage {
   }
 
   debug_user1_tomorrow = { level: 'debug',
-    event: 'dbg event',
+    event: 'debug_user1_tomorrow',
     uid: this.testSupport.names[1]['uid'],
     displayName: this.testSupport.names[1]['displayName'],
     phoneNumber: this.testSupport.names[1]['phoneNumber'],
@@ -123,7 +123,7 @@ export class LogPage extends BasePage {
   }
 
   info_user1_tomorrow = { level: 'info',
-    event: 'nfo event',
+    event: 'info_user1_tomorrow',
     uid: this.testSupport.names[1]['uid'],
     displayName: this.testSupport.names[1]['displayName'],
     phoneNumber: this.testSupport.names[1]['phoneNumber'],
@@ -131,7 +131,7 @@ export class LogPage extends BasePage {
   }
 
   error_user1_tomorrow = { level: 'error',
-    event: 'err event',
+    event: 'error_user1_tomorrow',
     uid: this.testSupport.names[1]['uid'],
     displayName: this.testSupport.names[1]['displayName'],
     phoneNumber: this.testSupport.names[1]['phoneNumber'],
@@ -140,7 +140,7 @@ export class LogPage extends BasePage {
 
 
   debug_user0_dayafter = { level: 'debug',
-    event: 'dbg event',
+    event: 'debug_user0_dayafter',
     uid: this.testSupport.names[0]['uid'],
     displayName: this.testSupport.names[0]['displayName'],
     phoneNumber: this.testSupport.names[0]['phoneNumber'],
@@ -148,7 +148,7 @@ export class LogPage extends BasePage {
   }
 
   info_user0_dayafter = { level: 'info',
-    event: 'nfo event',
+    event: 'info_user0_dayafter',
     uid: this.testSupport.names[0]['uid'],
     displayName: this.testSupport.names[0]['displayName'],
     phoneNumber: this.testSupport.names[0]['phoneNumber'],
@@ -156,7 +156,7 @@ export class LogPage extends BasePage {
   }
 
   error_user0_dayafter = { level: 'error',
-    event: 'err event',
+    event: 'error_user0_dayafter',
     uid: this.testSupport.names[0]['uid'],
     displayName: this.testSupport.names[0]['displayName'],
     phoneNumber: this.testSupport.names[0]['phoneNumber'],
@@ -164,7 +164,7 @@ export class LogPage extends BasePage {
   }
 
   debug_user1_dayafter = { level: 'debug',
-    event: 'dbg event',
+    event: 'debug_user1_dayafter',
     uid: this.testSupport.names[1]['uid'],
     displayName: this.testSupport.names[1]['displayName'],
     phoneNumber: this.testSupport.names[1]['phoneNumber'],
@@ -172,7 +172,7 @@ export class LogPage extends BasePage {
   }
 
   info_user1_dayafter = { level: 'info',
-    event: 'nfo event',
+    event: 'info_user1_dayafter',
     uid: this.testSupport.names[1]['uid'],
     displayName: this.testSupport.names[1]['displayName'],
     phoneNumber: this.testSupport.names[1]['phoneNumber'],
@@ -180,7 +180,7 @@ export class LogPage extends BasePage {
   }
 
   error_user1_dayafter = { level: 'error',
-    event: 'err event',
+    event: 'error_user1_dayafter',
     uid: this.testSupport.names[1]['uid'],
     displayName: this.testSupport.names[1]['displayName'],
     phoneNumber: this.testSupport.names[1]['phoneNumber'],
@@ -188,7 +188,7 @@ export class LogPage extends BasePage {
   }
 
   debug_user0_day3 = { level: 'debug',
-    event: 'dbg event',
+    event: 'debug_user0_day3',
     uid: this.testSupport.names[0]['uid'],
     displayName: this.testSupport.names[0]['displayName'],
     phoneNumber: this.testSupport.names[0]['phoneNumber'],
@@ -196,7 +196,7 @@ export class LogPage extends BasePage {
   }
 
   info_user0_day3 = { level: 'info',
-    event: 'nfo event',
+    event: 'info_user0_day3',
     uid: this.testSupport.names[0]['uid'],
     displayName: this.testSupport.names[0]['displayName'],
     phoneNumber: this.testSupport.names[0]['phoneNumber'],
@@ -204,7 +204,7 @@ export class LogPage extends BasePage {
   }
 
   error_user0_day3 = { level: 'error',
-    event: 'err event',
+    event: 'error_user0_day3',
     uid: this.testSupport.names[0]['uid'],
     displayName: this.testSupport.names[0]['displayName'],
     phoneNumber: this.testSupport.names[0]['phoneNumber'],
@@ -212,7 +212,7 @@ export class LogPage extends BasePage {
   }
 
   debug_user1_day3 = { level: 'debug',
-    event: 'dbg event',
+    event: 'debug_user1_day3',
     uid: this.testSupport.names[1]['uid'],
     displayName: this.testSupport.names[1]['displayName'],
     phoneNumber: this.testSupport.names[1]['phoneNumber'],
@@ -220,7 +220,7 @@ export class LogPage extends BasePage {
   }
 
   info_user1_day3 = { level: 'info',
-    event: 'nfo event',
+    event: 'info_user1_day3',
     uid: this.testSupport.names[1]['uid'],
     displayName: this.testSupport.names[1]['displayName'],
     phoneNumber: this.testSupport.names[1]['phoneNumber'],
@@ -228,7 +228,7 @@ export class LogPage extends BasePage {
   }
 
   error_user1_day3 = { level: 'error',
-    event: 'err event',
+    event: 'error_user1_day3',
     uid: this.testSupport.names[1]['uid'],
     displayName: this.testSupport.names[1]['displayName'],
     phoneNumber: this.testSupport.names[1]['phoneNumber'],
@@ -268,7 +268,7 @@ export class LogPage extends BasePage {
 
     _.forEach(logs, (log) => {
       this.testSupport.createLog(log);
-      browser.sleep(500);
+      browser.sleep(250);
     })
   } // setupQueryByDateTest
 

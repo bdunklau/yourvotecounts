@@ -14,6 +14,7 @@ export class BasePage {
   }
 
   clickLogout() {
+    browser.sleep(1000);
     this.pullDownMyMenu();
     this.getLogoutLink().click();
   }
@@ -26,6 +27,10 @@ export class BasePage {
   clickTeams() {
     this.pullDownMyMenu();
     this.getElement(by.id('teams_link')).click();
+  }
+
+  closeNav() {
+    this.getElement(by.id('closeNav')).click();
   }
 
   containsLoginBox() {
@@ -55,7 +60,7 @@ export class BasePage {
 
   getElements(locator) {
     var elements = element.all(locator)
-    browser.wait(this.presenceOfAll(elements), 3000);
+    browser.wait(this.presenceOfAll(elements), 3000, "locator: "+locator+" never became present");
     return elements;
   }
 
@@ -77,6 +82,11 @@ export class BasePage {
 
   getLogoutLink() {
     return this.getElement(by.id('logout_link'));
+  }
+
+  getLoginLink() {
+    this.getElement(by.id('hamburger_menu_icon')).click();
+    return this.getElement(by.id('login_link'));
   }
 
 
@@ -105,7 +115,8 @@ export class BasePage {
 
 
   pullDownMyMenu() {
-    this.getElement(by.id('name_or_phone')).click();
+    this.getElement(by.id('hamburger_menu_icon')).click();
+    browser.sleep(1000);
   }
 
 }

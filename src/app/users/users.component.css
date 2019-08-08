@@ -1,6 +1,6 @@
 a:hover {cursor: pointer}
 
-.pad20 { padding-right:20px }
+.padtop20 { padding-top:20px }
 
 .ng-valid[required], .ng-valid.required  {
   border-left: 5px solid #42A948; /* green */
@@ -48,6 +48,8 @@ a:hover {cursor: pointer}
 }
 
 .text18 {font-size:18px}
+
+.text24 {font-size:24px}
 
 input.default:checked + .slider {
   background-color: #444;

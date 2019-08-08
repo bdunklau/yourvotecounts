@@ -35,7 +35,7 @@ export class LogFormComponent implements OnInit {
 
   onSubmit(form: NgForm) {
     if(this.doDelete) {
-      this.deleteLogs(this.eventValue);
+      this.deleteLogs({by:'event', value: this.eventValue});
       return;
     }
 
@@ -59,9 +59,8 @@ export class LogFormComponent implements OnInit {
     })
   }
 
-  deleteLogs(val) {
-    console.log('deletelogs()  val = ', val);
-    this.log.deleteLogs(val);
+  deleteLogs(opts) {
+    this.log.deleteLogs(opts);
   }
 
 }

@@ -106,13 +106,23 @@ exports.createLogs = functions.https.onRequest(async (req, res) => {
 
 })
 
-
+/**
+Options
+by: event, phoneNumber, displayName
+**/
 exports.deleteLogs = functions.https.onRequest((req, res) => {
-  var event = 'test event';
-  if(req.query.event) event = req.query.event;
-  let debugQuery = db.collection('log_debug').where('event', '==', event);
-  let infoQuery = db.collection('log_info').where('event', '==', event);
-  let errorQuery = db.collection('log_error').where('event', '==', event);
+  var by = 'event'
+  if(req.query.by) by = req.query.by
+
+  var value = 'test event'
+  if(req.query.value) value = req.query.value
+
+  if(by === 'phoneNumber' && !value.startsWith('+1'))
+    value = '+1'+value;
+
+  let debugQuery = db.collection('log_debug').where(by, '==', value);
+  let infoQuery = db.collection('log_info').where(by, '==', value);
+  let errorQuery = db.collection('log_error').where(by, '==', value);
 
   return new Promise((resolve, reject) => {
     deleteQueryBatch(db, debugQuery, resolve, reject);

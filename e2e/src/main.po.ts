@@ -32,10 +32,6 @@ export class MainPage extends BasePage {
     return this.getElement(by.id('home_link'));
   }
 
-  getLoginLink() {
-    return this.getElement(by.id('login_link'));
-  }
-
   getLogLink() {
     return this.getElement(by.id('log_link'));
   }
@@ -47,7 +43,7 @@ export class MainPage extends BasePage {
 
   getTitleText() {
     browser.ignoreSynchronization = true;
-    return this.getElement(by.css('app-root h1')).getText() as Promise<string>;
+    return this.getElement(by.css('app-root h3')).getText() as Promise<string>;
   }
 
   getTokenLink() {
@@ -69,7 +65,7 @@ export class MainPage extends BasePage {
   }
 
   loginAdmin() {
-    this.testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    this.testSupport.login(this.testSupport.adminUser.phoneNumber);
   }
 
   loginAsSomeone() {
@@ -91,8 +87,6 @@ export class MainPage extends BasePage {
 
   verifyPagesDisabled(sleep: number) {
     browser.sleep(sleep);
-    this.goto('');
-    browser.sleep(sleep);
     this.verifyMyAccountDisabled();
       browser.sleep(sleep);
     this.verifyTeamsDisabled();
@@ -103,9 +97,5 @@ export class MainPage extends BasePage {
     this.clickTeams();
     this.verifyDisabledPage('Teams');
   }
-
-  // pullDownMyMenu() {
-  //   this.getElement(by.id('name_or_phone')).click();
-  // }
 
 }

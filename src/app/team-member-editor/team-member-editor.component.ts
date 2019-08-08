@@ -114,7 +114,8 @@ export class TeamMemberEditorComponent implements OnInit {
     }
   }
 
-  async confirmDelete(team_member: TeamMember) {
+  async confirmDelete(obj) {
+    var team_member = new TeamMember(obj);
     // deleting yourself?
     //    are you the last leader?
     //    are you the last member?
