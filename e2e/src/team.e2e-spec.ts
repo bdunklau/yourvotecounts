@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
 
-describe('Team page', () => {
+fdescribe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -27,7 +27,6 @@ describe('Team page', () => {
     testSupport.login(testSupport.normalUser.phoneNumber);
     var sleep = 300;
     browser.sleep(sleep);
-    page.goto('');
     page.clickTeams();
 
     teamPage.verifyPageBeforeCreatingTeam();
@@ -65,7 +64,7 @@ describe('Team page', () => {
   });
 
 
-  // passed on 7/17/19
+  // failed
   it('should be able to add and remove people from a team', () => {
     teamPage.createTeam(testSupport.names[0].phoneNumber);
     teamPage.selectTeam();
@@ -202,19 +201,17 @@ describe('Team page', () => {
   })
 
 
-  // passed on 7/17/19
+    // passed 8/8
   it('should prevent non-leaders from adding/removing people', async () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     page.clickLogout();
 
     testSupport.login(testSupport.names[1].phoneNumber); // the "added" person
-    browser.sleep(500);
-    page.goto('');
-    browser.sleep(500);
+    browser.sleep(300);
     page.clickTeams();
-    browser.sleep(500);
+    browser.sleep(300);
     teamPage.selectTeam();
-    browser.sleep(500);
+    browser.sleep(300);
     teamPage.verifyMemberListIsDisplayed();
     teamPage.verifyMembersCannotBeAdded();
     teamPage.verifyMembersCannotBeRemoved();
@@ -222,7 +219,7 @@ describe('Team page', () => {
 
     // clean up
     testSupport.login(testSupport.names[0].phoneNumber);
-    page.goto('');
+    browser.sleep(300);
     page.clickTeams();
     teamPage.selectTeam();
     teamPage.editTeam();
@@ -231,21 +228,20 @@ describe('Team page', () => {
   })
 
 
-  // passed on 7/17/19
+    // passed 8/8
   // As it is now, this is now different from the intial test where we create a team and then delete it.
   // For this test to be meaningful, we need to add someone to the team and make that person a leader.
   // Then login as that person and delete the team.
   // Then make sure the team is removed from both people's list.
   it('should let leaders delete a team', async () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
-    browser.sleep(500);
+    browser.sleep(300);
     teamPage.makeOtherPersonLeader();
     page.clickLogout();
 
     // now login as the person that was just made leader
     testSupport.login(testSupport.names[1].phoneNumber);
-    browser.sleep(500);
-    page.goto('');
+    browser.sleep(300);
     page.clickTeams();
     teamPage.selectTeam();
     teamPage.editTeam();
@@ -255,20 +251,19 @@ describe('Team page', () => {
 
     // login as original user and make sure the team doesn't exist for him either
     testSupport.login(testSupport.names[1].phoneNumber);
-    browser.sleep(500);
-    page.goto('');
+    browser.sleep(300);
     page.clickTeams();
     teamPage.verifyTeamDoesNotExist();
     page.clickLogout();
   })
 
 
-  // passed on 7/17/19
+  // passed 8/8
   it('should prevent non-leaders from editing or deleting a team', () => {
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
     page.clickLogout();
     testSupport.login(testSupport.names[1].phoneNumber);
-    page.goto('');
+    browser.sleep(300);
     page.clickTeams();
     teamPage.selectTeam();
     teamPage.verifyTeamEditLinkDoesNotExist();
@@ -276,8 +271,7 @@ describe('Team page', () => {
 
     // clean up
     testSupport.login(testSupport.names[0].phoneNumber);
-    browser.sleep(1000);
-    page.goto('');
+    browser.sleep(300);
     page.clickTeams();
     teamPage.selectTeam();
     teamPage.editTeam();
@@ -286,7 +280,7 @@ describe('Team page', () => {
   })
 
 
-  // passed on 7/17/19
+  // failed
   it('should alert leaders if they are about to revoke their leadership role', () => {
     let pause = 1000;
     teamPage.createTeamWithTwoPeople(testSupport.names[0].phoneNumber);
@@ -315,8 +309,7 @@ describe('Team page', () => {
 
     // clean up
     testSupport.login(testSupport.names[1].phoneNumber);
-    browser.sleep(500);
-    page.goto('');
+    browser.sleep(300);
     page.clickTeams();
     teamPage.selectTeam();
     teamPage.editTeam();
@@ -325,7 +318,7 @@ describe('Team page', () => {
   })
 
 
-  // passed on 7/17/19
+  // failed
   it('should not allow team to be leader-less', () => {
     // create a team with just you
     // try to revoke your own leader access - verify not allowed

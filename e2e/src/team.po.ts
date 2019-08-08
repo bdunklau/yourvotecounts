@@ -59,8 +59,7 @@ export class TeamPage extends BasePage {
   createTeam(phoneNumber: string) {
     this.args.testSupport.setNames(this.args.testSupport.names);
     this.args.testSupport.login(phoneNumber);
-    browser.sleep(500);
-    this.goto('');
+    browser.sleep(300);
     this.clickTeams();
     this.beginCreateTeam();
     this.fillOutForm();

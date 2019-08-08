@@ -104,6 +104,7 @@ export class TeamService {
     if(team_member.leader)
       batch.update(teamRef, {leaderCount: firebase.firestore.FieldValue.increment(-1)});
     await batch.commit();
+    console.log('team_member = ', team_member);
     this.log.i('deleted '+team_member.debug());
     return await this.getTeamData(team_member.teamDocId);
   }
@@ -118,6 +119,8 @@ export class TeamService {
     team.creatorId = teamDoc.data().creatorId;
     team.creatorName = teamDoc.data().creatorName;
     team.creatorPhone = teamDoc.data().creatorPhone;
+    team.leaderCount = teamDoc.data().leaderCount; // e2e testing caught this omission :)
+    team.memberCount = teamDoc.data().memberCount; // e2e testing caught this omission :)
     console.log('teamDoc.data() = ', teamDoc.data());
     return team;
   }

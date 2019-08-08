@@ -4,7 +4,7 @@ import { TestSupport } from './test-support.po';
 import { MyAccountPage } from './my-account.po';
 import { Api } from './api.po';
 
-fdescribe('Logged in users', () => {
+describe('Logged in users', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let myAccountPage: MyAccountPage;
