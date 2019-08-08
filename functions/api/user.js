@@ -7,7 +7,7 @@ const auth = require('../auth');
 //admin.initializeApp(functions.config().firebase);
 var db = admin.firestore();
 
-// firebase deploy --only functions:getUser,functions:updateUser
+// firebase deploy --only functions:getUser,functions:setUser
 
 exports.getUser = functions.https.onRequest(async (req, res) => {
   let authKeyValid = await auth.authKeyValidated(req.query.auth_key);
@@ -35,6 +35,11 @@ exports.setUser = functions.https.onRequest(async (req, res) => {
 
   var updateValues = {displayName: req.body.displayName,
                       displayName_lower: req.body.displayName.toLowerCase()};
+
+  if(req.query.online) {
+    updateValues['online'] = req.query.online === 'true'
+  }
+
   return db.collection('user').doc(req.body.uid).update(updateValues).then(() => {
     return res.status(200).send({'status': 'ok', 'response': 'name changed to '+req.body.displayName});
   })

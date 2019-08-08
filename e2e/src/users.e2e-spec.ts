@@ -214,6 +214,16 @@ describe('Users page (Admins) ', () => {
   })
 
 
+  it('should be able to see when a user logs in', () => {
+    var sleep = 200;
+    page.loginAdmin();
+    page.pullDownMyMenu();
+    page.clickUsers();
+                                    browser.sleep(sleep);
+    usersPage.lookUpSomeone();
+  })
+
+
   afterEach(async () => {
     // Assert that there are no errors emitted from the browser
     const logs = await browser.manage().logs().get(logging.Type.BROWSER);
