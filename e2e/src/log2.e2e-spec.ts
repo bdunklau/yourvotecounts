@@ -22,7 +22,7 @@ fdescribe('Log page', () => {
 
   // Write one DEBUG, one INFO and one ERROR entry to the log and verify that the right entries
   // are displayed when we filter the logs by level
-  it('should allow query by level', async () => {
+  fit('should allow query by level', async () => {
       // db setup - have to log error, info and debug entries so we have something to test
       const entries = [
         logPage.debug_user0_tomorrow,
@@ -33,7 +33,7 @@ fdescribe('Log page', () => {
         testSupport.createLog(log);
       })
 
-      testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+      page.loginAdmin();
       page.pullDownMyMenu();
       page.clickLog();
       var actualLevel;
@@ -84,8 +84,9 @@ fdescribe('Log page', () => {
 
       // clean up - delete the entries we wrote in this test
       _.each(entries, (log) => {
-        testSupport.deleteLogs(log.event);
+        testSupport.deleteLogs({by:'event', value: log.event});
       })
+      testSupport.deleteLogs({by:'phoneNumber', value: testSupport.adminUser.phoneNumber}); // deletes the login and logout events so they don't fill up the log screen and cause future false failures
   })
 
 

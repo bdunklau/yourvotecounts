@@ -9,13 +9,17 @@ export class TestSupport {
 
   constructor(private api: Api) {  }
 
+  adminUser = {displayName: 'Bre5555nt',
+                phoneNumber: process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER,
+                uid: '5555555555'}
+
   normalUser = {displayName: 'Bre444nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER,
                 uid: '4444444444'}
 
 
   normalUser2 = {displayName: 'Bre222nt',
-                phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2,
+                phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2, // NOTICE THE "2" ON THE END
                 uid: '2222222222'}
 
   names = [
@@ -67,9 +71,10 @@ export class TestSupport {
     return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLogs?millis='+millis+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
   }
 
-  deleteLogs(event) {
+  deleteLogs(opts: {by: string, value: string}) {
     browser.waitForAngularEnabled(false);
-    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/deleteLogs?event='+event+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
+    var parms = 'by='+opts.by+'&value='+opts.value
+    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/deleteLogs?'+parms+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
   }
 
   // get a "random" team name

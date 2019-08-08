@@ -19,13 +19,13 @@ fdescribe('Log page', () => {
   });
 
   // passed 8/7
-  fit('should be accessible by hyperlink', async () => {
-    await testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
-    await page.pullDownMyMenu();
-    await page.clickLog();
-    await browser.sleep(200);
-    expect(await page.getTitleText()).toEqual('Log');
-    await page.clickLogout();
+  it('should be accessible by hyperlink', () => {
+    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.pullDownMyMenu();
+    page.clickLog();
+    browser.sleep(200);
+    expect(page.getTitleText()).toEqual('Log');
+    page.clickLogout();
   });
 
 

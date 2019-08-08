@@ -21,7 +21,6 @@ fdescribe('Log page', () => {
   // passed 8/7
   it('should have a click-able calendar', async () => {
       testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
-      testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
       page.pullDownMyMenu();
       page.clickLog();
       // Can't get the value of the datepicker <input> field.  It's not your typical

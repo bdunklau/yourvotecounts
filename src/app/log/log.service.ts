@@ -14,9 +14,11 @@ export class LogService {
     public db: AngularFirestore,
     private userService: UserService) { }
 
-  private xxx(logtype, eventValue) {
+  // private xxx(logtype, eventValue) {
+  private xxx(opts: {logtype: string, by: string, value: string}) {
+    let logtype = opts.logtype;
     let batch = this.db.firestore.batch();
-    var ref = this.db.collection(logtype, rf => rf.where("event", "==", eventValue)).snapshotChanges().pipe(take(1));
+    var ref = this.db.collection(logtype, rf => rf.where(opts.by, "==", opts.value)).snapshotChanges().pipe(take(1));
     ref.subscribe(data  => {
       data.forEach(function(dt) {
         batch.delete(dt.payload.doc.ref);
@@ -25,10 +27,15 @@ export class LogService {
     });
   }
 
-  deleteLogs(eventValue: string) {
-    this.xxx('log_debug', eventValue);
-    this.xxx('log_info', eventValue);
-    this.xxx('log_error', eventValue);
+  // deleteLogs(eventValue: string) {
+  deleteLogs(opts: {by: string, value: string}) {
+    this.xxx({logtype: 'log_debug', by: opts.by, value: opts.value});
+    this.xxx({logtype: 'log_info', by: opts.by, value: opts.value});
+    this.xxx({logtype: 'log_error', by: opts.by, value: opts.value});
+
+    // this.xxx('log_debug', eventValue);
+    // this.xxx('log_info', eventValue);
+    // this.xxx('log_error', eventValue);
   }
 
   async e(keyvals) {

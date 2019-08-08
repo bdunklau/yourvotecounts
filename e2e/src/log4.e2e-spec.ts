@@ -60,7 +60,7 @@ fdescribe('Log page', () => {
 
 
 
-    testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    page.loginAdmin();
     var destroyTheEvidence = true;
     page.pullDownMyMenu();
     page.clickLog();
@@ -220,8 +220,10 @@ fdescribe('Log page', () => {
     page.clickLogout();
 
     _.forEach(logs, (log) => {
-      testSupport.deleteLogs(log.event);
+      testSupport.deleteLogs({by:'event', value: log.event});
     })
+
+    testSupport.deleteLogs({by:'phoneNumber', value: testSupport.adminUser.phoneNumber}); // deletes the login and logout events so they don't fill up the log screen and cause future false failures
   })
 
 

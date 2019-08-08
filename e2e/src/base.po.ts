@@ -14,6 +14,7 @@ export class BasePage {
   }
 
   clickLogout() {
+    browser.sleep(1000);
     this.pullDownMyMenu();
     this.getLogoutLink().click();
   }
@@ -55,7 +56,7 @@ export class BasePage {
 
   getElements(locator) {
     var elements = element.all(locator)
-    browser.wait(this.presenceOfAll(elements), 3000);
+    browser.wait(this.presenceOfAll(elements), 3000, "locator: "+locator+" never became present");
     return elements;
   }
 
@@ -111,6 +112,7 @@ export class BasePage {
 
   pullDownMyMenu() {
     this.getElement(by.id('hamburger_menu_icon')).click();
+    browser.sleep(1000);
   }
 
 }

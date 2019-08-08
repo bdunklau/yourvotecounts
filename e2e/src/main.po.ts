@@ -65,7 +65,7 @@ export class MainPage extends BasePage {
   }
 
   loginAdmin() {
-    this.testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
+    this.testSupport.login(this.testSupport.adminUser.phoneNumber);
   }
 
   loginAsSomeone() {
