@@ -100,8 +100,4 @@ export class MainPage extends BasePage {
     this.verifyDisabledPage('Teams');
   }
 
-  // pullDownMyMenu() {
-  //   this.getElement(by.id('name_or_phone')).click();
-  // }
-
 }
