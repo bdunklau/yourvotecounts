@@ -98,7 +98,7 @@ export class UserService {
     })
 
     if(!user) {
-      console.log('getCurrentUser() user = ', user, '  so return early');
+      console.log('getCurrentUser() user = undefined so return early');
       return null;
     }
 
