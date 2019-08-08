@@ -21,7 +21,7 @@ fdescribe('Log page', () => {
 
 
   // passed 7/18/19
-  it('should allow query by date', async () => {
+  fit('should allow query by date', async () => {
 
     testSupport.setNames(testSupport.names);
 

@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
 
-fdescribe('Log page', () => {
+describe('Log page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -22,7 +22,7 @@ fdescribe('Log page', () => {
 
   // Write one DEBUG, one INFO and one ERROR entry to the log and verify that the right entries
   // are displayed when we filter the logs by level
-  fit('should allow query by level', async () => {
+  it('should allow query by level', async () => {
       // db setup - have to log error, info and debug entries so we have something to test
       const entries = [
         logPage.debug_user0_tomorrow,
