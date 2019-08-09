@@ -30,7 +30,7 @@ export class DisabledGuard implements CanActivate {
       // RULE: But you can't disable your own account
       var allDisabled = globalDisabled && user && !user.hasRole('admin');
 
-      let reroute = user && user.isDisabled || allDisabled
+      let reroute = (user && user.isDisabled) || allDisabled
 
       // if there's no user, then send the user to /login and return false
       // otherwise return true

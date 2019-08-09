@@ -68,6 +68,10 @@ export class MainPage extends BasePage {
     this.testSupport.login(this.testSupport.adminUser.phoneNumber);
   }
 
+  loginNewUser() {
+    this.testSupport.login(this.testSupport.brandNewUser.phoneNumber);
+  }
+
   loginAsSomeone() {
     this.testSupport.login(this.testSupport.names[0].phoneNumber);
   }

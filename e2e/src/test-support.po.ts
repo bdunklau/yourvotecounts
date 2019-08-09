@@ -22,6 +22,10 @@ export class TestSupport {
                 phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2, // NOTICE THE "2" ON THE END
                 uid: '2222222222'}
 
+                // notice no name yet for this person
+  brandNewUser = {phoneNumber: process.env.YOURVOTECOUNTS_BRAND_NEW_USER,
+                uid: '3333333333'}
+
   names = [
     this.normalUser,
     this.normalUser2,
