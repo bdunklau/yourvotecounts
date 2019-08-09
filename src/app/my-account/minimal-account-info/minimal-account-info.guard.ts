@@ -34,7 +34,7 @@ export class MinimalAccountInfoGuard implements CanActivate {
     else return true;
   }
 
-  async hasMinimalInfo():boolean {
+  async hasMinimalInfo():Promise<boolean> {
     // must have displayName set
     // must have accepted the TOS
     var user = await this.userService.getCurrentUser();
