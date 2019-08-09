@@ -53,9 +53,9 @@ export class LogService {
   async i(event: string) {
     const user = await this.userService.getCurrentUser();
     var entry = {event: event}
-    if(user.uid) entry['uid'] = user.uid;
-    if(user.displayName) entry['displayName'] = user.displayName;
-    if(user.phoneNumber) entry['phoneNumber'] = user.phoneNumber;
+    entry['uid'] = user && user.uid ? user.uid : 'no user id';
+    entry['displayName'] = user && user.displayName ? user.displayName : 'no user logged in';
+    entry['phoneNumber'] = user && user.phoneNumber ? user.phoneNumber : 'no user logged in';
     await this.ii(entry);
   }
 
