@@ -19,7 +19,7 @@ export class RoleGuard implements CanActivate {
 
     var user = await this.userService.getCurrentUser()
 
-    if (user.hasRole(next.data.role)) {
+    if (user && user.hasRole(next.data.role)) {
       return true;
     }
 
