@@ -14,6 +14,8 @@ export class FirebaseUserModel {
   date_ms: number;
   isDisabled: boolean = false;
   online: boolean = false;
+  tosAccepted: boolean = false;
+  privacyPolicyRead: boolean = false;
   // teams: Team[];
 
   constructor(){
@@ -28,6 +30,8 @@ export class FirebaseUserModel {
     this.photoURL = "";
     this.isDisabled = false;
     this.online = false;
+    this.tosAccepted = false;
+    this.privacyPolicyRead = false;
     // this.teams = [];
   }
 
@@ -42,16 +46,13 @@ export class FirebaseUserModel {
     this.roles = obj.roles;
     this.photoURL = obj.photoURL;
     this.online = obj.online;
+    this.tosAccepted = obj.tosAccepted;
+    this.privacyPolicyRead = obj.privacyPolicyRead;
     if(obj.isDisabled === true || obj.isDisabled === false) this.isDisabled = obj.isDisabled;
     else this.isDisabled = false;
     console.log('populate: obj = ', obj);
-    // this.teams = obj.teams ? obj.teams : [];
-    // console.log('populate():  this.teams = ', this.teams);
   }
-
-  // getTeams() {
-  //   return this.teams;
-  // }
+  
 
   hasRole(role: string): boolean {
     var idx = _.findIndex(this.roles, function(o) { return o == role; });
