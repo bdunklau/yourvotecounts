@@ -31,8 +31,7 @@ export class DisabledGuard implements CanActivate {
       var allDisabled = globalDisabled && user && !user.hasRole('admin');
 
       let reroute = user && user.isDisabled || allDisabled
-      console.log('user=', user, ' user.isDisabled=', user.isDisabled, ' allDisabled=', allDisabled, ' reroute=', reroute);
-
+      
       // if there's no user, then send the user to /login and return false
       // otherwise return true
       if(reroute) {
