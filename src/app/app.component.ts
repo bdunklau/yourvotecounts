@@ -45,9 +45,11 @@ export class AppComponent {
     // });
 
     this.subscription = this.messageService.getUser().subscribe(user => {
-      this.isAdmin = user && user.hasRole('admin');
+      console.log('getUser(): user = ', user);
+      if(!user) this.isAdmin = false;
+      else this.isAdmin = user.hasRole('admin');
       this.isLoggedIn = user != null;
-      this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
+      // this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
     })
 
     // let user = await this.userService.getCurrentUser();
@@ -104,9 +106,11 @@ export class AppComponent {
     this.closeNav();
     this.authService.doLogout()
     .then((res) => {
-      this.router.navigate(['/']);
-    }, (error) => {
-      console.log("Logout error", error);
-    });
+        this.router.navigate(['/']);
+      },
+      (error) => {
+        console.log("Logout error", error);
+      }
+    );
   }
 }

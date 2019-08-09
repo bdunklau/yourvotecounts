@@ -92,13 +92,14 @@ export class AuthService {
     })
   }
 
-  doLogout(){
+  doLogout() {
     return new Promise(async (resolve, reject) => {
       var user = firebase.auth().currentUser
-      if(user){
-        this.log.i('logout');
-        this.userService.signOut();
-        this.afAuth.auth.signOut();
+      if(user) {
+        this.log.i('logout'); // write this before we obliterate the current user
+        this.afAuth.auth.signOut().then(() => {
+          this.userService.signOut();
+        });
       }
       resolve();
     });

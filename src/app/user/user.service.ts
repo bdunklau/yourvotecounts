@@ -12,6 +12,7 @@ import { MessageService } from '../core/message.service';
 import { Team } from '../team/team.model';
 import { map } from 'rxjs/operators';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
+import { LogService } from '../log/log.service';
 
 
 @Injectable()
@@ -106,32 +107,11 @@ export class UserService {
       var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
       this.user = user;
       this.user.populate(userDoc.data());
+      console.log('getCurrentUser(): this.user = ', this.user);
       this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
       resolve(this.user);
     });
   }
-
-  // async subscribeCurrentUser(fn: (obj) => void): Promise<Subscription> {
-  //
-  //   var user = await this.createFirebaseUserModel();
-  //   if(!user) return null;
-  //   var obj = this.afs.collection('user', ref => ref.where('uid', '==', user.uid)).snapshotChanges().pipe(
-  //     map(actions => {
-  //       return actions.map(a => {
-  //         const data = a.payload.doc.data();// as TeamMember;
-  //         let user = new FirebaseUserModel();
-  //         user.populate(data);
-  //         // const id = a.payload.doc.id;
-  //         // var returnThis = { id, ...data };
-  //         // console.log('data = ', data);
-  //         // console.log('returnThis = ', returnThis);
-  //         return user;
-  //       });
-  //     })
-  //   ).subscribe(fn);
-  //
-  //   return obj;
-  // }
 
   private getFirebaseUser() {
     return new Promise<any>((resolve, reject) => {
@@ -170,20 +150,50 @@ export class UserService {
   }
 
 
-  async setFirebaseUser(firebase_auth_currentUser) {
+  async setFirebaseUser(firebase_auth_currentUser, online: boolean) {
     let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
     this.user = new FirebaseUserModel();
-    console.log('setFirebaseUser(): user.uid = ', user.uid);
     var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
     this.user.populate(userDoc.data());
+    this.user.online = online;
+    this.updateUser(this.user); // saves the online state
     console.log('setFirebaseUser(): this.user = ', this.user);
     this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
   }
 
 
+  async signIn(log: LogService, firebase_auth_currentUser) {
+    await this.setFirebaseUser(firebase_auth_currentUser, true);
+    log.i('login');
+  }
+
+
   signOut() {
+    let user = new FirebaseUserModel();
+    this.user.online = false;
+    user.populate(this.user);
+    this.updateUser(user);
     this.user = null
+    console.log('signOut(): this.user = ', this.user);
     this.messageService.updateUser(this.user);
+  }
+
+  subscribe(uid: string, fn: ((users:[FirebaseUserModel]) => {}) ): Subscription {
+    const sub = this.afs.collection('user', ref => ref.where("uid", "==", uid))
+          .snapshotChanges()
+          .pipe( // see team-list.component.ts
+            map(actions => { // actions = [{},{type:"added", payload:{}}]
+              return actions.map(a => {
+                const data = a.payload.doc.data() as FirebaseUserModel;
+                const id = a.payload.doc.id;
+                var returnThis = { id, ...data };
+                return returnThis;
+              });
+            })
+          )
+          .subscribe(fn);
+    console.log('subscribe: sub = ', sub);
+    return sub;
   }
 
   updateCurrentUser(value: FirebaseUserModel) {
@@ -204,10 +214,13 @@ export class UserService {
     })
   }
 
-  updateUser(value: FirebaseUserModel) {
-    return this.afs.collection('user').doc(value.uid).ref
+  async updateUser(value: FirebaseUserModel) {
+    let updateRes = this.afs.collection('user').doc(value.uid).ref
       .update({displayName: value.displayName,
                displayName_lower: value.displayName.toLowerCase(),
-               isDisabled: value.isDisabled});
+               isDisabled: value.isDisabled,
+               online: value.online});
+    console.log('updateUser:  updateRes = ', updateRes);
+    return updateRes;
   }
 }

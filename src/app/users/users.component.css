@@ -1,5 +1,21 @@
 a:hover {cursor: pointer}
 
+.online_circle {
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  text-indent: 25px;
+  background:#00aa00;
+}
+
+.offline_circle {
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  text-indent: 25px;
+  background:#999999
+}
+
 .padtop20 { padding-top:20px }
 
 .ng-valid[required], .ng-valid.required  {

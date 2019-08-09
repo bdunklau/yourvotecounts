@@ -16,7 +16,11 @@ exports.logNewUser = functions.auth.user().onCreate((user) => {
 
 
 exports.recordNewUser = functions.auth.user().onCreate((user) => {
-  return db.collection('user').doc(user.uid).set({uid: user.uid, phoneNumber: user.phoneNumber, date: admin.firestore.Timestamp.now(), date_ms: admin.firestore.Timestamp.now().toMillis()})
+  return db.collection('user').doc(user.uid)
+      .set({uid: user.uid,
+            phoneNumber: user.phoneNumber,
+            date: admin.firestore.Timestamp.now(),
+            date_ms: admin.firestore.Timestamp.now().toMillis()})
 });
 
 
@@ -50,7 +54,7 @@ exports.initiateDeleteUser = functions.https.onRequest(async (req, res) => {
                    'Access-Control-Allow-Headers': ['access-control-allow-origin', 'authorization', 'content-type'] }).status(200).send({text: "ok"});
 })
 
-// Listen for any change on document `marie` in collection `users`
+// Listen for any change on document `id` in collection `users`
 exports.updateUser = functions.firestore.document('user/{id}').onUpdate((change, context) => {
   const newName = change.after.data().displayName;
   const oldName = change.before.data().displayName;
@@ -62,9 +66,9 @@ exports.updateUser = functions.firestore.document('user/{id}').onUpdate((change,
     if(change.after.data().displayName) values.displayName = change.after.data().displayName;
     if(change.after.data().photoURL) values.photoURL = change.after.data().photoURL;
     if(change.after.data().disabled) values.disabled = change.after.data().disabled;
-    admin.auth().updateUser(change.after.data().uid, values);
+    return admin.auth().updateUser(change.after.data().uid, values);
   }
-  // perform desired operations ...
+  return false;
 });
 
 // pass phoneNumber request parameter without country code and get an auth token
