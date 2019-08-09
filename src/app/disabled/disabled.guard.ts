@@ -31,12 +31,12 @@ export class DisabledGuard implements CanActivate {
       var allDisabled = globalDisabled && user && !user.hasRole('admin');
 
       let reroute = user && user.isDisabled || allDisabled
-      
+
       // if there's no user, then send the user to /login and return false
       // otherwise return true
       if(reroute) {
         this.router.navigate(['/disabled']);
-        return false
+        return false;
       }
       else return true;
     } catch(e) {
