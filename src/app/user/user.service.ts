@@ -178,16 +178,17 @@ export class UserService {
     this.messageService.updateUser(this.user);
   }
 
-  subscribe(uid: string, fn: ((users:[FirebaseUserModel]) => {}) ): Subscription {
+  subscribe(uid: string, fn: ((users:[FirebaseUserModel]) => void) ): Subscription {
     const sub = this.afs.collection('user', ref => ref.where("uid", "==", uid))
           .snapshotChanges()
           .pipe( // see team-list.component.ts
             map(actions => { // actions = [{},{type:"added", payload:{}}]
               return actions.map(a => {
-                const data = a.payload.doc.data() as FirebaseUserModel;
-                const id = a.payload.doc.id;
-                var returnThis = { id, ...data };
-                return returnThis;
+                const data = a.payload.doc.data();
+                let u = new FirebaseUserModel();
+                u.populate(data);
+                return u;
+                // const id = a.payload.doc.id;  // valid but not needed here
               });
             })
           )

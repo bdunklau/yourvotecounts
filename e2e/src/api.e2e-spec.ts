@@ -32,25 +32,30 @@ fdescribe('The API', () => {
   });
 
 
+  // curl command to verify:
+  //  curl -d "displayName=Bre444nt&uid=wMO8BJMNuydKHoNS5pVLY33Dmhi1&online=true" -X POST https://us-central1-yourvotecounts-bd737.cloudfunctions.net/setUser?auth_key=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9
   fit('should allow online status to be set', async () => {
     var json = await api.getUser(testSupport.names[0].phoneNumber);
+    // whatever the online value is, flip it, then flip it back
+    let onlineOrig = json['online'];
+    let onlineNew = onlineOrig ? false : true;
     api.updateUser({uid: json['uid'],
                     displayName: testSupport.names[0].displayName,
-                    online: true});
+                    online: onlineNew});
     json = await api.getUser(testSupport.names[0].phoneNumber);
     api.verifyUserJson({displayName: testSupport.names[0].displayName,
                         phoneNumber: testSupport.names[0].phoneNumber,
-                        online: true},
+                        online: onlineNew},
                       json);
 
     // reset
     api.updateUser({uid: json['uid'],
                     displayName: testSupport.names[0].displayName,
-                    online: false});
+                    online: onlineOrig});
     json = await api.getUser(testSupport.names[0].phoneNumber);
     api.verifyUserJson({displayName: testSupport.names[0].displayName,
                         phoneNumber: testSupport.names[0].phoneNumber,
-                        online: false},
+                        online: onlineOrig},
                       json);
   })
 
