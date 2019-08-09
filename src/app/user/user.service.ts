@@ -215,12 +215,14 @@ export class UserService {
   }
 
   async updateUser(value: FirebaseUserModel) {
-    let updateRes = this.afs.collection('user').doc(value.uid).ref
-      .update({displayName: value.displayName,
-               displayName_lower: value.displayName.toLowerCase(),
-               isDisabled: value.isDisabled,
-               online: value.online});
-    console.log('updateUser:  updateRes = ', updateRes);
+    let data = {}
+    if(value.displayName) {
+      data['displayName'] = value.displayName;
+      data['displayName_lower'] = value.displayName.toLowerCase();
+    }
+    data['isDisabled'] = value.isDisabled;
+    data['online'] = value.online === true ? true : false;
+    let updateRes = this.afs.collection('user').doc(value.uid).ref.update(data);
     return updateRes;
   }
 }
