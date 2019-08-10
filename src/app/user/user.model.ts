@@ -50,9 +50,9 @@ export class FirebaseUserModel {
     this.privacyPolicyRead = obj.privacyPolicyRead;
     if(obj.isDisabled === true || obj.isDisabled === false) this.isDisabled = obj.isDisabled;
     else this.isDisabled = false;
-    console.log('populate: obj = ', obj);
+    // console.log('populate: this = ', this);
   }
-  
+
 
   hasRole(role: string): boolean {
     var idx = _.findIndex(this.roles, function(o) { return o == role; });

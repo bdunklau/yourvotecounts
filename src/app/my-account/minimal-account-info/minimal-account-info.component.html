@@ -1,3 +1,51 @@
-<p>
-  minimal-account-info works!
-</p>
+
+<div class="container">
+  <h3>Complete Your Profile</h3>
+
+  <div>We need just a bit more.  Please enter your name (you'll be able to change it later), accept
+    the Terms of Service and read our Privacy Policy.
+  </div>
+
+  <form (ngSubmit)="onSubmit()" #minimalAccountInfoForm="ngForm">
+      <!-- name field   -->
+
+      <!-- terms of service with checkbox  -->
+
+      <!-- privacy policy with checkbox  -->
+    <div class="form-group">
+      <input type="text" class="form-control" id="minimal_account_info_name_field" placeholder="Name"
+              [(ngModel)]="nameValue" name="name" #name="ngModel" required>
+      <div [hidden]="name.valid || name.pristine"
+           class="alert alert-danger">
+        Name is required
+      </div>
+
+      <div style="margin-top:50px"><b>Terms of Service</b></div>
+      <div>{{termsOfService}}</div>
+      <div>
+        <!-- Default unchecked -->
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="tosCheckbox"
+                  [(ngModel)]="tosCheck" name="tos" #tos="ngModel" required>
+            <label class="custom-control-label" for="tosCheckbox">I agree with the terms of service</label>
+        </div>
+      </div>
+
+      <div style="margin-top:50px"><b>Privacy Policy</b></div>
+      <div>{{privacyPolicy}}</div>
+      <div>
+        <!-- Default unchecked -->
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="ppCheckbox"
+                  [(ngModel)]="ppCheck" name="pp" #pp="ngModel" required>
+            <label class="custom-control-label" for="ppCheckbox">I have read the privacy policy</label>
+        </div>
+      </div>
+    </div>
+
+    <button id="submit_personal_info" type="submit" class="btn btn-success" 
+            [disabled]="!minimalAccountInfoForm.form.valid">Submit</button>
+
+  </form>
+
+</div>

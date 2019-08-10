@@ -90,7 +90,7 @@ export class UserService {
 
   async getCurrentUser() : Promise<FirebaseUserModel> {
     if(this.user) {
-      // TODO verified on 6//10/19 but not part of automated testing yet.  Need a mock/spy LogService
+      console.log('getCurrentUser():  get cached user: ', this.user);
       return this.user
     }
     var user = await this.createFirebaseUserModel()
@@ -107,7 +107,7 @@ export class UserService {
       var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
       this.user = user;
       this.user.populate(userDoc.data());
-      console.log('getCurrentUser(): this.user = ', this.user);
+      console.log('getCurrentUser(): DATABASE HIT this.user = ', this.user);
       this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
       resolve(this.user);
     });
@@ -154,6 +154,7 @@ export class UserService {
     let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
     this.user = new FirebaseUserModel();
     var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
+    console.log('setFirebaseUser(): userDoc.data() = ', userDoc.data());
     this.user.populate(userDoc.data());
     this.user.online = online;
     this.updateUser(this.user); // saves the online state
@@ -223,7 +224,10 @@ export class UserService {
     }
     data['isDisabled'] = value.isDisabled;
     data['online'] = value.online === true ? true : false;
+    data['tosAccepted'] = value.tosAccepted === true ? true : false;
+    data['privacyPolicyRead'] = value.privacyPolicyRead === true ? true : false;
     let updateRes = this.afs.collection('user').doc(value.uid).ref.update(data);
+    console.log('updateUser: DATABASE UPDATE: ', data);
     return updateRes;
   }
 }

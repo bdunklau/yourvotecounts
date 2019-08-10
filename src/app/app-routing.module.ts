@@ -21,6 +21,8 @@ import { DisabledComponent } from './disabled/disabled.component';
 import { LogFormComponent } from './log/log-form/log-form.component';
 import { MinimalAccountInfoGuard } from './my-account/minimal-account-info/minimal-account-info.guard';
 import { MinimalAccountInfoComponent } from './my-account/minimal-account-info/minimal-account-info.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -30,10 +32,12 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'minimal-account-info', component: MinimalAccountInfoComponent, canActivate: [AuthGuard, DisabledGuard], resolve: { user: UserResolver} },
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
+  { path: 'privacy', component: PrivacyPolicyComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: {team: TeamResolver, user: UserResolver} },
   { path: 'teams/edit/:teamDocId', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: {team: TeamResolver, user: UserResolver} },
   { path: 'teams', component: TeamsComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
+  { path: 'terms', component: TermsOfServiceComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'test/log', component: LogFormComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, MinimalAccountInfoGuard], data: {role: 'admin'} },
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route

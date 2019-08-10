@@ -45,7 +45,7 @@ export class AppComponent {
     // });
 
     this.subscription = this.messageService.getUser().subscribe(user => {
-      console.log('getUser(): user = ', user);
+      // console.log('getUser(): user = ', user);
       if(!user) this.isAdmin = false;
       else this.isAdmin = user.hasRole('admin');
       this.isLoggedIn = user != null;
