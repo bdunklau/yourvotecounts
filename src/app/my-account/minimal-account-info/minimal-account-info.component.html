@@ -20,8 +20,10 @@
         Name is required
       </div>
 
-      <div style="margin-top:50px"><b>Terms of Service</b></div>
-      <div>{{termsOfService}}</div>
+      <h3 style="margin-top:50px">Legal Mumbo Jumbo</h3>
+
+      <div style="margin-top:20px"><b>Terms of Service</b></div>
+      <div [innerHTML]="termsOfService"></div>
       <div>
         <!-- Default unchecked -->
         <div class="custom-control custom-checkbox">
@@ -31,8 +33,10 @@
         </div>
       </div>
 
+
+
       <div style="margin-top:50px"><b>Privacy Policy</b></div>
-      <div>{{privacyPolicy}}</div>
+      <div [innerHTML]="privacyPolicy"></div>
       <div>
         <!-- Default unchecked -->
         <div class="custom-control custom-checkbox">
@@ -43,7 +47,7 @@
       </div>
     </div>
 
-    <button id="submit_personal_info" type="submit" class="btn btn-success" 
+    <button id="submit_personal_info" type="submit" class="btn btn-success"
             [disabled]="!minimalAccountInfoForm.form.valid">Submit</button>
 
   </form>

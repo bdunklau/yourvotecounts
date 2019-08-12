@@ -1,0 +1,33 @@
+
+<div class="container">
+  <h3>Complete Your Profile</h3>
+
+  <div>We need just a bit more.  Please enter your name (you'll be able to change it later), accept
+    the Terms of Service and read our Privacy Policy.
+  </div>
+
+  <form (ngSubmit)="onSubmit()" #smsForm="ngForm">
+      <!-- name field   -->
+
+      <!-- terms of service with checkbox  -->
+
+      <!-- privacy policy with checkbox  -->
+    <div class="form-group">
+      <input type="text" class="form-control" id="sms_phone_field" placeholder="Text Message Number"
+              [(ngModel)]="smsValue" name="sms" #sms="ngModel" required>
+      <div [hidden]="sms.valid || sms.pristine"
+           class="alert alert-danger">
+        Number is required
+      </div>
+
+      <div style="margin-top:20px"><b>Text Message</b></div>
+      <textarea class="form-control" id="smsMessageField" placeholder=""
+              [(ngModel)]="smsMessageValue" name="smsMessage" #smsMessage="ngModel" rows="15" required>
+      </textarea>
+
+    <button id="send_sms" type="submit" class="btn btn-success"
+            [disabled]="!smsForm.form.valid">Submit</button>
+
+  </form>
+
+</div>

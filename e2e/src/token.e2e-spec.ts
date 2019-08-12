@@ -25,6 +25,10 @@ describe('Token Utility ', () => {
     expect(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2).toBeTruthy();
   })
 
+  it('should have env var YOURVOTECOUNTS_TWILIO_AUTH_KEY', () => {
+    expect(process.env.YOURVOTECOUNTS_TWILIO_AUTH_KEY).toBeTruthy();
+  })
+
   it('should get a token', async () => {
     var data = {phoneNumber: process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER, auth_key: process.env.YOURVOTECOUNTS_AUTH_KEY}
     page.navigateTo(data);

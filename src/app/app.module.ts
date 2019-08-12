@@ -40,6 +40,7 @@ import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.compo
 import { MinimalAccountInfoComponent } from './my-account/minimal-account-info/minimal-account-info.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
+import { SmsComponent } from './sms/sms.component';
 // import { TeamResolver } from './team/team.resolver';
 
 
@@ -71,6 +72,7 @@ import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.com
     MinimalAccountInfoComponent,
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
+    SmsComponent,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [

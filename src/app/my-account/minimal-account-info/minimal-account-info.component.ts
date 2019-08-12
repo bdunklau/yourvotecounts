@@ -3,7 +3,7 @@ import { UserService } from '../../user/user.service';
 import { TermsOfServiceService } from '../../terms-of-service/terms-of-service.service';
 import { PrivacyPolicyService } from '../../privacy-policy/privacy-policy.service';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm, /*FormControl, FormGroup*/ } from '@angular/forms';
 
 
@@ -23,6 +23,7 @@ export class MinimalAccountInfoComponent implements OnInit {
   private routeSubscription: Subscription;
 
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private userService: UserService,
               private tosService: TermsOfServiceService,
               private ppService: PrivacyPolicyService) { }
@@ -52,7 +53,14 @@ export class MinimalAccountInfoComponent implements OnInit {
     this.user.displayName = this.nameValue;
     this.user.tosAccepted = this.tosCheck;
     this.user.privacyPolicyRead = this.ppCheck;
-    async this.userService.updateUser(this.user);
+    this.userService.updateUser(this.user).then(() => {
+      this.router.navigate(['/myaccount']);
+    })
   }
 
 }
+
+// curl 'https://api.twilio.com/2010-04-01/Accounts/AC39eb73665d3f73464e7e7d8f5be2e5ba/Messages.json' -X POST \
+// --data-urlencode 'To=+12146325613' \
+// --data-urlencode 'From=+18174094501' \
+// -u AC39eb73665d3f73464e7e7d8f5be2e5ba:45b0388a12208ae688c194ead32cdd7b

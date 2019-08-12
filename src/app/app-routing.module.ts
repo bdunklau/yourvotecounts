@@ -23,6 +23,7 @@ import { MinimalAccountInfoGuard } from './my-account/minimal-account-info/minim
 import { MinimalAccountInfoComponent } from './my-account/minimal-account-info/minimal-account-info.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
+import { SmsComponent } from './sms/sms.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -33,6 +34,7 @@ const routes: Routes = [
   { path: 'minimal-account-info', component: MinimalAccountInfoComponent, canActivate: [AuthGuard, DisabledGuard], resolve: { user: UserResolver} },
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
   { path: 'privacy', component: PrivacyPolicyComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
+  { path: 'sms', component: SmsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: {team: TeamResolver, user: UserResolver} },
   { path: 'teams/edit/:teamDocId', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: {team: TeamResolver, user: UserResolver} },
