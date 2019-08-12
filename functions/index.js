@@ -28,3 +28,6 @@ exports.deleteLogs = ts.deleteLogs
 const user = require('./api/user');
 exports.getUser = user.getUser;
 exports.setUser = user.setUser
+
+const twilio_sms = require('./twilio-sms');
+exports.sendSms = twilio_sms.sendSms;

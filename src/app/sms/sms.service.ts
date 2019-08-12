@@ -7,7 +7,7 @@ export class SmsService {
 
   constructor() { }
 
-  sendSms() {
+  sendSms(args: {number: string, message: string}) {
     
   }
 }

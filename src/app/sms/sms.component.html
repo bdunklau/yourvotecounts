@@ -1,10 +1,6 @@
 
 <div class="container">
-  <h3>Complete Your Profile</h3>
-
-  <div>We need just a bit more.  Please enter your name (you'll be able to change it later), accept
-    the Terms of Service and read our Privacy Policy.
-  </div>
+  <h3>Send a Text Message</h3>
 
   <form (ngSubmit)="onSubmit()" #smsForm="ngForm">
       <!-- name field   -->
@@ -13,7 +9,7 @@
 
       <!-- privacy policy with checkbox  -->
     <div class="form-group">
-      <input type="text" class="form-control" id="sms_phone_field" placeholder="Text Message Number"
+      <input type="text" class="form-control" id="sms_phone_field" placeholder="phone number"
               [(ngModel)]="smsValue" name="sms" #sms="ngModel" required>
       <div [hidden]="sms.valid || sms.pristine"
            class="alert alert-danger">
@@ -25,8 +21,9 @@
               [(ngModel)]="smsMessageValue" name="smsMessage" #smsMessage="ngModel" rows="15" required>
       </textarea>
 
-    <button id="send_sms" type="submit" class="btn btn-success"
-            [disabled]="!smsForm.form.valid">Submit</button>
+      <button id="send_sms" type="submit" class="btn btn-success" style="margin-top: 20px"
+              [disabled]="!smsForm.form.valid">Submit</button>
+    </div>
 
   </form>
 
