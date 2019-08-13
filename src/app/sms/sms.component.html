@@ -3,18 +3,29 @@
   <h3>Send a Text Message</h3>
 
   <form (ngSubmit)="onSubmit()" #smsForm="ngForm">
-      <!-- name field   -->
+    <!-- to fieldset  -->
 
-      <!-- terms of service with checkbox  -->
+    <!-- from field  -->
 
-      <!-- privacy policy with checkbox  -->
+    <!-- big message box   -->
+
     <div class="form-group">
-      <input type="text" class="form-control" id="sms_phone_field" placeholder="phone number"
-              [(ngModel)]="smsValue" name="sms" #sms="ngModel" required>
-      <div [hidden]="sms.valid || sms.pristine"
+      <input type="text" class="form-control" id="to_sms_field" placeholder="To..."
+              [(ngModel)]="toValue" name="toSms" #toSms="ngModel" required>
+      <div [hidden]="toSms.valid || toSms.pristine"
            class="alert alert-danger">
         Number is required
       </div>
+
+      <input type="text" class="form-control" id="from_sms_field" placeholder="From..." style="margin-top:20px"
+              [(ngModel)]="fromValue" name="fromSms" #fromSms="ngModel" required>
+      <div [hidden]="fromSms.valid || fromSms.pristine"
+           class="alert alert-danger">
+        Number is required
+      </div>
+
+      <input type="text" class="form-control" id="mediaUrl_sms_field" placeholder="URL (optional)" style="margin-top:20px"
+              [(ngModel)]="mediaUrlValue" name="mediaUrl" #mediaUrl="ngModel">
 
       <div style="margin-top:20px"><b>Text Message</b></div>
       <textarea class="form-control" id="smsMessageField" placeholder=""

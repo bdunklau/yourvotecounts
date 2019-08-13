@@ -1,25 +1,23 @@
 import { Injectable } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import * as firebase from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SmsService {
 
-  constructor() { }
+  constructor(public afs: AngularFirestore) { }
 
-  sendSms() {
-    // // Twilio Credentials
-    // const accountSid = 'AC5ef872f6da5a21de157d80997a64bd33';
-    // const authToken = 'your_auth_token';
-    // // require the Twilio module and create a REST client
-    // const client = require('twilio')(accountSid, authToken);
-    // client.messages
-    //   .create({
-    //     to: '+16518675309',
-    //     from: '+14158141829',
-    //     body: "Tomorrow's forecast in Financial District, San Francisco is Clear",
-    //     mediaUrl: 'https://climacons.herokuapp.com/clear.png',
-    //   })
-    //   .then((message) => console.log(message.sid));
-    //   }
+  sendSms(args: {from: string, to: string, media: string, message: string}) {
+    // Write to the sms collection
+    var doc = {}
+    doc['from'] = args.from;
+    doc['to'] = args.to;
+    if(args.mediaUrl) doc['mediaUrl'] = args.mediaUrl;
+    doc['message'] = args.message;
+    doc['date'] = firebase.firestore.Timestamp.now().toDate();
+    doc['date_ms'] = firebase.firestore.Timestamp.now().toMillis();
+    this.afs.collection('sms').add(doc);
+  }
 }

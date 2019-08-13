@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm, /*FormControl, FormGroup*/ } from '@angular/forms';
 import { SmsService } from './sms.service';
-declare const Twilio: any; //ref:  https://stackoverflow.com/questions/40480191/how-to-use-twilio-client-in-angular-2/40491382#40491382
-// import { Client, User } from "twilio-chat";
+import { SettingsService } from '../settings/settings.service';
+import { /*Subject, Observable,*/ Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-sms',
@@ -11,23 +12,32 @@ declare const Twilio: any; //ref:  https://stackoverflow.com/questions/40480191/
 })
 export class SmsComponent implements OnInit {
 
-  private smsValue: string;
+  private fromValue: string;
+  private toValue: string;
+  private mediaUrlValue: string;
   private smsMessageValue: string;
-  private twilioClient: Client
+  private subscription: Subscription
+  private settings: Settings;
 
-  constructor(private smsService: SmsService) { }
+  constructor(private smsService: SmsService,
+              private settingsService: SettingsService) { }
 
   ngOnInit() {
-    var token = '45b0388a12208ae688c194ead32cdd7b';
-    console.log('Twilio = ', Twilio);
-    Twilio.Chat.Client.create(token).then(client => {
-        console.log('client = ', client);
-        this.twilioClient = client;
-    });
+    this.subscription = this.settingsService.getSettings()
+      .subscribe(obj => {
+        this.settings = obj as Settings;
+        this.fromValue = this.settings.from_sms;
+        this.toValue = this.settings.to_sms;
+        console.log('ngOnInit():  this.settings = ', this.settings);
+      });
+  }
+
+  ngOnDestroy() {
+    if(this.subscription) this.subscription.unsubscribe();
   }
 
   onSubmit(form: NgForm) {
-    this.smsService.sendSms({number: this.smsValue, message: this.smsMessageValue});
+    this.smsService.sendSms({from: this.fromValue, to: this.toValue, mediaUrl: this.mediaUrlValue, message: this.smsMessageValue});
   }
 
 }
