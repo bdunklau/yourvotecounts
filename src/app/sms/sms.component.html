@@ -1,7 +1,7 @@
 
 <div class="container">
   <h3>Send a Text Message</h3>
-
+  This is just a quick and dirty way to verify that the SMS feature is working.
   <form (ngSubmit)="onSubmit()" #smsForm="ngForm">
     <!-- to fieldset  -->
 
@@ -24,8 +24,9 @@
         Number is required
       </div>
 
-      <input type="text" class="form-control" id="mediaUrl_sms_field" placeholder="URL (optional)" style="margin-top:20px"
-              [(ngModel)]="mediaUrlValue" name="mediaUrl" #mediaUrl="ngModel">
+      <!-- doesn't work the way I thought it would.  This is for sending actual media files, not links -->
+      <!-- <input type="text" class="form-control" id="mediaUrl_sms_field" placeholder="URL (optional)" style="margin-top:20px"
+              [(ngModel)]="mediaUrlValue" name="mediaUrl" #mediaUrl="ngModel"> -->
 
       <div style="margin-top:20px"><b>Text Message</b></div>
       <textarea class="form-control" id="smsMessageField" placeholder=""
