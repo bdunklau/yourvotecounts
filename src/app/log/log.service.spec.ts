@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { LogService } from './log.service';
+import { AngularFirestore } from '@angular/fire/firestore';
 import {BehaviorSubject} from 'rxjs';
 import { of } from 'rxjs/observable/of';
 import { UserService } from '../user/user.service';
