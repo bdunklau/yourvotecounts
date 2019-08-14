@@ -4,7 +4,7 @@ import { TestSupport } from './test-support.po';
 import { MyAccountPage } from './my-account.po';
 import { Api } from './api.po';
 
-fdescribe('Minimal Account Info Guard', () => {
+describe('Minimal Account Info Guard', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let myAccountPage: MyAccountPage;

@@ -3,10 +3,9 @@ import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { Api } from './api.po';
 
-fdescribe('Privacy Policy page', () => {
+describe('Privacy Policy page', () => {
   let page: MainPage;
   let testSupport: TestSupport;
-  let myAccountPage: MyAccountPage;
 
   beforeEach(() => {
     testSupport = new TestSupport(new Api());
