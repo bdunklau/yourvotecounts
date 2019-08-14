@@ -4,7 +4,7 @@ import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { Api } from './api.po';
 
-describe('Brand new users', () => {
+fdescribe('Brand new users', () => {
   let page: MainPage;
   let myAccountPage: MyAccountPage;
   let testSupport: TestSupport;
