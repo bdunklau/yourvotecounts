@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm, /*FormControl, FormGroup*/ } from '@angular/forms';
 import { SmsService } from './sms.service';
+import { Settings } from '../settings/settings.model';
 import { SettingsService } from '../settings/settings.service';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 

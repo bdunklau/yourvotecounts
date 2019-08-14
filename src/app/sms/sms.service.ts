@@ -9,7 +9,7 @@ export class SmsService {
 
   constructor(public afs: AngularFirestore) { }
 
-  sendSms(args: {from: string, to: string, media: string, message: string}) {
+  sendSms(args: {from: string, to: string, mediaUrl: string, message: string}) {
     // Write to the sms collection
     var doc = {}
     doc['from'] = args.from;
