@@ -3,11 +3,12 @@ import { TermsOfServiceComponent } from './terms-of-service.component';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap'; // https://ng-bootstrap.github.io/#/getting-started
 import { AngularFirestore } from '@angular/fire/firestore';
+import {BehaviorSubject, of} from 'rxjs';
 
 describe('TermsOfServiceComponent', () => {
   let component: TermsOfServiceComponent;
   let fixture: ComponentFixture<TermsOfServiceComponent>;
-  
+
     const AngularFirestoreStub = {
         collection: (name: string, f: (ref:any) => {}) => ({
           doc: (_id: string) => ({
