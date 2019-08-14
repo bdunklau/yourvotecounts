@@ -1,18 +1,15 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
-import { MyAccountPage } from './my-account.po';
 import { Api } from './api.po';
 
 describe('Minimal Account Info Guard', () => {
   let page: MainPage;
   let testSupport: TestSupport;
-  let myAccountPage: MyAccountPage;
 
   beforeEach(() => {
     testSupport = new TestSupport(new Api());
     page = new MainPage(testSupport);
-    myAccountPage = new MyAccountPage();
   });
 
 

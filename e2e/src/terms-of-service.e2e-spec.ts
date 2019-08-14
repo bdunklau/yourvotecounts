@@ -6,7 +6,6 @@ import { Api } from './api.po';
 describe('Terms of Service page', () => {
   let page: MainPage;
   let testSupport: TestSupport;
-  let myAccountPage: MyAccountPage;
 
   beforeEach(() => {
     testSupport = new TestSupport(new Api());
