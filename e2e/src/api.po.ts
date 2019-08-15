@@ -33,26 +33,13 @@ export class Api {
 
   }
 
-  async updateDisplayName(uid: string, displayName: string) {
-    var url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/setUser?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
 
-    var flow = protractor.promise.controlFlow();
-    var result = await flow.execute(function() {
-        var defer = protractor.promise.defer();
-        request.post({url: url, form: {uid: uid, displayName: displayName}},
-          function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-                defer.fulfill(JSON.parse(body));
-            }
-          }
-        );
-
-        return defer.promise;
-    });
-    return result;
+  async setLegal(uid: string, accepted: boolean) {
+    return this.post({uid: uid, tosAccepted: accepted, privacyPolicyRead: accepted});
   }
 
-  async updateUser(form: {uid: string, displayName: string, online: boolean}) {
+
+  async post(form) {
     var url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/setUser?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
 
     var flow = protractor.promise.controlFlow();
@@ -70,6 +57,16 @@ export class Api {
     });
     return result;
   }
+
+
+  async updateDisplayName(uid: string, displayName: string) {
+    return this.post({uid: uid, displayName: displayName});
+  }
+
+  async updateUser(form: {uid: string, displayName: string, online: boolean}) {
+    return this.post(form);
+  }
+
 
   verifyUserJson(expected: {displayName: string, phoneNumber: string, online: any},
                  actual: any) {

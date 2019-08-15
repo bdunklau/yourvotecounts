@@ -74,10 +74,15 @@ export class MainPage extends BasePage {
 
   loginAsSomeone() {
     this.testSupport.login(this.testSupport.names[0].phoneNumber);
+    return this.testSupport.names[0];
   }
 
   loginAsSomeoneElse() {
     this.testSupport.login(this.testSupport.names[1].phoneNumber);
+  }
+
+  setLegal(person, accepted: boolean) {
+    this.testSupport.setLegal(person, accepted);
   }
 
   verifyDisabledPage(pageName: string) {

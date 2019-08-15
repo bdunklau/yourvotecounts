@@ -124,6 +124,11 @@ export class TestSupport {
     return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
   }
 
+  async setLegal(person, accepted: boolean) {
+    var json = await this.api.getUser(person.phoneNumber);
+    this.api.setLegal(json['uid'], accepted);
+  }
+
   async setName(obj) {
     // Make an api call and see if we actually need to update the name or not...
     var json = await this.api.getUser(obj.phoneNumber);
