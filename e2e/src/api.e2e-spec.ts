@@ -44,7 +44,7 @@ describe('The API', () => {
   // curl command to verify:
   //  curl -d "displayName=Bre444nt&uid=wMO8BJMNuydKHoNS5pVLY33Dmhi1&online=true" -X POST https://us-central1-yourvotecounts-bd737.cloudfunctions.net/setUser?auth_key=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9
   it('should allow online status to be set', async () => {
-    var json = await api.getUser(testSupport.names[0].phoneNumber);
+    var json = await api.getUser(testSupport.names[0].phoneNumber); // WE DO THIS BECAUSE WE NEED THE ACTUAL UID
     // whatever the online value is, flip it, then flip it back
     let onlineOrig = json['online'];
     let onlineNew = onlineOrig ? false : true;
@@ -66,6 +66,24 @@ describe('The API', () => {
                         phoneNumber: testSupport.names[0].phoneNumber,
                         online: onlineOrig},
                       json);
+  })
+
+
+  it('should allow legal to be set', async () => {
+    var json = await api.getUser(testSupport.names[0].phoneNumber); // WE DO THIS BECAUSE WE NEED THE ACTUAL UID
+    let origTos = json['tosAccepted'];
+    let origPp = json['privacyPolicyRead'];
+    let tosNew = origTos ? false : true;
+    let ppNew = origPp ? false : true;
+    testSupport.names[0].uid = json['uid'];
+    await api.setLegal(testSupport.names[0], ppNew, tosNew);
+    json = await api.getUser(testSupport.names[0].phoneNumber);
+    api.verifyLegal(ppNew, tosNew, json);
+
+    // reset
+    await api.setLegal(testSupport.names[0], origPp, origTos);
+    json = await api.getUser(testSupport.names[0].phoneNumber);
+    api.verifyLegal(origPp, origTos, json);
   })
 
 

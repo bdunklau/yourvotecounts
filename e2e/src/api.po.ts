@@ -34,8 +34,8 @@ export class Api {
   }
 
 
-  async setLegal(person: any, accepted: boolean) {
-    return this.post({uid: person.uid, displayName: person.displayName, tosAccepted: accepted, privacyPolicyRead: accepted});
+  async setLegal(person: any, pp: boolean, tos: boolean) {
+    return this.post({uid: person.uid, displayName: person.displayName, tosAccepted: tos, privacyPolicyRead: pp});
   }
 
 
@@ -68,13 +68,30 @@ export class Api {
   }
 
 
-  verifyUserJson(expected: {displayName: string, phoneNumber: string, online: any},
+  verifyUserJson(expected: any /*{displayName: string, phoneNumber: string, online: any}*/,
                  actual: any) {
     // expect(expected.uid === actual.uid).toBeTruthy('expected uid to be '+expected.uid+' but it was actually '+actual.uid);
     expect(expected['displayName'] === actual['displayName']).toBeTruthy('expected displayName to be '+expected['displayName']+' but it was actually '+actual['displayName']);
     expect(expected['phoneNumber'] === actual['phoneNumber'] ||
       '+1'+expected['phoneNumber'] === actual['phoneNumber']).toBeTruthy('expected phoneNumber to be '+expected['phoneNumber']+' but it was actually '+actual['phoneNumber']);
     expect(expected['online'] === actual['online']).toBeTruthy('expected online to be '+expected['online']+' but it was actually '+actual['online']);
+
+    expect((expected['tosAccepted'] === actual['tosAccepted']) || (!expected['tosAccepted'] && !actual['tosAccepted']))
+      .toBeTruthy('expected tosAccepted to be '+expected['tosAccepted']+' but it was actually '+actual['tosAccepted']);
+
+    expect((expected['privacyPolicyRead'] === actual['privacyPolicyRead']) || (!expected['privacyPolicyRead'] && !actual['privacyPolicyRead']))
+      .toBeTruthy('expected privacyPolicyRead to be '+expected['privacyPolicyRead']+' but it was actually '+actual['privacyPolicyRead']);
+  }
+
+
+  verifyLegal(pp: boolean, tos: boolean,
+                 actual: any) {
+
+     expect((pp === actual['privacyPolicyRead']) || (!pp && !actual['privacyPolicyRead']))
+       .toBeTruthy('expected privacyPolicyRead to be '+pp+' but it was actually '+actual['privacyPolicyRead']);
+
+    expect((tos === actual['tosAccepted']) || (!tos && !actual['tosAccepted']))
+      .toBeTruthy('expected tosAccepted to be '+tos+' but it was actually '+actual['tosAccepted']);
   }
 
 }

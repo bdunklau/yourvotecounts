@@ -41,6 +41,14 @@ exports.setUser = functions.https.onRequest(async (req, res) => {
     updateValues['online'] = req.body.online === 'true' ? true : false;
   }
 
+  if(req.body.tosAccepted) {
+    updateValues['tosAccepted'] = req.body.tosAccepted === 'true' ? true : false;
+  }
+
+  if(req.body.privacyPolicyRead) {
+    updateValues['privacyPolicyRead'] = req.body.privacyPolicyRead === 'true' ? true : false;
+  }
+
   return db.collection('user').doc(req.body.uid).update(updateValues).then(() => {
     return res.status(200).send({'status': 'ok', 'response': 'User updated with: '+updateValues});
   })
