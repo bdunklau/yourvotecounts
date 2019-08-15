@@ -81,8 +81,8 @@ export class MainPage extends BasePage {
     this.testSupport.login(this.testSupport.names[1].phoneNumber);
   }
 
-  setLegal(person, accepted: boolean) {
-    this.testSupport.setLegal(person, accepted);
+  async setLegal(person, accepted: boolean) {
+    await this.testSupport.setLegal(person, accepted);
   }
 
   verifyDisabledPage(pageName: string) {

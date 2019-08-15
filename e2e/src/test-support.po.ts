@@ -125,8 +125,8 @@ export class TestSupport {
   }
 
   async setLegal(person, accepted: boolean) {
-    var json = await this.api.getUser(person.phoneNumber);
-    this.api.setLegal(json['uid'], accepted);
+    // var json = await this.api.getUser(person.phoneNumber);
+    await this.api.setLegal(person, accepted);
   }
 
   async setName(obj) {

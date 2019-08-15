@@ -34,8 +34,8 @@ export class Api {
   }
 
 
-  async setLegal(uid: string, accepted: boolean) {
-    return this.post({uid: uid, tosAccepted: accepted, privacyPolicyRead: accepted});
+  async setLegal(person: any, accepted: boolean) {
+    return this.post({uid: person.uid, displayName: person.displayName, tosAccepted: accepted, privacyPolicyRead: accepted});
   }
 
 
