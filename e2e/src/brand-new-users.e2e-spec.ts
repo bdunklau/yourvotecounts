@@ -17,7 +17,7 @@ fdescribe('Brand new users', () => {
 
 
   // passed 8/7
-  it('should be required to enter name', () => {
+  fit('should be required to enter name', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_BRAND_NEW_USER)
     // page.goto('/home');
     page.clickMyAccount();
