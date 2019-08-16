@@ -41,20 +41,21 @@ describe('Minimal Account Info Guard', () => {
 
 
   // make sure the guard doesn't accidentally redirect everyone
-  /*not passed*/ xit('should allow those with completed profiles to access pages', async () => {
+  /* passed*/ it('should allow those with completed profiles to access pages', async () => {
     page.loginAsSomeone();
     browser.sleep(500);
     page.clickMyAccount();
     browser.sleep(500);
     var url = await page.getUrl();
-    expect(url === browser.baseUrl+'/my-account').toBeTruthy('expected My Account link to send us to /my-account page, but instead we got '+url);
+    expect(url === browser.baseUrl+'/myaccount').toBeTruthy('expected My Account link to send us to /my-account page, but instead we got '+url);
 
-    page.pullDownMyMenu();
+    //page.pullDownMyMenu();
     page.clickTeams();
     browser.sleep(500);
     url = await page.getUrl();
     expect(url === browser.baseUrl+'/teams').toBeTruthy('expected Teams link to send us to /teams page, but instead we got '+url);
 
+    page.pullDownMyMenu();
     page.clickHome();
     browser.sleep(500);
     url = await page.getUrl();

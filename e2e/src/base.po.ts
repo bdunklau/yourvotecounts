@@ -1,8 +1,16 @@
 import { browser, by, element, Key, ElementArrayFinder } from 'protractor';
 import * as protractor from 'protractor'
+import { TestSupport } from './test-support.po';
 
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class BasePage {
+
+  testSupport: TestSupport;
+
+  constructor(testSupport: TestSupport)
+  {
+    this.testSupport = testSupport;
+  }
 
   clear(id) {
     var field = this.getElement(by.id(id));
@@ -14,7 +22,7 @@ export class BasePage {
   }
 
   clickLogout() {
-    browser.sleep(1000);
+    browser.sleep(500);
     this.pullDownMyMenu();
     this.getLogoutLink().click();
   }
@@ -102,6 +110,37 @@ export class BasePage {
   goto(url) {
     return browser.get(browser.baseUrl+url) as Promise<any>;
     browser.sleep(100);
+  }
+
+
+  loginAdmin() {
+    this.testSupport.login(this.testSupport.adminUser.phoneNumber);
+  }
+
+  loginNewUser() {
+    this.testSupport.login(this.testSupport.brandNewUser.phoneNumber);
+  }
+
+  async loginAs(person: any) {
+    this.testSupport.login(person.phoneNumber);
+    await this.setLegal(person, true);
+    return person;
+  }
+
+  async loginAsSomeone() {
+    return await this.loginAs(this.testSupport.names[0]);
+    // this.testSupport.login(this.testSupport.names[0].phoneNumber);
+    // await this.setLegal(this.testSupport.names[0], true);
+    // return this.testSupport.names[0];
+  }
+
+  async loginAsSomeoneElse() {
+    return await this.loginAs(this.testSupport.names[1]);
+    // this.testSupport.login(this.testSupport.names[1].phoneNumber);
+  }
+
+  async setLegal(person, accepted: boolean) {
+    await this.testSupport.setLegal(person, accepted);
   }
 
 

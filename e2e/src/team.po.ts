@@ -7,13 +7,13 @@ import { TestSupport } from './test-support.po';
 
 export class TeamPage extends BasePage {
 
-  constructor(private args: {testSupport: TestSupport,
-                             teamName: string,
+  constructor(testSupport: TestSupport,
+              private args: {teamName: string,
                              creator: {displayName: string, phoneNumber: string, uid: string},
                              addedPerson: {displayName: string, phoneNumber: string, uid: string}
                             })
   {
-    super();
+    super(testSupport);
   }
 
   addSomeoneToTeam() {
@@ -56,9 +56,9 @@ export class TeamPage extends BasePage {
     browser.sleep(500);
   }
 
-  createTeam(phoneNumber: string) {
-    this.args.testSupport.setNames(this.args.testSupport.names);
-    this.args.testSupport.login(phoneNumber);
+  createTeam() {
+    this.testSupport.setNames(this.testSupport.names);
+    this.loginAsSomeone();
     browser.sleep(300);
     this.clickTeams();
     this.beginCreateTeam();
@@ -66,8 +66,8 @@ export class TeamPage extends BasePage {
     this.saveTeam();
   }
 
-  createTeamWithTwoPeople(phoneNumber: string) {
-    this.createTeam(phoneNumber);
+  createTeamWithTwoPeople() {
+    this.createTeam();
     browser.sleep(1000);
     this.selectTeam();
     this.addSomeoneToTeam();
@@ -103,7 +103,7 @@ export class TeamPage extends BasePage {
   }
 
   fillOutForm() {
-    // var teamName = this.args.testSupport.getTeamName();
+    // var teamName = this.testSupport.getTeamName();
     this.enterTeamName(this.args.teamName);
   }
 

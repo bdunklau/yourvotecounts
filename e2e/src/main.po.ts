@@ -64,27 +64,6 @@ export class MainPage extends BasePage {
     return browser.getCurrentUrl();
   }
 
-  loginAdmin() {
-    this.testSupport.login(this.testSupport.adminUser.phoneNumber);
-  }
-
-  loginNewUser() {
-    this.testSupport.login(this.testSupport.brandNewUser.phoneNumber);
-  }
-
-  loginAsSomeone() {
-    this.testSupport.login(this.testSupport.names[0].phoneNumber);
-    return this.testSupport.names[0];
-  }
-
-  loginAsSomeoneElse() {
-    this.testSupport.login(this.testSupport.names[1].phoneNumber);
-  }
-
-  async setLegal(person, accepted: boolean) {
-    await this.testSupport.setLegal(person, accepted);
-  }
-
   verifyDisabledPage(pageName: string) {
     expect(this.getElement(by.id('disabled_page')).isDisplayed()).toBeTruthy('The disabled page should have been displayed instead of the '+pageName+' page');
   }
