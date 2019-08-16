@@ -33,11 +33,11 @@ describe('Users page (Admins) ', () => {
                             someone: testSupport.normalUser,
                             someoneElse: testSupport.normalUser2});
 
-    teamPage = new TeamPage({testSupport: testSupport,
-                            teamName: testSupport.getTeamName(),
+    teamPage = new TeamPage(testSupport,
+                           {teamName: testSupport.getTeamName(),
                             creator: testSupport.normalUser,
                             addedPerson: testSupport.normalUser2});
-    myAccountPage = new MyAccountPage();
+    myAccountPage = new MyAccountPage(testSupport);
   });
 
 
