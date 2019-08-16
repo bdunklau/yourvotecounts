@@ -137,20 +137,20 @@ export class TestSupport {
   }
 
   async setLegal(person, accepted: boolean) {
-    var json = await this.api.getUser(person.phoneNumber); // have to do this to get the actual uid
+    var json = await this.api.user.getUser(person.phoneNumber); // have to do this to get the actual uid
     person.uid = json['uid'];
-    await this.api.setLegal(person, accepted, accepted);
+    await this.api.user.setLegal(person, accepted, accepted);
   }
 
   async setName(obj) {
     // Make an api call and see if we actually need to update the name or not...
-    var json = await this.api.getUser(obj.phoneNumber);
+    var json = await this.api.user.getUser(obj.phoneNumber);
     if(json['displayName'] === obj.displayName) {
       // return early, nothing to do
       // console.log('setName(): displayName was already: ', obj.displayName);
     }
     else {
-      await this.api.updateDisplayName(json['uid'], obj.displayName);
+      await this.api.user.updateDisplayName(json['uid'], obj.displayName);
     }
   }
 

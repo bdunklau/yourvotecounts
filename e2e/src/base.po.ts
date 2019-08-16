@@ -32,9 +32,19 @@ export class BasePage {
     this.getElement(by.id('myaccount_link')).click();
   }
 
+  clickPrivacyPolicy() {
+    this.pullDownMyMenu();
+    this.getElement(by.id('privacy_link')).click();
+  }
+
   clickTeams() {
     this.pullDownMyMenu();
     this.getElement(by.id('teams_link')).click();
+  }
+
+  clickTerms() {
+    this.pullDownMyMenu();
+    this.getElement(by.id('terms_link')).click();
   }
 
   closeNav() {
