@@ -12,7 +12,7 @@ describe('Logged in users', () => {
   beforeEach(() => {
     testSupport = new TestSupport(new Api());
     page = new MainPage(testSupport);
-    myAccountPage = new MyAccountPage();
+    myAccountPage = new MyAccountPage(testSupport);
   });
 
   /* passed*/ it('should be able to logout', async () => {
