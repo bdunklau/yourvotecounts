@@ -85,7 +85,7 @@ describe('Users page (Admins) ', () => {
 
 
   // passed 8/8
-  /*not passed*/ xit('should be able to edit name', async () => {
+  /*not passed*/ it('should be able to edit name', async () => {
     testSupport.setName(testSupport.normalUser);
     page.loginAdmin();
     page.pullDownMyMenu();
@@ -118,7 +118,7 @@ describe('Users page (Admins) ', () => {
 
 
     // passed 8/8
-  /*not passed*/ xit('should be able to disable any user\'s account', () => {
+  /*not passed*/ it('should be able to disable any user\'s account', () => {
     testSupport.setNames(testSupport.names);
     var sleep = 300;
     // login as Admin

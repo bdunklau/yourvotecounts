@@ -22,7 +22,7 @@ describe('LoginComponent', () => {
   // firebase ui and auth libraries make is so you can't create this component
   // MAYBE if the mock objects above were defined differently ???
   // leave this as /*not passed*/ xit()
-  /*not passed*/ xit('should create', () => {
+  xit('should create', () => {
     expect(component).toBeTruthy();
   });
 });
