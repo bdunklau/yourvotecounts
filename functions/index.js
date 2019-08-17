@@ -34,3 +34,6 @@ exports.sendSms = twilio_sms.sendSms;
 
 const privacy_policy = require('./api/privacy-policy');
 exports.getPrivacyPolicy = privacy_policy.getPrivacyPolicy;
+
+const terms_of_service = require('./api/terms-of-service');
+exports.getTermsOfService = terms_of_service.getTermsOfService;
