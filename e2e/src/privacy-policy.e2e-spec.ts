@@ -5,7 +5,7 @@ import { Api } from './api.po';
 import { ApiPrivacyPolicy } from './api-privacy-policy.po';
 import { PrivacyPolicyPage } from './privacy-policy.po';
 
-fdescribe('Privacy Policy page', () => {
+describe('Privacy Policy page', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let privacyPolicyPage: PrivacyPolicyPage;
