@@ -15,6 +15,9 @@ describe('TermsOfServiceService', () => {
         doc: (_id: string) => ({
           valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
           set: (_d: any) => new Promise((resolve, _reject) => resolve()),
+          ref: {
+            get: () => {}
+          }
         }),
         valueChanges: () => of([{id: '1', event: 'event1', date: {toDate: () => new Date()}}, // 2 mock LogEntry's
                                 {id: '2', event: 'event2', date: {toDate: () => new Date()}}])
