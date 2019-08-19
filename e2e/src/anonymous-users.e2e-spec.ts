@@ -1,6 +1,7 @@
 import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { Api } from './api.po';
+import { ApiUser } from './api-user.po';
 import { TestSupport } from './test-support.po';
 
 describe('Anonymous users', () => {
@@ -8,7 +9,8 @@ describe('Anonymous users', () => {
   let testSupport: TestSupport;
 
   beforeEach(() => {
-    testSupport = new TestSupport(new Api());
+    apiUser = new ApiUser();
+    testSupport = new TestSupport(new Api({user:apiUser}));
     page = new MainPage(testSupport);
   });
 

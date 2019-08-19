@@ -3,6 +3,7 @@ import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { MyAccountPage } from './my-account.po';
 import { Api } from './api.po';
+import { ApiUser } from './api-user.po';
 
 describe('Logged in users', () => {
   let page: MainPage;
@@ -10,7 +11,8 @@ describe('Logged in users', () => {
   let myAccountPage: MyAccountPage;
 
   beforeEach(() => {
-    testSupport = new TestSupport(new Api());
+    apiUser = new ApiUser();
+    testSupport = new TestSupport(new Api({user:apiUser}));
     page = new MainPage(testSupport);
     myAccountPage = new MyAccountPage(testSupport);
   });

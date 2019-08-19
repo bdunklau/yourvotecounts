@@ -5,6 +5,7 @@ import { TeamPage } from './team.po';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
+import { ApiUser } from './api-user.po';
 
 describe('Team page', () => {
   // let page: PublicPage;
@@ -13,7 +14,8 @@ describe('Team page', () => {
   let teamPage: TeamPage;
 
   beforeEach(() => {
-    testSupport = new TestSupport(new Api());
+    apiUser = new ApiUser();
+    testSupport = new TestSupport(new Api({user:apiUser}));
     page = new MainPage(testSupport);
     teamPage = new TeamPage(testSupport,
                             {teamName: testSupport.getTeamName(),
