@@ -2,13 +2,14 @@ import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { Api } from './api.po';
+import { ApiUser } from './api-user.po';
 
 describe('Minimal Account Info Guard', () => {
   let page: MainPage;
   let testSupport: TestSupport;
 
   beforeEach(() => {
-    testSupport = new TestSupport(new Api());
+    testSupport = new TestSupport(new Api({user: new ApiUser()}));
     page = new MainPage(testSupport);
   });
 

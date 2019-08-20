@@ -1,5 +1,6 @@
 import { browser, logging, element, by, protractor } from 'protractor';
 import { Api } from './api.po';
+import { ApiUser } from './api-user.po';
 import { TestSupport } from './test-support.po';
 import * as _ from 'lodash';
 import * as moment from 'moment';
@@ -13,7 +14,7 @@ describe('The API', () => {
   let testSupport: TestSupport;
 
   // beforeEach(() => {
-  //   api = new Api();
+  //   api = new Api({user: new ApiUser()});
   //   testSupport = new TestSupport(api);
   // });
 
