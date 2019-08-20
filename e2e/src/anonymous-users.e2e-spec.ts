@@ -5,6 +5,7 @@ import { ApiUser } from './api-user.po';
 import { TestSupport } from './test-support.po';
 
 describe('Anonymous users', () => {
+  let apiUser: ApiUser;
   let page: MainPage;
   let testSupport: TestSupport;
 
