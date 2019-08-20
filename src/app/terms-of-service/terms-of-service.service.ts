@@ -11,8 +11,40 @@ export class TermsOfServiceService {
   constructor(private afs: AngularFirestore,) { }
 
   async getTerms() {
-    var termsDoc = await this.afs.collection('config').doc('terms_of_service').ref.get();
-    return termsDoc.data().text;
+    var termsDoc = await this.afs.collection('config').doc('terms_of_service');
+    var termsRef = termsDoc.ref;
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    console.log('termsRef: ', termsRef);
+    var termsGet = termsRef.get();
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    console.log('termsGet: ', termsGet);
+    return termsGet.data().text;
   }
 
   updateTerms(terms: string) {

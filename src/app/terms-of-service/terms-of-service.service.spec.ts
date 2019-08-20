@@ -18,7 +18,7 @@ describe('TermsOfServiceService', () => {
           ref: {
             get: () => ({
               data: () => ({
-                text: 'mock privacy policy',
+                text: 'mock tos',
               }),
             }),
           }
