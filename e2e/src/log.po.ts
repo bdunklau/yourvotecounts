@@ -8,8 +8,8 @@ import { TestSupport } from './test-support.po';
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class LogPage extends BasePage {
 
-  constructor(private testSupport: TestSupport) {
-    super();
+  constructor(testSupport: TestSupport) {
+    super(testSupport);
   }
 
   clickCalendarIcon() {

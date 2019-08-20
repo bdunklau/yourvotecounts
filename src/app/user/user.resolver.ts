@@ -16,10 +16,12 @@ export class UserResolver implements Resolve<FirebaseUserModel> {
       this.router.navigate(['/login']);
       return null;
     }
-    if(!user.displayName) {
-      this.router.navigate(['/myaccount']);
-      return null;
-    }
+
+    // replaced by MinimalAccountInfoGuard
+    // if(!user.displayName) {
+    //   this.router.navigate(['/myaccount']);
+    //   return null;
+    // }
     return user;
   }
 

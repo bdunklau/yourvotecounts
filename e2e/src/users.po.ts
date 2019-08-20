@@ -11,7 +11,7 @@ export class UsersPage extends BasePage {
                              someoneElse: {displayName: string, phoneNumber: string, uid: string}
                             })
   {
-    super();
+    super(args.testSupport);
   }
 
 

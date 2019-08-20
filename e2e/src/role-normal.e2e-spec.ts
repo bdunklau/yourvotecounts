@@ -2,13 +2,16 @@ import { MainPage } from './main.po';
 import { browser, logging, element, by } from 'protractor';
 import { TestSupport } from './test-support.po';
 import { Api } from './api.po';
+import { ApiUser } from './api-user.po';
 
 describe('Normal user', () => {
   let page: MainPage;
   let testSupport: TestSupport;
+  let apiUser: ApiUser;
 
   beforeEach(() => {
-    testSupport = new TestSupport(new Api());
+    apiUser = new ApiUser();
+    testSupport = new TestSupport(new Api({user:apiUser}));
     page = new MainPage(testSupport);
   });
 

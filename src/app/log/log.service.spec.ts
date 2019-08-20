@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { LogService } from './log.service';
-import {BehaviorSubject} from 'rxjs';
-import { of } from 'rxjs/observable/of';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { BehaviorSubject, of } from 'rxjs';
+
 import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -22,6 +22,13 @@ describe('LogService', () => {
         doc: (_id: string) => ({
           valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
           set: (_d: any) => new Promise((resolve, _reject) => resolve()),
+          ref: {
+            get: () => ({
+              data: () => ({
+                text: 'mock data',
+              }),
+            }),
+          }
         }),
         valueChanges: () => of([{id: '1', event: 'event1', date: {toDate: () => new Date()}}, // 2 mock LogEntry's
                                 {id: '2', event: 'event2', date: {toDate: () => new Date()}}])

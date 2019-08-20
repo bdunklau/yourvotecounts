@@ -1,9 +1,14 @@
 import { browser, by, element } from 'protractor';
 import * as protractor from 'protractor';
 import { BasePage } from './base.po';
+import { TestSupport } from './test-support.po';
 
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class MyAccountPage extends BasePage {
+
+
+  constructor(testSupport: TestSupport) { super(testSupport); }
+
 
   clickEdit() {
     // FAIL?  If this fails, you probably don't have a displayName set for the user, just a phone number

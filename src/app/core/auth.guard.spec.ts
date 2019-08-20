@@ -57,7 +57,7 @@ describe('AuthGuard', () => {
                imports: [CommonServiceModuleStub],
                // I used 'useValue' because it is just a json. If it was class, I'd use 'useClass'
                providers: [{provide: AngularFirestore, useValue: angularFirestoreStub},
-                           {provide: AngularFireAuth, useValue: mockAngularFireAuth}],
+                           {provide: AngularFireAuth, useValue: {}/*mockAngularFireAuth*/}],
                schemas: [ NO_ERRORS_SCHEMA ],
                declarations: [ AppComponent ]
            }).compileComponents();

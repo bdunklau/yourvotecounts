@@ -1,0 +1,42 @@
+
+<div class="container">
+  <h3>Send a Text Message</h3>
+  This is just a quick and dirty way to verify that the SMS feature is working.
+  <form (ngSubmit)="onSubmit()" #smsForm="ngForm">
+    <!-- to fieldset  -->
+
+    <!-- from field  -->
+
+    <!-- big message box   -->
+
+    <div class="form-group">
+      <input type="text" class="form-control" id="to_sms_field" placeholder="To..."
+              [(ngModel)]="toValue" name="toSms" #toSms="ngModel" required>
+      <div [hidden]="toSms.valid || toSms.pristine"
+           class="alert alert-danger">
+        Number is required
+      </div>
+
+      <input type="text" class="form-control" id="from_sms_field" placeholder="From..." style="margin-top:20px"
+              [(ngModel)]="fromValue" name="fromSms" #fromSms="ngModel" required>
+      <div [hidden]="fromSms.valid || fromSms.pristine"
+           class="alert alert-danger">
+        Number is required
+      </div>
+
+      <!-- doesn't work the way I thought it would.  This is for sending actual media files, not links -->
+      <!-- <input type="text" class="form-control" id="mediaUrl_sms_field" placeholder="URL (optional)" style="margin-top:20px"
+              [(ngModel)]="mediaUrlValue" name="mediaUrl" #mediaUrl="ngModel"> -->
+
+      <div style="margin-top:20px"><b>Text Message</b></div>
+      <textarea class="form-control" id="smsMessageField" placeholder=""
+              [(ngModel)]="smsMessageValue" name="smsMessage" #smsMessage="ngModel" rows="15" required>
+      </textarea>
+
+      <button id="send_sms" type="submit" class="btn btn-success" style="margin-top: 20px"
+              [disabled]="!smsForm.form.valid">Submit</button>
+    </div>
+
+  </form>
+
+</div>

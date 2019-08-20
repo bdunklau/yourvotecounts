@@ -1,0 +1,18 @@
+
+<div class="container">
+  <h3>Terms of Service</h3>
+
+  <form (ngSubmit)="onSubmit()" #tosForm="ngForm">
+      <!-- terms of service editor  -->
+
+    <div class="form-group">
+      <textarea class="form-control" id="tosField" placeholder="Terms of Service"
+              [(ngModel)]="tosValue" name="tos" #tos="ngModel" rows="15" required>
+      </textarea>
+    </div>
+
+    <button id="submit_tos" type="submit" class="btn btn-success" [disabled]="!tosForm.form.valid">Submit</button>
+
+  </form>
+
+</div>

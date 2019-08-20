@@ -12,6 +12,7 @@ import { MessageService } from '../core/message.service';
 import { Team } from '../team/team.model';
 import { map } from 'rxjs/operators';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
+import { LogService } from '../log/log.service';
 
 
 @Injectable()
@@ -89,7 +90,7 @@ export class UserService {
 
   async getCurrentUser() : Promise<FirebaseUserModel> {
     if(this.user) {
-      // TODO verified on 6//10/19 but not part of automated testing yet.  Need a mock/spy LogService
+      console.log('getCurrentUser():  get cached user: ', this.user);
       return this.user
     }
     var user = await this.createFirebaseUserModel()
@@ -106,32 +107,11 @@ export class UserService {
       var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
       this.user = user;
       this.user.populate(userDoc.data());
+      console.log('getCurrentUser(): DATABASE HIT this.user = ', this.user);
       this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
       resolve(this.user);
     });
   }
-
-  // async subscribeCurrentUser(fn: (obj) => void): Promise<Subscription> {
-  //
-  //   var user = await this.createFirebaseUserModel();
-  //   if(!user) return null;
-  //   var obj = this.afs.collection('user', ref => ref.where('uid', '==', user.uid)).snapshotChanges().pipe(
-  //     map(actions => {
-  //       return actions.map(a => {
-  //         const data = a.payload.doc.data();// as TeamMember;
-  //         let user = new FirebaseUserModel();
-  //         user.populate(data);
-  //         // const id = a.payload.doc.id;
-  //         // var returnThis = { id, ...data };
-  //         // console.log('data = ', data);
-  //         // console.log('returnThis = ', returnThis);
-  //         return user;
-  //       });
-  //     })
-  //   ).subscribe(fn);
-  //
-  //   return obj;
-  // }
 
   private getFirebaseUser() {
     return new Promise<any>((resolve, reject) => {
@@ -170,20 +150,52 @@ export class UserService {
   }
 
 
-  async setFirebaseUser(firebase_auth_currentUser) {
+  async setFirebaseUser(firebase_auth_currentUser, online: boolean) {
     let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
     this.user = new FirebaseUserModel();
-    console.log('setFirebaseUser(): user.uid = ', user.uid);
     var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
+    console.log('setFirebaseUser(): userDoc.data() = ', userDoc.data());
     this.user.populate(userDoc.data());
+    this.user.online = online;
+    this.updateUser(this.user); // saves the online state
     console.log('setFirebaseUser(): this.user = ', this.user);
     this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
   }
 
 
+  async signIn(log: LogService, firebase_auth_currentUser) {
+    await this.setFirebaseUser(firebase_auth_currentUser, true);
+    log.i('login');
+  }
+
+
   signOut() {
+    let user = new FirebaseUserModel();
+    this.user.online = false;
+    user.populate(this.user);
+    this.updateUser(user);
     this.user = null
+    console.log('signOut(): this.user = ', this.user);
     this.messageService.updateUser(this.user);
+  }
+
+  subscribe(uid: string, fn: ((users:[FirebaseUserModel]) => void) ): Subscription {
+    const sub = this.afs.collection('user', ref => ref.where("uid", "==", uid))
+          .snapshotChanges()
+          .pipe( // see team-list.component.ts
+            map(actions => { // actions = [{},{type:"added", payload:{}}]
+              return actions.map(a => {
+                const data = a.payload.doc.data();
+                let u = new FirebaseUserModel();
+                u.populate(data);
+                return u;
+                // const id = a.payload.doc.id;  // valid but not needed here
+              });
+            })
+          )
+          .subscribe(fn);
+    console.log('subscribe: sub = ', sub);
+    return sub;
   }
 
   updateCurrentUser(value: FirebaseUserModel) {
@@ -204,10 +216,18 @@ export class UserService {
     })
   }
 
-  updateUser(value: FirebaseUserModel) {
-    return this.afs.collection('user').doc(value.uid).ref
-      .update({displayName: value.displayName,
-               displayName_lower: value.displayName.toLowerCase(),
-               isDisabled: value.isDisabled});
+  async updateUser(value: FirebaseUserModel) {
+    let data = {}
+    if(value.displayName) {
+      data['displayName'] = value.displayName;
+      data['displayName_lower'] = value.displayName.toLowerCase();
+    }
+    data['isDisabled'] = value.isDisabled;
+    data['online'] = value.online === true ? true : false;
+    data['tosAccepted'] = value.tosAccepted === true ? true : false;
+    data['privacyPolicyRead'] = value.privacyPolicyRead === true ? true : false;
+    let updateRes = this.afs.collection('user').doc(value.uid).ref.update(data);
+    console.log('updateUser: DATABASE UPDATE: ', data);
+    return updateRes;
   }
 }

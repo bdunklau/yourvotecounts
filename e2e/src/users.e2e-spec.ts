@@ -5,6 +5,7 @@ import { browser, by, logging, /*, element, by*/ } from 'protractor';
 import { Api } from './api.po';
 import { TeamPage } from './team.po';
 import { MyAccountPage } from './my-account.po';
+import { ApiUser } from './api-user.po';
 
 
 var verifyPagesEnabled = function(page, myAccountPage, teamPage, sleep) {
@@ -20,6 +21,8 @@ var verifyPagesEnabled = function(page, myAccountPage, teamPage, sleep) {
 
 
 describe('Users page (Admins) ', () => {
+  let api: Api;
+  let apiUser: ApiUser;
   let testSupport: TestSupport;
   let page: MainPage;
   let usersPage: UsersPage;
@@ -27,17 +30,19 @@ describe('Users page (Admins) ', () => {
   let myAccountPage: MyAccountPage;
 
   beforeEach(() => {
-    testSupport = new TestSupport(new Api());
+    apiUser = new ApiUser();
+    api = new Api({user:apiUser});
+    testSupport = new TestSupport(api);
     page = new MainPage(testSupport);
     usersPage = new UsersPage({testSupport: testSupport,
                             someone: testSupport.normalUser,
                             someoneElse: testSupport.normalUser2});
 
-    teamPage = new TeamPage({testSupport: testSupport,
-                            teamName: testSupport.getTeamName(),
+    teamPage = new TeamPage(testSupport,
+                           {teamName: testSupport.getTeamName(),
                             creator: testSupport.normalUser,
                             addedPerson: testSupport.normalUser2});
-    myAccountPage = new MyAccountPage();
+    myAccountPage = new MyAccountPage(testSupport);
   });
 
 
@@ -80,7 +85,7 @@ describe('Users page (Admins) ', () => {
 
 
   // passed 8/8
-  it('should be able to edit name', async () => {
+  /*not passed*/ it('should be able to edit name', async () => {
     testSupport.setName(testSupport.normalUser);
     page.loginAdmin();
     page.pullDownMyMenu();
@@ -113,7 +118,7 @@ describe('Users page (Admins) ', () => {
 
 
     // passed 8/8
-  it('should be able to disable any user\'s account', () => {
+  /*not passed*/ it('should be able to disable any user\'s account', () => {
     testSupport.setNames(testSupport.names);
     var sleep = 300;
     // login as Admin
@@ -211,6 +216,16 @@ describe('Users page (Admins) ', () => {
   it('should not be able to disable your own account', () => {
     // actually covered at the end of the test above
     expect(true).toBeTruthy();
+  })
+
+
+  it('should be able to see when a user logs in', () => {
+    var sleep = 200;
+    page.loginAdmin();
+    page.pullDownMyMenu();
+    page.clickUsers();
+                                    browser.sleep(sleep);
+    usersPage.lookUpSomeone();
   })
 
 

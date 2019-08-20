@@ -6,7 +6,7 @@ import { TestSupport } from './test-support.po';
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75
 export class MainPage extends BasePage {
 
-  constructor(private testSupport: TestSupport) { super(); }
+  constructor(testSupport: TestSupport) { super(testSupport); }
 
   clickHome() {
     this.getHomeLink().click()
@@ -62,18 +62,6 @@ export class MainPage extends BasePage {
 
   getUrl() {
     return browser.getCurrentUrl();
-  }
-
-  loginAdmin() {
-    this.testSupport.login(this.testSupport.adminUser.phoneNumber);
-  }
-
-  loginAsSomeone() {
-    this.testSupport.login(this.testSupport.names[0].phoneNumber);
-  }
-
-  loginAsSomeoneElse() {
-    this.testSupport.login(this.testSupport.names[1].phoneNumber);
   }
 
   verifyDisabledPage(pageName: string) {

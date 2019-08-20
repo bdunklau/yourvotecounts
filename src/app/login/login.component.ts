@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 // import * as firebaseui from 'firebaseui'
 // import { firebase} from 'firebase/app'
 import {firebase, firebaseui} from 'firebaseui-angular'
-import {BehaviorSubject} from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { LogService } from '../log/log.service'
 import { UserService } from '../user/user.service'
 
@@ -42,8 +42,9 @@ export class LoginComponent implements OnInit {
     console.log("onLoginSuccessful()");
     var user = firebase.auth().currentUser;
     if(user){
-      this.log.i('login');
-      this.userService.setFirebaseUser(user);
+      // this.log.i('login');
+      // this.userService.setFirebaseUser(user);
+      this.userService.signIn(this.log, user);
     }
   }
 

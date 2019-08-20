@@ -1,57 +1,22 @@
 <!--The content below is only a placeholder and can be replaced.-->
 
-
-<!-- <nav class="navbar navbar-expand-md navbar-light bg-faded">
-  <button class="navbar-toggler navbar-toggler-right" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-  </button>
-  <a class="navbar-brand" href="#">{{ title }}</a>
-  <div [ngbCollapse]="isNavbarCollapsed" class="navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a id="home_link" class="nav-link" routerLink="/home"><i class="fa fa-home"></i></a>
-      </li>
-
-      <li [hidden]="!isLoggedIn" class="nav-item dropdown" ngbDropdown>
-        <a class="nav-link dropdown-toggle" id="name_or_phone" ngbDropdownToggle>{{name_or_phone}}</a>
-        <div class="dropdown-menu" aria-labelledby="name_or_phone" ngbDropdownMenu>
-          <a class="dropdown-item" id="myaccount_link" routerLink="/myaccount">My Account</a>
-          <a class="dropdown-item" id="teams_link" [routerLink]="['/teams']">Teams</a>
-          <a class="dropdown-item" id="logout_link" (click)="logout()">Logout</a>
-        </div>
-      </li>
-
-
-      <li [hidden]="isLoggedIn" class="nav-item">
-        <a id="login_link" class="nav-link" routerLink="/login">Login</a>
-      </li>
-      <li [hidden]="!isAdmin" class="nav-item">
-        <a id="log_link" class="nav-link" routerLink="/log">Log</a>
-      </li>
-      <li [hidden]="!isAdmin" class="nav-item">
-        <a id="users_link" class="nav-link" routerLink="/users">Users</a>
-      </li>
-
-    </ul>
-  </div>
-</nav> -->
-
-
-
 <nav class="navbar navbar-expand-md navbar-light bg-faded">
 
  <!-- https://www.w3schools.com/howto/howto_js_sidenav.asp -->
  <div id="mySidenav" class="sidenav">
    <a href="javascript:void(0)" class="closebtn" id="closeNav" (click)="closeNav()"><i class="fa fa-close"></i></a>
    <div class="nav-heading">Main Menu</div>
-   <a id="home_link" class="nav-link" routerLink="/home"><i class="fa fa-home"></i> Home</a>
+   <a id="home_link" class="nav-link" (click)="closeNav()" routerLink="/home"><i class="fa fa-home"></i> Home</a>
    <a [hidden]="!isLoggedIn" id="myaccount_link" class="nav-link" (click)="closeNav()" routerLink="/myaccount"><i class="fa fa-user-circle-o"></i> My Account</a>
    <a [hidden]="!isLoggedIn" id="teams_link" class="nav-link" (click)="closeNav()" [routerLink]="['/teams']"><i class="fa fa-users"></i> Teams</a>
    <a [hidden]="isLoggedIn" id="login_link" class="nav-link" (click)="closeNav()" routerLink="/login"><i class="fa fa-sign-in"></i> Login</a>
    <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()"><i class="fa fa-sign-out"></i> Logout</a>
    <div [hidden]="!isAdmin" class="nav-heading">Administration</div>
-   <a [hidden]="!isAdmin" id="log_link" class="nav-link" (click)="closeNav()" routerLink="/log"><i class="fa fa-file-text-o"></i> Logs</a>
-   <a [hidden]="!isAdmin" id="users_link" class="nav-link" (click)="closeNav()" routerLink="/users"><i class="fa fa-users"></i> Users</a>
+   <a [hidden]="!isAdmin" id="users_link" class="nav-link" (click)="closeNav()" [routerLink]="['/users']"><i class="fa fa-users"></i> Users</a>
+   <a [hidden]="!isAdmin" id="sms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/sms']"><i class="fa fa-send-o"></i> SMS</a>
+   <a [hidden]="!isAdmin" id="log_link" class="nav-link" (click)="closeNav()" [routerLink]="['/log']"><i class="fa fa-file-text-o"></i> Logs</a>
+   <a [hidden]="!isAdmin" id="terms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/terms']"><i class="fa fa-file-text-o"></i> Terms</a>
+   <a [hidden]="!isAdmin" id="privacy_link" class="nav-link" (click)="closeNav()" [routerLink]="['/privacy']"><i class="fa fa-file-text-o"></i> Privacy</a>
  </div>
 
  <!-- Use any element to open the sidenav -->

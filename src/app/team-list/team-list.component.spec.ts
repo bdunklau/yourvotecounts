@@ -5,7 +5,7 @@ import { Observable, /*of, Subject, Subscription*/ } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { FirebaseUserModel } from '../user/user.model';
 import { map/*, take*/ } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
@@ -18,6 +18,13 @@ const FirestoreStub = {
       doc: (_id: string) => ({
         valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
         set: (_d: any) => new Promise((resolve, _reject) => resolve()),
+        ref: {
+          get: () => ({
+            data: () => ({
+              text: 'mock data',
+            }),
+          }),
+        }
       }),
 
       snapshotChanges: () => ({

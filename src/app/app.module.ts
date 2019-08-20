@@ -37,6 +37,10 @@ import { DisabledComponent } from './disabled/disabled.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ScrollableDirective } from './scrollable.directive';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { MinimalAccountInfoComponent } from './my-account/minimal-account-info/minimal-account-info.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
+import { SmsComponent } from './sms/sms.component';
 // import { TeamResolver } from './team/team.resolver';
 
 
@@ -65,6 +69,10 @@ import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.compo
     DisabledComponent,
     ScrollableDirective,
     LoadingSpinnerComponent,
+    MinimalAccountInfoComponent,
+    PrivacyPolicyComponent,
+    TermsOfServiceComponent,
+    SmsComponent,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [

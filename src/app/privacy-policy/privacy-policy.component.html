@@ -1,0 +1,19 @@
+
+<div class="container">
+  <h3>Privacy Policy</h3>
+
+  <form (ngSubmit)="onSubmit()" #ppForm="ngForm">
+      <!-- terms of service editor  -->
+
+    <div class="form-group">
+      <textarea class="form-control" id="ppField" placeholder="Privacy Policy"
+              [(ngModel)]="ppValue" name="pp" #pp="ngModel" rows="15" required>
+              {{ppValue}}
+      </textarea>
+    </div>
+
+    <button id="submit_pp" type="submit" class="btn btn-success" [disabled]="!ppForm.form.valid">Submit</button>
+
+  </form>
+
+</div>

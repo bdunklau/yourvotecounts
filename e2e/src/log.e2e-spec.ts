@@ -5,15 +5,18 @@ import { LogPage } from './log.po';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Api } from './api.po';
+import { ApiUser } from './api-user.po';
 
 describe('Log page', () => {
   // let page: PublicPage;
+  let apiUser: ApiUser;
   let page: MainPage;
   let testSupport: TestSupport;
   let logPage: LogPage;
 
   beforeEach(() => {
-    testSupport = new TestSupport(new Api());
+    apiUser = new ApiUser();
+    testSupport = new TestSupport(new Api({user:apiUser}));
     page = new MainPage(testSupport);
     logPage = new LogPage(testSupport);
   });

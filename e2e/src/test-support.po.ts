@@ -11,16 +11,32 @@ export class TestSupport {
 
   adminUser = {displayName: 'Bre5555nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER,
-                uid: '5555555555'}
+                uid: '5555555555',
+                online: false,
+                privacyPolicyRead: true,
+                tosAccepted: true }
 
   normalUser = {displayName: 'Bre444nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER,
-                uid: '4444444444'}
+                uid: '4444444444',
+                online: false,
+                privacyPolicyRead: true,
+                tosAccepted: true}
 
 
   normalUser2 = {displayName: 'Bre222nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2, // NOTICE THE "2" ON THE END
-                uid: '2222222222'}
+                uid: '2222222222',
+                online: false,
+                privacyPolicyRead: true,
+                tosAccepted: true}
+
+                // notice no name yet for this person
+  brandNewUser = {phoneNumber: process.env.YOURVOTECOUNTS_BRAND_NEW_USER,
+                uid: '3333333333',
+                online: false,
+                privacyPolicyRead: false,
+                tosAccepted: false}
 
   names = [
     this.normalUser,
@@ -120,15 +136,21 @@ export class TestSupport {
     return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
   }
 
+  async setLegal(person, accepted: boolean) {
+    var json = await this.api.user.getUser(person.phoneNumber); // have to do this to get the actual uid
+    person.uid = json['uid'];
+    await this.api.user.setLegal(person, accepted, accepted);
+  }
+
   async setName(obj) {
     // Make an api call and see if we actually need to update the name or not...
-    var json = await this.api.getUser(obj.phoneNumber);
+    var json = await this.api.user.getUser(obj.phoneNumber);
     if(json['displayName'] === obj.displayName) {
       // return early, nothing to do
       // console.log('setName(): displayName was already: ', obj.displayName);
     }
     else {
-      await this.api.updateDisplayName(json['uid'], obj.displayName);
+      await this.api.user.updateDisplayName(json['uid'], obj.displayName);
     }
   }
 

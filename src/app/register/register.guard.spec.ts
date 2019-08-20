@@ -5,8 +5,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { CommonServiceModuleStub, AngularFireAuthStub } from '../core/common.module'
 import { CanActivate, Router } from "@angular/router";
-import { BehaviorSubject } from 'rxjs';
-import { of } from 'rxjs/observable/of';
+import { BehaviorSubject, of } from 'rxjs';
+
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 
 describe('RegisterGuard', () => {
@@ -17,6 +17,13 @@ describe('RegisterGuard', () => {
         doc: (_id: string) => ({
           valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
           set: (_d: any) => new Promise((resolve, _reject) => resolve()),
+          ref: {
+            get: () => ({
+              data: () => ({
+                text: 'mock data',
+              }),
+            }),
+          }
         }),
         valueChanges: () => of([{id: '1', event: 'event1', date: {toDate: () => new Date()}}, // 2 mock LogEntry's
                                 {id: '2', event: 'event2', date: {toDate: () => new Date()}}]) // THIS IS NOT WHAT WE WANT TO MOCK HERE.

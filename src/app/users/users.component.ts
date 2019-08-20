@@ -4,6 +4,7 @@ import { UserService } from '../user/user.service';
 import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/settings.model';
 import { Subscription } from 'rxjs';
+import { MessageService } from '../core/message.service';
 
 @Component({
   selector: 'app-users',
@@ -19,13 +20,15 @@ export class UsersComponent implements OnInit {
   nameValue;
   settings: Settings;
   private subscription: Subscription;
+  private userSubscription: Subscription;
 
   constructor(public userService: UserService,
-              private settingsService: SettingsService) { }
+              private settingsService: SettingsService,
+              private messageService: MessageService) { }
 
   async ngOnInit() {
     // console.log('user = ', this.user);
-    this.me = await this.userService.getCurrentUser();
+    // this.me = await this.userService.getCurrentUser();
 
     this.subscription = this.settingsService.getSettings()
       .subscribe(obj => {
@@ -36,6 +39,7 @@ export class UsersComponent implements OnInit {
 
   ngOnDestroy() {
     if(this.subscription) this.subscription.unsubscribe();
+    if(this.userSubscription) this.userSubscription.unsubscribe();
   }
 
 
@@ -81,11 +85,18 @@ export class UsersComponent implements OnInit {
   private set(user: FirebaseUserModel) {
     console.log("set(): user = ", user);
     if(!user) return;
-    this.user = user;
-    this.seconds = user.date_ms;
-    this.roles = user.roles;
-    this.nameValue = user.displayName;
-      console.log("set(): this.user.hasRole('admin') = ", this.user.hasRole('admin'));
+    // this.user = user;
+    // this.seconds = user.date_ms;
+    // this.roles = user.roles;
+    // this.nameValue = user.displayName;
+    //   console.log("set(): this.user.hasRole('admin') = ", this.user.hasRole('admin'));
+
+    this.userSubscription = this.userService.subscribe(user.uid, (users:[FirebaseUserModel]) => {
+      if(users && users.length > 0) {
+        this.user = users[0];
+        this.nameValue = this.user.displayName;
+      }
+    })
   }
 
   async onSubmit() {
