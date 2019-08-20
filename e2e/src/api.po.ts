@@ -11,6 +11,7 @@ export class Api {
 
   constructor(apis: any) {
     this.apis = apis;
+    if(apis.user) this.user = apis.user;
   }
 
   // async getUser(phoneNumber: string) {
