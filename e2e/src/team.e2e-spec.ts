@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
-describe('Team page', () => {
+fdescribe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -26,7 +26,7 @@ describe('Team page', () => {
 
 
   /* passed inconsistently*/
-  it('should be able to create and delete a team', () => {
+  fit('should be able to create and delete a team', () => {
     // testSupport.login(testSupport.normalUser.phoneNumber);
     page.loginAsSomeone();
     var sleep = 300;
@@ -68,7 +68,7 @@ describe('Team page', () => {
   });
 
 
-   it('should be able to add and remove people from a team', () => {
+   fit('should be able to add and remove people from a team', () => {
     teamPage.createTeam(/*testSupport.names[0].phoneNumber*/);
     teamPage.selectTeam();
     // teamPage.editTeam(); // don't have to click Edit Team to add team members
@@ -189,7 +189,7 @@ describe('Team page', () => {
   })
 
 
-  /*not passed*/ it('should allow leaders to edit team attributes', () => {
+  fit('should allow leaders to edit team attributes', () => {
     teamPage.createTeam(/*testSupport.names[0].phoneNumber*/);
     teamPage.selectTeam();
     teamPage.editTeam();
@@ -202,7 +202,7 @@ describe('Team page', () => {
   })
 
 
-   it('should prevent non-leaders from adding/removing people', async () => {
+   fit('should prevent non-leaders from adding/removing people', async () => {
     teamPage.createTeamWithTwoPeople(/*testSupport.names[0].phoneNumber*/);
     page.clickLogout();
 
