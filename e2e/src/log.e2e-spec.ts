@@ -9,6 +9,7 @@ import { ApiUser } from './api-user.po';
 
 describe('Log page', () => {
   // let page: PublicPage;
+  let apiUser: ApiUser;
   let page: MainPage;
   let testSupport: TestSupport;
   let logPage: LogPage;

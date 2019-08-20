@@ -9,6 +9,7 @@ describe('Logged in users', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let myAccountPage: MyAccountPage;
+  let apiUser: ApiUser;
 
   beforeEach(() => {
     apiUser = new ApiUser();

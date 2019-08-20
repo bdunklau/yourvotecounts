@@ -12,6 +12,7 @@ describe('Team page', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let teamPage: TeamPage;
+  let apiUser: ApiUser;
 
   beforeEach(() => {
     apiUser = new ApiUser();

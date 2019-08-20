@@ -7,6 +7,7 @@ import { ApiUser } from './api-user.po';
 describe('Normal user', () => {
   let page: MainPage;
   let testSupport: TestSupport;
+  let apiUser: ApiUser;
 
   beforeEach(() => {
     apiUser = new ApiUser();
