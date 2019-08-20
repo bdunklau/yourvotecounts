@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { UserService } from '../user/user.service'
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 
@@ -14,6 +14,13 @@ const FirestoreStub = {
       doc: (_id: string) => ({
         valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
         set: (_d: any) => new Promise((resolve, _reject) => resolve()),
+        ref: {
+          get: () => ({
+            data: () => ({
+              text: 'mock data',
+            }),
+          }),
+        }
       }),
     }),
   };

@@ -16,7 +16,11 @@ describe('PrivacyPolicyComponent', () => {
             valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
             set: (_d: any) => new Promise((resolve, _reject) => resolve()),
             ref: {
-              get: () => {}
+              get: () => ({
+                data: () => ({
+                  text: 'mock data',
+                }),
+              }),
             }
           }),
           valueChanges: () => of([{id: '1', event: 'event1', date: {toDate: () => new Date()}}, // 2 mock LogEntry's

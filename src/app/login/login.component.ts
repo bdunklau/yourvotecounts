@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 // import * as firebaseui from 'firebaseui'
 // import { firebase} from 'firebase/app'
 import {firebase, firebaseui} from 'firebaseui-angular'
-import {BehaviorSubject} from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { LogService } from '../log/log.service'
 import { UserService } from '../user/user.service'
 
