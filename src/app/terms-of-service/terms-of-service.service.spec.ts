@@ -8,7 +8,7 @@ import { Router } from "@angular/router";
 import { UserService } from '../user/user.service';
 
 
-describe('TermsOfServiceService', () => {
+fdescribe('TermsOfServiceService', () => {
 
   const AngularFirestoreStub = {
       collection: (name: string, f: (ref:any) => {}) => ({
@@ -38,7 +38,7 @@ describe('TermsOfServiceService', () => {
   });
 
 
-  it('should be created', () => {
+  fit('should be created', () => {
     const service: TermsOfServiceService = TestBed.get(TermsOfServiceService);
     expect(service).toBeTruthy();
   });
