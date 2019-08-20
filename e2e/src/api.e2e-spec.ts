@@ -21,7 +21,7 @@ describe('The API', () => {
 
   // curl command to verify:  (NOTE all user attributes may not be present in the example)
   //  curl -d "displayName=Bre444nt&uid=wMO8BJMNuydKHoNS5pVLY33Dmhi1&online=true" -X POST https://us-central1-yourvotecounts-bd737.cloudfunctions.net/setUser?auth_key=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9
-  // /* passed*/ it('should be able to get and set user attributes', async () => {
+  //  it('should be able to get and set user attributes', async () => {
   //   // flip every attribute
   //   // save/verify
   //   // test just updateDisplayName()/verify

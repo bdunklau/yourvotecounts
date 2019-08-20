@@ -18,7 +18,7 @@ describe('Logged in users', () => {
     myAccountPage = new MyAccountPage(testSupport);
   });
 
-  /* passed*/ it('should be able to logout', async () => {
+   it('should be able to logout', async () => {
     let person = page.loginAsSomeone();
     browser.sleep(200);
     page.clickLogout();
@@ -42,7 +42,7 @@ describe('Logged in users', () => {
   })
 
 
-  /* passed*/ it('should be able to edit name', async () => {
+   it('should be able to edit name', async () => {
     let person = await page.loginAsSomeone();
     page.clickMyAccount();
     browser.sleep(500);

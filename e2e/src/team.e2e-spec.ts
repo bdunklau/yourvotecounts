@@ -68,7 +68,7 @@ describe('Team page', () => {
   });
 
 
-  /* passed*/ it('should be able to add and remove people from a team', () => {
+   it('should be able to add and remove people from a team', () => {
     teamPage.createTeam(/*testSupport.names[0].phoneNumber*/);
     teamPage.selectTeam();
     // teamPage.editTeam(); // don't have to click Edit Team to add team members
@@ -93,7 +93,7 @@ describe('Team page', () => {
 
   // We have to test the drop down here because it's a different component than the one
   // in the log page.  This one clears its contents when a name is chosen
-  /* passed*/ it('should display correct list of users in dropdown', async () => {
+   it('should display correct list of users in dropdown', async () => {
 
     // create a team
     // type a few letters into the name field to add someone
@@ -202,7 +202,7 @@ describe('Team page', () => {
   })
 
 
-  /* passed*/ it('should prevent non-leaders from adding/removing people', async () => {
+   it('should prevent non-leaders from adding/removing people', async () => {
     teamPage.createTeamWithTwoPeople(/*testSupport.names[0].phoneNumber*/);
     page.clickLogout();
 
@@ -228,7 +228,7 @@ describe('Team page', () => {
   })
 
 
-  /* passed*/ it('should let leaders delete a team', async () => {
+   it('should let leaders delete a team', async () => {
     teamPage.createTeamWithTwoPeople(/*testSupport.names[0].phoneNumber*/);
     browser.sleep(300);
     teamPage.makeOtherPersonLeader();
@@ -253,7 +253,7 @@ describe('Team page', () => {
   })
 
 
-  /* passed*/ it('should prevent non-leaders from editing or deleting a team', () => {
+   it('should prevent non-leaders from editing or deleting a team', () => {
     teamPage.createTeamWithTwoPeople(/*testSupport.names[0].phoneNumber*/);
     page.clickLogout();
     page.loginAsSomeoneElse();
@@ -275,7 +275,7 @@ describe('Team page', () => {
 
 
   // failed
-  /* passed*/ it('should alert leaders if they are about to revoke their leadership role', () => {
+   it('should alert leaders if they are about to revoke their leadership role', () => {
     let pause = 1000;
     teamPage.createTeamWithTwoPeople(/*testSupport.names[0].phoneNumber*/);
                                         browser.sleep(500);
@@ -311,7 +311,7 @@ describe('Team page', () => {
 
 
   // failed
-  /* passed*/ it('should not allow team to be leader-less', () => {
+   it('should not allow team to be leader-less', () => {
     // create a team with just you
     // try to revoke your own leader access - verify not allowed
     // add someone to the team
