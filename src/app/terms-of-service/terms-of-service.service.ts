@@ -13,13 +13,13 @@ export class TermsOfServiceService {
   async getTerms() {
     var termsDoc = await this.afs.collection('config').doc('terms_of_service');
     var termsRef = await termsDoc.ref;
-    console.log('termsRef: ', termsRef);
-    console.log('termsRef: ', termsRef);
-    console.log('termsRef: ', termsRef);
-    console.log('termsRef: ', termsRef);
-    console.log('termsRef: ', termsRef);
-    console.log('termsRef: ', termsRef);
-    console.log('termsRef: ', termsRef);
+    console.log('termsDoc: ', termsDoc);
+    console.log('termsDoc: ', termsDoc);
+    console.log('termsDoc: ', termsDoc);
+    console.log('termsDoc: ', termsDoc);
+    console.log('termsDoc: ', termsDoc);
+    console.log('termsDoc: ', termsDoc);
+    console.log('termsDoc: ', termsDoc);
     console.log('termsRef: ', termsRef);
     console.log('termsRef: ', termsRef);
     console.log('termsRef: ', termsRef);
