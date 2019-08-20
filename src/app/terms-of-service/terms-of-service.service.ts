@@ -12,7 +12,7 @@ export class TermsOfServiceService {
 
   async getTerms() {
     var termsDoc = await this.afs.collection('config').doc('terms_of_service');
-    var termsRef = termsDoc.ref;
+    var termsRef = await termsDoc.ref;
     console.log('termsRef: ', termsRef);
     console.log('termsRef: ', termsRef);
     console.log('termsRef: ', termsRef);
@@ -28,7 +28,7 @@ export class TermsOfServiceService {
     console.log('termsRef: ', termsRef);
     console.log('termsRef: ', termsRef);
     console.log('termsRef: ', termsRef);
-    var termsGet = termsRef.get();
+    var termsGet = await termsRef.get();
     console.log('termsGet: ', termsGet);
     console.log('termsGet: ', termsGet);
     console.log('termsGet: ', termsGet);
