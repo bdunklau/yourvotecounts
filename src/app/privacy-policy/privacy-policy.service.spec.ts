@@ -10,13 +10,13 @@ describe('PrivacyPolicyService', () => {
       collection: (name: string, f: (ref:any) => {}) => ({
         doc: (_id: string) => ({
           valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
-          set: (_d: any) => new Promise((resolve, _reject) => resolve()),
+          set: (_d: any) => { return new Promise((resolve, _reject) => resolve()) },
           ref: {
             get: () => ({
               data: () => ({
                 text: 'mock privacy policy',
-              })
-            })
+              }),
+            }),
           }
         }),
         valueChanges: () => of([{id: '1', event: 'event1', date: {toDate: () => new Date()}}, // 2 mock LogEntry's
