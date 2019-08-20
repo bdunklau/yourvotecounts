@@ -8,7 +8,7 @@ import { Router } from "@angular/router";
 import { UserService } from '../user/user.service';
 
 
-fdescribe('TermsOfServiceService', () => {
+describe('TermsOfServiceService', () => {
 
   const AngularFirestoreStub = {
       collection: (name: string, f: (ref:any) => {}) => ({
@@ -16,7 +16,11 @@ fdescribe('TermsOfServiceService', () => {
           valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
           set: (_d: any) => new Promise((resolve, _reject) => resolve()),
           ref: {
-            get: () => {}
+            get: () => ({
+              data: () => ({
+                text: 'mock privacy policy',
+              }),
+            }),
           }
         }),
         valueChanges: () => of([{id: '1', event: 'event1', date: {toDate: () => new Date()}}, // 2 mock LogEntry's
@@ -38,7 +42,7 @@ fdescribe('TermsOfServiceService', () => {
   });
 
 
-  fit('should be created', () => {
+  it('should be created', () => {
     const service: TermsOfServiceService = TestBed.get(TermsOfServiceService);
     expect(service).toBeTruthy();
   });
