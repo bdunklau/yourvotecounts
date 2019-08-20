@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { environment } from '../environments/environment';
 import { LoginComponent } from './login/login.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -42,6 +43,7 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { SmsComponent } from './sms/sms.component';
 // import { TeamResolver } from './team/team.resolver';
+import { FileSelectDirective } from 'ng2-file-upload';
 
 
 @NgModule({
@@ -73,6 +75,7 @@ import { SmsComponent } from './sms/sms.component';
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
     SmsComponent,
+    FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [
@@ -85,6 +88,7 @@ import { SmsComponent } from './sms/sms.component';
     NgbModule.forRoot(),
     HttpClientModule,
     BrowserAnimationsModule,
+    AngularFireStorageModule,
     // TeamResolver,
   ],
   bootstrap: [AppComponent]

@@ -32,6 +32,28 @@
     <div class="row">
       <div class="col"><button id="edit_my_account" class="btn btn-success" (click)="edit()">Edit</button></div>
     </div>
+    <div class="row">
+      <input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
+
+      <button type="button" class="btn btn-success btn-s"
+        (click)="uploader.uploadAll()"
+        [disabled]="!uploader.getNotUploadedItems().length" >
+            Upload an Image
+      </button>
+    </div>
+    <div class="row">
+      <div class="col">
+          <div class="card">
+            <div class="card-header">
+              Firebase Cloud Storage & Angular 5
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Select a file for upload:</h5>
+              <input type="file" (change)="upload($event)" accept=".png,.jpg" />
+            </div>
+          </div>
+        </div>
+    </div>
   </div>
 
 </div>

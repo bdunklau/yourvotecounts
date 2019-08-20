@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user/user.service';
 import { FirebaseUserModel } from '../user/user.model';
+import { FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upload';
+import { AngularFireStorage } from '@angular/fire/storage';
+
+const UploadURL = 'http://localhost:3000/api/upload';
+
 
 @Component({
   selector: 'app-my-account',
@@ -13,8 +18,10 @@ export class MyAccountComponent implements OnInit {
     phoneNumber: string;
     user: FirebaseUserModel;
     editing = false;
+    public uploader: FileUploader = new FileUploader({url: UploadURL, itemAlias: 'photo'}); // DI this?
 
-    constructor(private userService: UserService) { }
+    constructor(private userService: UserService,
+                private afStorage: AngularFireStorage) { }
 
     async ngOnInit() {
       this.user = await this.userService.getCurrentUser();
@@ -24,6 +31,12 @@ export class MyAccountComponent implements OnInit {
       if(this.user) {
         this.nameValue = this.user.displayName;
         this.phoneNumber = this.user.phoneNumber;
+      }
+
+      this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
+      this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+         console.log('FileUpload:uploaded:', item, status, response);
+         alert('File uploaded successfully');
       }
     }
 

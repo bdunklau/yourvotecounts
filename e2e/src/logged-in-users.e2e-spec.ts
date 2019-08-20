@@ -5,7 +5,7 @@ import { MyAccountPage } from './my-account.po';
 import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
-describe('Logged in users', () => {
+fdescribe('Logged in users', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let myAccountPage: MyAccountPage;
@@ -57,6 +57,10 @@ describe('Logged in users', () => {
     myAccountPage.clickSubmit();
     page.clickLogout();
   });
+
+  fit('should be able to upload pic', () => {
+    expect(false).toBeTruthy('need to complete this test - need to upload profile pic');
+  })
 
   afterEach(async () => {
     // Assert that there are no errors emitted from the browser
