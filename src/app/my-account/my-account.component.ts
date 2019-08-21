@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user/user.service';
 import { FirebaseUserModel } from '../user/user.model';
-// import { FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upload';
 import { AngularFireStorage } from '@angular/fire/storage';
-
+import { Observable } from 'rxjs/Observable';
 const UploadURL = 'http://localhost:3000/api/upload';
 
 
@@ -18,10 +17,11 @@ export class MyAccountComponent implements OnInit {
     phoneNumber: string;
     user: FirebaseUserModel;
     editing = false;
-    // public uploader: FileUploader = new FileUploader({url: UploadURL, itemAlias: 'photo'}); // DI this?
+    uploadProgress: Observable<number>;
+    downloadURL: Observable<string>;
 
     constructor(private userService: UserService,
-                private afStorage: AngularFireStorage) { }
+                private afStorage: AngularFireStorage,) { }
 
     async ngOnInit() {
       this.user = await this.userService.getCurrentUser();
@@ -31,13 +31,9 @@ export class MyAccountComponent implements OnInit {
       if(this.user) {
         this.nameValue = this.user.displayName;
         this.phoneNumber = this.user.phoneNumber;
+        this.photoURL = this.user.photoURL;
       }
 
-      // this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
-      // this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      //    console.log('FileUpload:uploaded:', item, status, response);
-      //    alert('File uploaded successfully');
-      // }
     }
 
     async onSubmit() {
@@ -54,6 +50,16 @@ export class MyAccountComponent implements OnInit {
       this.editing = false;
       this.nameValue = this.user.displayName;
       this.phoneNumber = this.user.phoneNumber;
+    }
+
+    // code came from:   https://medium.com/codingthesmartway-com-blog/firebase-cloud-storage-with-angular-394566fd529
+    async upload(event) {
+      const user:FirebaseUserModel = await this.userService.getCurrentUser();
+      const uid = user.uid;
+      this.ref = this.afStorage.ref('profile-pic-'+uid);
+      this.task = this.ref.put(event.target.files[0]);
+      this.uploadProgress = this.task.percentageChanges();
+      // this.downloadURL = this.task.downloadURL();
     }
 
 }
