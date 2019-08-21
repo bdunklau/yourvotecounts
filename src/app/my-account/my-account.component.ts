@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user/user.service';
 import { FirebaseUserModel } from '../user/user.model';
-import { FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upload';
+// import { FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upload';
 import { AngularFireStorage } from '@angular/fire/storage';
 
 const UploadURL = 'http://localhost:3000/api/upload';
@@ -18,7 +18,7 @@ export class MyAccountComponent implements OnInit {
     phoneNumber: string;
     user: FirebaseUserModel;
     editing = false;
-    public uploader: FileUploader = new FileUploader({url: UploadURL, itemAlias: 'photo'}); // DI this?
+    // public uploader: FileUploader = new FileUploader({url: UploadURL, itemAlias: 'photo'}); // DI this?
 
     constructor(private userService: UserService,
                 private afStorage: AngularFireStorage) { }
@@ -33,11 +33,11 @@ export class MyAccountComponent implements OnInit {
         this.phoneNumber = this.user.phoneNumber;
       }
 
-      this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
-      this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-         console.log('FileUpload:uploaded:', item, status, response);
-         alert('File uploaded successfully');
-      }
+      // this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
+      // this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+      //    console.log('FileUpload:uploaded:', item, status, response);
+      //    alert('File uploaded successfully');
+      // }
     }
 
     async onSubmit() {

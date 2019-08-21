@@ -43,7 +43,7 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { SmsComponent } from './sms/sms.component';
 // import { TeamResolver } from './team/team.resolver';
-import { FileSelectDirective } from 'ng2-file-upload';
+// import { FileSelectDirective } from 'ng2-file-upload';
 
 
 @NgModule({
@@ -75,7 +75,7 @@ import { FileSelectDirective } from 'ng2-file-upload';
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
     SmsComponent,
-    FileSelectDirective,
+    // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [
