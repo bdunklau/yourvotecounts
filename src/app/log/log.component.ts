@@ -24,6 +24,8 @@ export class LogComponent implements OnInit {
   level: string = 'debug';
   phoneVal: string;
   nameVal: string;
+  defaultFrom: string;
+  defaultTo: string;
   dates: any;
   reverse: boolean = true;
   prepend: boolean = true;

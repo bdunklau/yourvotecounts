@@ -13,10 +13,10 @@ import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 })
 export class SmsComponent implements OnInit {
 
-  private fromValue: string;
-  private toValue: string;
+  fromValue: string;
+  toValue: string;
   private mediaUrlValue: string;
-  private smsMessageValue: string;
+  smsMessageValue: string;
   private subscription: Subscription
   private settings: Settings;
 
@@ -37,7 +37,7 @@ export class SmsComponent implements OnInit {
     if(this.subscription) this.subscription.unsubscribe();
   }
 
-  onSubmit(form: NgForm) {
+  onSubmit(/* not needed    form: NgForm*/) {
     this.smsService.sendSms({from: this.fromValue, to: this.toValue, mediaUrl: this.mediaUrlValue, message: this.smsMessageValue});
   }
 

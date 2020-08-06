@@ -1,4 +1,5 @@
 
 <div class="container">
+  <!-- app-team-list IS DEFINED IN team-list.component.ts -->
   <app-team-list *ngIf="user" (selectedTeam)="onTeamSelected($event)" [teamListUser]="user"></app-team-list>
 </div>

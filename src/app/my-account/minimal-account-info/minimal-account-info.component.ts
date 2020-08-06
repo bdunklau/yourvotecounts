@@ -50,7 +50,7 @@ export class MinimalAccountInfoComponent implements OnInit {
     if(this.routeSubscription) this.routeSubscription.unsubscribe();
   }
 
-  onSubmit(form: NgForm) {
+  onSubmit(/* not needed   form: NgForm*/) {
     this.user.displayName = this.nameValue;
     this.user.tosAccepted = this.tosCheck;
     this.user.privacyPolicyRead = this.ppCheck;

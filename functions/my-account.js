@@ -44,8 +44,8 @@ exports.generateThumbnail = functions.storage.object().onFinalize(async (object)
     const bucket = admin.storage().bucket(fileBucket);
     const tempFilePath = path.join(os.tmpdir(), fileName);
     var pngPath = tempFilePath;
-    if(tempFilePath.endsWith('.jpg')) {
-      pngPath = tempFilePath.substring(0, tempFilePath.indexOf('.jpg')) + '.png';
+    if(tempFilePath.endsWith('.jpeg')) {
+      pngPath = tempFilePath.substring(0, tempFilePath.indexOf('.jpeg')) + '.png';
     }
     const metadata = {
       contentType: contentType,
