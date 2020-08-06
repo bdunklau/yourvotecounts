@@ -10,7 +10,7 @@
     "source": "functions"
   },
   "hosting": {
-    "public": "public",
+    "public": "dist/yourvotecounts",
     "ignore": [
       "firebase.json",
       "**/.*",

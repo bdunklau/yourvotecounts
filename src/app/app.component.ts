@@ -25,49 +25,10 @@ export class AppComponent {
   name_or_phone: string;
   private subscription: Subscription;
 
-  constructor(db: AngularFirestore,
-    private location : Location,
-    private authService: AuthService,
-    // private userService: UserService,
-    private router: Router,
-    private messageService: MessageService
-  ) {  }
 
-  async ngOnInit() {
+  constructor(private authService: AuthService,
+              private router: Router) {}
 
-    // this.subscription = await this.userService.subscribeCurrentUser(obj => {
-    //   if(obj && obj.length > 0) {
-    //     console.log('obj[0] = ', obj[0]);
-    //     if(obj[0].isDisabled) {
-    //       this.router.navigate(['/disabled']);
-    //     }
-    //   }
-    // });
-
-    this.subscription = this.messageService.getUser().subscribe(user => {
-      // console.log('getUser(): user = ', user);
-      if(!user) this.isAdmin = false;
-      else this.isAdmin = user.hasRole('admin');
-      this.isLoggedIn = user != null;
-      // this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
-    })
-
-    // let user = await this.userService.getCurrentUser();
-    // this.isAdmin = user && user.hasRole('admin');
-    // console.log('AppComponent:ngOnInit(): this.isAdmin = ', this.isAdmin)
-    // this.isLoggedIn = user != null;
-    // this.name_or_phone = user && user.displayName ? user.displayName : (user && user.phoneNumber ? user.phoneNumber : 'Login');
-    var hammer = new Hammer.Manager(document.getElementById("mySidenav"));
-    var swipe = new Hammer.Swipe();
-    hammer.add(swipe);
-    hammer.on('swipeleft', this.closeNav);
-
-    // var hammer2 = new Hammer.Manager(document.getElementById("thebody"));
-    // hammer2.add( new Hammer.Tap({ event: 'singletap' }) );
-    // hammer2.on("singletap doubletap", function(ev) {
-    //     window.alert("ev type: " += ev.type +" ");
-    // });
-  }
 
   // always unsubscribe
   ngOnDestroy() {

@@ -60,7 +60,7 @@ export class SearchUserByPhoneComponent implements OnInit {
     this.selectedUser.emit(user);
   }
 
-  checkEmpty() {
+  checkEmpty(event) {
     // console.log('checkEmpty');
     // this.selectedUser.emit(null);
     if(this.phoneVal === '') delete this.phoneVal;

@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { UsersComponent } from './users.component';
 // import {CommonServiceModuleStub, AngularFirestoreStub} from '../core/common.module'
@@ -43,6 +44,7 @@ describe('UsersComponent', () => {
       imports: [/*CommonServiceModuleStub,*/ FormsModule, NgbModule],
       declarations: [ UsersComponent, SearchUserByNameComponent, SearchUserByPhoneComponent ],
       providers: [ UserService,
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: {} }

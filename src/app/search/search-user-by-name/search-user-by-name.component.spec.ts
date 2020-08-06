@@ -5,6 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; // https://ng-bootstrap.
 import { UserService } from '../../user/user.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { BehaviorSubject, of } from 'rxjs';
 
@@ -40,6 +41,7 @@ describe('SearchUserByNameComponent', () => {
       imports: [ /*CommonServiceModuleStub, */ FormsModule, NgbModule],
       declarations: [ SearchUserByNameComponent ],
       providers: [ UserService,
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: {} },
                   { provide: HttpClient, useValue: {} } ]

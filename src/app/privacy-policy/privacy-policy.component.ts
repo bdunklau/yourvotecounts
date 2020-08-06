@@ -24,7 +24,7 @@ export class PrivacyPolicyComponent implements OnInit {
     // if(this.subscription) this.subscription.unsubscribe();
   }
 
-  onSubmit(form: NgForm) {
+  onSubmit(/* not needed     form: NgForm*/) {
     this.ppService.updatePolicy(this.ppValue);
   }
 

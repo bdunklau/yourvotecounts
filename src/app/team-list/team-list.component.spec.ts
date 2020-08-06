@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TeamListComponent } from './team-list.component';
 import { Observable, /*of, Subject, Subscription*/ } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { FirebaseUserModel } from '../user/user.model';
 import { map/*, take*/ } from 'rxjs/operators';
 import { BehaviorSubject, of } from 'rxjs';
@@ -47,6 +48,7 @@ describe('TeamListComponent', () => {
       declarations: [ TeamListComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [FirebaseUserModel, UserService,
+                  { provide: AngularFireStorage, useValue: {}}, 
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFireAuth, useValue: {} },
                   {

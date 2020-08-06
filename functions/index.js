@@ -37,3 +37,6 @@ exports.getPrivacyPolicy = privacy_policy.getPrivacyPolicy;
 
 const terms_of_service = require('./api/terms-of-service');
 exports.getTermsOfService = terms_of_service.getTermsOfService;
+
+const my_account = require('./my-account');
+exports.generateThumbnail = my_account.generateThumbnail;

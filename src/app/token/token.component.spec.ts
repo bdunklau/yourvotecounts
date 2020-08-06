@@ -5,6 +5,7 @@ import { UserService } from '../user/user.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireStorage } from '@angular/fire/storage';
 import {CommonServiceModuleStub, AngularFireAuthStub} from '../core/common.module';
 import { BehaviorSubject, of } from 'rxjs';
 
@@ -38,6 +39,7 @@ describe('TokenComponent', () => {
     TestBed.configureTestingModule({
       imports: [ ReactiveFormsModule, FormsModule, CommonServiceModuleStub ],
       providers: [ UserService,
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: AngularFireAuthStub },
                   { provide: HttpClient, useValue: {} }

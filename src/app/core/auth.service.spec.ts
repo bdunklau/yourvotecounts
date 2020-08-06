@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { BehaviorSubject, of } from 'rxjs';
 import { UserService } from '../user/user.service'
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
@@ -28,6 +29,7 @@ const FirestoreStub = {
 describe('AuthService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [AuthService, UserService,
+                { provide: AngularFireStorage, useValue: {}},
                 { provide: HttpClient, useValue: {} },
                 { provide: AngularFireAuth, useValue: {} },
                 { provide: AngularFirestore, useValue: FirestoreStub }]

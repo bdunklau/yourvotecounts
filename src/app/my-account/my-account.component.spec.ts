@@ -6,6 +6,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { BehaviorSubject, of } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 describe('MyAccountComponent', () => {
@@ -38,6 +39,7 @@ describe('MyAccountComponent', () => {
       imports: [ FormsModule ],
       declarations: [ MyAccountComponent ],
       providers: [ UserService,
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFireAuth, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },

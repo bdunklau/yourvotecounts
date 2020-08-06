@@ -4,6 +4,7 @@ import { TeamMemberEditorComponent } from './team-member-editor.component';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap'; // https://ng-bootstrap.github.io/#/getting-started
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -38,6 +39,7 @@ describe('TeamMemberEditorComponent', () => {
       declarations: [ TeamMemberEditorComponent, SearchUserByName2Component ],
        imports: [ FormsModule, NgbModule],
        providers: [UserService,
+                   { provide: AngularFireStorage, useValue: {}}, 
                    { provide: HttpClient, useValue: {} },
                    { provide: AngularFireAuth, useValue: {} },
                    {provide: AngularFirestore, useValue: FirestoreStub}

@@ -24,7 +24,7 @@ export class TermsOfServiceComponent implements OnInit {
     // if(this.subscription) this.subscription.unsubscribe();
   }
 
-  onSubmit(form: NgForm) {
+  onSubmit(/* not needed    form: NgForm*/) {
     this.tosService.updateTerms(this.tosValue);
   }
 

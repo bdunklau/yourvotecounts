@@ -8,6 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 describe('TeamViewerComponent', () => {
@@ -37,6 +38,7 @@ describe('TeamViewerComponent', () => {
       declarations: [ TeamViewerComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [ UserService,
+                  { provide: AngularFireStorage, useValue: {}}, 
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFireAuth, useValue: {} },
                    {provide: ActivatedRoute,
