@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service'
 import { RegisterGuard } from './register.guard';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { CommonServiceModuleStub, AngularFireAuthStub } from '../core/common.module'
 import { CanActivate, Router } from "@angular/router";
 import { BehaviorSubject, of } from 'rxjs';
@@ -34,7 +35,8 @@ describe('RegisterGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [RegisterGuard, UserService,
+      providers: [RegisterGuard, UserService, 
+                { provide: AngularFireStorage, useValue: {}},
                 { provide: HttpClient, useValue: {} },
                 { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); }  },
                 { provide: AngularFirestore, useValue: AngularFirestoreStub },

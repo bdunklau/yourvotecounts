@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 // import {CommonServiceModuleStub/*, AngularFirestoreStub*/} from '../core/common.module'
 import { LogComponent } from './log.component';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { BehaviorSubject, of } from 'rxjs';
 
 import { SearchLogByLevelComponent } from '../search/search-log-by-level/search-log-by-level.component';
@@ -53,7 +54,7 @@ describe('LogComponent', () => {
                       SearchUserByNameComponent, DateChooserComponent, LoadingSpinnerComponent,
                       LogFormComponent ],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [ UserService,
+      providers: [ UserService, AngularFireStorage,
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: {} },

@@ -3,6 +3,7 @@ import { /*Component, DebugElement,*/ NO_ERRORS_SCHEMA } from '@angular/core';
 import { TeamsComponent } from './teams.component';
 import { UserService } from '../user/user.service';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ActivatedRoute } from '@angular/router';
@@ -41,6 +42,7 @@ describe('TeamsComponent', () => {
       declarations: [ TeamsComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [UserService,
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFireAuth, useValue: {} },
                   {provide: AngularFirestore, useValue: AngularFirestoreStub},

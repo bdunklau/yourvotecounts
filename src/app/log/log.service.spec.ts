@@ -6,6 +6,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 // // from:   https://atom-morgan.github.io/how-to-test-angular-canactivate-guards/
@@ -40,6 +41,7 @@ describe('LogService', () => {
          TestBed.configureTestingModule({
              // I used 'useValue' because it is just a json. If it was class, I'd use 'useClass'
              providers: [ UserService,
+                         { provide: AngularFireStorage, useValue: {}},
                          { provide: HttpClient, useValue: {} },
                          { provide: AngularFireAuth, useValue: {} },
                           {provide: AngularFirestore, useValue: AngularFirestoreStub},
