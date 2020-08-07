@@ -20,6 +20,7 @@
     "@angular/fire": "^5.4.2",
     "@angular/forms": "~10.0.8",
     "@angular/http": "7.0.2",
+    "@angular/localize": "^10.0.8",
     "@angular/material": "^10.1.2",
     "@angular/platform-browser": "~10.0.8",
     "@angular/platform-browser-dynamic": "~10.0.8",

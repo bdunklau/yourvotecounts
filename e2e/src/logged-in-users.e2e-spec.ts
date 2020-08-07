@@ -5,7 +5,7 @@ import { MyAccountPage } from './my-account.po';
 import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
-fdescribe('Logged in users', () => {
+describe('Logged in users', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let myAccountPage: MyAccountPage;
@@ -58,7 +58,8 @@ fdescribe('Logged in users', () => {
     page.clickLogout();
   });
 
-  fit('should be able to upload pic', () => {
+  // do this
+  xit('should be able to upload pic', () => {
     expect(false).toBeTruthy('need to complete this test - need to upload profile pic');
   })
 
