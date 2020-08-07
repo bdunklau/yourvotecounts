@@ -47,7 +47,8 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
-      providers: [AuthService, UserService, AngularFireStorage,
+      providers: [AuthService, UserService, 
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: AngularFireAuthStub }

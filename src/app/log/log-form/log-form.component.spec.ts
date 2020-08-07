@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
 import { LogFormComponent } from './log-form.component';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { BehaviorSubject, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { LoadingSpinnerComponent } from '../../loading-spinner/loading-spinner.component';
@@ -42,6 +43,7 @@ describe('LogFormComponent', () => {
       imports: [ FormsModule/*, NgbModule*/],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [ UserService,
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: {} },
