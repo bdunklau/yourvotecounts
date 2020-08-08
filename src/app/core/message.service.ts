@@ -10,7 +10,7 @@ import { Team } from '../team/team.model';
 export class MessageService {
 
   // private myMessage = new Subject<string>();
-  private user = new Subject<FirebaseUserModel>();
+  private userListener = new Subject<FirebaseUserModel>();
   // private team_members = new Subject<TeamMember[]>();
   // private updated_member = new Subject<TeamMember>();
   // private removed_member = new Subject<TeamMember>();
@@ -56,7 +56,7 @@ export class MessageService {
   // }
 
   getUser(): Observable<FirebaseUserModel> {
-     return this.user.asObservable();
+     return this.userListener.asObservable();
   }
 
   // updateTeam(team: Team) {
@@ -72,7 +72,11 @@ export class MessageService {
   // }
 
   updateUser(user: FirebaseUserModel) {
-    this.user.next(user);
+    this.userListener.next(user);
+  }
+
+  listenForUser() {
+    return this.userListener;
   }
 
 }

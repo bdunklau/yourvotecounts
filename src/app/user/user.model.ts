@@ -56,6 +56,9 @@ export class FirebaseUserModel {
     // console.log('populate: this = ', this);
   }
 
+  isAdmin(): boolean {
+    return this.hasRole('admin');
+  }
 
   hasRole(role: string): boolean {
     var idx = _.findIndex(this.roles, function(o) { return o == role; });

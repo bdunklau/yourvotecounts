@@ -23,17 +23,39 @@ export class AppComponent {
   isAdmin: boolean;
   isLoggedIn: boolean;
   name_or_phone: string;
-  private subscription: Subscription;
+  private userSubscription: Subscription;
 
 
   constructor(private authService: AuthService,
-              private router: Router) {}
+              private router: Router,
+              private messageService: MessageService) {}
+
+
+  async ngOnInit() {
+    // console.log('user = ', this.user);
+    // this.me = await this.userService.getCurrentUser();
+
+    var nxt = function(value /* FirebaseUserModel */) {
+      console.log('AppComponent: next(): value = ', value);
+      console.log('AppComponent: next(): this = ', this);
+      if(value) this.setAdmin(value.isAdmin())
+      this.isLoggedIn = !!value;
+    }.bind(this)
+
+    this.messageService.listenForUser().subscribe({
+          next: nxt,
+          error: function(value) {
+          },
+          complete: function() {
+          }
+      })
+  }
 
 
   // always unsubscribe
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    console.log('ngOnDestroy:  this.subscription.unsubscribe()')
+    if(this.userSubscription) this.userSubscription.unsubscribe();
+    console.log('ngOnDestroy:  this.userSubscription.unsubscribe()')
   }
 
   // https://www.w3schools.com/howto/howto_js_sidenav.asp

@@ -11,7 +11,7 @@ import 'rxjs/add/operator/map'
 import { MessageService } from '../core/message.service';
 import { Team } from '../team/team.model';
 import { map } from 'rxjs/operators';
-import { /*Subject, Observable,*/ Subscription } from 'rxjs';
+import { Subject, /*Observable,*/ Subscription } from 'rxjs';
 import { LogService } from '../log/log.service'; // injected in signIn() below
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
 
@@ -254,4 +254,5 @@ export class UserService {
     console.log('updateUser: DATABASE UPDATE: ', data);
     return updateRes;
   }
+
 }
