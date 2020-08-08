@@ -1,5 +1,9 @@
 {
   "projects": {
     "default": "yourvotecounts-bd737"
-  }
+  },
+  "comment coolness": [
+    "need to add comments to a json file?",
+    "here's one way :)"
+  ]
 }

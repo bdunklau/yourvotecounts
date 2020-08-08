@@ -7,6 +7,7 @@ import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@ang
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject, of } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 describe('SearchUserByPhoneComponent', () => {
@@ -40,6 +41,7 @@ describe('SearchUserByPhoneComponent', () => {
       imports: [FormsModule, ReactiveFormsModule, NgbModule],
       declarations: [ SearchUserByPhoneComponent ],
       providers: [ UserService,
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: {} }

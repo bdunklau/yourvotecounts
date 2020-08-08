@@ -6,6 +6,7 @@ import { UserService } from '../../user/user.service';
 import {CommonServiceModuleStub} from '../../core/common.module';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { Observable, /*of, Subject, Subscription*/ } from 'rxjs';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -39,6 +40,7 @@ describe('SearchUserByName2Component', () => {
       declarations: [ SearchUserByName2Component ],
       imports: [ FormsModule, NgbModule, CommonServiceModuleStub],
       providers: [UserService,
+                  { provide: AngularFireStorage, useValue: {}}, 
                   {provide: AngularFirestore, useValue: FirestoreStub},
                   {provide: HttpClient, useValue: {} },
                   { provide: AngularFireAuth, useValue: {} },

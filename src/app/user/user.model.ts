@@ -11,6 +11,7 @@ export class FirebaseUserModel {
   phoneNumber: string;
   roles: Array<String>;
   photoURL: string;
+  photoFileName: string;
   date_ms: number;
   isDisabled: boolean = false;
   online: boolean = false;
@@ -28,6 +29,7 @@ export class FirebaseUserModel {
     this.phoneNumber = "";
     this.roles = [];
     this.photoURL = "";
+    this.photoFileName = "";
     this.isDisabled = false;
     this.online = false;
     this.tosAccepted = false;
@@ -45,6 +47,7 @@ export class FirebaseUserModel {
     this.phoneNumber = obj.phoneNumber;
     this.roles = obj.roles;
     this.photoURL = obj.photoURL;
+    this.photoFileName = obj.photoFileName;
     this.online = obj.online;
     this.tosAccepted = obj.tosAccepted;
     this.privacyPolicyRead = obj.privacyPolicyRead;
@@ -53,6 +56,9 @@ export class FirebaseUserModel {
     // console.log('populate: this = ', this);
   }
 
+  isAdmin(): boolean {
+    return this.hasRole('admin');
+  }
 
   hasRole(role: string): boolean {
     var idx = _.findIndex(this.roles, function(o) { return o == role; });

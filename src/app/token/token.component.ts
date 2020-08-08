@@ -11,7 +11,7 @@ import { LogService } from '../log/log.service'
 export class TokenComponent implements OnInit {
 
   tokenValue: string;
-
+  otherStuff: string;
   submitted = false;
 
   constructor(private userService: UserService,

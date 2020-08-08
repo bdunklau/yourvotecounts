@@ -3,6 +3,7 @@ import { MinimalAccountInfoComponent } from './minimal-account-info.component';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap'; // https://ng-bootstrap.github.io/#/getting-started
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../user/user.service';
 import { Observable } from 'rxjs/Observable';
@@ -42,6 +43,7 @@ describe('MinimalAccountInfoComponent', () => {
       imports: [ FormsModule, NgbModule],
       providers: [
                   UserService,
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); } },
                   {provide: HttpClient, useValue: {} },
                   { provide: AngularFireAuth, useValue: {} },

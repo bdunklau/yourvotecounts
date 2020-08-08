@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { InjectionToken } from '@angular/core';
 import {CommonServiceModuleStub} from './core/common.module'
 // import {AngularFirestoreStub} from './core/common.module'
@@ -46,7 +47,8 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
-      providers: [AuthService, UserService,
+      providers: [AuthService, UserService, 
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: AngularFireAuthStub }

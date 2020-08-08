@@ -5,6 +5,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 
@@ -32,6 +33,7 @@ describe('TeamService', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [ UserService,
+                { provide: AngularFireStorage, useValue: {}},
                 { provide: HttpClient, useValue: {} },
                 { provide: AngularFireAuth, useValue: {} },
                 {provide: AngularFirestore, useValue: AngularFirestoreStub}

@@ -58,6 +58,11 @@ describe('Logged in users', () => {
     page.clickLogout();
   });
 
+  // do this
+  xit('should be able to upload pic', () => {
+    expect(false).toBeTruthy('need to complete this test - need to upload profile pic');
+  })
+
   afterEach(async () => {
     // Assert that there are no errors emitted from the browser
     const logs = await browser.manage().logs().get(logging.Type.BROWSER);

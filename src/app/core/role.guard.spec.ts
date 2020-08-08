@@ -6,6 +6,7 @@ import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@ang
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 
@@ -39,7 +40,8 @@ describe('RoleGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [RoleGuard, UserService,
+      providers: [RoleGuard, UserService, 
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: {} },
                   { provide: HttpClient, useValue: {} },

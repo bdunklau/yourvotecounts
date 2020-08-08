@@ -2,6 +2,7 @@ import { TestBed, async, inject } from '@angular/core/testing';
 import { UserService } from '../user/user.service';
 import { DisabledGuard } from './disabled.guard';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from "@angular/router";
@@ -35,6 +36,7 @@ describe('DisabledGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [DisabledGuard, UserService,
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); } },
                   { provide: HttpClient, useValue: {} },

@@ -11,8 +11,9 @@ import 'rxjs/add/operator/map'
 import { MessageService } from '../core/message.service';
 import { Team } from '../team/team.model';
 import { map } from 'rxjs/operators';
-import { /*Subject, Observable,*/ Subscription } from 'rxjs';
-import { LogService } from '../log/log.service';
+import { Subject, /*Observable,*/ Subscription } from 'rxjs';
+import { LogService } from '../log/log.service'; // injected in signIn() below
+import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
 
 
 @Injectable()
@@ -24,7 +25,9 @@ export class UserService {
     private afs: AngularFirestore,
     private http: HttpClient,
     public afAuth: AngularFireAuth,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private afStorage: AngularFireStorage,
+    // can't inject LogService because UserService is injected INTO LogService
   ){ }
 
   ngOnInit() {
@@ -203,12 +206,15 @@ export class UserService {
       var user = firebase.auth().currentUser;
       user.updateProfile({
         displayName: value.displayName,
-        photoURL: user.photoURL
+        photoURL: value.photoURL
       }).then( () => {
         // now we have to update the /user node
 
-        this.afs.collection('user').doc(user.uid).ref.update({displayName: value.displayName,
-                                   displayName_lower: value.displayName.toLowerCase()});
+        this.afs.collection('user').doc(user.uid).ref
+                .update({displayName: value.displayName,
+                         displayName_lower: value.displayName.toLowerCase(),
+                         photoURL: value.photoURL,
+                         photoFileName: value.photoFileName});
 
         this.messageService.updateUser(this.user);
         resolve();
@@ -216,6 +222,24 @@ export class UserService {
     })
   }
 
+
+
+  // TODO This is what we SHOULD be doing instead of my-account.component.ts:upload()
+  // but kept getting compile errors like:
+  //   'UploadTaskSnapshot' is not assignable to type 'AngularFireUploadTask'
+  //
+  // async updatePhoto(value: FirebaseUserModel) {
+  //   const user = await this.getCurrentUser();
+  //   const ref = this.afStorage.ref('profile-pic-'+user.uid);
+  //   await ref.delete();
+  //   await this.afStorage.ref('thumb_profile-pic-'+user.uid);
+  //   return ref.put(event.target.files[0]);
+  // }
+
+
+
+  // TODO FIXME this doesn't look right.  Not actually updating user object in Authentication
+  // Is there a trigger maybe that keeps both user objects in sync?  Find out.  8/21/19
   async updateUser(value: FirebaseUserModel) {
     let data = {}
     if(value.displayName) {
@@ -230,4 +254,5 @@ export class UserService {
     console.log('updateUser: DATABASE UPDATE: ', data);
     return updateRes;
   }
+
 }

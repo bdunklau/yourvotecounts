@@ -6,6 +6,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { BehaviorSubject, of } from 'rxjs';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 
 
@@ -37,7 +38,8 @@ describe('DisabledComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DisabledComponent ],
-      providers: [UserService,
+      providers: [UserService, 
+                  { provide: AngularFireStorage, useValue: {}}, 
                   { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); } },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub },
                   { provide: AngularFireAuth, useValue: {} },

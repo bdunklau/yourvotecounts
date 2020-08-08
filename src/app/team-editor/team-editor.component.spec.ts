@@ -4,6 +4,7 @@ import { TeamEditorComponent } from './team-editor.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {CommonServiceModuleStub} from '../core/common.module';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -42,6 +43,7 @@ describe('TeamEditorComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ],
       imports: [ FormsModule, NgbModule],
       providers: [UserService,
+                  { provide: AngularFireStorage, useValue: {}},
                   { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); } },
                   {provide: HttpClient, useValue: {} },
                   { provide: AngularFireAuth, useValue: {} },
