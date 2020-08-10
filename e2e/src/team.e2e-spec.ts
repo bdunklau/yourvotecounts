@@ -7,7 +7,8 @@ import * as moment from 'moment';
 import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
-describe('Team page', () => {
+// TODO FIXME
+fdescribe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
