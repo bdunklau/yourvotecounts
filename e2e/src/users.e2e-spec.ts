@@ -21,7 +21,7 @@ var verifyPagesEnabled = function(page, myAccountPage, teamPage, sleep) {
 }
 
 
-fdescribe('Users page (Admins) ', () => {
+describe('Users page (Admins) ', () => {
   let api: Api;
   let apiUser: ApiUser;
   let testSupport: TestSupport;
