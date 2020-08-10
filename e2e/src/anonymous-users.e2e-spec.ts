@@ -26,7 +26,7 @@ describe('Anonymous users', () => {
     page.goto('/junkurl');
     browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
     browser.sleep(300);
-    expect(page.getUrl()).toEqual(browser.baseUrl+'/junkurl');
+    expect(page.getUrl()).toEqual(browser.baseUrl+'junkurl');
     page.containsLoginBox();
   });
 
@@ -34,14 +34,14 @@ describe('Anonymous users', () => {
     page.goto('/myaccount');
     browser.waitForAngularEnabled(false); // without this, you get:  Failed: script timeout: result was not received in 11 seconds
     browser.sleep(300);
-    expect(page.getUrl()).toEqual(browser.baseUrl+'/login');
+    expect(page.getUrl()).toEqual(browser.baseUrl+'login');
   });
 
   // passed 8/7
   // We want to make sure we can always point the browser to /token however
   it('should be able to point browser to /token', async () => {
     page.gotoTestSupport();
-    expect(page.getUrl()).toEqual(browser.baseUrl+'/token');
+    expect(page.getUrl()).toEqual(browser.baseUrl+'token');
   });
 
   afterEach(async () => {

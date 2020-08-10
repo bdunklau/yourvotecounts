@@ -19,9 +19,9 @@ export class MyAccountPage extends BasePage {
     this.getElement(by.id("submit_personal_info")).click();
   }
 
-  enterName(name) {
+  async enterName(name) {
     var fld = this.getNameField();
-    fld.clear();
+    await fld.clear();
     fld.sendKeys(name);
   }
 

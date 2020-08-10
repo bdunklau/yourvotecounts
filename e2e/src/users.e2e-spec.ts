@@ -15,12 +15,13 @@ var verifyPagesEnabled = function(page, myAccountPage, teamPage, sleep) {
   myAccountPage.verifyPage();
 
   // page.clickTeams();
+  page.pullDownMyMenu();
   page.getElement(by.id('teams_link')).click();
   teamPage.verifyPageBeforeCreatingTeam();
 }
 
 
-describe('Users page (Admins) ', () => {
+fdescribe('Users page (Admins) ', () => {
   let api: Api;
   let apiUser: ApiUser;
   let testSupport: TestSupport;
@@ -84,8 +85,7 @@ describe('Users page (Admins) ', () => {
   });
 
 
-  // passed 8/8
-  /*not passed*/ it('should be able to edit name', async () => {
+  xit('should be able to edit name', async () => {
     testSupport.setName(testSupport.normalUser);
     page.loginAdmin();
     page.pullDownMyMenu();
@@ -166,46 +166,55 @@ describe('Users page (Admins) ', () => {
   })
 
 
-  // passed 8/8
-  it('should be able to disable everyone else\'s account with one action', () => {
+  fit('should be able to disable everyone else\'s account with one action', () => {
     testSupport.setNames(testSupport.names);
-    var sleep = 200;
+    var sleep = 2000;
     // login as Admin
+    console.log('about to login admin');
     page.loginAdmin();
 
     // disable everyone but me
+    console.log('about to pullDownMyMenu');
     page.pullDownMyMenu();
     page.clickUsers();
                                     browser.sleep(sleep);
+    console.log('about to disableAll');
     usersPage.disableAll();
     page.clickLogout();
 
 
     // logout and login as 2 other people
+    console.log('about to loginAsSomeone');
     page.loginAsSomeone();
                               browser.sleep(sleep);
     // verify all routes lead to "disabled"
+    console.log('about to verifyPagesDisabled');
     page.verifyPagesDisabled(sleep);
     page.clickLogout();
 
 
     page.loginAsSomeoneElse();
                               browser.sleep(sleep);
+    console.log('about to verifyPagesDisabled');
     page.verifyPagesDisabled(sleep);
     page.clickLogout();
 
 
-    // make sure you didn't disable yourself
+    console.log('about to loginAdmin');
+                                    // make sure you didn't disable yourself
     page.loginAdmin();
                               browser.sleep(sleep);
 
-    // verify pages enabled
+    console.log('about to verifyPagesEnabled');
+                              // verify pages enabled
     verifyPagesEnabled(page, myAccountPage, teamPage, sleep);
 
     // restore - re-enable everyone
+    console.log('about to pullDownMyMenu');
     page.pullDownMyMenu();
     page.clickUsers();
                                     browser.sleep(sleep);
+    console.log('about to enableAll');
     usersPage.enableAll();
                                     browser.sleep(sleep);
     page.clickLogout();

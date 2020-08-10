@@ -39,8 +39,13 @@ export class AppComponent {
       console.log('AppComponent: next(): value = ', value);
       console.log('AppComponent: next(): this = ', this);
       if(value) this.setAdmin(value.isAdmin())
-      this.isLoggedIn = !!value;
-    }.bind(this)
+      if(value) this.isLoggedIn = true;
+      if(value && value.phoneNumber) this.name_or_phone = value.phoneNumber; // TODO not tested
+      if(value && value.displayName) this.name_or_phone = value.displayName; // TODO not tested
+      if(!value) this.isLoggedIn = false;
+      if(!value) this.name_or_phone = ""; // TODO not tested
+      if(!value) this.setAdmin(false); // TODO not tested
+    }.bind(this);
 
     this.messageService.listenForUser().subscribe({
           next: nxt,

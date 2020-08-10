@@ -202,6 +202,7 @@ export class UserService {
   }
 
   updateCurrentUser(value: FirebaseUserModel) {
+    console.log("updateCurrentUser: value = ", value)
     return new Promise<any>((resolve, reject) => {
       var user = firebase.auth().currentUser;
       user.updateProfile({

@@ -46,8 +46,8 @@ export class FirebaseUserModel {
     this.provider = obj.provider;
     this.phoneNumber = obj.phoneNumber;
     this.roles = obj.roles;
-    this.photoURL = obj.photoURL;
-    this.photoFileName = obj.photoFileName;
+    this.photoURL = obj.photoURL ? obj.photoURL : '';
+    this.photoFileName = obj.photoFileName ? obj.photoFileName : '';
     this.online = obj.online;
     this.tosAccepted = obj.tosAccepted;
     this.privacyPolicyRead = obj.privacyPolicyRead;

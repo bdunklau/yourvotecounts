@@ -31,7 +31,7 @@ describe('Normal user', () => {
     browser.sleep(500);
     page.goto('/log');
     expect(page.getHomeElement().isPresent()).toBeTruthy();
-    expect(page.getUrl()).toEqual(browser.baseUrl+'/home');
+    expect(page.getUrl()).toEqual(browser.baseUrl+'home');
     page.clickLogout()
   });
 
@@ -51,7 +51,7 @@ describe('Normal user', () => {
     page.clickHome();
     page.goto('/users');
     expect(page.getHomeElement().isDisplayed()).toBeTruthy();
-    expect(page.getUrl()).toEqual(browser.baseUrl+'/home');
+    expect(page.getUrl()).toEqual(browser.baseUrl+'home');
     page.clickLogout()
   });
 

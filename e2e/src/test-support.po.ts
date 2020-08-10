@@ -11,6 +11,7 @@ export class TestSupport {
 
   adminUser = {displayName: 'Bre5555nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER,
+                photoURL: '',
                 uid: '5555555555',
                 online: false,
                 privacyPolicyRead: true,
@@ -18,6 +19,7 @@ export class TestSupport {
 
   normalUser = {displayName: 'Bre444nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER,
+                photoURL: '',
                 uid: '4444444444',
                 online: false,
                 privacyPolicyRead: true,
@@ -26,6 +28,7 @@ export class TestSupport {
 
   normalUser2 = {displayName: 'Bre222nt',
                 phoneNumber: process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER2, // NOTICE THE "2" ON THE END
+                photoURL: '',
                 uid: '2222222222',
                 online: false,
                 privacyPolicyRead: true,
@@ -33,6 +36,7 @@ export class TestSupport {
 
                 // notice no name yet for this person
   brandNewUser = {phoneNumber: process.env.YOURVOTECOUNTS_BRAND_NEW_USER,
+    photoURL: '',
                 uid: '3333333333',
                 online: false,
                 privacyPolicyRead: false,
@@ -123,7 +127,7 @@ export class TestSupport {
   login(phoneNumber) {
     this.navigateTo({phoneNumber: phoneNumber, auth_key: process.env.YOURVOTECOUNTS_AUTH_KEY});
     var token = this.getToken();
-    browser.get(browser.baseUrl+'/token');
+    browser.get(browser.baseUrl+'token');
     element(by.name('token')).sendKeys(token);
     element(by.id('submit_token')).click()
     browser.sleep(500); // worked at 1000
