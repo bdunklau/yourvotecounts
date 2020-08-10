@@ -4,6 +4,7 @@ import { TestSupport } from './test-support.po';
 import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
+// passed on 8/10/20
 describe('Minimal Account Info Guard', () => {
   let page: MainPage;
   let testSupport: TestSupport;
