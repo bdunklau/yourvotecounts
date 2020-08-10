@@ -23,6 +23,7 @@ describe('Normal user', () => {
     page.clickLogout()
   });
 
+  // passed 8/10/20
   it('should not be able to navigate to /log', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickMyAccount();
