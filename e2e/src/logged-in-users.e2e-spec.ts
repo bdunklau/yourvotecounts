@@ -41,7 +41,8 @@ describe('Logged in users', () => {
   xit('should be able to see their name (put back in at some point)', async () => {
   })
 
-
+  
+  // passed 8/10/20
   it('should be able to edit name', async () => {
     let person = await page.loginAsSomeone();
     browser.sleep(500);
