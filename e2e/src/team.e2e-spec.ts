@@ -8,7 +8,7 @@ import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
 // TODO FIXME
-fdescribe('Team page', () => {
+describe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
