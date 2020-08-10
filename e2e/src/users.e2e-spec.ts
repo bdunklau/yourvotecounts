@@ -85,6 +85,7 @@ describe('Users page (Admins) ', () => {
   });
 
 
+  // passed 8/10/20
   it('should be able to edit name', async () => {
     testSupport.setName(testSupport.normalUser);
     page.loginAdmin();
@@ -119,8 +120,8 @@ describe('Users page (Admins) ', () => {
   });
 
 
-    // passed 8/8
-  /*not passed*/ it('should be able to disable any user\'s account', () => {
+  // passed 8/10/20
+  it('should be able to disable any user\'s account', () => {
     testSupport.setNames(testSupport.names);
     var sleep = 300;
     // login as Admin
@@ -168,6 +169,7 @@ describe('Users page (Admins) ', () => {
   })
 
 
+  // passed 8/10/20
   it('should be able to disable everyone else\'s account with one action', () => {
     testSupport.setNames(testSupport.names);
     var sleep = 2000;
@@ -175,7 +177,6 @@ describe('Users page (Admins) ', () => {
     page.loginAdmin();
 
     // disable everyone but me
-    console.log('about to pullDownMyMenu');
     page.pullDownMyMenu();
     page.clickUsers();
                                     browser.sleep(sleep);
