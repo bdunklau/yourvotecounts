@@ -76,6 +76,10 @@ exports.generateThumbnail = functions.storage.object().onFinalize(async (object)
 
     let uid = object.name.substring('thumb_profile-pic-'.length);
 
+    // TODO not sure if this is right
+    // admin.storage().bucket(object.bucket).file(object.name).get
+
+
     return admin.storage().bucket(object.bucket).file(object.name).getSignedUrl({
       action: 'read',
       expires: '03-09-2491'
