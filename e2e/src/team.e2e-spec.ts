@@ -51,6 +51,7 @@ describe('Team page', () => {
     teamPage.verifyTeamIsDisplayedInList();
     // teamPage.verifyMemberListIsDisplayed(); // should no longer display team members after saving a new team
 
+      browser.sleep(sleep);
     teamPage.selectTeam();
       browser.sleep(sleep);
     teamPage.editTeam();
