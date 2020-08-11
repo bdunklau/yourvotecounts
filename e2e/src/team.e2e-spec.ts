@@ -8,7 +8,7 @@ import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
 // passed 8/10/20
-describe('Team page', () => {
+fdescribe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -27,7 +27,7 @@ describe('Team page', () => {
 
 
   /* passed inconsistently*/
-  it('should be able to create and delete a team', () => {
+  fit('should be able to create and delete a team', () => {
     // testSupport.login(testSupport.normalUser.phoneNumber);
     page.loginAsSomeone();
     var sleep = 300;
@@ -51,6 +51,7 @@ describe('Team page', () => {
     teamPage.verifyTeamIsDisplayedInList();
     // teamPage.verifyMemberListIsDisplayed(); // should no longer display team members after saving a new team
 
+      browser.sleep(sleep);
     teamPage.selectTeam();
       browser.sleep(sleep);
     teamPage.editTeam();
