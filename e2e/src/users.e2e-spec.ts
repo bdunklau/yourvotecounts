@@ -15,6 +15,7 @@ var verifyPagesEnabled = function(page, myAccountPage, teamPage, sleep) {
   myAccountPage.verifyPage();
 
   // page.clickTeams();
+  page.pullDownMyMenu();
   page.getElement(by.id('teams_link')).click();
   teamPage.verifyPageBeforeCreatingTeam();
 }
@@ -84,8 +85,8 @@ describe('Users page (Admins) ', () => {
   });
 
 
-  // passed 8/8
-  /*not passed*/ it('should be able to edit name', async () => {
+  // passed 8/10/20
+  it('should be able to edit name', async () => {
     testSupport.setName(testSupport.normalUser);
     page.loginAdmin();
     page.pullDownMyMenu();
@@ -101,6 +102,8 @@ describe('Users page (Admins) ', () => {
     browser.sleep(300);
     page.clickMyAccount();
     expect(myAccountPage.getNameLabel().isDisplayed()).toBeTruthy(testSupport.normalUser.displayName+'\'s name should have been displayed on the My Account page, but it wasn\'t');
+    
+    browser.sleep(3000);
     var name = await myAccountPage.getNameLabel().getText();
     expect(name == expectedName).toBeTruthy('Expected to see the name '+expectedName+' displayed but instead we saw '+name);
     page.clickLogout();
@@ -117,8 +120,8 @@ describe('Users page (Admins) ', () => {
   });
 
 
-    // passed 8/8
-  /*not passed*/ it('should be able to disable any user\'s account', () => {
+  // passed 8/10/20
+  it('should be able to disable any user\'s account', () => {
     testSupport.setNames(testSupport.names);
     var sleep = 300;
     // login as Admin
@@ -166,10 +169,10 @@ describe('Users page (Admins) ', () => {
   })
 
 
-  // passed 8/8
+  // passed 8/10/20
   it('should be able to disable everyone else\'s account with one action', () => {
     testSupport.setNames(testSupport.names);
-    var sleep = 200;
+    var sleep = 2000;
     // login as Admin
     page.loginAdmin();
 

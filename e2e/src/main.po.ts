@@ -56,7 +56,7 @@ export class MainPage extends BasePage {
   }
 
   gotoTestSupport() {
-    return browser.get(browser.baseUrl+'/token') as Promise<any>;
+    return browser.get(browser.baseUrl+'token') as Promise<any>;
     browser.sleep(100);
   }
 

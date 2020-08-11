@@ -133,6 +133,14 @@ describe('Log page', () => {
         logPage.info_user0_tomorrow,
         logPage.error_user0_tomorrow,
       ]
+
+      // start fresh, make sure there aren't any logs hanging around from previous failed runs
+      _.each(entries, (log) => {
+        testSupport.deleteLogs({by:'event', value: log.event});
+      })
+      testSupport.deleteLogs({by:'phoneNumber', value: testSupport.adminUser.phoneNumber}); // deletes the login and logout events so they don't fill up the log screen and cause future false failures
+
+
       _.each(entries, (log) => {
         testSupport.createLog(log);
       })
@@ -191,6 +199,7 @@ describe('Log page', () => {
         testSupport.deleteLogs({by:'event', value: log.event});
       })
       testSupport.deleteLogs({by:'phoneNumber', value: testSupport.adminUser.phoneNumber}); // deletes the login and logout events so they don't fill up the log screen and cause future false failures
+  
   })
 
 

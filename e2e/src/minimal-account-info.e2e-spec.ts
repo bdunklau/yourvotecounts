@@ -4,6 +4,7 @@ import { TestSupport } from './test-support.po';
 import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
+// passed on 8/10/20
 describe('Minimal Account Info Guard', () => {
   let page: MainPage;
   let testSupport: TestSupport;
@@ -22,12 +23,12 @@ describe('Minimal Account Info Guard', () => {
     page.clickMyAccount();
     browser.sleep(500);
     var url = await page.getUrl();
-    expect(url === browser.baseUrl+'/minimal-account-info').toBeTruthy('expected My Account link to send us to /minimal-account-info page, but instead we got '+url);
+    expect(url === browser.baseUrl+'minimal-account-info').toBeTruthy('expected My Account link to send us to /minimal-account-info page, but instead we got '+url);
 
     page.clickTeams();
     browser.sleep(500);
     url = await page.getUrl();
-    expect(url === browser.baseUrl+'/minimal-account-info').toBeTruthy('expected Teams link to send us to /minimal-account-info page, but instead we got '+url);
+    expect(url === browser.baseUrl+'minimal-account-info').toBeTruthy('expected Teams link to send us to /minimal-account-info page, but instead we got '+url);
 
 
     // but there are some pages we allow them to get to...
@@ -36,31 +37,31 @@ describe('Minimal Account Info Guard', () => {
     page.clickHome();
     browser.sleep(500);
     url = await page.getUrl();
-    expect(url === browser.baseUrl+'/home').toBeTruthy('expected Home link to send us to /home page, but instead we got '+url);
+    expect(url === browser.baseUrl+'home').toBeTruthy('expected Home link to send us to /home page, but instead we got '+url);
     page.clickLogout();
   });
 
 
   // make sure the guard doesn't accidentally redirect everyone
-   it('should allow those with completed profiles to access pages', async () => {
+  it('should allow those with completed profiles to access pages', async () => {
     page.loginAsSomeone();
     browser.sleep(500);
     page.clickMyAccount();
     browser.sleep(500);
     var url = await page.getUrl();
-    expect(url === browser.baseUrl+'/myaccount').toBeTruthy('expected My Account link to send us to /my-account page, but instead we got '+url);
+    expect(url === browser.baseUrl+'myaccount').toBeTruthy('expected My Account link to send us to /myaccount page, but instead we got '+url);
 
     //page.pullDownMyMenu();
     page.clickTeams();
     browser.sleep(500);
     url = await page.getUrl();
-    expect(url === browser.baseUrl+'/teams').toBeTruthy('expected Teams link to send us to /teams page, but instead we got '+url);
+    expect(url === browser.baseUrl+'teams').toBeTruthy('expected Teams link to send us to /teams page, but instead we got '+url);
 
     page.pullDownMyMenu();
     page.clickHome();
     browser.sleep(500);
     url = await page.getUrl();
-    expect(url === browser.baseUrl+'/home').toBeTruthy('expected Home link to send us to /home page, but instead we got '+url);
+    expect(url === browser.baseUrl+'home').toBeTruthy('expected Home link to send us to /home page, but instead we got '+url);
     page.clickLogout();
   });
 

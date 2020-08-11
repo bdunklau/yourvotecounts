@@ -5,7 +5,7 @@ import { Api } from './api.po';
 import { ApiTermsOfService } from './api-terms-of-service.po';
 import { TermsOfServicePage } from './terms-of-service.po';
 
-fdescribe('Terms of Service page', () => {
+describe('Terms of Service page', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let termsOfServicePage: TermsOfServicePage;

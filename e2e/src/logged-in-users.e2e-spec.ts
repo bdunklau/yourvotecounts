@@ -33,7 +33,7 @@ describe('Logged in users', () => {
   // We DO want to make sure we can always point the browser to /token however
   it('should be able to point browser to /token', async () => {
     page.gotoTestSupport();
-    expect(page.getUrl()).toEqual(browser.baseUrl+'/token');
+    expect(page.getUrl()).toEqual(browser.baseUrl+'token');
   });
 
 
@@ -41,17 +41,18 @@ describe('Logged in users', () => {
   xit('should be able to see their name (put back in at some point)', async () => {
   })
 
-
-   it('should be able to edit name', async () => {
+  
+  // passed 8/10/20
+  it('should be able to edit name', async () => {
     let person = await page.loginAsSomeone();
-    page.clickMyAccount();
     browser.sleep(500);
+    page.clickMyAccount();
     myAccountPage.clickEdit();
     myAccountPage.enterName('Bob');
     myAccountPage.clickSubmit();
-    expect(myAccountPage.getNameLabel().isDisplayed()).toBeTruthy();
+    expect(myAccountPage.getNameLabel().isDisplayed()).toBeTruthy("expected name label to be displayed but it wasn't ");
     var name = await myAccountPage.getNameLabel().getText();
-    expect(name == 'Bob').toBeTruthy();
+    expect(name == 'Bob').toBeTruthy("expected name to be Bob but it was actually: "+name);
     myAccountPage.clickEdit();
     myAccountPage.enterName(person.displayName);
     myAccountPage.clickSubmit();
