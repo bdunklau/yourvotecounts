@@ -31,14 +31,22 @@ export class MyAccountComponent implements OnInit {
     async ngOnInit() {
       this.user = await this.userService.getCurrentUser();
 
-      this.userSubscription = this.userService.subscribe(this.user.uid, (users:[FirebaseUserModel]) => {
+      this.userSubscription = this.userService.subscribe(this.user.uid, async (users:[FirebaseUserModel]) => {
         console.log('ngOnInit: entered');
         if(users && users.length > 0) {
           this.user = users[0];
           this.nameValue = this.user.displayName;
           this.phoneNumber = this.user.phoneNumber;
           this.photoURL = this.user.photoURL;
+          
+          // Create a reference from a Google Cloud Storage URI
+          await this.afStorage.storage
+                    .refFromURL('gs://yourvotecounts-bd737.appspot.com/profile-pic-dyfeKu1vAuNX06H7IQ5O1c0f9lf1')
+                    .getDownloadURL().then(url => console.log("pic url = ", url))
+          // https://firebasestorage.googleapis.com/v0/b/yourvotecounts-bd737.appspot.com/o/profile-pic-dyfeKu1vAuNX06H7IQ5O1c0f9lf1?alt=media&token=4bfbcf95-01ee-451c-ada7-73ca9b12c0d5
+
           console.log('ngOnInit: photoURL = ', this.photoURL);
+          //ßconsole.log('ngOnInit: gsReference = ', gsReference);
 
           // don't think we need this anymore.  I think minimal-account-info replaces this
           // if(!this.user.displayName) { // add more criteria as needed
@@ -97,7 +105,12 @@ export class MyAccountComponent implements OnInit {
       await this.ref.delete(); // AREN'T WE DELETING BOTH PICS?  DOESN'T LOOK LIKE IT!  HOLD OFF ON THIS STUFF ABOVE
       await this.afStorage.ref('thumb_profile-pic-'+uid).delete();
       // this.task = this.ref.put(event.target.files[0]);
+
+      // This put() triggers functions/my-account.js: generateThumbnail()
       const task = this.ref.put(event.target.files[0]);
+      //const url = (await task).downloadURL
+      //console.log('url = ', url);
+
       // this.uploadProgress = this.task.percentageChanges();
       this.uploadProgress = task.percentageChanges();
       this.uploadProgress.subscribe(obj => {
@@ -105,6 +118,7 @@ export class MyAccountComponent implements OnInit {
         console.log('uploadProgress: this = ',this);
         if(obj === 100) {
           this.photoURL = this.user.photoURL;
+          console.log('uploadProgress: this.user.photoURL = ',this.user.photoURL);
           console.log('uploadProgress: DONE');
         }
       })
