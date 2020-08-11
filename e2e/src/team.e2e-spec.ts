@@ -8,7 +8,7 @@ import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
 // passed 8/10/20
-fdescribe('Team page', () => {
+describe('Team page', () => {
   // let page: PublicPage;
   let page: MainPage;
   let testSupport: TestSupport;
@@ -27,7 +27,7 @@ fdescribe('Team page', () => {
 
 
   /* passed inconsistently*/
-  fit('should be able to create and delete a team', () => {
+  it('should be able to create and delete a team', () => {
     // testSupport.login(testSupport.normalUser.phoneNumber);
     page.loginAsSomeone();
     var sleep = 300;
