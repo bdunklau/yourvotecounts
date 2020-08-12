@@ -34,10 +34,9 @@ exports.generateThumbnail = functions.storage.object().onFinalize(async (object)
 
     // Get the file name.
     const fileName = path.basename(filePath);
-    // Exit if the image is already a thumbnail.
-    if (fileName.startsWith('thumb_')) {
-      return console.log('Already a Thumbnail.');
-    }
+
+    // get the timestamp suffix
+    const tstamp = object.name.substring("-ts-".length + object.name.indexOf("-ts-"))
 
 
     // Download file from bucket.
@@ -62,34 +61,18 @@ exports.generateThumbnail = functions.storage.object().onFinalize(async (object)
     // We add a 'thumb_' prefix to thumbnails file name. That's where we'll upload the thumbnail.
     const thumbFileName = `thumb_${fileName}`;
     const thumbFilePath = path.join(path.dirname(filePath), thumbFileName);
+
     // Uploading the thumbnail.
     await bucket.upload(tempFilePath, {
       destination: thumbFilePath,
       metadata: metadata,
     });
+
+    let uid = fileName.substring('profile-pic-'.length, fileName.indexOf("-ts-"));
+    db.collection('user').doc(uid).update({photoURL: "", photoFileName: thumbFileName});
+
     // Once the thumbnail has been uploaded delete the local file to free up disk space.
     return fs.unlinkSync(tempFilePath);
-  }
-
-  // after resizing, get the url
-  else if(object.name.startsWith('thumb_profile-pic-')) {
-
-    let uid = object.name.substring('thumb_profile-pic-'.length);
-
-    // TODO not sure if this is right
-    // admin.storage().bucket(object.bucket).file(object.name).get
-
-
-    return admin.storage().bucket(object.bucket).file(object.name).getSignedUrl({
-      action: 'read',
-      expires: '03-09-2491'
-    })
-    .then(signedUrls => {
-      console.log('signed URL', signedUrls[0]); // this will contain the picture's url
-      return db.collection('user').doc(uid).update({photoURL: signedUrls[0]});
-    })
-    .catch(err => console.error(err));
-
   }
 
   else return false;
