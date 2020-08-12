@@ -16,6 +16,8 @@ export class MyAccountComponent implements OnInit {
     nameValue: string;
     phoneNumber: string;
     photoURL: string;
+    photoFileName: string;
+    oldPhotoFileName: string;
     user: FirebaseUserModel;
     editing = false;
     uploadProgress: Observable<number>;
@@ -37,21 +39,27 @@ export class MyAccountComponent implements OnInit {
           this.user = users[0];
           this.nameValue = this.user.displayName;
           this.phoneNumber = this.user.phoneNumber;
-          this.photoURL = this.user.photoURL;
+          //this.photoURL = this.user.photoURL;  // 8/11/20 not using this.user.photoURL
+          this.photoFileName = this.user.photoFileName;
+          if(this.oldPhotoFileName) {
+            // delete the old profile-pic and thumb_profile-pic in storage
+            this.afStorage.ref(this.oldPhotoFileName).delete();
+            let pic = this.oldPhotoFileName.substring("thumb_".length)
+            this.afStorage.ref(pic).delete();
+          }
+          this.oldPhotoFileName = this.user.photoFileName;
           
           // Create a reference from a Google Cloud Storage URI
-          await this.afStorage.storage
-                    .refFromURL('gs://yourvotecounts-bd737.appspot.com/profile-pic-dyfeKu1vAuNX06H7IQ5O1c0f9lf1')
-                    .getDownloadURL().then(url => console.log("pic url = ", url))
-          // https://firebasestorage.googleapis.com/v0/b/yourvotecounts-bd737.appspot.com/o/profile-pic-dyfeKu1vAuNX06H7IQ5O1c0f9lf1?alt=media&token=4bfbcf95-01ee-451c-ada7-73ca9b12c0d5
-
+          if(this.user.photoFileName) {
+            await this.afStorage.storage
+                 .refFromURL('gs://yourvotecounts-bd737.appspot.com/'+this.user.photoFileName)
+                 .getDownloadURL().then(url => {
+                     console.log("this.photoURL = ", url)
+                     this.photoURL = url;
+                  })
+          }
+          
           console.log('ngOnInit: photoURL = ', this.photoURL);
-          //ßconsole.log('ngOnInit: gsReference = ', gsReference);
-
-          // don't think we need this anymore.  I think minimal-account-info replaces this
-          // if(!this.user.displayName) { // add more criteria as needed
-          //   this.editing = true;
-          // }
         }
       })
 
@@ -86,43 +94,24 @@ export class MyAccountComponent implements OnInit {
       // NOTE: When changing pics, the file name in storage HAS to change.  Otherwise, the URL doesn't
       // change which means the UI doesn't update with the new image.  What a hassle.
 
-      // so first, does the user have a photoFileName already?  Because if it does, we are
-      // going to delete that file in storage first (because we only want to hold on to one pic per user)
+      // Upload the new image, create the thumbnail and add it to the user's record
+  
+      // This put() triggers functions/my-account.js: generateThumbnail()
       const user:FirebaseUserModel = await this.userService.getCurrentUser();
       const uid = user.uid;
-      const needToReplace = user.photoFileName && user.photoFileName !== '';
-      if(needToReplace) {
-        this.ref = this.afStorage.ref(user.photoFileName); // thumb_profile-pic-
-        await this.ref.delete();
-        const origFile = user.photoFileName.substring('thumb_'.length);
-        await this.afStorage.ref(origFile).delete;
-      }
-      else {
-
-      }
-
-      this.ref = this.afStorage.ref('profile-pic-'+uid);
-      await this.ref.delete(); // AREN'T WE DELETING BOTH PICS?  DOESN'T LOOK LIKE IT!  HOLD OFF ON THIS STUFF ABOVE
-      await this.afStorage.ref('thumb_profile-pic-'+uid).delete();
-      // this.task = this.ref.put(event.target.files[0]);
-
-      // This put() triggers functions/my-account.js: generateThumbnail()
+      const tstamp = '-ts-'+new Date().getTime() // unique means the page will update with new image
+      this.ref = this.afStorage.ref('profile-pic-'+uid+tstamp);
       const task = this.ref.put(event.target.files[0]);
-      //const url = (await task).downloadURL
-      //console.log('url = ', url);
-
-      // this.uploadProgress = this.task.percentageChanges();
       this.uploadProgress = task.percentageChanges();
       this.uploadProgress.subscribe(obj => {
-        console.log('uploadProgress: obj = ',obj);
-        console.log('uploadProgress: this = ',this);
         if(obj === 100) {
-          this.photoURL = this.user.photoURL;
-          console.log('uploadProgress: this.user.photoURL = ',this.user.photoURL);
-          console.log('uploadProgress: DONE');
+          // 100 = 100% complete - aka the upload is done
+          // do stuff here if you want
         }
       })
-      // this.downloadURL = this.task.downloadURL();
+
     }
 
 }
+
+

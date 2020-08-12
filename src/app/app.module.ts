@@ -42,8 +42,8 @@ import { MinimalAccountInfoComponent } from './my-account/minimal-account-info/m
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { SmsComponent } from './sms/sms.component';
-// import { TeamResolver } from './team/team.resolver';
-// import { FileSelectDirective } from 'ng2-file-upload';
+import { IgxProgressBarModule } from 'igniteui-angular';
+import { CircularProgressbarComponent } from './circular-progressbar/circular-progressbar.component';
 
 
 @NgModule({
@@ -75,6 +75,7 @@ import { SmsComponent } from './sms/sms.component';
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
     SmsComponent,
+    CircularProgressbarComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
@@ -89,7 +90,7 @@ import { SmsComponent } from './sms/sms.component';
     HttpClientModule,
     BrowserAnimationsModule,
     AngularFireStorageModule,
-    // TeamResolver,
+    IgxProgressBarModule,
   ],
   bootstrap: [AppComponent]
 })
