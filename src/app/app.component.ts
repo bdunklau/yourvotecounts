@@ -8,7 +8,7 @@ import { MessageService } from './core/message.service';
 import { Subscription } from 'rxjs';
 import { NgbDatepickerConfig, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser-formatter";
-import Hammer from 'hammerjs'; // to capture touch events
+//import Hammer from 'hammerjs'; // to capture touch events
 // import { BrowserModule } from '@angular/platform-browser';
 
 

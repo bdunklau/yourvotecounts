@@ -24,6 +24,9 @@ export class MyAccountComponent implements OnInit {
     downloadURL: Observable<string>;
     userSubscription: Subscription;
     ref: AngularFireStorageReference;
+    current = 0;
+    max = 100;
+    isUploading = false;
     // task: AngularFireUploadTask;
 
     constructor(private userService: UserService,
@@ -56,6 +59,7 @@ export class MyAccountComponent implements OnInit {
                  .getDownloadURL().then(url => {
                      console.log("this.photoURL = ", url)
                      this.photoURL = url;
+                     this.isUploading = false;
                   })
           }
           
@@ -87,6 +91,7 @@ export class MyAccountComponent implements OnInit {
 
     // code came from:   https://medium.com/codingthesmartway-com-blog/firebase-cloud-storage-with-angular-394566fd529
     async uploadPhoto(event) {
+      this.isUploading = true;
       // this should be in the UserService class but couldn't get everything to compile when I moved
       // all the code over there.  Kept getting errors like:
       //   'UploadTaskSnapshot' is not assignable to type 'AngularFireUploadTask'
@@ -104,6 +109,7 @@ export class MyAccountComponent implements OnInit {
       const task = this.ref.put(event.target.files[0]);
       this.uploadProgress = task.percentageChanges();
       this.uploadProgress.subscribe(obj => {
+        this.current = (obj * 100) / 100
         if(obj === 100) {
           // 100 = 100% complete - aka the upload is done
           // do stuff here if you want

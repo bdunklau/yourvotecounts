@@ -42,8 +42,7 @@ import { MinimalAccountInfoComponent } from './my-account/minimal-account-info/m
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { SmsComponent } from './sms/sms.component';
-import { IgxProgressBarModule } from 'igniteui-angular';
-import { CircularProgressbarComponent } from './circular-progressbar/circular-progressbar.component';
+import { RoundProgressModule }  from 'angular-svg-round-progressbar';
 
 
 @NgModule({
@@ -75,7 +74,6 @@ import { CircularProgressbarComponent } from './circular-progressbar/circular-pr
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
     SmsComponent,
-    CircularProgressbarComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
@@ -90,7 +88,7 @@ import { CircularProgressbarComponent } from './circular-progressbar/circular-pr
     HttpClientModule,
     BrowserAnimationsModule,
     AngularFireStorageModule,
-    IgxProgressBarModule,
+    RoundProgressModule,
   ],
   bootstrap: [AppComponent]
 })
