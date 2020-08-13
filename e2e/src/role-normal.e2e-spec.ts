@@ -15,6 +15,7 @@ describe('Normal user', () => {
     page = new MainPage(testSupport);
   });
 
+  // passed 8/13/20
   it( 'should not see a Log link', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickMyAccount();
@@ -23,7 +24,7 @@ describe('Normal user', () => {
     page.clickLogout()
   });
 
-  // passed 8/10/20
+  // passed 8/13/20
   it('should not be able to navigate to /log', () => {
     testSupport.login(process.env.YOURVOTECOUNTS_NORMAL_PHONE_NUMBER);
     page.clickMyAccount();

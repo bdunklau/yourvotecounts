@@ -298,7 +298,7 @@ describe('Log page', () => {
 
 
 
-  // passed 7/18/19
+  // passed 7/18/19, 8/13/20
   it('should allow query by date', async () => {
 
     testSupport.setNames(testSupport.names);

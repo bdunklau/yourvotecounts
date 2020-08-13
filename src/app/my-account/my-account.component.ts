@@ -44,7 +44,7 @@ export class MyAccountComponent implements OnInit {
           this.phoneNumber = this.user.phoneNumber;
           //this.photoURL = this.user.photoURL;  // 8/11/20 not using this.user.photoURL
           this.photoFileName = this.user.photoFileName;
-          if(this.oldPhotoFileName) {
+          if(this.oldPhotoFileName && this.oldPhotoFileName != this.user.photoFileName) {
             // delete the old profile-pic and thumb_profile-pic in storage
             this.afStorage.ref(this.oldPhotoFileName).delete();
             let pic = this.oldPhotoFileName.substring("thumb_".length)
