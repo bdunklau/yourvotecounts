@@ -21,21 +21,13 @@
 
   <div [hidden]="editing">
     <div class="row">
-      <div class="col" id="myaccount_name_label">{{nameValue}}</div>
-    </div>
-    <div class="row">
-      <div class="col"><a href="tel:{{phoneNumber}}">{{phoneNumber}}</a></div>
-    </div>
-    <div class="row">
-      <div class="col">&nbsp;</div>
-    </div>
-    <div class="row">
-      <div class="col"><button id="edit_my_account" class="btn btn-success" (click)="edit()">Edit</button></div>
-    </div>
-    <div class="row">
-      <div class="col" style="height:150px; width:150px">
-            
-          <img [hidden]="isUploading" [attr.src]="photoURL"/>
+      <div class="col" style="height:150px; width:150px">       
+          
+        <!-- "2 input hack" so I can override the "choose file" text that appears by default for the upload button -->     
+          <a onclick="document.getElementById('file').click();"><img [hidden]="isUploading" [attr.src]="photoURL"/></a>
+          <!-- note the display:none -->
+          <input type="file" (change)="uploadPhoto($event)" accept=".png,.jpg" style="display:none;" id="file" name="file"/>
+
           <div [hidden]="!isUploading" style="height:150px; width:150px">
             <div [hidden]="!isUploading" style="position: absolute; top:60px; left:70px; color: #45ccce; font-size: 16pt;">{{current | number:'1.0-0'}}%</div>
           
@@ -48,25 +40,21 @@
                 [rounded]="false">
             </round-progress>
             
-          </div>
-          
+          </div>          
 
       </div>
+
+      <div class="col" id="myaccount_name_label">{{nameValue}}</div>
+      <div class="col"><a href="tel:{{phoneNumber}}">{{phoneNumber}}</a></div>
+    </div>
+
+    <div class="row">
+      <div class="col">&nbsp;</div>
+    </div>
+    <div class="row">
+      <div class="col"><button id="edit_my_account" class="btn btn-success" (click)="edit()">Edit</button></div>
     </div>
     
-    <div class="row">
-        <div class="col">
-          
-
-              <!-- "2 input hack" so I can override the "choose file" text that appears by default for the upload button -->
-              <input type="button" id="loadFileXml" value="Choose Photo" onclick="document.getElementById('file').click();" />
-              <input type="file" (change)="uploadPhoto($event)" accept=".png,.jpg" style="display:none;" id="file" name="file"/>
-              
-
-
-        </div>
-    </div>
-
 
   </div>
 
