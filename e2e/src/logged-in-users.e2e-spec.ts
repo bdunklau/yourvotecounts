@@ -42,17 +42,19 @@ describe('Logged in users', () => {
   })
 
   
-  // passed 8/10/20
+  // passed 8/13/20
   it('should be able to edit name', async () => {
     let person = await page.loginAsSomeone();
     browser.sleep(500);
     page.clickMyAccount();
+    browser.sleep(300);
     myAccountPage.clickEdit();
     myAccountPage.enterName('Bob');
     myAccountPage.clickSubmit();
     expect(myAccountPage.getNameLabel().isDisplayed()).toBeTruthy("expected name label to be displayed but it wasn't ");
     var name = await myAccountPage.getNameLabel().getText();
     expect(name == 'Bob').toBeTruthy("expected name to be Bob but it was actually: "+name);
+    browser.sleep(300);
     myAccountPage.clickEdit();
     myAccountPage.enterName(person.displayName);
     myAccountPage.clickSubmit();

@@ -85,7 +85,7 @@ describe('Users page (Admins) ', () => {
   });
 
 
-  // passed 8/10/20
+  // passed 8/13/20
   it('should be able to edit name', async () => {
     testSupport.setName(testSupport.normalUser);
     page.loginAdmin();
@@ -169,7 +169,7 @@ describe('Users page (Admins) ', () => {
   })
 
 
-  // passed 8/10/20
+  // passed 8/13/20
   it('should be able to disable everyone else\'s account with one action', () => {
     testSupport.setNames(testSupport.names);
     var sleep = 2000;

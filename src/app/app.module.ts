@@ -42,8 +42,7 @@ import { MinimalAccountInfoComponent } from './my-account/minimal-account-info/m
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { SmsComponent } from './sms/sms.component';
-// import { TeamResolver } from './team/team.resolver';
-// import { FileSelectDirective } from 'ng2-file-upload';
+import { RoundProgressModule }  from 'angular-svg-round-progressbar';
 
 
 @NgModule({
@@ -89,7 +88,7 @@ import { SmsComponent } from './sms/sms.component';
     HttpClientModule,
     BrowserAnimationsModule,
     AngularFireStorageModule,
-    // TeamResolver,
+    RoundProgressModule,
   ],
   bootstrap: [AppComponent]
 })

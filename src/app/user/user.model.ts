@@ -10,6 +10,7 @@ export class FirebaseUserModel {
   provider: string;
   phoneNumber: string;
   roles: Array<String>;
+  // not really using this.  see my-account.component.ts
   photoURL: string;
   photoFileName: string;
   date_ms: number;
@@ -28,7 +29,8 @@ export class FirebaseUserModel {
     this.provider = "";
     this.phoneNumber = "";
     this.roles = [];
-    this.photoURL = "";
+    // not really using this.  see my-account.component.ts
+    this.photoURL = "";  
     this.photoFileName = "";
     this.isDisabled = false;
     this.online = false;
@@ -46,6 +48,7 @@ export class FirebaseUserModel {
     this.provider = obj.provider;
     this.phoneNumber = obj.phoneNumber;
     this.roles = obj.roles;
+    // not really using this.  see my-account.component.ts
     this.photoURL = obj.photoURL ? obj.photoURL : '';
     this.photoFileName = obj.photoFileName ? obj.photoFileName : '';
     this.online = obj.online;

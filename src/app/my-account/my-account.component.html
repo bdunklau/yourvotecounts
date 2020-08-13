@@ -33,44 +33,41 @@
       <div class="col"><button id="edit_my_account" class="btn btn-success" (click)="edit()">Edit</button></div>
     </div>
     <div class="row">
-      <div class="col"><img [attr.src]="photoURL"/></div>
-    </div>
-    <div class="row">
-      <div class="col">{{photoURL}}</div>
-    </div>
-    <!-- <div class="row">
-      <input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
-
-      <button type="button" class="btn btn-success btn-s"
-        (click)="uploader.uploadAll()"
-        [disabled]="!uploader.getNotUploadedItems().length" >
-            Upload an Image
-      </button>
-    </div> -->
-    <div class="row">
-      <div class="col">
-          <div class="card">
-            <div class="card-header">
-              Firebase Cloud Storage & Angular 5
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">Select a file for upload:</h5>
-              <input type="file" (change)="uploadPhoto($event)" accept=".png,.jpg" />
-
-              <div class="progress">
-                <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'"
-                            [attr.aria-valuenow]="(uploadProgress | async)" aria-valuemin="0" aria-valuemax="100">
-                </div>
-              </div>
-
-              <div *ngIf="downloadURL | async; let downloadSrc" class="alert alert-info" role="alert">
-                  File uploaded: <a [href]="downloadSrc">{{downloadSrc}}</a>
-              </div>
-
-            </div>
+      <div class="col" style="height:150px; width:150px">
+            
+          <img [hidden]="isUploading" [attr.src]="photoURL"/>
+          <div [hidden]="!isUploading" style="height:150px; width:150px">
+            <div [hidden]="!isUploading" style="position: absolute; top:60px; left:70px; color: #45ccce; font-size: 16pt;">{{current | number:'1.0-0'}}%</div>
+          
+            <!-- ref:   https://www.npmjs.com/package/angular-svg-round-progressbar  -->
+            <round-progress 
+                [current]="current" 
+                [max]="max"
+                [radius]="75"
+                [stroke]="5"
+                [rounded]="false">
+            </round-progress>
+            
           </div>
+          
+
+      </div>
+    </div>
+    
+    <div class="row">
+        <div class="col">
+          
+
+              <!-- "2 input hack" so I can override the "choose file" text that appears by default for the upload button -->
+              <input type="button" id="loadFileXml" value="Choose Photo" onclick="document.getElementById('file').click();" />
+              <input type="file" (change)="uploadPhoto($event)" accept=".png,.jpg" style="display:none;" id="file" name="file"/>
+              
+
+
         </div>
     </div>
+
+
   </div>
 
 </div>
