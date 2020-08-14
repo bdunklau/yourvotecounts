@@ -7,6 +7,8 @@ import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@ang
 import { AngularFireAuth } from '@angular/fire/auth';
 import { BehaviorSubject, of } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { RoundProgressModule }  from 'angular-svg-round-progressbar';
+import { PhonePipe } from '../util/phone/phone.pipe';
 
 
 describe('MyAccountComponent', () => {
@@ -36,8 +38,8 @@ describe('MyAccountComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ FormsModule ],
-      declarations: [ MyAccountComponent ],
+      imports: [ FormsModule, RoundProgressModule ],
+      declarations: [ MyAccountComponent, PhonePipe ],
       providers: [ UserService,
                   { provide: AngularFireStorage, useValue: {}},
                   { provide: HttpClient, useValue: {} },
