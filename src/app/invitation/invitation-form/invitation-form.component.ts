@@ -10,7 +10,7 @@ import {
   FormBuilder,
   Validators
 } from "@angular/forms";
-import { isInteger } from '@ng-bootstrap/ng-bootstrap/util/util';
+import { UserService } from '../../user/user.service';
 
 
 @Component({
@@ -22,18 +22,22 @@ export class InvitationFormComponent implements OnInit {
 
   invitationForm: FormGroup;
   invitation: Invitation;
-  //nameValue: string;
-  //phoneValue: string;
-  phonePattern = "^((\\+91-?)|0)?[0-9]{10}$";
+  themessage: string;
 
   constructor(
     private fb: FormBuilder,
     private invitationService: InvitationService,
-    private router: Router,) { }
+    private router: Router,
+    private userService: UserService) { }
 
   ngOnInit(): void {
     this.invitation = new Invitation();
     this.createForm();
+    this.userService.getCurrentUser().then(user => {
+      this.themessage = user.displayName+" is inviting you to participate in a video call with him on SeeSaw.  Click the link below to see this invitation."
+      console.log('themessage = ', this.themessage)
+      this.invitationForm.get("message").setValue(this.themessage);
+    })
   }
   
   get name() {
@@ -44,11 +48,16 @@ export class InvitationFormComponent implements OnInit {
     return this.invitationForm.get("phone");
   }
 
+  get message() {
+    return this.invitationForm.get("message");
+  }
+
   createForm() {
     this.invitationForm = this.fb.group(
       {
         name: ["", [Validators.required]],
         phone: ["", { validators: [Validators.required, this.ValidatePhone], updateOn: "blur" }],
+        message: ["", [Validators.required]],
       },
       // { updateOn: "blur" } <-- will apply to entire form
     );
