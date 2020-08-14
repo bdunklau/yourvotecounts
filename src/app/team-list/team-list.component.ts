@@ -61,7 +61,7 @@ export class TeamListComponent implements OnInit {
 
   // always unsubscribe
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    if(this.subscription) this.subscription.unsubscribe();
     if(this.memberSubscription) this.memberSubscription.unsubscribe();
   }
 

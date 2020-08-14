@@ -1,19 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule/*, ReactiveFormsModule, FormBuilder*/ } from '@angular/forms';
-import { MyAccountComponent } from './my-account.component';
-import { UserService } from '../user/user.service';
+import { UserService } from '../../user/user.service';
+import { InvitationListComponent } from './invitation-list.component';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { BehaviorSubject, of } from 'rxjs';
+import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { RoundProgressModule }  from 'angular-svg-round-progressbar';
-import { PhonePipe } from '../util/phone/phone.pipe';
 
-
-describe('MyAccountComponent', () => {
-  let component: MyAccountComponent;
-  let fixture: ComponentFixture<MyAccountComponent>;
+describe('InvitationListComponent', () => {
+  let component: InvitationListComponent;
+  let fixture: ComponentFixture<InvitationListComponent>;
 
   const AngularFirestoreStub = {
       collection: (name: string, f: (ref:any) => {}) => ({
@@ -36,22 +32,22 @@ describe('MyAccountComponent', () => {
       }),
     };
 
+    const AngularFireAuthStub = {}
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ FormsModule, RoundProgressModule ],
-      declarations: [ MyAccountComponent, PhonePipe ],
-      providers: [ UserService,
-                  { provide: AngularFireStorage, useValue: {}},
-                  { provide: HttpClient, useValue: {} },
-                  { provide: AngularFireAuth, useValue: {} },
-                  { provide: AngularFirestore, useValue: AngularFirestoreStub },
-                ]
+      declarations: [ InvitationListComponent ],
+      providers: [ UserService, 
+        { provide: AngularFirestore, useValue: AngularFirestoreStub },
+        { provide: AngularFireStorage, useValue: {}},
+        { provide: AngularFireAuth, useValue: AngularFireAuthStub },
+        { provide: HttpClient, useValue: {} },]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MyAccountComponent);
+    fixture = TestBed.createComponent(InvitationListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

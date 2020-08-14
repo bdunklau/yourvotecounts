@@ -43,6 +43,10 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { SmsComponent } from './sms/sms.component';
 import { RoundProgressModule }  from 'angular-svg-round-progressbar';
+import { PhonePipe } from './util/phone/phone.pipe';
+import { InvitationsComponent } from './invitation/invitations/invitations.component';
+import { InvitationListComponent } from './invitation/invitation-list/invitation-list.component';
+import { InvitationFormComponent } from './invitation/invitation-form/invitation-form.component';
 
 
 @NgModule({
@@ -74,6 +78,10 @@ import { RoundProgressModule }  from 'angular-svg-round-progressbar';
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
     SmsComponent,
+    PhonePipe,
+    InvitationsComponent,
+    InvitationListComponent,
+    InvitationFormComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
