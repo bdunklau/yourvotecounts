@@ -53,8 +53,8 @@ exports.generateThumbnail = functions.storage.object().onFinalize(async (object)
     console.log('Image downloaded locally to', tempFilePath);
     // Generate a thumbnail using ImageMagick.
     await spawn('convert', [tempFilePath, '-auto-orient', pngPath]);
-    await spawn('convert', [pngPath, '-thumbnail', '200x200>', pngPath]);
-    await spawn('convert', [pngPath, '-gravity', 'center', '-extent', '150x150', pngPath]);
+    await spawn('convert', [pngPath, '-thumbnail', '200x200', pngPath]);
+    await spawn('convert', [pngPath, '-gravity', 'center', '-extent', '125x125', pngPath]);
     await spawn('convert', [pngPath, '-vignette', '0x0+0+0', pngPath]);
     await spawn('convert', [pngPath, '-background', 'transparent', pngPath]);
     console.log('Thumbnail created at', pngPath);
