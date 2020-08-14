@@ -8,7 +8,7 @@
    <a href="javascript:void(0)" class="closebtn" id="closeNav" (click)="closeNav()"><i class="fa fa-close"></i></a>
    <div class="nav-heading">Main Menu</div>
    <a id="home_link" class="nav-link" (click)="closeNav()" routerLink="/home"><i class="fa fa-home"></i> Home</a>
-   <a [hidden]="!isLoggedIn" id="myaccount_link" class="nav-link" (click)="closeNav()" routerLink="/myaccount"><i class="fa fa-user-circle-o"></i> My Account</a>
+   <a [hidden]="!isLoggedIn" id="myaccount_link" class="nav-link" (click)="closeNav()" routerLink="/myaccount"><i class="fas fa-user-circle"></i> My Account</a>
    
    <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/invitations']"><i class="fa fa-user-plus"></i> Invitations</a>
    
@@ -16,13 +16,13 @@
    
    <a [hidden]="!isLoggedIn" id="teams_link" class="nav-link" (click)="closeNav()" [routerLink]="['/teams']"><i class="fa fa-users"></i> Teams</a>
    <a [hidden]="isLoggedIn" id="login_link" class="nav-link" (click)="closeNav()" routerLink="/login"><i class="fa fa-sign-in"></i> Login</a>
-   <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()"><i class="fa fa-sign-out"></i> Logout</a>
+   <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
    <div [hidden]="!isAdmin" class="nav-heading">Administration</div>
    <a [hidden]="!isAdmin" id="users_link" class="nav-link" (click)="closeNav()" [routerLink]="['/users']"><i class="fa fa-users"></i> Users</a>
-   <a [hidden]="!isAdmin" id="sms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/sms']"><i class="fa fa-send-o"></i> SMS</a>
-   <a [hidden]="!isAdmin" id="log_link" class="nav-link" (click)="closeNav()" [routerLink]="['/log']"><i class="fa fa-file-text-o"></i> Logs</a>
-   <a [hidden]="!isAdmin" id="terms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/terms']"><i class="fa fa-file-text-o"></i> Terms</a>
-   <a [hidden]="!isAdmin" id="privacy_link" class="nav-link" (click)="closeNav()" [routerLink]="['/privacy']"><i class="fa fa-file-text-o"></i> Privacy</a>
+   <a [hidden]="!isAdmin" id="sms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/sms']"> <i class="fa fa-sms"></i> SMS</a>
+   <a [hidden]="!isAdmin" id="log_link" class="nav-link" (click)="closeNav()" [routerLink]="['/log']"><i class="far fa-file"></i> Logs</a>
+   <a [hidden]="!isAdmin" id="terms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/terms']"><i class="fas fa-file-contract"></i> Terms</a>
+   <a [hidden]="!isAdmin" id="privacy_link" class="nav-link" (click)="closeNav()" [routerLink]="['/privacy']"><i class="fas fa-file-contract"></i> Privacy</a>
  </div>
 
  <!-- Use any element to open the sidenav -->
@@ -30,7 +30,7 @@
    <i id="hamburger_menu_icon" class="fa fa-bars"></i>
  </span>
 
- <a class="navbar-brand" style="padding-left:10px" href="#">{{ title }}</a>
+ <a class="navbar-brand" style="padding-left:10px" href="#">{{ title }} <i class="fa fa-video"></i> </a>
 
 </nav>
 

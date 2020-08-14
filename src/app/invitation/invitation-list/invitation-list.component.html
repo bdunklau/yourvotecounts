@@ -1,5 +1,24 @@
+<div class="container">
+  <h5>Invitations I Sent</h5>
 
-<table class="table table-striped">
+  <span *ngIf="invitations.length == 0">
+    You have not invited anyone to participate in a video call.  Click "Invite Someone" to, well... invite someone.
+    <P>&nbsp;</P>
+  </span>
+  
+  <div class="row">
+    <div class="col-sm-12">
+      <button id="send_invitation_button" type="button" [routerLink]="['/invitation-form']" class="btn btn-primary col-sm-12"><i class="fa fa-user-plus"></i> Invite Someone</button>
+    </div>
+  </div>
+
+  <span *ngIf="invitations.length > 0">
+    <P>&nbsp;</P>
+    You have invited these people to participate in a video call
+    <P>&nbsp;</P>
+  </span>
+
+  <table class="table table-striped">
     <!--
     <thead *ngIf="canAddTeamMembers">
     <tr>
@@ -27,3 +46,4 @@
     </tr>
     </tbody>
   </table>
+</div>
