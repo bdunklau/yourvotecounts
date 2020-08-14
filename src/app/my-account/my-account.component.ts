@@ -4,6 +4,7 @@ import { FirebaseUserModel } from '../user/user.model';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs';
+import { PhonePipe } from './util/phone/phone.pipe';
 
 
 @Component({

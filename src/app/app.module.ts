@@ -43,6 +43,7 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { SmsComponent } from './sms/sms.component';
 import { RoundProgressModule }  from 'angular-svg-round-progressbar';
+import { PhonePipe } from './util/phone/phone.pipe';
 
 
 @NgModule({
@@ -74,6 +75,7 @@ import { RoundProgressModule }  from 'angular-svg-round-progressbar';
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
     SmsComponent,
+    PhonePipe,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
