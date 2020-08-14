@@ -31,7 +31,7 @@ export class FirebaseUserModel {
     this.roles = [];
     // not really using this.  see my-account.component.ts
     this.photoURL = "";  
-    this.photoFileName = "";
+    this.photoFileName = "thumb_profile-pic-default.png";
     this.isDisabled = false;
     this.online = false;
     this.tosAccepted = false;
@@ -50,7 +50,7 @@ export class FirebaseUserModel {
     this.roles = obj.roles;
     // not really using this.  see my-account.component.ts
     this.photoURL = obj.photoURL ? obj.photoURL : '';
-    this.photoFileName = obj.photoFileName ? obj.photoFileName : '';
+    this.photoFileName = obj.photoFileName ? obj.photoFileName : 'thumb_profile-pic-default.png';
     this.online = obj.online;
     this.tosAccepted = obj.tosAccepted;
     this.privacyPolicyRead = obj.privacyPolicyRead;

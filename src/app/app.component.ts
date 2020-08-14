@@ -19,7 +19,7 @@ import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser
   providers: [{provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter}]
 })
 export class AppComponent {
-  title = 'YourVoteCounts';
+  title = 'SeeSaw';
   isAdmin: boolean;
   isLoggedIn: boolean;
   name_or_phone: string;

@@ -1,4 +1,6 @@
-
+<div class="container">
+  <h5>Send Invitation</h5>
+  Use this page to invite someone to participate in a video call with you
         <!-- 
           for masking, see  https://www.npmjs.com/package/ngx-mask
         -->
@@ -35,25 +37,7 @@
 
 
     <form [formGroup]="invitationForm" (ngSubmit)="onSubmit()" novalidate>
-      <div class="field">
-        <!-- label class="label" for="name">Name</label -->
-        <div class="control">
-          <input
-            class="form-control"
-            type="text"
-            id="name"
-            formControlName="name"
-            placeholder="Name"
-          />
-          <div *ngIf="name.invalid && (name.dirty || name.touched)">
-            <p class="alert alert-danger" *ngIf="name.errors.required">
-              Name is required
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="field">
+      <div class="field" style="margin-bottom:20px">
         <!-- label class="label" for="phone">Phone</label -->
         <div class="control">
           <input
@@ -79,6 +63,25 @@
         </div>
       </div>
 
+      <div class="field" style="margin-bottom:20px">
+        <!-- label class="label" for="name">Name</label -->
+        <div class="control">
+          <input
+            class="form-control"
+            type="text"
+            id="name"
+            formControlName="name"
+            placeholder="Name"
+          />
+          <div *ngIf="name.invalid && (name.dirty || name.touched)">
+            <p class="alert alert-danger" *ngIf="name.errors.required">
+              Name is required
+            </p>
+          </div>
+        </div>
+      </div>
+
+
       <!--
       <div class="field">
         <div class="control">
@@ -95,13 +98,15 @@
       </div>
       -->
 
-      <button id="submit_invitation" type="submit" class="btn btn-success" [disabled]="!invitationForm.valid">Send Invitation</button>
-      &nbsp;
-      <button id="cancel_invitation" type="button" (click)="cancel()" class="btn btn-secondary">Cancel</button>
-
+      <button id="submit_invitation" type="submit" class="btn btn-success col-sm-12" [disabled]="!invitationForm.valid">Send Invitation  <i class="fa fa-sms"></i> </button>
+      <P>&nbsp;</P>
+      <button id="cancel_invitation" type="button" (click)="cancel()" class="btn btn-secondary col-sm-12">Cancel</button>
+      <P>&nbsp;</P>
+      <button id="view_invitations_button" type="button" [routerLink]="['/invitation-list']" class="btn btn-primary col-sm-12">View Invitations</button>
 
 
 
 
     </form>
   
+</div>
