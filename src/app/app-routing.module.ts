@@ -24,11 +24,17 @@ import { MinimalAccountInfoComponent } from './my-account/minimal-account-info/m
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { SmsComponent } from './sms/sms.component';
+import { InvitationsComponent } from './invitation/invitations/invitations.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'disabled', component: DisabledComponent },
   { path: 'home', component: HomeComponent },
+  
+  { path: 'invitations', component: InvitationsComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
+  
+  
+  
   { path: 'log', component: LogComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, MinimalAccountInfoGuard], data: {role: 'admin'} },
   { path: 'login', component: LoginComponent },
   { path: 'minimal-account-info', component: MinimalAccountInfoComponent, canActivate: [AuthGuard, DisabledGuard], resolve: { user: UserResolver} },
