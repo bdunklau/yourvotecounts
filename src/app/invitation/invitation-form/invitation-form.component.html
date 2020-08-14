@@ -1,6 +1,6 @@
 
 
-    <form (ngSubmit)="onSubmit()" #invitationForm="ngForm">
+    <form (ngSubmit)="onSubmit(invitationForm)" #invitationForm="ngForm">
         <div class="form-group">
           <input type="text" class="form-control" id="invitation_name_field" placeholder="Name"
                   [(ngModel)]="nameValue" name="name" #name="ngModel" required>
@@ -10,6 +10,9 @@
           </div>
         </div>
         
+        <!-- 
+          for masking, see  https://www.npmjs.com/package/ngx-mask
+        -->
         <div class="form-group">
             <input type="text" class="form-control" id="invitation_phone_field" placeholder="Phone"
                     [(ngModel)]="phoneValue" name="phone" #phone="ngModel" required>
@@ -19,8 +22,9 @@
             </div>
         </div>
   
-        <button id="submit_invitation" type="submit" class="btn btn-success" [disabled]="!invitationForm.form.valid">Submit</button>
+        <button id="submit_invitation" type="submit" class="btn btn-success" [disabled]="!invitationForm.form.valid">Send Invitation</button>
         &nbsp;
-        <button id="cancel_invitation" type="button" (click)="cancel()" class="btn btn-secondary">Cancel</button>
+        <button id="cancel_invitation" type="button" (click)="cancel(invitationForm)" class="btn btn-secondary">Cancel</button>
   
     </form>
+  

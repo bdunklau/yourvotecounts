@@ -1,1 +1,29 @@
-<p>invitation-list works!</p>
+
+<table class="table table-striped">
+    <!--
+    <thead *ngIf="canAddTeamMembers">
+    <tr>
+      <th scope="col" colspan="2">Name
+      </th>
+      <th scope="col" class="text-right">Leader (Y/N)
+      </th>
+    </tr>
+    </thead>
+    -->
+    <tbody>
+    <tr *ngFor="let invitation of invitations">
+      <td><a id="delete_invitation_{{invitation.displayName}}" class="delete_invitation">
+            <i class="fa fa-times fa-1x"
+                aria-hidden="true"
+                (click)="confirmDelete(invitation)"></i></a>
+      </td>
+  
+      <td id="invitation_{{invitation.displayName}}">{{invitation.displayName}}</td>
+  
+      <td id="invitation_{{invitation.phoneNumber}}">{{invitation.phoneNumber | phone}}</td>
+  
+  
+  
+    </tr>
+    </tbody>
+  </table>

@@ -13,6 +13,18 @@ export class Invitation {
     creatorPhone: string;
     
     constructor() {}
+
+  
+
+  toObj(): any {
+    return {id: this.id,
+      displayName: this.displayName,
+      phoneNumber: this.phoneNumber,
+      created: this.created,
+      creatorId: this.creatorId,
+      creatorName: this.creatorName,
+      creatorPhone: this.creatorPhone};
+  }
     
 
   setCreator(user: FirebaseUserModel) {
