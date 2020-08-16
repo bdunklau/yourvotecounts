@@ -25,12 +25,20 @@ var getKeys = function() {
 }
 
 
+var addCountryCode = function(phone) {
+  if(!phone) return phone
+  else if(phone.startsWith("+1")) return phone
+  else if(phone.length === 10) return "+1"+phone
+  else return phone
+}
+
+
 exports.sendSms = functions.firestore.document('sms/{id}').onCreate(async (snap, context) => {
   let keys = await getKeys();
 
   var details = {};
-  details.to = '+1'+snap.data().to;
-  details.from = '+1'+snap.data().from;
+  details.to = addCountryCode(snap.data().to);
+  details.from = addCountryCode(snap.data().from);
   details.body = snap.data().message;
   if(snap.data().mediaUrl) details.mediaUrl = [snap.data().mediaUrl];
 
