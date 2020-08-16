@@ -11,6 +11,7 @@ export class Invitation {
     creatorId: string;
     creatorName: string;
     creatorPhone: string;
+    message: string;
     
     constructor() {}
 
@@ -23,7 +24,8 @@ export class Invitation {
       created: this.created,
       creatorId: this.creatorId,
       creatorName: this.creatorName,
-      creatorPhone: this.creatorPhone};
+      creatorPhone: this.creatorPhone,
+      message: this.message};
   }
     
 

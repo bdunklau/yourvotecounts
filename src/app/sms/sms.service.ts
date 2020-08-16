@@ -18,6 +18,7 @@ export class SmsService {
     doc['message'] = args.message;
     doc['date'] = firebase.firestore.Timestamp.now().toDate();
     doc['date_ms'] = firebase.firestore.Timestamp.now().toMillis();
+    //console.log('doc = ', doc);
     this.afs.collection('sms').add(doc);
   }
 }

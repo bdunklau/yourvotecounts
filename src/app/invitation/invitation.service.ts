@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Invitation } from './invitation.model';
 import { AngularFirestore, AngularFirestoreCollection/*, CollectionReference*/ } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
 import { UserService } from '../user/user.service';
 import { LogService } from '../log/log.service';
 
@@ -16,21 +15,25 @@ export class InvitationService {
     private userService: UserService,
     private log: LogService,) { }
 
+
+  createId() {
+    return this.afs.createId();
+  }
+
+
   async create(invitation: Invitation): Promise<string> {
     let name = invitation.displayName;
-    var invitationDocId = this.afs.createId();
-    invitation.id = invitationDocId;
-    invitation.created = firebase.firestore.Timestamp.now();
-    const user = await this.userService.getCurrentUser();
-    invitation.setCreator(user);
+    if(!invitation.id) {
+      invitation.id = this.afs.createId();
+    }
 
     let batch = this.afs.firestore.batch();
-    var invitationRef = this.afs.collection('invitation').doc(invitationDocId).ref;
+    var invitationRef = this.afs.collection('invitation').doc(invitation.id).ref;
     batch.set(invitationRef, invitation.toObj());
     
     await batch.commit();
     this.log.i('created invitation '+invitation.id);
-    return invitationDocId;
+    return invitation.id;
 
     // good example of transactions:
     // https://stackoverflow.com/questions/47532694/firestore-transaction-update-multiple-documents-in-a-single-transaction?rq=1
@@ -53,4 +56,24 @@ export class InvitationService {
     var retThis = this.afs.collection('invitation', ref => ref.where("creatorId", "==", userId)).snapshotChanges();
     return retThis;
   }
+
+
+  async getInvitation(displayName: string, parm: {protocol: string, host: string, pathname: string}): Promise<string> {
+    var res = await this.afs.collection('config').doc('invitation_template').ref.get();
+    let invitation = res.data().text.replace(/name/, displayName);
+    let ngrok = "9925171f6ca4.ngrok.io"
+    let host = parm.host.indexOf("localhost") == -1 ? parm.host : ngrok
+    let url = parm.protocol+"//"+host+parm.pathname
+    invitation = invitation.replace(/url/, url);
+    return invitation;
+  }
+
+
+  /**
+name  is inviting you to participate in a video call on SeeSaw.  Click the link below to see this invitation.
+
+url
+
+Do not reply to this text message.  This number is not being monitored.
+   **/
 }
