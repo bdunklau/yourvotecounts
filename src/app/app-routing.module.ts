@@ -27,6 +27,8 @@ import { SmsComponent } from './sms/sms.component';
 import { InvitationsComponent } from './invitation/invitations/invitations.component';
 import { InvitationFormComponent } from './invitation/invitation-form/invitation-form.component';
 import { InvitationListComponent } from './invitation/invitation-list/invitation-list.component';
+import { InvitationDetailsComponent } from './invitation/invitation-details/invitation-details.component';
+import { InvitationResolver } from './invitation/invitation.resolver';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -34,6 +36,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   
   { path: 'invitations', component: InvitationsComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
+  { path: 'invitation-details/:invitationId', component: InvitationDetailsComponent, canActivate: [DisabledGuard], resolve: {invitation: InvitationResolver} },
   { path: 'invitation-form', component: InvitationFormComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'invitation-list', component: InvitationListComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   
@@ -65,7 +68,8 @@ const routes: Routes = [
     // RegisterGuard,
     UserService,
     UserResolver,
-    TeamResolver
+    TeamResolver,
+    InvitationResolver
   ]
 })
 export class AppRoutingModule { }

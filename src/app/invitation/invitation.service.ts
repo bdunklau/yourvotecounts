@@ -58,22 +58,64 @@ export class InvitationService {
   }
 
 
-  async getInvitation(displayName: string, parm: {protocol: string, host: string, pathname: string}): Promise<string> {
-    var res = await this.afs.collection('config').doc('invitation_template').ref.get();
-    let invitation = res.data().text.replace(/name/, displayName);
-    let ngrok = "9925171f6ca4.ngrok.io"
-    let host = parm.host.indexOf("localhost") == -1 ? parm.host : ngrok
-    let url = parm.protocol+"//"+host+parm.pathname
-    invitation = invitation.replace(/url/, url);
+  async getInvitation(invitationId: string) {
+    var invitationDoc = await this.afs.collection('invitation').doc(invitationId).ref.get();
+    if(!invitationDoc || !invitationDoc.data()) {
+      console.log("getInvitation(): no invitation for ", invitationId);
+      return null;
+    }
+    const invitation = new Invitation();
+    invitation.id = invitationDoc.data().id;
+    invitation.displayName = invitationDoc.data().displayName;
+    invitation.phoneNumber = invitationDoc.data().phoneNumber;
+    invitation.created = invitationDoc.data().created;
+    invitation.created_ms = invitationDoc.data().created_ms;
+    invitation.creatorId = invitationDoc.data().creatorId;
+    invitation.creatorName = invitationDoc.data().creatorName;
+    invitation.creatorPhone = invitationDoc.data().creatorPhone;
+    invitation.message = invitationDoc.data().message;
+    console.log('invitationDoc.data() = ', invitationDoc.data());
     return invitation;
   }
 
 
+  async getInvitationMessage(displayName: string, parm: {protocol: string, host: string, pathname: string}): Promise<string> {
+    var res = await this.afs.collection('config').doc('invitation_template').ref.get();
+    let invitation = res.data().text.replace(/name/, displayName);
+    let ngrok = "981c4c0bbbbe.ngrok.io"
+    let host = parm.host.indexOf("localhost") == -1 ? parm.host : ngrok
+    let url = parm.protocol+"//"+host+parm.pathname
+    invitation = invitation.replace(/url/, url);
+    invitation = invitation.replace(/\\n/g, "\n");
+    return invitation;
+  }
+
+
+  /*********** 
+  accept(invitation: Invitation) {
+    let updateValues = {decision: "accepted", decision_date_ms: new Date().getTime()}
+    return this.afs.collection('invitation').doc(invitation.id).update(updateValues).then(() => {
+      invitation.decision = updateValues.decision
+      invitation.decision_date_ms = updateValues.decision_date_ms;
+    })
+  }
+
+
+  decline(invitation: Invitation) {
+    let updateValues = {decision: "declined", decision_date_ms: new Date().getTime()}
+    return this.afs.collection('invitation').doc(invitation.id).update(updateValues).then(() => {
+      invitation.decision = updateValues.decision
+      invitation.decision_date_ms = updateValues.decision_date_ms;
+    })
+  }
+  *************/
+
+
   /**
 name  is inviting you to participate in a video call on SeeSaw.  Click the link below to see this invitation.
-
+\n\n
 url
-
+\n\n
 Do not reply to this text message.  This number is not being monitored.
    **/
 }

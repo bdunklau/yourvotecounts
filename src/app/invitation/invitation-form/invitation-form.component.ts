@@ -39,14 +39,19 @@ export class InvitationFormComponent implements OnInit {
     this.invitation.id = this.invitationService.createId();
     this.createForm();
     let user = await this.userService.getCurrentUser();
-    // see:   https://stackoverflow.com/a/56058977
-    let url = {protocol: window.location.protocol, host: window.location.host, pathname: "/invitation-details/"+this.invitation.id}
-    this.themessage = await this.invitationService.getInvitation(user.displayName, url);
-    this.invitationForm.get("message").setValue(this.themessage);
+    this.invitation.setCreator(user);
+    this.invitation.created = firebase.firestore.Timestamp.now();
 
     // TODO FIXME temp - remove me
     this.invitationForm.get("phone").setValue("2146325613") 
     this.invitationForm.get("name").setValue("Brent")
+
+    this.invitation.phoneNumber = this.getPhoneNumber();
+
+    // see:   https://stackoverflow.com/a/56058977
+    let url = {protocol: window.location.protocol, host: window.location.host, pathname: "/invitation-details/"+this.invitation.id};
+    this.themessage = await this.invitationService.getInvitationMessage(user.displayName, url);
+    this.invitationForm.get("message").setValue(this.themessage);
   }
   
   get name() {
@@ -78,19 +83,20 @@ export class InvitationFormComponent implements OnInit {
     }
     return null;
   }
+
+
+  getPhoneNumber(): string {
+    let ph = this.invitationForm.get("phone").value.trim();
+    if(!ph.startsWith('+1'))
+      ph = '+1'+ph;
+    return ph;
+  }
   
 
   async onSubmit(/*form: NgForm*/) {
     this.invitation.displayName = this.invitationForm.get("name").value.trim();
-    this.invitation.phoneNumber = this.invitationForm.get("phone").value.trim();
     this.invitation.message = this.invitationForm.get("message").value.trim();
-    if(!this.invitation.phoneNumber.startsWith('+1'))
-      this.invitation.phoneNumber = '+1'+this.invitation.phoneNumber;
-
-    this.invitation.created = firebase.firestore.Timestamp.now();
-    const user = await this.userService.getCurrentUser();
-    this.invitation.setCreator(user);
-    //this.invitation.creatorPhone = "+12673314843";
+    this.invitation.phoneNumber = this.getPhoneNumber();
       
     this.invitationService.create(this.invitation);
 
