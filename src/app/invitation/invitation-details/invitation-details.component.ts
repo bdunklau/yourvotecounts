@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Invitation } from '../invitation.model';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { InvitationService } from '../invitation.service';
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';  // ref:   https://angular.io/guide/http
 // should go in a service ??
 import { connect,
           Participant,
@@ -34,12 +35,14 @@ export class InvitationDetailsComponent implements OnInit {
   isInitializing: boolean = true;
   videoTrack: LocalVideoTrack;
   localTracks: LocalTrack[] = [];
+  activeRoom: Room;
 
 
 
   constructor(private route: ActivatedRoute,
               private invitationService: InvitationService,
-              private readonly renderer: Renderer2,) { }
+              private readonly renderer: Renderer2,
+              private http: HttpClient) { }
 
   async ngOnInit() {
     if(!this.isBrowserOk())
@@ -77,8 +80,34 @@ export class InvitationDetailsComponent implements OnInit {
     if(this.routeSubscription) this.routeSubscription.unsubscribe();
   }
 
-  join_call() {
 
+
+  async join_call() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Authorization': 'my-auth-token',
+        'Access-Control-Allow-Origin': '*'
+      }),
+      //params: new HttpParams().set('uid', uid)
+    };
+
+    this.http.get("https://us-central1-yourvotecounts-bd737.cloudfunctions.net/generateTwilioToken?room_id=a&name=b", httpOptions)
+      .subscribe((data: any) => console.log('data = ', data));
+
+    /***** 
+    let roomName = this.invitation.id;
+    this.activeRoom = await connect(
+          token, {
+              logLevel: 'debug',
+              name: roomName,
+              preferredAudioCodecs: ['isac'],
+              preferredVideoCodecs: ['H264'],
+              tracks: this.localTracks,
+              // dominantSpeaker: true,
+              // automaticSubscription: true
+          } as ConnectOptions);
+          ******/
   }
 
   leave_call() {

@@ -32,6 +32,9 @@ exports.setUser = user.setUser
 const twilio_sms = require('./twilio-sms');
 exports.sendSms = twilio_sms.sendSms;
 
+const twilio_video = require('./twilio-video');
+exports.generateTwilioToken = twilio_video.generateTwilioToken;
+
 const privacy_policy = require('./api/privacy-policy');
 exports.getPrivacyPolicy = privacy_policy.getPrivacyPolicy;
 
