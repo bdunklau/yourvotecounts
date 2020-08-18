@@ -36,6 +36,7 @@ export class InvitationDetailsComponent implements OnInit {
   videoTrack: LocalVideoTrack;
   localTracks: LocalTrack[] = [];
   activeRoom: Room;
+  roomName: string;
 
 
 
@@ -81,8 +82,9 @@ export class InvitationDetailsComponent implements OnInit {
   }
 
 
-
   async join_call() {
+    this.roomName = this.invitation.id;
+
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
@@ -93,25 +95,29 @@ export class InvitationDetailsComponent implements OnInit {
     };
 
     this.http.get("https://us-central1-yourvotecounts-bd737.cloudfunctions.net/generateTwilioToken?room_id=a&name=b", httpOptions)
-      .subscribe((data: any) => console.log('data = ', data));
+      .subscribe(async (data: any) => {
+        //console.log('data.token = ', data.token) 
+        
+        let roomName = this.invitation.id;
+        this.activeRoom = await connect(
+                data.token, {
+                  logLevel: 'debug',
+                  name: this.roomName,
+                  preferredAudioCodecs: ['isac'],
+                  preferredVideoCodecs: ['H264'],
+                  tracks: this.localTracks,
+                  // dominantSpeaker: true,
+                  // automaticSubscription: true
+              } as ConnectOptions);
+              
+    });
 
-    /***** 
-    let roomName = this.invitation.id;
-    this.activeRoom = await connect(
-          token, {
-              logLevel: 'debug',
-              name: roomName,
-              preferredAudioCodecs: ['isac'],
-              preferredVideoCodecs: ['H264'],
-              tracks: this.localTracks,
-              // dominantSpeaker: true,
-              // automaticSubscription: true
-          } as ConnectOptions);
-          ******/
+
   }
 
   leave_call() {
-
+    const connected = this.activeRoom != null && (this.activeRoom.state == "connected" || this.activeRoom.state == "reconnecting" || this.activeRoom.state == "reconnected");
+    if(connected) this.activeRoom.disconnect();   
   }
 
 
