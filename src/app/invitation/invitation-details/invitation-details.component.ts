@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Invitation } from '../invitation.model';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { InvitationService } from '../invitation.service';
+import { UserService } from '../../user/user.service';
+import { FirebaseUserModel } from '../../user/user.model';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';  // ref:   https://angular.io/guide/http
 // should go in a service ??
 import { connect,
@@ -36,18 +38,20 @@ export class InvitationDetailsComponent implements OnInit {
   videoTrack: LocalVideoTrack;
   localTracks: LocalTrack[] = [];
   activeRoom: Room;
-  roomName: string;
+  user: FirebaseUserModel;
 
 
 
   constructor(private route: ActivatedRoute,
               private invitationService: InvitationService,
               private readonly renderer: Renderer2,
-              private http: HttpClient) { }
+              private http: HttpClient,
+              private userService: UserService) { }
 
   async ngOnInit() {
     if(!this.isBrowserOk())
       return;
+    this.user = await this.userService.getCurrentUser();
     this.routeSubscription = this.route.data.subscribe(routeData => {
       console.log('routeData = ', routeData);
       if(!routeData['invitation']) {
@@ -83,7 +87,7 @@ export class InvitationDetailsComponent implements OnInit {
 
 
   async join_call() {
-    this.roomName = this.invitation.id;
+    let roomName = this.invitation.id;
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -94,7 +98,45 @@ export class InvitationDetailsComponent implements OnInit {
       //params: new HttpParams().set('uid', uid)
     };
 
-    this.http.get("https://us-central1-yourvotecounts-bd737.cloudfunctions.net/generateTwilioToken?room_id=a&name=b", httpOptions)
+    this.http.get(`https://us-central1-yourvotecounts-bd737.cloudfunctions.net/generateTwilioToken?room_name=${roomName}&name=Brent`, httpOptions)
+      .subscribe(async (data: any) => {
+        //console.log('data.token = ', data.token) 
+        
+        this.activeRoom = await connect(
+                data.token, {
+                  logLevel: 'debug',
+                  name: roomName,
+                  preferredAudioCodecs: ['isac'],
+                  preferredVideoCodecs: ['H264'],
+                  tracks: this.localTracks,
+                  // dominantSpeaker: true,
+                  // automaticSubscription: true
+              } as ConnectOptions);
+        console.log('this.activeRoom = ', this.activeRoom);
+      });
+
+  }
+
+
+  leave_call() {
+    const connected = this.activeRoom != null && (this.activeRoom.state == "connected" || this.activeRoom.state == "reconnecting" || this.activeRoom.state == "reconnected");
+    if(connected) this.activeRoom.disconnect();   
+  }
+
+
+  async compose() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Authorization': 'my-auth-token',
+        'Access-Control-Allow-Origin': '*'
+      }),
+      //params: new HttpParams().set('uid', uid)
+    };
+
+    // TODO FIXME...
+    let host = "981c4c0bbbbe.ngrok.io";
+    this.http.get(`https://us-central1-yourvotecounts-bd737.cloudfunctions.net/compose?RoomSid=${this.activeRoom.sid}&host=${host}&room_name=${this.activeRoom.name}`, httpOptions)
       .subscribe(async (data: any) => {
         //console.log('data.token = ', data.token) 
         
@@ -102,7 +144,7 @@ export class InvitationDetailsComponent implements OnInit {
         this.activeRoom = await connect(
                 data.token, {
                   logLevel: 'debug',
-                  name: this.roomName,
+                  name: roomName,
                   preferredAudioCodecs: ['isac'],
                   preferredVideoCodecs: ['H264'],
                   tracks: this.localTracks,
@@ -112,12 +154,6 @@ export class InvitationDetailsComponent implements OnInit {
               
     });
 
-
-  }
-
-  leave_call() {
-    const connected = this.activeRoom != null && (this.activeRoom.state == "connected" || this.activeRoom.state == "reconnecting" || this.activeRoom.state == "reconnected");
-    if(connected) this.activeRoom.disconnect();   
   }
 
 

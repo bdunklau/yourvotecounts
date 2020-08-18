@@ -11,9 +11,9 @@ const VideoGrant = AccessToken.VideoGrant
 //admin.initializeApp(functions.config().firebase);
 
 
-// firebase deploy --only functions:generateTwilioToken
+// firebase deploy --only functions:generateTwilioToken,functions:compose,functions:twilioCallback
 
-exports.generateTwilioToken = functions.https.onRequest(async (req, res) => {
+exports.generateTwilioToken = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
         var db = admin.firestore();
         var keys = await db.collection('config').doc('keys').get()
@@ -23,7 +23,7 @@ exports.generateTwilioToken = functions.https.onRequest(async (req, res) => {
         const twilioApiSecret = keys.data().twilio_secret
         // Create Video Grant
         const videoGrant = new VideoGrant({
-            room: req.query.room_id,  // room name, not RoomSid   (optional?)
+            room: req.query.room_name,  // room name, not RoomSid   (optional?)
         });
         // Create an access token which we will sign and return to the client,
         // containing the grant we just created
@@ -36,4 +36,61 @@ exports.generateTwilioToken = functions.https.onRequest(async (req, res) => {
     })
 
 
+})
+
+
+exports.compose = functions.https.onRequest((req, res) => {
+    cors(req, res, async () => {
+        var db = admin.firestore();
+        var keys = await db.collection('config').doc('keys').get()
+        const twilioAccountSid = keys.data().twilio_account_sid;    
+        // create API key:  https://www.twilio.com/console/project/api-keys
+        const twilioApiKey = keys.data().twilio_api_key
+        const twilioApiSecret = keys.data().twilio_secret
+        const client = twilio(twilioApiKey, twilioApiSecret, {accountSid: twilioAccountSid})
+        return client.video.compositions.create({
+            roomSid: req.query.RoomSid,
+            audioSources: '*',
+            videoLayout: {
+              grid : {
+                video_sources: ['*']
+              }
+            },
+            statusCallback: 'https://'+req.query.host+'/twilioCallback?room_name='+req.query.room_name,
+            resolution: '1280x720',
+            format: 'mp4'
+        })
+        .then(composition => {
+            // Not sure what we need to pass back 
+            //return callback({})
+            return res.status(200).send('ok');
+        });
+    })
+
+})
+
+
+// see compose() above
+exports.twilioCallback = functions.https.onRequest(async (req, res) => {
+    if(req.body.RoomSid
+        && req.body.PercentageDone
+        && req.body.SecondsRemaining
+        && req.body.StatusCallbackEvent
+        && req.body.StatusCallbackEvent === 'composition-progress') {
+            // do something during progress if you want
+    }
+    else if(req.body.RoomSid && req.body.StatusCallbackEvent && req.body.StatusCallbackEvent === 'composition-available') {
+        // the composition is ready!
+        var db = admin.firestore();
+        await db.collection('composition').add({
+            RoomSid: req.body.RoomSid,
+            CompositionSid: req.body.CompositionSid,
+            CompositionUri: req.body.CompositionUri,
+            composition_Size: parseInt(req.body.Size), // Number.MAX_SAFE_INTEGER = 9007199254740992  so we're safe
+            composition_MediaUri: req.body.MediaUri,
+            date: new Date(),
+            date_ms: new Date().getTime()
+        })
+    }
+    return res.status(200).send('ok');
 })
