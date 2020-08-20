@@ -36,7 +36,7 @@
 
 
 
-    <form [formGroup]="invitationForm" (ngSubmit)="onSubmit()" novalidate>
+    <form *ngIf="invitationForm" [formGroup]="invitationForm" (ngSubmit)="onSubmit()" novalidate ngNoForm>
       <div class="field" style="margin-bottom:20px">
         <!-- label class="label" for="phone">Phone</label -->
         <div class="control">
@@ -79,6 +79,17 @@
             </p>
           </div>
         </div>
+      </div>
+
+      
+      <div class="field" style="margin-bottom:20px">
+        <textarea class="form-control" 
+                  id="message" 
+                  formControlName="message"
+                  placeholder="Text message"
+                  rows="10">
+                {{message}}
+        </textarea>
       </div>
 
 

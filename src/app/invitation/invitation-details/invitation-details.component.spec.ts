@@ -1,25 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { InvitationDetailsComponent } from './invitation-details.component';
+import { Observable } from 'rxjs/Observable';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { InvitationFormComponent } from './invitation-form.component';
 import { BehaviorSubject, of } from 'rxjs';
 import { UserService } from '../../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
-import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { RouterTestingModule } from '@angular/router/testing';
-import { FormsModule, ReactiveFormsModule, /*FormBuilder*/ } from '@angular/forms';
-import {
-  AbstractControl ,
-  FormGroup,
-  FormControl,
-  FormBuilder,
-  Validators
-} from "@angular/forms";
+import { AngularFireStorage } from '@angular/fire/storage';
+import { Router } from "@angular/router";
+import { PhonePipe } from '../../util/phone/phone.pipe';
+import { Invitation } from '../../invitation/invitation.model';
 
-describe('InvitationFormComponent', () => {
-  let component: InvitationFormComponent;
-  let fixture: ComponentFixture<InvitationFormComponent>;
-  
+
+describe('InvitationDetailsComponent', () => {
+  let component: InvitationDetailsComponent;
+  let fixture: ComponentFixture<InvitationDetailsComponent>;
 
   const AngularFirestoreStub = {
     collection: (name: string, f: (ref:any) => {}) => ({
@@ -43,21 +39,26 @@ describe('InvitationFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule, FormsModule, ReactiveFormsModule
-      ],
-      declarations: [ InvitationFormComponent ],
-      providers: [ UserService, FormBuilder,      
-                  { provide: HttpClient, useValue: {} },
-                  { provide: AngularFireAuth, useValue: {} },
-                  { provide: AngularFireStorage, useValue: {} },
-                  { provide: AngularFirestore, useValue: AngularFirestoreStub }, ]
+      declarations: [ InvitationDetailsComponent, PhonePipe ],
+      providers: [ UserService, Invitation,
+          { provide: HttpClient, useClass: class { get = jasmine.createSpy("get"); } },    
+          { provide: AngularFireAuth, useValue: {} },   
+          { provide: AngularFireStorage, useValue: {} }, 
+          { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); } },    
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              data: of({invitation: new Invitation()})
+            },
+          },
+          { provide: AngularFirestore, useValue: AngularFirestoreStub },
+      ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(InvitationFormComponent);
+    fixture = TestBed.createComponent(InvitationDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -27,13 +27,20 @@ import { SmsComponent } from './sms/sms.component';
 import { InvitationsComponent } from './invitation/invitations/invitations.component';
 import { InvitationFormComponent } from './invitation/invitation-form/invitation-form.component';
 import { InvitationListComponent } from './invitation/invitation-list/invitation-list.component';
+import { InvitationDetailsComponent } from './invitation/invitation-details/invitation-details.component';
+import { InvitationResolver } from './invitation/invitation.resolver';
+import { VideoCallComponent } from './video/video-call/video-call.component';
+import { ValidInvitationGuard } from './invitation/valid-invitation.guard';
+import { ErrorPageComponent } from './util/error-page/error-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'disabled', component: DisabledComponent },
+  { path: 'error-page', component: ErrorPageComponent },
   { path: 'home', component: HomeComponent },
   
   { path: 'invitations', component: InvitationsComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
+  { path: 'invitation-details/:invitationId/:phoneNumber', component: InvitationDetailsComponent, canActivate: [DisabledGuard, ValidInvitationGuard], resolve: {invitation: InvitationResolver} },
   { path: 'invitation-form', component: InvitationFormComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'invitation-list', component: InvitationListComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   
@@ -53,6 +60,8 @@ const routes: Routes = [
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, MinimalAccountInfoGuard], data: {role: 'admin'} },
+  { path: 'video-call/:invitationId/:phoneNumber/:join', component: VideoCallComponent, canActivate: [DisabledGuard], resolve: {invitation: InvitationResolver} },
+  { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [DisabledGuard], resolve: {invitation: InvitationResolver} },
   { path: '**', component: LoginComponent },
 ];
 
@@ -65,7 +74,8 @@ const routes: Routes = [
     // RegisterGuard,
     UserService,
     UserResolver,
-    TeamResolver
+    TeamResolver,
+    InvitationResolver
   ]
 })
 export class AppRoutingModule { }

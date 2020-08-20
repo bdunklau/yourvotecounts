@@ -43,6 +43,7 @@
     "rxjs-compat": "^6.5.2",
     "rxjs-observable": "0.0.7",
     "tslib": "^1.9.3",
+    "twilio-video": "^2.7.2",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {

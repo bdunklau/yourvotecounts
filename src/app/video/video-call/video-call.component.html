@@ -1,0 +1,88 @@
+
+<div class="container">
+
+    <div class="row" *ngIf="!browserOk">
+      <div class="col">
+        <h5>Switch to Safari.  Your Mac/iOS device will not allow this page to load using Chrome.  Don't blame us - blame Apple.</h5>
+      </div>
+    </div>
+    
+    
+    
+    <span *ngIf="okUrl && browserOk">
+        <h5>Video Invitation</h5>
+        <div class="row" *ngIf="browserOk">
+    
+          <!-- local participant -->
+          <div class="col">
+            <div id="preview" #preview style="width:30vw;">
+                <div *ngIf="isInitializing">Loading preview... Please wait.</div>
+            </div>
+          </div>
+          <!-- local participant -->
+    
+          <!-- remote participant -->
+          <div class="col">
+            <div #list></div>
+          </div>
+          <!-- remote participant -->
+        </div>
+    
+        
+    
+        
+        <div class="row">
+          <div class="col-sm-12" *ngIf="activeRoom">
+            roomName: {{roomName}}
+            <br/>activeRoom.state: {{activeRoom.state}}
+            <P>&nbsp;</P>
+          </div>
+        </div>
+    
+        
+        <div class="row">
+          <div class="col-sm-12">
+            <button id="join_call" (click)="join_call()" class="btn btn-success col-sm-12"> Join </button>
+            <P>&nbsp;</P>
+          </div>
+        </div>
+    
+        
+        <div class="row">
+          <div class="col-sm-12">
+            <button id="leave_call" (click)="leave_call()" class="btn btn-danger col-sm-12"> Leave </button>
+            <P>&nbsp;</P>
+          </div>
+        </div>
+    
+        
+        <div class="row">
+          <div class="col-sm-12">
+            <button id="compose" (click)="compose()" class="btn btn-success col-sm-12"> Compose </button>
+          </div>
+        </div>
+    
+        
+    
+    
+        
+        <!-- 
+        <P>&nbsp;</P>    
+        Invitation ID: {{invitation.id}}
+        <br/>Name: {{invitation.displayName}}
+        <br/>Phone: {{invitation.phoneNumber}}
+        <br/>Created: {{invitation.created}}
+        <br/>Creator ID: {{invitation.creatorId}}
+        <br/>Creator Name: {{invitation.creatorName}}
+        <br/>Creator Phone: {{invitation.creatorPhone}}
+        <br/>Message: {{invitation.message}}
+        -->
+    </span>
+    
+    
+    <span *ngIf="!okUrl">
+    bad url
+    </span>
+    
+    
+    </div>
