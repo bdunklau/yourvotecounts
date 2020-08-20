@@ -13,6 +13,7 @@ import {
 import { UserService } from '../../user/user.service';
 import { SmsService } from '../../sms/sms.service';
 import * as firebase from 'firebase/app';
+import { FirebaseUserModel } from 'src/app/user/user.model';
 
 
 
@@ -26,6 +27,7 @@ export class InvitationFormComponent implements OnInit {
   invitationForm: FormGroup;
   invitation: Invitation;
   themessage: string;
+  user: FirebaseUserModel;
 
   constructor(
     private smsService: SmsService,
@@ -38,9 +40,8 @@ export class InvitationFormComponent implements OnInit {
     this.invitation = new Invitation();
     this.invitation.id = this.invitationService.createId();
     this.createForm();
-    let user = await this.userService.getCurrentUser();
-    this.invitation.setCreator(user);
-    this.invitation.created = firebase.firestore.Timestamp.now();
+    this.user = await this.userService.getCurrentUser();
+    this.invitation.setCreator(this.user);
 
     // TODO FIXME temp - remove me
     this.invitationForm.get("phone").setValue("2146325613") 
@@ -49,8 +50,8 @@ export class InvitationFormComponent implements OnInit {
     this.invitation.phoneNumber = this.getPhoneNumber();
 
     // see:   https://stackoverflow.com/a/56058977
-    let url = {protocol: window.location.protocol, host: window.location.host, pathname: "/invitation-details/"+this.invitation.id};
-    this.themessage = await this.invitationService.getInvitationMessage(user.displayName, url);
+    let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.id+"/"+this.invitation.phoneNumber};
+    this.themessage = await this.invitationService.getInvitationMessage(this.user.displayName, url);
     this.invitationForm.get("message").setValue(this.themessage);
   }
   
@@ -109,6 +110,20 @@ export class InvitationFormComponent implements OnInit {
     /***** don't update invitations - just cancel and reissue  *****/
     //this.router.navigate(['/teams', teamId]);
     this.invitationForm.reset();
+
+    // WAIT - not this exactly.  Instead what we want to do is send the host a text message also
+    // with a similar url as the guest, only containing the host's phone number.  
+    // The text will say something like "Click the link below when you are ready to begin hosting this video call
+    // with [guest]"
+    // be sure to use the current user's phone number here, not the guest's
+    //
+    // We should probably create the /video-call link now and copy all the code from /invitation-details
+    // over to /video-call.  THEN we can send the host at the end of this method to the repurposed
+    // /invitation-details page, where we tell him about the invitation he just sent - sort of like a
+    // receipt.   The page should contain the name and number of the person invited and also a link to
+    // revoke the invitation.
+    //
+    this.router.navigate(['/invitation-details', this.invitation.id, this.user.phoneNumber])
   }
 
   cancel(/*form: NgForm*/) {

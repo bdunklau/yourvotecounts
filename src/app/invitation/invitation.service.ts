@@ -82,7 +82,7 @@ export class InvitationService {
   async getInvitationMessage(displayName: string, parm: {protocol: string, host: string, pathname: string}): Promise<string> {
     var res = await this.afs.collection('config').doc('invitation_template').ref.get();
     let invitation = res.data().text.replace(/name/, displayName);
-    let ngrok = "981c4c0bbbbe.ngrok.io"
+    let ngrok = "68ff275ccbfb.ngrok.io"
     let host = parm.host.indexOf("localhost") == -1 ? parm.host : ngrok
     let url = parm.protocol+"//"+host+parm.pathname
     invitation = invitation.replace(/url/, url);

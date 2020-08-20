@@ -7,7 +7,7 @@ export class Invitation {
     id: string;
     displayName: string;
     phoneNumber: string;
-    created: firebase.firestore.Timestamp;
+    created: Date;
     created_ms: number;
     creatorId: string;
     creatorName: string;
@@ -15,6 +15,7 @@ export class Invitation {
     message: string;
     
     constructor() {
+      this.created = new Date();
       this.created_ms = new Date().getTime();
     }
 

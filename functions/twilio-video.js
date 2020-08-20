@@ -4,8 +4,9 @@ const cors = corsModule({origin:true});
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const AccessToken = require('twilio').jwt.AccessToken
-const VideoGrant = AccessToken.VideoGrant
+const twilio = require('twilio');
+const AccessToken = require('twilio').jwt.AccessToken;
+const VideoGrant = AccessToken.VideoGrant;
 
 // can only call this once globally and we already do that in index.js
 //admin.initializeApp(functions.config().firebase);
@@ -38,7 +39,7 @@ exports.generateTwilioToken = functions.https.onRequest((req, res) => {
 
 })
 
-
+// call from invitation-details.component.ts: compose()
 exports.compose = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
         var db = admin.firestore();
@@ -63,7 +64,8 @@ exports.compose = functions.https.onRequest((req, res) => {
         .then(composition => {
             // Not sure what we need to pass back 
             //return callback({})
-            return res.status(200).send('ok');
+            console.log('composition = ', composition)
+            return res.status(200).send({result: 'ok'});
         });
     })
 

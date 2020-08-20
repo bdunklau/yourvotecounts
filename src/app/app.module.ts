@@ -48,6 +48,8 @@ import { InvitationsComponent } from './invitation/invitations/invitations.compo
 import { InvitationListComponent } from './invitation/invitation-list/invitation-list.component';
 import { InvitationFormComponent } from './invitation/invitation-form/invitation-form.component';
 import { InvitationDetailsComponent } from './invitation/invitation-details/invitation-details.component';
+import { VideoCallComponent } from './video/video-call/video-call.component';
+import { ErrorPageComponent } from './util/error-page/error-page.component';
 
 
 @NgModule({
@@ -84,6 +86,8 @@ import { InvitationDetailsComponent } from './invitation/invitation-details/invi
     InvitationListComponent,
     InvitationFormComponent,
     InvitationDetailsComponent,
+    VideoCallComponent,
+    ErrorPageComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

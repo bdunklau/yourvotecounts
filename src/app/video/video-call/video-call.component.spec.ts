@@ -1,25 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { VideoCallComponent } from './video-call.component';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { InvitationFormComponent } from './invitation-form.component';
 import { BehaviorSubject, of } from 'rxjs';
 import { UserService } from '../../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
-import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { RouterTestingModule } from '@angular/router/testing';
-import { FormsModule/*, ReactiveFormsModule, FormBuilder*/ } from '@angular/forms';
-import {
-  AbstractControl ,
-  FormGroup,
-  FormControl,
-  FormBuilder,
-  Validators
-} from "@angular/forms";
+import { AngularFireStorage } from '@angular/fire/storage';
 
-describe('InvitationFormComponent', () => {
-  let component: InvitationFormComponent;
-  let fixture: ComponentFixture<InvitationFormComponent>;
-  
+
+describe('VideoCallComponent', () => {
+  let component: VideoCallComponent;
+  let fixture: ComponentFixture<VideoCallComponent>;
 
   const AngularFirestoreStub = {
     collection: (name: string, f: (ref:any) => {}) => ({
@@ -43,21 +36,25 @@ describe('InvitationFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule, FormsModule
-      ],
-      declarations: [ InvitationFormComponent ],
-      providers: [ UserService, FormBuilder,      
-                  { provide: HttpClient, useValue: {} },
-                  { provide: AngularFireAuth, useValue: {} },
-                  { provide: AngularFireStorage, useValue: {} },
-                  { provide: AngularFirestore, useValue: AngularFirestoreStub }, ]
+      declarations: [ VideoCallComponent ],
+      providers: [ UserService,
+          {provide: ActivatedRoute,
+            useValue: {
+              params: Observable.from([{id: 1}]),
+              data: { "mock2": "mock2", subscribe: () => {} }
+            },
+          },
+          { provide: HttpClient, useValue: {} },
+          { provide: AngularFireAuth, useValue: {} },
+          { provide: AngularFireStorage, useValue: {} },
+          { provide: AngularFirestore, useValue: AngularFirestoreStub },
+      ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(InvitationFormComponent);
+    fixture = TestBed.createComponent(VideoCallComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
