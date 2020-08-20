@@ -36,7 +36,7 @@
 
 
 
-    <form [formGroup]="invitationForm" (ngSubmit)="onSubmit()" novalidate>
+    <form *ngIf="invitationForm" [formGroup]="invitationForm" (ngSubmit)="onSubmit()" novalidate ngNoForm>
       <div class="field" style="margin-bottom:20px">
         <!-- label class="label" for="phone">Phone</label -->
         <div class="control">

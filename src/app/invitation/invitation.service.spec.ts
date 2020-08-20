@@ -8,6 +8,7 @@ import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@ang
 import { AngularFireStorage } from '@angular/fire/storage';
 
 
+// TODO RESTOREME
 describe('InvitationService', () => {
   let service: InvitationService;
   
@@ -29,6 +30,7 @@ describe('InvitationService', () => {
       valueChanges: () => of([{id: '1', event: 'event1', date: {toDate: () => new Date()}}, // 2 mock LogEntry's
                               {id: '2', event: 'event2', date: {toDate: () => new Date()}}])
     }),
+    createId: function() { return "someid" }
   };
 
   beforeEach(() => {

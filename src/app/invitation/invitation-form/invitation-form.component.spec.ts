@@ -7,7 +7,7 @@ import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@ang
 import { AngularFireStorage } from '@angular/fire/storage';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FormsModule/*, ReactiveFormsModule, FormBuilder*/ } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, /*FormBuilder*/ } from '@angular/forms';
 import {
   AbstractControl ,
   FormGroup,
@@ -44,7 +44,7 @@ describe('InvitationFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule, FormsModule
+        RouterTestingModule, FormsModule, ReactiveFormsModule
       ],
       declarations: [ InvitationFormComponent ],
       providers: [ UserService, FormBuilder,      

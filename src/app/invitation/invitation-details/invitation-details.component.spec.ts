@@ -10,6 +10,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Router } from "@angular/router";
 import { PhonePipe } from '../../util/phone/phone.pipe';
+import { Invitation } from '../../invitation/invitation.model';
 
 
 describe('InvitationDetailsComponent', () => {
@@ -39,15 +40,15 @@ describe('InvitationDetailsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ InvitationDetailsComponent, PhonePipe ],
-      providers: [ UserService,   
-          { provide: HttpClient, useValue: {get: s => {}} },    
+      providers: [ UserService, Invitation,
+          { provide: HttpClient, useClass: class { get = jasmine.createSpy("get"); } },    
           { provide: AngularFireAuth, useValue: {} },   
           { provide: AngularFireStorage, useValue: {} }, 
           { provide: Router, useClass: class { navigate = jasmine.createSpy("navigate"); } },    
-          { provide: ActivatedRoute,
+          {
+            provide: ActivatedRoute,
             useValue: {
-              params: Observable.from([{id: 1}]),
-              data: { "mock2": "mock2", subscribe: () => {} }
+              data: of({invitation: new Invitation()})
             },
           },
           { provide: AngularFirestore, useValue: AngularFirestoreStub },

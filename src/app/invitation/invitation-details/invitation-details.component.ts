@@ -54,7 +54,7 @@ export class InvitationDetailsComponent implements OnInit {
   async ngOnInit() {
     //this.user = await this.userService.getCurrentUser();
     this.routeSubscription = this.route.data.subscribe(routeData => {
-      console.log('routeData = ', routeData);
+      //console.log('routeData = ', routeData);  // type:  plain ol' Object
       if(!routeData['invitation']) {
         this.okUrl = false;
         return;
