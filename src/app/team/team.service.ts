@@ -132,6 +132,7 @@ export class TeamService {
 
 
   getMembersByTeamId(id: string) {
+    // Observable< DocumentChangeAction <unknown> []>
     var retThis = this.afs.collection('team_member', ref => ref.where("teamDocId", "==", id)).snapshotChanges();
     return retThis;
   }

@@ -20,6 +20,9 @@ import { connect,
           Room,
           createLocalTracks } from 'twilio-video';
 import { RoomService } from '../../room/room.service';
+import { RoomObj } from '../../room/room-obj.model';
+import { map, take } from 'rxjs/operators';
+import * as _ from 'lodash';
 
 
 @Component({
@@ -44,6 +47,8 @@ export class VideoCallComponent implements OnInit {
   phoneNumber: string; // could be either the guest's number or the host's
   joinOnLoad: boolean;
   participants: Map<Participant.SID, RemoteParticipant>;
+  joined = false // whether the user has connected to the room or not
+  private roomSubscription: Subscription;
 
 
   constructor(private route: ActivatedRoute,
@@ -95,6 +100,7 @@ export class VideoCallComponent implements OnInit {
 
   ngOnDestroy() {
     if(this.routeSubscription) this.routeSubscription.unsubscribe();
+    if(this.roomSubscription) this.roomSubscription.unsubscribe();
   }
 
 
@@ -125,19 +131,64 @@ export class VideoCallComponent implements OnInit {
                   // automaticSubscription: true
               } as ConnectOptions);
         console.log('this.activeRoom = ', this.activeRoom);
-
-        this.roomService.saveOnJoin(this.activeRoom, this.invitation, this.phoneNumber)
-
-        this.initialize(this.activeRoom.participants);        
-        this.registerRoomEvents();
+        this.joined = true
+        await this.roomService.saveOnJoin(this.activeRoom, this.invitation, this.phoneNumber)
+        this.monitorRoom(this.activeRoom.sid)
+        this.initialize(this.activeRoom.participants)  
+        this.registerRoomEvents()
       });
+
+  }
+
+
+  roomObj: RoomObj
+  monitorRoom(roomSid: string) {
+    let xxxx = this.roomService.monitorRoom(roomSid);
+    this.roomSubscription = xxxx.pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data() as RoomObj;
+          const id = a.payload.doc.id;
+          var returnThis = { id, ...data };
+          console.log('XXXXXXXXXXXXXXXX   returnThis = ', returnThis);
+          return returnThis;
+        });
+      })
+    )
+    .subscribe(obj => {    
+        this.roomObj = obj[0] as RoomObj 
+        // See if the host disconnected on another client - look for left_ms = millis for THIS phone number
+        // If you find that the 'left_ms' attribute has been set, then call disconnect
+        console.log('FFFFFFFFFFFFF  obj:  '+obj)
+        console.log('GGGGGGGGGGGGG  obj[0] as RoomObj:  '+this.roomObj)
+        this.force_disconnect(this.roomObj);
+    });
+
+  }
+
+
+  force_disconnect(roomObj: RoomObj) {
+    if(!roomObj || !roomObj['guests'] || roomObj['guests'].length === 0) {
+      return
+    } 
+    let me = _.find(this.roomObj['guests'], guest => {
+      return guest["guestPhone"] === this.phoneNumber
+    })
+    if(me && me['left_ms']) {
+      console.log('EEEEEEEEE  forcing disconnect:  me = '+me)
+      const connected = this.activeRoom != null && (this.activeRoom.state == "connected" || this.activeRoom.state == "reconnecting" || this.activeRoom.state == "reconnected");
+      if(connected) this.activeRoom.disconnect();  
+      this.joined = false 
+    }
 
   }
 
 
   leave_call() {
     const connected = this.activeRoom != null && (this.activeRoom.state == "connected" || this.activeRoom.state == "reconnecting" || this.activeRoom.state == "reconnected");
-    if(connected) this.activeRoom.disconnect();   
+    if(connected) this.activeRoom.disconnect();  
+    this.roomService.disconnect(this.roomObj, this.phoneNumber);
+    this.joined = false 
   }
 
 

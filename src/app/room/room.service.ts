@@ -16,8 +16,9 @@ import { //connect,
         } from 'twilio-video';
 import { Invitation } from '../invitation/invitation.model';
 import { take } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+//import { Observable } from 'rxjs';
 import * as _ from 'lodash';
+import * as firebase from 'firebase/app';
 
 
 @Injectable({
@@ -30,10 +31,13 @@ export class RoomService {
   }
 
 
-  async saveRoom(roomObj: any) {
+  async saveRoom(roomObj: any, incr: number) {
     // How do we keep from overwriting data when the second person joins?
     // see video-call.component.ts:join_call()
+    console.log('YYYYYYYYYYYY roomObj = ', roomObj)
     this.afs.collection('room').doc(roomObj['RoomSid']).set(roomObj)
+    if(incr != 0)
+        this.afs.collection('room').doc(roomObj['RoomSid']).update({connected_count: firebase.firestore.FieldValue.increment(incr)})
   }
 
 
@@ -58,6 +62,7 @@ export class RoomService {
     }
     if(phoneNumber === invitation.phoneNumber) roomObj['guests'][0]['joined_ms'] = new Date().getTime()
     else roomObj['host_joined_ms'] = new Date().getTime()
+    roomObj['connected_count'] = 0
     return roomObj;
   }
 
@@ -98,19 +103,7 @@ export class RoomService {
       data.forEach(function(roomDoc) {
           found = true
           console.log(' roomObj.payload.doc.data() = ', roomDoc.payload.doc.data()) 
-          roomObj['RoomSid'] = roomDoc.payload.doc.data()['RoomSid']
-          roomObj['created_ms'] = roomDoc.payload.doc.data()['created_ms']
-          roomObj['hostId'] = roomDoc.payload.doc.data()['hostId']
-          roomObj['hostName'] = roomDoc.payload.doc.data()['hostName']
-          roomObj['hostPhone'] = roomDoc.payload.doc.data()['hostPhone']
-          roomObj['invitationId'] = roomDoc.payload.doc.data()['invitationId']
-          roomObj['guests'] = roomDoc.payload.doc.data()['guests'];
-          if(roomDoc.payload.doc.data()['host_joined_ms']) {
-            roomObj['host_joined_ms'] = roomDoc.payload.doc.data()['host_joined_ms']
-          }
-          //else {
-          //  this.addJoinTime(roomObj, invitation, phoneNumber)
-          //}
+          roomObj = roomDoc.payload.doc.data()
           console.log('XXXXXXXXXX  roomObj = ', roomObj)
       });
       if(found) {
@@ -120,9 +113,10 @@ export class RoomService {
       }
       else {
         roomObj = this.createRoomObj(rm, invitation, phoneNumber);
+        console.log('AAAAAAAAAAAA created roomObj:  ', roomObj);
       }
       
-      this.saveRoom(roomObj);
+      this.saveRoom(roomObj, 1);
 
     });
 
@@ -130,6 +124,48 @@ export class RoomService {
   }
 
 
+  monitorRoom(roomSid: string) {
+    var retThis = this.afs.collection('room', ref => ref.where("RoomSid", "==", roomSid)).snapshotChanges();
+    return retThis;
+  }
+
+
+  disconnect(roomObj: RoomObj, phoneNumber: string) {
+    // is this the host phone or the guest phone?
+    let isHost = roomObj.hostPhone === phoneNumber;
+    if(isHost) {
+      this.disconnectHost(roomObj, phoneNumber)
+    }
+    else {     
+      this.disconnectGuest(roomObj, phoneNumber)
+    }
+    
+  }
+
+
+  /**
+   * If the host is disconnecting, then all other participants should be disconnected also
+   * and the call is over.
+   */
+  private disconnectHost(roomObj: RoomObj, phoneNumber: string) {
+    roomObj['host_left_ms'] = new Date().getTime()
+    _.each(roomObj['guests'], guest => {
+      guest['left_ms'] = new Date().getTime()
+    })
+    roomObj['connected_count'] = 0
+    roomObj['call_ended_ms'] = new Date().getTime()
+    this.saveRoom(roomObj, 0);
+  }
+
+
+  private disconnectGuest(roomObj: RoomObj, phoneNumber: string) {
+    let guest = _.find(roomObj['guests'], obj => {
+      return obj['guestPhone'] === phoneNumber
+    })
+    guest['left_ms'] = new Date().getTime()
+    this.saveRoom(roomObj, -1);
+    
+  }
 
 
 }

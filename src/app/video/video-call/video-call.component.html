@@ -35,12 +35,14 @@
           <div class="col-sm-12" *ngIf="activeRoom">
             roomName: {{roomName}}
             <br/>activeRoom.state: {{activeRoom.state}}
+            <br/>roomObj: {{roomObj | json }}
+            <br/><span *ngIf="roomObj && roomObj['connected_count']">roomObj['connected_count'] = {{roomObj['connected_count']}}</span>
             <P>&nbsp;</P>
           </div>
         </div>
     
         
-        <div class="row">
+        <div class="row" *ngIf="!joined">
           <div class="col-sm-12">
             <button id="join_call" (click)="join_call()" class="btn btn-success col-sm-12"> Join </button>
             <P>&nbsp;</P>
@@ -48,7 +50,7 @@
         </div>
     
         
-        <div class="row">
+        <div class="row" *ngIf="joined">
           <div class="col-sm-12">
             <button id="leave_call" (click)="leave_call()" class="btn btn-danger col-sm-12"> Leave </button>
             <P>&nbsp;</P>
