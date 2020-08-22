@@ -19,6 +19,7 @@ import { connect,
           LocalVideoTrack,
           Room,
           createLocalTracks } from 'twilio-video';
+import { RoomService } from '../../room/room.service';
 
 
 @Component({
@@ -49,7 +50,8 @@ export class VideoCallComponent implements OnInit {
               private invitationService: InvitationService,
               private readonly renderer: Renderer2,
               private http: HttpClient,
-              private userService: UserService) { }
+              private userService: UserService,
+              private roomService: RoomService) { }
 
   async ngOnInit() {
     if(!this.isBrowserOk())
@@ -123,6 +125,9 @@ export class VideoCallComponent implements OnInit {
                   // automaticSubscription: true
               } as ConnectOptions);
         console.log('this.activeRoom = ', this.activeRoom);
+
+        this.roomService.saveOnJoin(this.activeRoom, this.invitation, this.phoneNumber)
+
         this.initialize(this.activeRoom.participants);        
         this.registerRoomEvents();
       });

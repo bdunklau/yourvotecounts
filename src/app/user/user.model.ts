@@ -19,6 +19,7 @@ export class FirebaseUserModel {
   tosAccepted: boolean = false;
   privacyPolicyRead: boolean = false;
   // teams: Team[];
+  RoomSid: string; // can only be in one room at a time
 
   constructor(){
     this.uid = "";
@@ -37,6 +38,7 @@ export class FirebaseUserModel {
     this.tosAccepted = false;
     this.privacyPolicyRead = false;
     // this.teams = [];
+
   }
 
   populate(obj) {

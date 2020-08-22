@@ -8,6 +8,7 @@ import { UserService } from '../../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { RoomService } from '../../room/room.service';
 
 
 describe('VideoCallComponent', () => {
@@ -37,7 +38,7 @@ describe('VideoCallComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ VideoCallComponent ],
-      providers: [ UserService,
+      providers: [ UserService, RoomService,
           {provide: ActivatedRoute,
             useValue: {
               params: Observable.from([{id: 1}]),

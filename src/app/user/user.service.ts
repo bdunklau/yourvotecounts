@@ -258,4 +258,8 @@ export class UserService {
     return updateRes;
   }
 
+  addGuest(guest: {displayName: string, phoneNumber: string, invitationId: string}) {
+    this.afs.collection('guest').doc(guest.phoneNumber).set(guest);
+  }
+
 }

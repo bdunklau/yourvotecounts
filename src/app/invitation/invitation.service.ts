@@ -9,6 +9,8 @@ import { LogService } from '../log/log.service';
   providedIn: 'root'
 })
 export class InvitationService {
+  
+  private ngrok = "a76149981c83.ngrok.io";
 
   constructor(
     private afs: AngularFirestore,
@@ -82,33 +84,13 @@ export class InvitationService {
   async getInvitationMessage(displayName: string, parm: {protocol: string, host: string, pathname: string}): Promise<string> {
     var res = await this.afs.collection('config').doc('invitation_template').ref.get();
     let invitation = res.data().text.replace(/name/, displayName);
-    let ngrok = "68ff275ccbfb.ngrok.io"
-    let host = parm.host.indexOf("localhost") == -1 ? parm.host : ngrok
+    let host = parm.host.indexOf("localhost") == -1 ? parm.host : this.ngrok
     let url = parm.protocol+"//"+host+parm.pathname
     invitation = invitation.replace(/url/, url);
     invitation = invitation.replace(/\\n/g, "\n");
     return invitation;
   }
 
-
-  /*********** 
-  accept(invitation: Invitation) {
-    let updateValues = {decision: "accepted", decision_date_ms: new Date().getTime()}
-    return this.afs.collection('invitation').doc(invitation.id).update(updateValues).then(() => {
-      invitation.decision = updateValues.decision
-      invitation.decision_date_ms = updateValues.decision_date_ms;
-    })
-  }
-
-
-  decline(invitation: Invitation) {
-    let updateValues = {decision: "declined", decision_date_ms: new Date().getTime()}
-    return this.afs.collection('invitation').doc(invitation.id).update(updateValues).then(() => {
-      invitation.decision = updateValues.decision
-      invitation.decision_date_ms = updateValues.decision_date_ms;
-    })
-  }
-  *************/
 
 
   /**
