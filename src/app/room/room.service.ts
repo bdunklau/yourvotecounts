@@ -31,13 +31,11 @@ export class RoomService {
   }
 
 
-  async saveRoom(roomObj: any, incr: number) {
+  async saveRoom(roomObj: any) {
     // How do we keep from overwriting data when the second person joins?
     // see video-call.component.ts:join_call()
     console.log('YYYYYYYYYYYY roomObj = ', roomObj)
     this.afs.collection('room').doc(roomObj['RoomSid']).set(roomObj)
-    if(incr != 0)
-        this.afs.collection('room').doc(roomObj['RoomSid']).update({connected_count: firebase.firestore.FieldValue.increment(incr)})
   }
 
 
@@ -62,7 +60,7 @@ export class RoomService {
     }
     if(phoneNumber === invitation.phoneNumber) roomObj['guests'][0]['joined_ms'] = new Date().getTime()
     else roomObj['host_joined_ms'] = new Date().getTime()
-    roomObj['connected_count'] = 0
+    
     return roomObj;
   }
 
@@ -116,7 +114,7 @@ export class RoomService {
         console.log('AAAAAAAAAAAA created roomObj:  ', roomObj);
       }
       
-      this.saveRoom(roomObj, 1);
+      this.saveRoom(roomObj);
 
     });
 
@@ -152,9 +150,8 @@ export class RoomService {
     _.each(roomObj['guests'], guest => {
       guest['left_ms'] = new Date().getTime()
     })
-    roomObj['connected_count'] = 0
     roomObj['call_ended_ms'] = new Date().getTime()
-    this.saveRoom(roomObj, 0);
+    this.saveRoom(roomObj);
   }
 
 
@@ -163,7 +160,7 @@ export class RoomService {
       return obj['guestPhone'] === phoneNumber
     })
     guest['left_ms'] = new Date().getTime()
-    this.saveRoom(roomObj, -1);
+    this.saveRoom(roomObj);
     
   }
 
