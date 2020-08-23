@@ -36,7 +36,6 @@
             roomName: {{roomName}}
             <br/>activeRoom.state: {{activeRoom.state}}
             <br/>roomObj: {{roomObj | json }}
-            <br/><span *ngIf="roomObj && roomObj['connected_count']">roomObj['connected_count'] = {{roomObj['connected_count']}}</span>
             <P>&nbsp;</P>
           </div>
         </div>
@@ -58,7 +57,7 @@
         </div>
     
         
-        <div class="row">
+        <div class="row" *ngIf="roomObj && roomObj['call_ended_ms']">
           <div class="col-sm-12">
             <button id="compose" (click)="compose()" class="btn btn-success col-sm-12"> Compose </button>
           </div>
