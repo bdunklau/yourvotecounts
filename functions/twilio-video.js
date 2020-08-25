@@ -58,7 +58,7 @@ exports.compose = functions.https.onRequest((req, res) => {
                 video_sources: ['*']
               }
             },
-            statusCallback: 'https://'+req.query.host+'/twilioCallback?room_name='+req.query.room_name+'&callback_host='+req.query.callback_host,
+            statusCallback: 'https://'+req.query.firebase_functions_host+'/twilioCallback?room_name='+req.query.room_name+'&website_domain_name='+req.query.website_domain_name,
             resolution: '1280x720',
             format: 'mp4'
         })
@@ -122,8 +122,8 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
         _.each(recipients, recipient => {
             // Write to the sms collection to trigger a text message.  See twilio-sms.js:sendSms()
 
-            // "callback_host" is specified in the compose() function above
-            let link = `https://${req.query.callback_host}/view-video/${req.body.CompositionSid}`
+            // "website_domain_name" is specified in the compose() function above
+            let link = `https://${req.query.website_domain_name}/view-video/${req.body.CompositionSid}`
             var doc = {}
             doc['from'] = "+12673314843";
             doc['to'] = recipient.phoneNumber;

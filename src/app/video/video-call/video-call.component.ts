@@ -203,9 +203,9 @@ export class VideoCallComponent implements OnInit {
     };
 
     // TODO FIXME fix the host or not?
-    let host = "us-central1-yourvotecounts-bd737.cloudfunctions.net";
+    let firebase_functions_host = "us-central1-yourvotecounts-bd737.cloudfunctions.net";
     // NOTE: window.location.host will be the ngrok host if running locally.  See invitation.service.ts:ngrok field
-    let composeUrl = `https://us-central1-yourvotecounts-bd737.cloudfunctions.net/compose?RoomSid=${this.activeRoom.sid}&host=${host}&room_name=${this.activeRoom.name}&callback_host=${window.location.host}`
+    let composeUrl = `https://us-central1-yourvotecounts-bd737.cloudfunctions.net/compose?RoomSid=${this.activeRoom.sid}&firebase_functions_host=${firebase_functions_host}&room_name=${this.activeRoom.name}&website_domain_name=${window.location.host}`
     this.http.get(composeUrl, httpOptions)
       .subscribe(async (data: any) => {
         console.log('data = ', data) 
