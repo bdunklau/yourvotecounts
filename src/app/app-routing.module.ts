@@ -32,6 +32,8 @@ import { InvitationResolver } from './invitation/invitation.resolver';
 import { VideoCallComponent } from './video/video-call/video-call.component';
 import { ValidInvitationGuard } from './invitation/valid-invitation.guard';
 import { ErrorPageComponent } from './util/error-page/error-page.component';
+import { ViewVideoComponent } from './video/view-video/view-video.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -62,6 +64,7 @@ const routes: Routes = [
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, MinimalAccountInfoGuard], data: {role: 'admin'} },
   { path: 'video-call/:invitationId/:phoneNumber/:join', component: VideoCallComponent, canActivate: [DisabledGuard], resolve: {invitation: InvitationResolver} },
   { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [DisabledGuard], resolve: {invitation: InvitationResolver} },
+  { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [DisabledGuard] },
   { path: '**', component: LoginComponent },
 ];
 

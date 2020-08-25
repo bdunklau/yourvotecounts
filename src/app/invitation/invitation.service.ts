@@ -10,7 +10,7 @@ import { LogService } from '../log/log.service';
 })
 export class InvitationService {
   
-  private ngrok = "a76149981c83.ngrok.io";
+  private ngrok = "ca5ef009dcd4.ngrok.io";
 
   constructor(
     private afs: AngularFirestore,

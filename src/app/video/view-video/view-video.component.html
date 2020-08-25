@@ -1,0 +1,19 @@
+<div class="container">
+    <h5>SeeSaw Video</h5>
+
+    <div class="row" style="margin-bottom:20px"><div class="col">Here's your video</div></div>
+    
+    <div class="row" style="margin-bottom:20px"><div class="col">Created:</div><div class="col-sm-11">{{composition.date_ms | date:'long'}}</div></div>
+
+    <!-- div class="row" style="margin-bottom:20px"><div class="col">{{composition.composition_MediaUri}}</div></div -->
+    <div class="row" style="margin-bottom:20px">
+        <div class="col">
+            <video width="320" height="240" controls>
+                <source src="movie.mp4" type="video/mp4">
+                <!-- source src="movie.ogg" type="video/ogg" -->
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+</div>

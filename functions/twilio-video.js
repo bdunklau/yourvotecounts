@@ -5,6 +5,7 @@ const cors = corsModule({origin:true});
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const twilio = require('twilio');
+const _ = require('lodash')
 const AccessToken = require('twilio').jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
 
@@ -39,7 +40,7 @@ exports.generateTwilioToken = functions.https.onRequest((req, res) => {
 
 })
 
-// call from invitation-details.component.ts: compose()
+// called from video-call.component.ts: compose()
 exports.compose = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
         var db = admin.firestore();
@@ -57,7 +58,7 @@ exports.compose = functions.https.onRequest((req, res) => {
                 video_sources: ['*']
               }
             },
-            statusCallback: 'https://'+req.query.host+'/twilioCallback?room_name='+req.query.room_name,
+            statusCallback: 'https://'+req.query.host+'/twilioCallback?room_name='+req.query.room_name+'&callback_host='+req.query.callback_host,
             resolution: '1280x720',
             format: 'mp4'
         })
@@ -65,6 +66,11 @@ exports.compose = functions.https.onRequest((req, res) => {
             // Not sure what we need to pass back 
             //return callback({})
             console.log('composition = ', composition)
+
+            // This gets sent back to video-call.component.ts:compose()
+            // This gets sent back before the composition is actually ready
+            // /twilioCallback is how we know when the composition is ready
+            // /twilioCallback is just below this function  :)
             return res.status(200).send({result: 'ok'});
         });
     })
@@ -83,16 +89,52 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
     }
     else if(req.body.RoomSid && req.body.StatusCallbackEvent && req.body.StatusCallbackEvent === 'composition-available') {
         // the composition is ready!
-        var db = admin.firestore();
-        await db.collection('composition').add({
+        let compositionNode = {
             RoomSid: req.body.RoomSid,
             CompositionSid: req.body.CompositionSid,
             CompositionUri: req.body.CompositionUri,
             composition_Size: parseInt(req.body.Size), // Number.MAX_SAFE_INTEGER = 9007199254740992  so we're safe
             composition_MediaUri: req.body.MediaUri,
             date: new Date(),
-            date_ms: new Date().getTime()
+            date_ms: new Date().getTime(),
+            room_name: req.query.room_name
+        }
+
+        var db = admin.firestore();
+        // query room doc for host and guest info and add it to the composition doc
+        let room = await db.collection('room').doc(req.body.RoomSid).get()
+        let roomNode = room.data()
+        compositionNode['hostId'] = roomNode.hostId
+        compositionNode['hostName'] = roomNode.hostName
+        compositionNode['hostPhone'] = roomNode.hostPhone
+        compositionNode['guests'] = roomNode.guests
+
+        await db.collection('composition').add(compositionNode)
+
+        // Now send a text message to all the participants saying the video is ready
+        // Have to figure out what url to put in the text message
+
+        // See  sms.service.ts for a client-side example of triggering an sms message by writing to the database
+        let recipients = _.map(roomNode.guests, guest => {
+            return {displayName: guest['guestName'], phoneNumber: guest['guestPhone']}
         })
+        recipients.push({displayName: roomNode.hostName, phoneNumber: roomNode.hostPhone})
+        _.each(recipients, recipient => {
+            // Write to the sms collection to trigger a text message.  See twilio-sms.js:sendSms()
+
+            // "callback_host" is specified in the compose() function above
+            let link = `https://${req.query.callback_host}/view-video/${req.body.CompositionSid}`
+            var doc = {}
+            doc['from'] = "+12673314843";
+            doc['to'] = recipient.phoneNumber;
+            //if(args.mediaUrl) doc['mediaUrl'] = args.mediaUrl;
+            doc['message'] = `Your SeeSaw video is ready! Click the link below to check it out\n\n${link}\n\nDo not reply to this number.  It is not being monitored.`
+            doc['date'] = new Date()
+            doc['date_ms'] = new Date().getTime()
+            this.afs.collection('sms').add(doc);
+        })
+
+        
     }
     return res.status(200).send('ok');
 })

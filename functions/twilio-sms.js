@@ -33,6 +33,7 @@ var addCountryCode = function(phone) {
 }
 
 
+// triggered from  sms.service.ts
 exports.sendSms = functions.firestore.document('sms/{id}').onCreate(async (snap, context) => {
   let keys = await getKeys();
 
