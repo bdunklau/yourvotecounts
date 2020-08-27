@@ -31,7 +31,7 @@ export class RoomService {
   }
 
 
-  async saveRoom(roomObj: any) {
+  saveRoom(roomObj: any) {
     // How do we keep from overwriting data when the second person joins?
     // see video-call.component.ts:join_call()
     console.log('YYYYYYYYYYYY roomObj = ', roomObj)
@@ -56,7 +56,9 @@ export class RoomService {
       invitationId: invitation.id,
       guests: [
         { guestName: invitation.displayName, guestPhone: invitation.phoneNumber }
-      ]
+      ],
+      recording_state: '',
+      mark_time: [], // the start- and stop-recording times
     }
     if(phoneNumber === invitation.phoneNumber) roomObj['guests'][0]['joined_ms'] = new Date().getTime()
     else roomObj['host_joined_ms'] = new Date().getTime()
@@ -102,7 +104,6 @@ export class RoomService {
           found = true
           console.log(' roomObj.payload.doc.data() = ', roomDoc.payload.doc.data()) 
           roomObj = roomDoc.payload.doc.data()
-          console.log('XXXXXXXXXX  roomObj = ', roomObj)
       });
       if(found) {
         // Since the room already exists, all we need to do is figure out if the user is the host or guest
@@ -111,7 +112,6 @@ export class RoomService {
       }
       else {
         roomObj = this.createRoomObj(rm, invitation, phoneNumber);
-        console.log('AAAAAAAAAAAA created roomObj:  ', roomObj);
       }
       
       this.saveRoom(roomObj);
@@ -163,6 +163,18 @@ export class RoomService {
     this.saveRoom(roomObj);
     
   }
+
+
+  /**
+   * Sets the 'recording_state' attribute on the Room doc so that all connected clients
+   * know whether recording is on/off/paused
+   * @see video-call.component.ts:monitorRoom()
+   * @param state
+   */
+  setRecordingState(roomObj: RoomObj) {
+    this.afs.collection('room').doc(roomObj['RoomSid']).update({recording_state: roomObj['recording_state'], mark_time: roomObj['mark_time']})
+  }
+
 
 
 }

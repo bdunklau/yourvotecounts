@@ -63,7 +63,33 @@
           </div>
         </div>
     
+
+
+
+
+        recording_state: {{recording_state}}
+        <br/>
+    
         
+
+        <div class="row" *ngIf="activeRoom && activeRoom.state == 'connected'">
+          <div class="col-sm-4">
+            <button *ngIf="recording_state == ''" id="start_recording" (click)="start_recording()" class="btn btn-danger col-sm-12"> Start Recording </button>
+            <P>&nbsp;</P>
+          </div>
+
+          <div class="col-sm-4">
+            <button *ngIf="recording_state == 'recording'" id="pause_recording" (click)="pause_recording()" class="btn btn-secondary col-sm-12"> Pause </button>
+            <button *ngIf="recording_state == 'paused'" id="resume_recording" (click)="resume_recording()" class="btn btn-secondary col-sm-12"> Resume </button>
+          </div>
+
+          <div class="col-sm-4">
+            <button *ngIf="recording_state == 'recording' || recording_state == 'paused'" id="stop_recording" (click)="stop_recording()" class="btn btn-danger col-sm-12"> Stop Recording </button>
+            <P>&nbsp;</P>
+          </div>
+        </div>
+    
+            
     
     
         

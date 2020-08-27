@@ -15,6 +15,13 @@ export class SettingsService {
     }
 
 
+    async getSettingsDoc() {
+      var settingsDoc = await this.afs.collection('config').doc('settings').ref.get();
+      var settings = settingsDoc.data() as Settings;
+      return settings;
+    }
+
+
     async isDisabled() {
       var settingsDoc = await this.afs.collection('config').doc('settings').ref.get();
       var settings = settingsDoc.data() as Settings;
