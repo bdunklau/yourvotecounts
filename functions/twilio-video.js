@@ -14,7 +14,7 @@ const VideoGrant = AccessToken.VideoGrant;
 //admin.initializeApp(functions.config().firebase);
 
 
-// firebase deploy --only functions:downloadComplete,functions:generateTwilioToken,functions:compose,functions:twilioCallback,functions:cutVideoComplete
+// firebase deploy --only functions:downloadComplete,functions:generateTwilioToken,functions:compose,functions:twilioCallback,functions:cutVideoComplete,functions:uploadToFirebaseStorageComplete,functions:deleteVideoComplete
 
 
 
@@ -250,13 +250,15 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
             compositionFile: req.body.compositionFile,
             tempEditFolder: req.body.tempEditFolder,
             roomObj: roomDoc.data(),
+            firebase_functions_host: settingsObj.data().firebase_functions_host,
+            cloud_host: settingsObj.data().cloud_host,
             callbackUrl: `https://${settingsObj.data().firebase_functions_host}/cutVideoComplete` // just below this function
         }
         let vmUrl = `http://${settingsObj.data().cloud_host}/cutVideo`
         request.post(
             {
                 url: vmUrl,  // cut the video into pieces
-                json: formData // 'json' attr name is KEY HERE, don't use 'formData'
+                json: formData // 'json' attr name is KEY HERE, don't use 'form'
             },
             function (err, httpResponse, body) {
                 if(err) {
@@ -276,4 +278,80 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
  */
 exports.cutVideoComplete = functions.https.onRequest((req, res) => {
     
+    /**
+     * /cutVideo passes in this:
+     * 
+     
+	let formData = {
+		compositionFile: compositionFile,
+		firebase_functions_host: req.body.firebase_functions_host,
+		cloud_host: req.body.cloud_host  // this host, so we don't have to keep querying config/settings doc
+	}
+     */
+
+    let formData = {
+        compositionFile: req.body.compositionFile,
+        cloud_host: req.body.cloud_host,
+        callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete` // just below this function
+    }
+
+	request.post(
+		{
+			url: `http://${req.body.cloud_host}/uploadToFirebaseStorage`, 
+			json: formData // 'json' attr name is KEY HERE, don't use 'form'
+		},
+		function (err, httpResponse, body) {
+			if(err) {
+				return res.status(500).send(JSON.stringify({"error": err, "vm url": vmUrl}));
+			}
+			//console.log(err, body);
+			else return res.status(200).send(JSON.stringify({"result": "ok"}));
+		}
+	);
+
 })
+
+
+exports.uploadToFirebaseStorageComplete = functions.https.onRequest((req, res) => {
+    
+    let formData = {
+        compositionFile: req.body.compositionFile,
+        cloud_host: req.body.cloud_host,
+        callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete` // just below this function
+    }
+
+	request.post(
+		{
+			url: `http://${req.body.cloud_host}/deleteVideo`, 
+			json: formData // 'json' attr name is KEY HERE, don't use 'form'
+		},
+		function (err, httpResponse, body) {
+			if(err) {
+				return res.status(500).send(JSON.stringify({"error": err, "vm url": vmUrl}));
+			}
+			//console.log(err, body);
+			else return res.status(200).send(JSON.stringify({"result": "ok"}));
+		}
+	);
+
+})
+
+
+exports.deleteVideoComplete = functions.https.onRequest((req, res) => {
+    /**
+     * passed in from /deleteVideo
+     * 
+     
+	let formData = {
+		filesDeleted: [req.body.compositionFile, origFile],
+		firebase_functions_host: req.body.firebase_functions_host,
+		cloud_host: req.body.cloud_host  // this host, so we don't have to keep querying config/settings doc
+	}
+     */
+
+    let filesDeleted = _.join(req.body.filesDeleted, ',')
+    let message = `Deleted these video files: ${filesDeleted}`
+    return res.status(200).send(JSON.stringify({"result": message}));
+})
+
+

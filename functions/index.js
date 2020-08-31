@@ -38,6 +38,9 @@ exports.compose = twilio_video.compose
 exports.twilioCallback = twilio_video.twilioCallback
 exports.downloadComplete = twilio_video.downloadComplete
 exports.cutVideoComplete = twilio_video.cutVideoComplete
+exports.uploadToFirebaseStorageComplete = twilio_video.uploadToFirebaseStorageComplete
+exports.deleteVideoComplete = twilio_video.deleteVideoComplete
+
 
 const privacy_policy = require('./api/privacy-policy');
 exports.getPrivacyPolicy = privacy_policy.getPrivacyPolicy;
