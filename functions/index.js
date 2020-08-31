@@ -36,6 +36,8 @@ const twilio_video = require('./twilio-video');
 exports.generateTwilioToken = twilio_video.generateTwilioToken;
 exports.compose = twilio_video.compose
 exports.twilioCallback = twilio_video.twilioCallback
+exports.downloadComplete = twilio_video.downloadComplete
+exports.cutVideoComplete = twilio_video.cutVideoComplete
 
 const privacy_policy = require('./api/privacy-policy');
 exports.getPrivacyPolicy = privacy_policy.getPrivacyPolicy;
