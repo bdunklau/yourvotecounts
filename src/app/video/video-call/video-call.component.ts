@@ -125,7 +125,6 @@ export class VideoCallComponent implements OnInit {
 
     this.http.get(`https://${this.settingsDoc.firebase_functions_host}/generateTwilioToken?room_name=${roomName}&name=${this.phoneNumber}`, httpOptions)
       .subscribe(async (data: any) => {
-        //console.log('data.token = ', data.token) 
         
         this.activeRoom = await connect(
                 data.token, {
@@ -163,28 +162,6 @@ export class VideoCallComponent implements OnInit {
       }
     })
     
-    /******* 
-    this.roomSubscription = xxxx.pipe(
-      map(actions => {
-        console.log('XXXXXXXXXXXXXXXX   actions = ', actions);
-        return actions.map(a => {
-          const data = a.payload.doc.data() as RoomObj;
-          const id = a.payload.doc.id;
-          var returnThis = { id, ...data };
-          console.log('XXXXXXXXXXXXXXXX   returnThis = ', returnThis);
-          return returnThis;
-          return {}
-        });
-      })
-    )
-    .subscribe(obj => {    
-        this.roomObj = obj[0] as RoomObj 
-        // See if the host disconnected on another client - look for left_ms = millis for THIS phone number
-        // If you find that the 'left_ms' attribute has been set, then call disconnect
-        this.disconnect_all_when_host_leaves(this.roomObj);
-        this.recording_state = this.roomObj['recording_state']
-    });
-    ********/
 
   }
 
