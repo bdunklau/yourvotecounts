@@ -35,12 +35,13 @@
           <div class="col-sm-12" *ngIf="activeRoom">
             roomName: {{roomName}}
             <br/>activeRoom.state: {{activeRoom.state}}
+            <br/>roomObj: {{roomObj | json }}
             <P>&nbsp;</P>
           </div>
         </div>
     
         
-        <div class="row">
+        <div class="row" *ngIf="!joined">
           <div class="col-sm-12">
             <button id="join_call" (click)="join_call()" class="btn btn-success col-sm-12"> Join </button>
             <P>&nbsp;</P>
@@ -48,7 +49,7 @@
         </div>
     
         
-        <div class="row">
+        <div class="row" *ngIf="joined">
           <div class="col-sm-12">
             <button id="leave_call" (click)="leave_call()" class="btn btn-danger col-sm-12"> Leave </button>
             <P>&nbsp;</P>
@@ -56,13 +57,39 @@
         </div>
     
         
-        <div class="row">
+        <div class="row" *ngIf="roomObj && roomObj['call_ended_ms']">
           <div class="col-sm-12">
-            <button id="compose" (click)="compose()" class="btn btn-success col-sm-12"> Compose </button>
+            <button id="compose" (click)="compose()" class="btn btn-success col-sm-12"> Produce Video </button>
           </div>
         </div>
     
+
+
+
+
+        recording_state: {{recording_state}}
+        <br/>
+    
         
+
+        <div class="row" *ngIf="activeRoom && activeRoom.state == 'connected'">
+          <div class="col-sm-4">
+            <button *ngIf="recording_state == ''" id="start_recording" (click)="start_recording()" class="btn btn-danger col-sm-12"> Start Recording </button>
+            <P>&nbsp;</P>
+          </div>
+
+          <div class="col-sm-4">
+            <button *ngIf="recording_state == 'recording'" id="pause_recording" (click)="pause_recording()" class="btn btn-secondary col-sm-12"> Pause </button>
+            <button *ngIf="recording_state == 'paused'" id="resume_recording" (click)="resume_recording()" class="btn btn-secondary col-sm-12"> Resume </button>
+          </div>
+
+          <div class="col-sm-4">
+            <button *ngIf="recording_state == 'recording' || recording_state == 'paused'" id="stop_recording" (click)="stop_recording()" class="btn btn-danger col-sm-12"> Stop Recording </button>
+            <P>&nbsp;</P>
+          </div>
+        </div>
+    
+            
     
     
         

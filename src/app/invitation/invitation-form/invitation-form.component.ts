@@ -101,10 +101,6 @@ export class InvitationFormComponent implements OnInit {
       
     this.invitationService.create(this.invitation);
 
-    console.log('this.invitation = ', this.invitation);
-    console.log('this.invitation.creatorName = ', this.invitation.creatorName);
-    console.log('this.invitation.creatorPhone = ', this.invitation.creatorPhone);
-    console.log('this.invitation.phoneNumber = ', this.invitation.phoneNumber);
     this.smsService.sendSms({from: "+12673314843", to: this.invitation.phoneNumber, mediaUrl: "", message: this.invitation.message});
 
     /***** don't update invitations - just cancel and reissue  *****/

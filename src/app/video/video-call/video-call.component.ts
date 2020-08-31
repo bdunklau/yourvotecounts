@@ -19,6 +19,13 @@ import { connect,
           LocalVideoTrack,
           Room,
           createLocalTracks } from 'twilio-video';
+import { RoomService } from '../../room/room.service';
+import { RoomObj } from '../../room/room-obj.model';
+import { map, take } from 'rxjs/operators';
+import * as _ from 'lodash';
+import { SettingsService } from '../../settings/settings.service';
+import { Settings } from '../../settings/settings.model';
+import * as moment from 'moment';
 
 
 @Component({
@@ -43,13 +50,19 @@ export class VideoCallComponent implements OnInit {
   phoneNumber: string; // could be either the guest's number or the host's
   joinOnLoad: boolean;
   participants: Map<Participant.SID, RemoteParticipant>;
+  joined = false // whether the user has connected to the room or not
+  private roomSubscription: Subscription;
+  settingsDoc: Settings
+  recording_state = "" // "", recording, paused
 
 
   constructor(private route: ActivatedRoute,
               private invitationService: InvitationService,
               private readonly renderer: Renderer2,
               private http: HttpClient,
-              private userService: UserService) { }
+              private userService: UserService,
+              private roomService: RoomService,
+              private settingsService: SettingsService) { }
 
   async ngOnInit() {
     if(!this.isBrowserOk())
@@ -78,6 +91,7 @@ export class VideoCallComponent implements OnInit {
       
     })
 
+    this.settingsDoc = await this.settingsService.getSettingsDoc()
   }
 
 
@@ -93,6 +107,7 @@ export class VideoCallComponent implements OnInit {
 
   ngOnDestroy() {
     if(this.routeSubscription) this.routeSubscription.unsubscribe();
+    if(this.roomSubscription) this.roomSubscription.unsubscribe();
   }
 
 
@@ -108,9 +123,8 @@ export class VideoCallComponent implements OnInit {
       //params: new HttpParams().set('uid', uid)
     };
 
-    this.http.get(`https://us-central1-yourvotecounts-bd737.cloudfunctions.net/generateTwilioToken?room_name=${roomName}&name=${this.phoneNumber}`, httpOptions)
+    this.http.get(`https://${this.settingsDoc.firebase_functions_host}/generateTwilioToken?room_name=${roomName}&name=${this.phoneNumber}`, httpOptions)
       .subscribe(async (data: any) => {
-        //console.log('data.token = ', data.token) 
         
         this.activeRoom = await connect(
                 data.token, {
@@ -123,16 +137,56 @@ export class VideoCallComponent implements OnInit {
                   // automaticSubscription: true
               } as ConnectOptions);
         console.log('this.activeRoom = ', this.activeRoom);
-        this.initialize(this.activeRoom.participants);        
-        this.registerRoomEvents();
+        this.joined = true
+        await this.roomService.saveOnJoin(this.activeRoom, this.invitation, this.phoneNumber)
+        this.monitorRoom(this.activeRoom.sid)
+        this.initialize(this.activeRoom.participants)  
+        this.registerRoomEvents()
       });
+
+  }
+
+
+  roomObj: RoomObj
+  monitorRoom(roomSid: string) {
+    //console.log('XXXXXXXXXXXXXXXX   roomSid = ', roomSid);
+    let xxxx = this.roomService.monitorRoom(roomSid);
+    //console.log('XXXXXXXXXXXXXXXX   xxxx = ', xxxx);
+    this.roomSubscription = xxxx.subscribe(res => {
+      //console.log('XXXXXXXXXXXXXXXX   res = ', res)
+      if(res.length > 0) { 
+        this.roomObj = res[0].payload.doc.data() as RoomObj
+        console.log('XXXXXXXXXXXXXXXX   this.roomObj = ', this.roomObj)
+        this.disconnect_all_when_host_leaves(this.roomObj)
+        this.recording_state = this.roomObj['recording_state']
+      }
+    })
+    
+
+  }
+
+
+  disconnect_all_when_host_leaves(roomObj: RoomObj) {
+    if(!roomObj || !roomObj['guests'] || roomObj['guests'].length === 0) {
+      return
+    } 
+    let me = _.find(this.roomObj['guests'], guest => {
+      return guest["guestPhone"] === this.phoneNumber
+    })
+    if(me && me['left_ms']) {
+      const connected = this.activeRoom != null && (this.activeRoom.state == "connected" || this.activeRoom.state == "reconnecting" || this.activeRoom.state == "reconnected");
+      if(connected) this.activeRoom.disconnect();  
+      this.joined = false 
+    }
 
   }
 
 
   leave_call() {
     const connected = this.activeRoom != null && (this.activeRoom.state == "connected" || this.activeRoom.state == "reconnecting" || this.activeRoom.state == "reconnected");
-    if(connected) this.activeRoom.disconnect();   
+    if(connected) this.activeRoom.disconnect();  
+    this.roomService.disconnect(this.roomObj, this.phoneNumber);
+    this.joined = false 
   }
 
 
@@ -146,9 +200,12 @@ export class VideoCallComponent implements OnInit {
       //params: new HttpParams().set('uid', uid)
     };
 
-    // TODO FIXME fix the host or not?
-    let host = "us-central1-yourvotecounts-bd737.cloudfunctions.net";
-    this.http.get(`https://us-central1-yourvotecounts-bd737.cloudfunctions.net/compose?RoomSid=${this.activeRoom.sid}&host=${host}&room_name=${this.activeRoom.name}`, httpOptions)
+    // do a POST here not a GET
+    // and post the whole room document.  No need to query for it in the firebase function
+
+    // NOTE: ${this.settingsDoc.website_domain_name} will be the ngrok host if running locally.  See invitation.service.ts:ngrok field
+    let composeUrl = `https://${this.settingsDoc.firebase_functions_host}/compose?RoomSid=${this.activeRoom.sid}&firebase_functions_host=${this.settingsDoc.firebase_functions_host}&room_name=${this.activeRoom.name}&website_domain_name=${this.settingsDoc.website_domain_name}&cloud_host=${this.settingsDoc.cloud_host}                         `
+    this.http.get(composeUrl, httpOptions)
       .subscribe(async (data: any) => {
         console.log('data = ', data) 
               
@@ -342,6 +399,56 @@ export class VideoCallComponent implements OnInit {
     if (this.participants && this.participants.has(participant.sid)) {
         this.participants.delete(participant.sid);
     }
+  }
+
+
+  start_recording() {
+    this.roomObj['recording_state'] = "recording"
+    this.roomObj['mark_time'] = []
+    let now = new Date().getTime()
+    let diff = this.getTimeDiff({first: this.roomObj.host_joined_ms, second: now })
+    this.roomObj['mark_time'].push({"start_recording_ms": now, "start_recording": diff})
+    this.setRecordingState()
+  } 
+
+  stop_recording() {
+    this.roomObj['recording_state'] = ""
+    let lastIdx = this.roomObj['mark_time'].length - 1
+    let lastTimePair = this.roomObj['mark_time'][lastIdx]
+    if(!lastTimePair["duration"]) {
+      let diff = this.getTimeDiff({first: lastTimePair['start_recording_ms'], second: new Date().getTime()})
+      lastTimePair['duration'] = diff
+    }
+    this.setRecordingState()
+  }
+
+  pause_recording() {
+    this.roomObj['recording_state'] = "paused"
+    let lastIdx = this.roomObj['mark_time'].length - 1
+    let lastTimePair = this.roomObj['mark_time'][lastIdx]
+    if(!lastTimePair["duration"]) {
+      let diff = this.getTimeDiff({first: lastTimePair['start_recording_ms'], second: new Date().getTime()})
+      lastTimePair['duration'] = diff
+    }
+    this.setRecordingState()
+  }
+
+  resume_recording() {
+    this.roomObj['recording_state'] = "recording"
+    let now = new Date().getTime()
+    let diff = this.getTimeDiff({first: this.roomObj.host_joined_ms, second: now})
+    this.roomObj['mark_time'].push({"start_recording_ms": now, "start_recording": diff})
+    this.setRecordingState()
+  }
+
+  private setRecordingState() {
+    this.roomService.setRecordingState(this.roomObj)
+  }
+
+  getTimeDiff(time: {first: number, second: number}) { 
+    let diff = moment.utc(moment(time.second).diff(moment(time.first))).format("HH:mm:ss")
+    //console.log('diff = ', diff);
+    return diff
   }
 
 
