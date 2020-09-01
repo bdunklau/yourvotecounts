@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, OnDestroy, HostListener, ElementRef, AfterViewInit, Renderer2 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Invitation } from '../../invitation/invitation.model';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { InvitationService } from '../../invitation/invitation.service';
@@ -52,11 +52,13 @@ export class VideoCallComponent implements OnInit {
   participants: Map<Participant.SID, RemoteParticipant>;
   joined = false // whether the user has connected to the room or not
   private roomSubscription: Subscription;
+  private completedWatcher: Subscription;
   settingsDoc: Settings
   recording_state = "" // "", recording, paused
 
 
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private invitationService: InvitationService,
               private readonly renderer: Renderer2,
               private http: HttpClient,
@@ -96,6 +98,30 @@ export class VideoCallComponent implements OnInit {
 
 
   async ngAfterViewInit() {
+      // Are we coming to this page after the video call is already completed?...
+      
+      let xxxx = this.roomService.monitorRoomByInvitationId(this.invitation.id);
+      this.roomSubscription = xxxx.subscribe(res => {
+          if(res.length > 0) { 
+              let theRoomObj = res[0].payload.doc.data() as RoomObj
+              let videoReady: boolean = theRoomObj.CompositionSid ? true : false
+
+              // short-circuit: redirect to /view-video if the video is already produced (just like ViewCallCompleteGuard)
+              if(videoReady) {
+                  // do what VideoCallCompleteGuard does: redirects to /view-video
+                  this.router.navigate(['/view-video', theRoomObj.CompositionSid])
+              }
+          }
+      })
+
+
+
+
+
+
+
+
+    // should we join the room as soon as we come to this screen?...
     if (this.previewElement && this.previewElement.nativeElement) {
         await this.initializeDevice();
         if(this.joinOnLoad) {
@@ -108,6 +134,7 @@ export class VideoCallComponent implements OnInit {
   ngOnDestroy() {
     if(this.routeSubscription) this.routeSubscription.unsubscribe();
     if(this.roomSubscription) this.roomSubscription.unsubscribe();
+    if(this.completedWatcher) this.completedWatcher.unsubscribe();
   }
 
 
@@ -149,6 +176,9 @@ export class VideoCallComponent implements OnInit {
 
   roomObj: RoomObj
   monitorRoom(roomSid: string) {
+    // quit this other subscription now that we're monitoring the room by RoomSid
+    if(this.completedWatcher) this.completedWatcher.unsubscribe();
+
     //console.log('XXXXXXXXXXXXXXXX   roomSid = ', roomSid);
     let xxxx = this.roomService.monitorRoom(roomSid);
     //console.log('XXXXXXXXXXXXXXXX   xxxx = ', xxxx);
@@ -156,13 +186,22 @@ export class VideoCallComponent implements OnInit {
       //console.log('XXXXXXXXXXXXXXXX   res = ', res)
       if(res.length > 0) { 
         this.roomObj = res[0].payload.doc.data() as RoomObj
-        console.log('XXXXXXXXXXXXXXXX   this.roomObj = ', this.roomObj)
-        this.disconnect_all_when_host_leaves(this.roomObj)
-        this.recording_state = this.roomObj['recording_state']
+        let videoReady: boolean = this.roomObj.CompositionSid ? true : false
+
+        // short-circuit: redirect to /view-video if the video is already produced (just like ViewCallCompleteGuard)
+        if(videoReady) {
+            console.log('XXXXXXXXXXXXXXXX   this.roomObj = ', this.roomObj)
+            // do what VideoCallCompleteGuard does: redirects to /view-video
+            this.router.navigate(['/view-video', this.roomObj.CompositionSid])
+        }
+        else { // normal operation: stay on this screen
+            console.log('XXXXXXXXXXXXXXXX   this.roomObj = ', this.roomObj)
+            this.disconnect_all_when_host_leaves(this.roomObj)
+            this.recording_state = this.roomObj['recording_state']
+        }
       }
     })
     
-
   }
 
 

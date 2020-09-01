@@ -7,6 +7,7 @@ export class RoomObj {
  * If we want to do something like  roomDoc.data() as RoomObj, THEN WE DO HAVE TO DEFINE FIELDS EXPLICITLY
  */
 
+    CompositionSid?: string
     RoomSid: string
     created_ms: number
     guests: {guestName: string, guestPhone: string, joined_ms?: number}[]

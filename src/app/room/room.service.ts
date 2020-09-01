@@ -128,6 +128,12 @@ export class RoomService {
   }
 
 
+  monitorRoomByInvitationId(invitationId: string) {
+    var retThis = this.afs.collection('room', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges();
+    return retThis;
+  }
+
+
   disconnect(roomObj: RoomObj, phoneNumber: string) {
     // is this the host phone or the guest phone?
     let isHost = roomObj.hostPhone === phoneNumber;
