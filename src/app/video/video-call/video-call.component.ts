@@ -222,6 +222,8 @@ export class VideoCallComponent implements OnInit {
 
 
   leave_call() {
+    if(this.isHost)
+        this.stop_recording()
     const connected = this.activeRoom != null && (this.activeRoom.state == "connected" || this.activeRoom.state == "reconnecting" || this.activeRoom.state == "reconnected");
     if(connected) this.activeRoom.disconnect();  
     this.roomService.disconnect(this.roomObj, this.phoneNumber);
@@ -486,15 +488,19 @@ export class VideoCallComponent implements OnInit {
     this.setRecordingState()
   } 
 
-  stop_recording() {
+  async stop_recording() {
     this.roomObj['recording_state'] = ""
+    await this.setRecordingState()
+    if(!this.roomObj['mark_time']) // leave_call() calls stop_recording().  There could be a non-existent or empty 'mark_time' object
+        return
     let lastIdx = this.roomObj['mark_time'].length - 1
+    if(lastIdx == -1) 
+        return
     let lastTimePair = this.roomObj['mark_time'][lastIdx]
     if(!lastTimePair["duration"]) {
       let diff = this.getTimeDiff({first: lastTimePair['start_recording_ms'], second: new Date().getTime()})
       lastTimePair['duration'] = diff
     }
-    this.setRecordingState()
   }
 
   pause_recording() {
