@@ -8,6 +8,7 @@ import { map /*, take */ } from 'rxjs/operators';
 import { FirebaseUserModel } from '../../user/user.model';
 import * as _ from 'lodash';
 import { UserService } from '../../user/user.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,7 +18,7 @@ import { UserService } from '../../user/user.service';
 })
 export class InvitationListComponent implements OnInit {
 
-  //@Input() someUser: FirebaseUserModel;
+  /*@Input()*/ me: FirebaseUserModel;
   invitations: Invitation[];
   private subscription: Subscription;
   
@@ -25,12 +26,13 @@ export class InvitationListComponent implements OnInit {
   constructor(
     private userService: UserService,
     private invitationService: InvitationService,
-    private _modalService: NgbModal,) { }
+    private _modalService: NgbModal,
+    private router: Router,) { }
 
   async ngOnInit(): Promise<void> {
     this.invitations = [];
-    let someUser = await this.userService.getCurrentUser();
-    this.subscription = this.invitationService.getInvitationsForUser(someUser.uid).pipe(
+    this.me = await this.userService.getCurrentUser();
+    this.subscription = this.invitationService.getInvitationsForUser(this.me.uid).pipe(
       map(actions => {
         return actions.map(a => {
           const data = a.payload.doc.data() as Invitation;
@@ -44,8 +46,8 @@ export class InvitationListComponent implements OnInit {
       .subscribe(objs => {
         // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
         this.invitations = _.map(objs, obj => {
-          let tm = obj as unknown;
-          return tm as Invitation;
+          let invitation = obj as unknown;
+          return invitation as Invitation;
         })
       });
   }
@@ -84,6 +86,10 @@ export class InvitationListComponent implements OnInit {
       // this.closeResult = `Dismissed ${reason}`;
     });
     return modalRef;
+  }
+
+  invitationDetails(invitation: Invitation) {
+      this.router.navigate(['/video-call', invitation.id, this.me.phoneNumber])
   }
 
 }
