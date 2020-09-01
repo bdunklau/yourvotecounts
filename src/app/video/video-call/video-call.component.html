@@ -16,7 +16,7 @@
           <!-- local participant -->
           <div class="col">
             <div id="preview" #preview style="width:30vw;">
-                <div *ngIf="isInitializing">Loading preview... Please wait.</div>
+                <div *ngIf="isInitializing"><!-- We COULD display something like this: Loading preview... Please wait.   But we really don't need to.  We are only showing the local camera once we are connected to a room --></div>
             </div>
           </div>
           <!-- local participant -->
@@ -29,17 +29,21 @@
         </div>
     
         
-    
-        
         <div class="row">
-          <div class="col-sm-12" *ngIf="activeRoom">
-            roomName: {{roomName}}
-            <br/>activeRoom.state: {{activeRoom.state}}
-            <br/>roomObj: {{roomObj | json }}
-            <P>&nbsp;</P>
+          <div class="col-sm-12">
+            <span *ngIf="connecting"><b>Status:</b> Connecting...</span>
+            <span *ngIf="activeRoom && activeRoom.state == 'connected'"><b>Status:</b> Connected &nbsp;&nbsp;&nbsp;</span>
+            <span *ngIf="recording_state" [ngStyle]="{'color': recording_state=='recording' ? '#ff0000' : '#000000' }" >{{recording_state}}</span>
           </div>
         </div>
     
+        <!-- display true/false - it works but really just for diagnostics
+        <div class="row">
+          <div class="col-sm-12">
+            Host: {{isHost}}
+          </div>
+        </div>
+        -->
         
         <div class="row" *ngIf="!joined">
           <div class="col-sm-12">
@@ -62,13 +66,6 @@
             <button id="compose" (click)="compose()" class="btn btn-success col-sm-12"> Produce Video </button>
           </div>
         </div>
-    
-
-
-
-
-        recording_state: {{recording_state}}
-        <br/>
     
         
 

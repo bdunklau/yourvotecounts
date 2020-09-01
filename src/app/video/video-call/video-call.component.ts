@@ -55,6 +55,7 @@ export class VideoCallComponent implements OnInit {
   private completedWatcher: Subscription;
   settingsDoc: Settings
   recording_state = "" // "", recording, paused
+  connecting: boolean = false
 
 
   constructor(private route: ActivatedRoute,
@@ -69,7 +70,6 @@ export class VideoCallComponent implements OnInit {
   async ngOnInit() {
     if(!this.isBrowserOk())
       return;
-    //this.user = await this.userService.getCurrentUser();
     this.routeSubscription = this.route.data.subscribe(routeData => {
       console.log('routeData = ', routeData);
       if(!routeData['invitation']) {
@@ -98,8 +98,7 @@ export class VideoCallComponent implements OnInit {
 
 
   async ngAfterViewInit() {
-      // Are we coming to this page after the video call is already completed?...
-      
+      // Are we coming to this page after the video call is already completed?...      
       let xxxx = this.roomService.monitorRoomByInvitationId(this.invitation.id);
       this.roomSubscription = xxxx.subscribe(res => {
           if(res.length > 0) { 
@@ -115,19 +114,12 @@ export class VideoCallComponent implements OnInit {
       })
 
 
-
-
-
-
-
-
-    // should we join the room as soon as we come to this screen?...
-    if (this.previewElement && this.previewElement.nativeElement) {
-        await this.initializeDevice();
-        if(this.joinOnLoad) {
-          this.join_call();
-        }
-    }
+      // should we join the room as soon as we come to this screen?...
+      if (this.previewElement && this.previewElement.nativeElement) {
+          if(this.joinOnLoad) {
+            this.join_call();
+          }
+      }
   }
 
 
@@ -139,6 +131,9 @@ export class VideoCallComponent implements OnInit {
 
 
   async join_call() {
+    this.connecting = true;
+    await this.initializeDevice();
+
     let roomName = this.invitation.id;
 
     const httpOptions = {
@@ -169,6 +164,7 @@ export class VideoCallComponent implements OnInit {
         this.monitorRoom(this.activeRoom.sid)
         this.initialize(this.activeRoom.participants)  
         this.registerRoomEvents()
+        this.connecting = false // the process of connecting is done so connecting=false.  We are now connected
       });
 
   }
@@ -226,6 +222,7 @@ export class VideoCallComponent implements OnInit {
     if(connected) this.activeRoom.disconnect();  
     this.roomService.disconnect(this.roomObj, this.phoneNumber);
     this.joined = false 
+    this.finalizePreview();
   }
 
 
