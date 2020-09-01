@@ -75,14 +75,6 @@
           <!-- remote participant -->
         </div>
     
-        
-        <div class="row">
-          <div class="col-sm-12">
-            <span *ngIf="connecting"><b>Status:</b> Connecting...</span>
-            <span *ngIf="activeRoom && activeRoom.state == 'connected'"><b>Status:</b> Connected &nbsp;&nbsp;&nbsp;</span>
-            <span *ngIf="recording_state" [ngStyle]="{'color': recording_state=='recording' ? '#ff0000' : '#000000' }" >{{recording_state}}</span>
-          </div>
-        </div>
     
         <!-- display true/false - it works but really just for diagnostics
         <div class="row">
@@ -92,59 +84,56 @@
         </div>
         -->
         
+        
         <div class="row" *ngIf="!joined">
           <div class="col-sm-12">
-            <button id="join_call" (click)="join_call()" class="btn btn-success col-sm-12"> Join </button>
+            <button id="join_call" (click)="join_call()" class="btn btn-success col-sm-12"> <i class="fas fa-phone-alt"></i> &nbsp; Join </button>
             <P>&nbsp;</P>
           </div>
         </div>
-    
         
+        <div class="row">
+          <div class="col-sm-12">
+            <span *ngIf="connecting"><b>Status:</b> Connecting...</span>
+            <span *ngIf="activeRoom && activeRoom.state == 'connected'"><b>Status:</b> Connected &nbsp;&nbsp;&nbsp;</span>
+            <span *ngIf="recording_state" [ngStyle]="{'color': recording_state=='recording' ? '#ff0000' : '#000000' }" >{{recording_state}}</span>
+          </div>
+        </div>
+        
+        
+        <span *ngIf="isHost && activeRoom && activeRoom.state == 'connected'">
+        <div class="row" *ngIf="recording_state == ''">
+          <div class="col-12">
+            <button  id="start_recording" (click)="start_recording()" class="btn btn-danger col-sm-12"> <i class="fas fa-circle"></i> &nbsp; Start Recording </button>
+            <P>&nbsp;</P>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="recording_state != ''">
+          <div class="col-6">
+            <button *ngIf="recording_state == 'recording'" id="pause_recording" (click)="pause_recording()" class="btn btn-light col-12"><i class="fas fa-pause"></i> &nbsp; Pause </button>
+            <button *ngIf="recording_state == 'paused'" id="resume_recording" (click)="resume_recording()" class="btn btn-light col-12"><i class="fas fa-play"></i> &nbsp; Resume </button>
+          </div>
+
+          <div class="col-6">
+            <button *ngIf="recording_state == 'recording' || recording_state == 'paused'" id="stop_recording" (click)="stop_recording()" class="btn btn-danger col-12"><i class="fas fa-stop"></i> &nbsp; Stop Recording </button>
+            <P>&nbsp;</P>
+          </div>
+        </div>
+        </span>
+        
+
         <div class="row" *ngIf="joined">
-          <div class="col-sm-12">
-            <button id="leave_call" (click)="leave_call()" class="btn btn-danger col-sm-12"> Leave </button>
-            <P>&nbsp;</P>
-          </div>
-        </div>
-    
-        
-        <div class="row" *ngIf="isHost && roomObj && roomObj['call_ended_ms']">
-          <div class="col-sm-12">
-            <button id="compose" (click)="compose()" class="btn btn-success col-sm-12"> Produce Video </button>
-          </div>
-        </div>
-    
-        
-
-        <div class="row" *ngIf="isHost && activeRoom && activeRoom.state == 'connected'">
-          <div class="col-sm-4">
-            <button *ngIf="recording_state == ''" id="start_recording" (click)="start_recording()" class="btn btn-danger col-sm-12"> Start Recording </button>
-            <P>&nbsp;</P>
-          </div>
-
-          <div class="col-sm-4">
-            <button *ngIf="recording_state == 'recording'" id="pause_recording" (click)="pause_recording()" class="btn btn-secondary col-sm-12"> Pause </button>
-            <button *ngIf="recording_state == 'paused'" id="resume_recording" (click)="resume_recording()" class="btn btn-secondary col-sm-12"> Resume </button>
-          </div>
-
-          <div class="col-sm-4">
-            <button *ngIf="recording_state == 'recording' || recording_state == 'paused'" id="stop_recording" (click)="stop_recording()" class="btn btn-danger col-sm-12"> Stop Recording </button>
-            <P>&nbsp;</P>
-          </div>
-        </div>
-        
-
-        <div class="row" *ngIf="true">
-          <div class="col-sm-6">
-            <button (click)="setVideoMute(videoMuted)" class="btn btn-danger col-sm-12"> 
+          <div class="col-6">
+            <button (click)="setVideoMute(videoMuted)" class="btn btn-light col-sm-12"> 
                 <i [ngClass]="{'fas': true,
                                'fa-video-slash': videoMuted, 
                                'fa-video': !videoMuted}"></i> <!-- Video muted: {{videoMuted}}--> </button>
             <P>&nbsp;</P>
           </div>
 
-          <div class="col-sm-6">
-            <button (click)="setAudioMute(audioMuted)" class="btn btn-danger col-sm-12"> 
+          <div class="col-6">
+            <button (click)="setAudioMute(audioMuted)" class="btn btn-light col-sm-12"> 
                 <i [ngClass]="{'fas': true,
                                'fa-microphone-slash': audioMuted, 
                                'fa-microphone': !audioMuted}"></i> <!-- Audio muted: {{audioMuted}} --> </button>
@@ -152,6 +141,24 @@
           </div>
         </div>
     
+    
+        
+        <div class="row" *ngIf="joined">
+          <div class="col-sm-12">                                           <!-- fa-rotate-135 is special style defined in local css file  -->
+            <button id="leave_call" (click)="leave_call()" class="btn btn-danger col-sm-12"><i class="fas fa-phone-alt fa-rotate-135"></i> &nbsp; Hang up </button>
+            <P>&nbsp;</P>
+          </div>
+        </div>
+        
+        
+        <div class="row" *ngIf="isHost && roomObj && roomObj['call_ended_ms']">
+          <div class="col-sm-12">
+            <button id="compose" (click)="compose()" class="btn btn-success col-sm-12"><i class="fas fa-cloud-download-alt"></i> &nbsp; Get Recording </button>
+            <P>&nbsp;</P>
+          </div>
+        </div>
+
+
     
     </span>
     
