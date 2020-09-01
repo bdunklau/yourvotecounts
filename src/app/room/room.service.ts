@@ -166,6 +166,15 @@ export class RoomService {
 
 
   /**
+   * Get the room doc having the invitationId.  There should be only one.
+   * @param invitationId 
+   */
+  getRoom(invitationId: string) {
+    return this.afs.collection('room', ref => ref.where("invitationId", "==", invitationId).limit(1)).snapshotChanges().pipe(take(1))
+  }
+
+
+  /**
    * Sets the 'recording_state' attribute on the Room doc so that all connected clients
    * know whether recording is on/off/paused
    * @see video-call.component.ts:monitorRoom()

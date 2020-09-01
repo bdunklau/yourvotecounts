@@ -175,6 +175,7 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
      * vm: index.js: /downloadComposition
      * 
      {compositionFile: compositionFile,
+      CompositionSid:  CompositionSid,
       RoomSid: req.body.RoomSid,
 	  tempEditFolder:  `/home/bdunklau/videos/${req.body.CompositionSid}`,
       downloadComplete: true}
@@ -189,6 +190,7 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
         let formData = {
             compositionFile: req.body.compositionFile,
             tempEditFolder: req.body.tempEditFolder,
+            CompositionSid:  req.body.CompositionSid,
             roomObj: roomDoc.data(),
             firebase_functions_host: settingsObj.data().firebase_functions_host,
             cloud_host: settingsObj.data().cloud_host,
@@ -222,15 +224,19 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
      * /cutVideo passes in this:
      * 
      
-	let formData = {
-		compositionFile: compositionFile,
-		firebase_functions_host: req.body.firebase_functions_host,
-		cloud_host: req.body.cloud_host  // this host, so we don't have to keep querying config/settings doc
-	}
+        let formData = {
+            compositionFile: compositionFile,
+            CompositionSid:  req.body.CompositionSid,
+            RoomSid: req.body.roomObj['RoomSid'],
+            firebase_functions_host: req.body.firebase_functions_host,
+            cloud_host: req.body.cloud_host  // this host, so we don't have to keep querying config/settings doc
+        }
      */
 
     let formData = {
         compositionFile: req.body.compositionFile,
+        CompositionSid:  req.body.CompositionSid,
+        RoomSid: req.body.RoomSid,
         cloud_host: req.body.cloud_host,
         callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete` // just below this function
     }
@@ -252,7 +258,39 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
 })
 
 
+/**
+ * The composition file has now been uploaded to firebase storage
+ * So WRITE the CompositionSid to the 'room' doc (keyed by RoomSid)
+ * The 'room' doc contains 'invitationId' and now a CompositionSid value
+ * 
+ * video-call.component.ts: monitorRoom() and VideoCallCompleteGuard both watch for
+ * the CompositionSid to be written to the room doc.  Once the CompositionSid value
+ * is written, the /video-call screen redirects the user to the /view-video screen
+ * 
+ * The VideoCallCompleteGuard similarly sends the user to the /view-video screen in cases
+ * where the user revisits an old /video-call screen.
+ */
 exports.uploadToFirebaseStorageComplete = functions.https.onRequest((req, res) => {
+
+    /**
+     *  passed in from index.js: /uploadToFirebaseStorage
+      
+      
+        let formData = {
+            compositionFile: req.body.compositionFile,
+            CompositionSid:  req.body.CompositionSid,
+            RoomSid: req.body.RoomSid,
+            firebase_functions_host: req.body.firebase_functions_host,
+            cloud_host: req.body.cloud_host  // this host, so we don't have to keep querying config/settings doc
+        }
+
+     */
+
+    
+    var db = admin.firestore();
+    // video-call.component.ts: monitorRoom() and VideoCallCompleteGuard both pick up on this
+    await db.collection('room').doc(req.body.RoomSid).update({CompositionSid: req.body.CompositionSid})
+
     
     let formData = {
         compositionFile: req.body.compositionFile,

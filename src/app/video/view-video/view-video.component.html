@@ -7,9 +7,9 @@
 
     <!-- div class="row" style="margin-bottom:20px"><div class="col">{{composition.composition_MediaUri}}</div></div -->
     <div class="row" style="margin-bottom:20px">
-        <div class="col">
-            <video width="320" height="240" controls>
-                <source src="movie.mp4" type="video/mp4">
+        <div class="col" *ngIf="videoUrl">
+            <video width="800" height="450" controls>
+                <source src="{{videoUrl}}" type="video/mp4">
                 <!-- source src="movie.ogg" type="video/ogg" -->
                 Your browser does not support the video tag.
             </video>
