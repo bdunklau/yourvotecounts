@@ -111,7 +111,7 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
         && req.body.SecondsRemaining
         && req.body.StatusCallbackEvent
         && req.body.StatusCallbackEvent === 'composition-progress') {
-            // do something during progress if you want
+            return res.status(200).send(JSON.stringify({PercentageDone: req.body.PercentageDone, SecondsRemaining: req.body.SecondsRemaining}));
     }
     else if(req.body.RoomSid && req.body.StatusCallbackEvent && req.body.StatusCallbackEvent === 'composition-available') {
         // the composition is ready!
@@ -132,7 +132,7 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
             twilio_account_sid: twilioAccountSid,
             twilio_auth_token: twilioAuthToken,
             domain: 'video.twilio.com',
-            MediaUri: req.body.MediaUri,
+            MediaUri: "",
             CompositionSid: req.body.CompositionSid,
             Ttl: 3600,
             firebase_functions_host: req.query.firebase_functions_host,
@@ -154,66 +154,6 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
             }
         );
 
-
-
-
-
-
-
-
-
-
-        /*******************
-
-
-
-        let compositionNode = {
-            RoomSid: req.body.RoomSid,
-            CompositionSid: req.body.CompositionSid,
-            CompositionUri: req.body.CompositionUri,
-            composition_Size: parseInt(req.body.Size), // Number.MAX_SAFE_INTEGER = 9007199254740992  so we're safe
-            composition_MediaUri: req.body.MediaUri,
-            date: new Date(),
-            date_ms: new Date().getTime(),
-            room_name: req.query.room_name
-        }
-
-        var db = admin.firestore();
-        // query room doc for host and guest info and add it to the composition doc
-        let room = await db.collection('room').doc(req.body.RoomSid).get()
-        let roomNode = room.data()
-        compositionNode['hostId'] = roomNode.hostId
-        compositionNode['hostName'] = roomNode.hostName
-        compositionNode['hostPhone'] = roomNode.hostPhone
-        compositionNode['guests'] = roomNode.guests
-
-        await db.collection('composition').add(compositionNode)
-
-        // Now send a text message to all the participants saying the video is ready
-        // Have to figure out what url to put in the text message
-
-        // See  sms.service.ts for a client-side example of triggering an sms message by writing to the database
-        let recipients = _.map(roomNode.guests, guest => {
-            return {displayName: guest['guestName'], phoneNumber: guest['guestPhone']}
-        })
-        recipients.push({displayName: roomNode.hostName, phoneNumber: roomNode.hostPhone})
-        _.each(recipients, recipient => {
-            // Write to the sms collection to trigger a text message.  See twilio-sms.js:sendSms()
-
-            // "website_domain_name" is specified in the compose() function above
-            let link = `https://${req.query.website_domain_name}/view-video/${req.body.CompositionSid}`
-            var doc = {}
-            doc['from'] = "+12673314843";
-            doc['to'] = recipient.phoneNumber;
-            //if(args.mediaUrl) doc['mediaUrl'] = args.mediaUrl;
-            doc['message'] = `Your SeeSaw video is ready! Click the link below to check it out\n\n${link}\n\nDo not reply to this number.  It is not being monitored.`
-            doc['date'] = new Date()
-            doc['date_ms'] = new Date().getTime()
-            this.afs.collection('sms').add(doc);
-        })
-
-        
-    **************/
     }
     
     //return res.status(200).send('ok');
@@ -236,7 +176,7 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
      * 
      {compositionFile: compositionFile,
       RoomSid: req.body.RoomSid,
-	  tempEditFolder:  `~/videos/${req.body.CompositionSid}`,
+	  tempEditFolder:  `/home/bdunklau/videos/${req.body.CompositionSid}`,
       downloadComplete: true}
      */
 

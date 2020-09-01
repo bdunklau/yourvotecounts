@@ -18,32 +18,20 @@
     <P>&nbsp;</P>
   </span>
 
-  <table class="table table-striped">
-    <!--
-    <thead *ngIf="canAddTeamMembers">
-    <tr>
-      <th scope="col" colspan="2">Name
-      </th>
-      <th scope="col" class="text-right">Leader (Y/N)
-      </th>
-    </tr>
-    </thead>
-    -->
-    <tbody>
-    <tr *ngFor="let invitation of invitations">
-      <td><a id="delete_invitation_{{invitation.displayName}}" class="delete_invitation">
-            <i class="fa fa-times fa-1x"
-                aria-hidden="true"
-                (click)="confirmDelete(invitation)"></i></a>
-      </td>
-  
-      <td id="invitation_{{invitation.displayName}}">{{invitation.displayName}}</td>
-  
-      <td id="invitation_{{invitation.phoneNumber}}">{{invitation.phoneNumber | phone}}</td>
-  
-  
-  
-    </tr>
-    </tbody>
-  </table>
+  <div class="row" *ngFor="let invitation of invitations" style="border-top: 1px solid #ababab;padding: 10px 0px 10px 0px">
+          <div class="col-6 col-lg-6" id="invitation_{{invitation.displayName}}">
+            {{invitation.displayName}}
+            <br/><a href="tel:{{invitation.phoneNumber}}">{{invitation.phoneNumber | phone}}</a>
+          </div>
+          <div class="col-4 col-lg-4 pull-right" id="invitation_{{invitation.created_ms}}">{{invitation.created_ms | date:'MMM d, yyyy'}}</div>
+          <div class="col-2 col-lg-2">
+            <a id="delete_invitation_{{invitation.displayName}}" class="hand pull-right">
+              <i class="fas fa-trash fa-1x"
+                      aria-hidden="teltrue"
+                      (click)="confirmDelete(invitation)"></i>
+            </a>
+          </div>
+  </div>
+
+
 </div>

@@ -55,7 +55,7 @@ export class InvitationService {
 
 
   getInvitationsForUser(userId: string) {
-    var retThis = this.afs.collection('invitation', ref => ref.where("creatorId", "==", userId)).snapshotChanges();
+    var retThis = this.afs.collection('invitation', ref => ref.where("creatorId", "==", userId).orderBy('created_ms')).snapshotChanges();
     return retThis;
   }
 
