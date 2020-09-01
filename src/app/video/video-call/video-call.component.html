@@ -10,9 +10,56 @@
     
     
     <span *ngIf="okUrl && browserOk">
-        <h5>Video Invitation</h5>
         <div class="row" *ngIf="browserOk">
     
+          <!--
+            begin:  video invitation details - who invited who and when
+          -->
+          <div class="col-12" *ngIf="invitation">
+              <h3>SeeSaw Invitation</h3>
+              <div class="row">
+                <div class="col-6">
+                  <span class="text-muted">To:</span> {{invitation.displayName}}
+                </div>
+                <div class="col-6">
+                  <a href="tel:{{invitation.phoneNumber}}">{{invitation.phoneNumber | phone}}</a>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-6">
+                  <span class="text-muted">From:</span> {{invitation.creatorName}}
+                </div>
+                <div class="col-6">
+                  <a href="tel:{{invitation.creatorPhone}}">{{invitation.creatorPhone | phone}}</a>
+                </div>
+              </div>
+          
+              <div class="row">
+                <div class="col">
+                  <span class="text-muted">Date:</span> {{invitation.created_ms | date:'long'}}
+                </div>
+              </div>
+          
+              <div class="row" style="margin-top:20px;margin-bottom:50px">
+                <div class="col" *ngIf="isHost">
+                  You invited {{invitation.displayName}} to participate in a SeeSaw video call.  Click "Join" to join the call.
+                </div>
+                <div class="col" *ngIf="!isHost">
+                  {{invitation.creatorName}} invited you to participate in a SeeSaw video call.  Click "Join" to join the call.
+                </div>
+              </div>
+          </div>
+          <!--
+            end:  video invitation details - who invited who and when
+          -->
+
+
+
+
+
+
+
           <!-- local participant -->
           <div class="col">
             <div id="preview" #preview style="width:30vw;">
@@ -61,7 +108,7 @@
         </div>
     
         
-        <div class="row" *ngIf="roomObj && roomObj['call_ended_ms']">
+        <div class="row" *ngIf="isHost && roomObj && roomObj['call_ended_ms']">
           <div class="col-sm-12">
             <button id="compose" (click)="compose()" class="btn btn-success col-sm-12"> Produce Video </button>
           </div>
@@ -69,7 +116,7 @@
     
         
 
-        <div class="row" *ngIf="activeRoom && activeRoom.state == 'connected'">
+        <div class="row" *ngIf="isHost && activeRoom && activeRoom.state == 'connected'">
           <div class="col-sm-4">
             <button *ngIf="recording_state == ''" id="start_recording" (click)="start_recording()" class="btn btn-danger col-sm-12"> Start Recording </button>
             <P>&nbsp;</P>
@@ -85,22 +132,27 @@
             <P>&nbsp;</P>
           </div>
         </div>
-    
-            
-    
-    
         
-        <!-- 
-        <P>&nbsp;</P>    
-        Invitation ID: {{invitation.id}}
-        <br/>Name: {{invitation.displayName}}
-        <br/>Phone: {{invitation.phoneNumber}}
-        <br/>Created: {{invitation.created}}
-        <br/>Creator ID: {{invitation.creatorId}}
-        <br/>Creator Name: {{invitation.creatorName}}
-        <br/>Creator Phone: {{invitation.creatorPhone}}
-        <br/>Message: {{invitation.message}}
-        -->
+
+        <div class="row" *ngIf="true">
+          <div class="col-sm-6">
+            <button (click)="setVideoMute(videoMuted)" class="btn btn-danger col-sm-12"> 
+                <i [ngClass]="{'fas': true,
+                               'fa-video-slash': videoMuted, 
+                               'fa-video': !videoMuted}"></i> <!-- Video muted: {{videoMuted}}--> </button>
+            <P>&nbsp;</P>
+          </div>
+
+          <div class="col-sm-6">
+            <button (click)="setAudioMute(audioMuted)" class="btn btn-danger col-sm-12"> 
+                <i [ngClass]="{'fas': true,
+                               'fa-microphone-slash': audioMuted, 
+                               'fa-microphone': !audioMuted}"></i> <!-- Audio muted: {{audioMuted}} --> </button>
+            <P>&nbsp;</P>
+          </div>
+        </div>
+    
+    
     </span>
     
     

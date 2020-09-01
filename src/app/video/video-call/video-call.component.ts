@@ -17,6 +17,7 @@ import { connect,
           ConnectOptions,
           LocalTrack,
           LocalVideoTrack,
+          LocalAudioTrack,
           Room,
           createLocalTracks } from 'twilio-video';
 import { RoomService } from '../../room/room.service';
@@ -43,6 +44,7 @@ export class VideoCallComponent implements OnInit {
   @ViewChild('list', {static: false}) listRef: ElementRef;
   isInitializing: boolean = true;
   videoTrack: LocalVideoTrack;
+  audioTrack: LocalAudioTrack;
   localTracks: LocalTrack[] = [];
   activeRoom: Room;
   //user: FirebaseUserModel;
@@ -56,6 +58,8 @@ export class VideoCallComponent implements OnInit {
   settingsDoc: Settings
   recording_state = "" // "", recording, paused
   connecting: boolean = false
+  videoMuted: boolean = false
+  audioMuted: boolean = false
 
 
   constructor(private route: ActivatedRoute,
@@ -261,6 +265,7 @@ export class VideoCallComponent implements OnInit {
             : await this.initializeTracks();
 
         this.videoTrack = this.localTracks.find(t => t.kind === 'video') as LocalVideoTrack;
+        this.audioTrack = this.localTracks.find(t => t.kind === 'audio') as LocalAudioTrack;
         const videoElement = this.videoTrack.attach();
         // console.log('videoElement = ', videoElement);
         // this.d('initializeDevice(): videoElement='+videoElement);
@@ -346,6 +351,8 @@ export class VideoCallComponent implements OnInit {
             this.attachRemoteTrack(track)
           }
         );
+        publication.on('subscribed', this.handleTrackDisabled.bind(this));
+        publication.on('subscribed', this.handleTrackEnabled.bind(this));
         publication.on('unsubscribed', track => {
             this.detachRemoteTrack(track)
           }
@@ -357,7 +364,12 @@ export class VideoCallComponent implements OnInit {
 
   private detachRemoteTrack(track: RemoteTrack) {
     if (this.isDetachable(track)) {
-        track.detach().forEach(el => el.remove());
+        console.log('detachRemoteTrack:  track = ', track)
+        track.detach().forEach(el => {
+            console.log('detachRemoteTrack:  el = ', el)
+            el.remove() // makes the video square literally go away
+            //this.renderer.setStyle(el, 'background-color', '#000000');
+        });
         // GET RID OF THIS
         // this.videoChatService.canSeeRemoteParticipant({myUid: this.myUid, video_node_key: this.video_node_key, canSeeRemote: false});
     }
@@ -370,28 +382,52 @@ export class VideoCallComponent implements OnInit {
         ((track as RemoteAudioTrack).detach !== undefined ||
         (track as RemoteVideoTrack).detach !== undefined);
   }
+  
+  
+  handleTrackDisabled(track) {
+    track.on('disabled', () => {
+      /* Hide the associated <video> element and show an avatar image. */
+      console.log('track disabled:  ', track)
+      this.detachRemoteTrack(track);
+    });
+  }
+  
+  
+  handleTrackEnabled(track) {
+    track.on('enabled', () => {
+      /* Hide the associated <video> element and show an avatar image. */
+      console.log('track enabled:  ', track)
+      this.attachRemoteTrack(track);
+    });
+  }
 
 
   private registerParticipantEvents(participant: RemoteParticipant) {
-     if (participant) {
-         //this.d('registerParticipantEvents(): participant.tracks='+participant.tracks);
-         participant.tracks.forEach(publication => {
-             //this.d('registerParticipantEvents(): participant='+participant+':  this.subscribe(publication)');
-             this.subscribe(publication);
-         });
-         participant.on('trackPublished', publication => {
-             //this.d('trackPublished for RemoteParticipant.identity='+participant.identity);
-             this.subscribe(publication)
-           }
-         );
-         participant.on('trackUnpublished',
-             publication => {
-                 if (publication && publication.track) {
-                    //this.d('trackUnpublished for RemoteParticipant.identity='+participant.identity);
-                    this.detachRemoteTrack(publication.track);
-                 }
-             });
-     }
+      if (participant) {
+          //this.d('registerParticipantEvents(): participant.tracks='+participant.tracks);
+          participant.tracks.forEach(publication => {
+              //this.d('registerParticipantEvents(): participant='+participant+':  this.subscribe(publication)');
+              this.subscribe(publication);
+
+              // @see   https://www.twilio.com/docs/video/javascript-v2-getting-started#handle-remote-media-mute-events
+              if (publication.isSubscribed) {
+                  this.handleTrackDisabled(publication.track)
+                  this.handleTrackEnabled(publication.track)
+              }
+          });
+          participant.on('trackPublished', publication => {
+              console.log('trackPublished:  publication = ', publication)
+              //this.d('trackPublished for RemoteParticipant.identity='+participant.identity);
+              this.subscribe(publication)              
+          });
+          participant.on('trackUnpublished', publication => {
+            console.log('trackUnpublished:  publication = ', publication)
+              if (publication && publication.track) {
+                  //this.d('trackUnpublished for RemoteParticipant.identity='+participant.identity);
+                  this.detachRemoteTrack(publication.track);
+              }
+          });
+      }
   }
 
   
@@ -414,13 +450,16 @@ export class VideoCallComponent implements OnInit {
 
   private registerRoomEvents() {
     this.activeRoom
-        .on('disconnected',
-            (room: Room) => { /*room.localParticipant.tracks.forEach(publication => this.detachLocalTrack(publication.track))*/ }
-          )
-        .on('participantConnected',
-            (participant: RemoteParticipant) => /*this.participants.add*/this.addParticipant(participant))
-        .on('participantDisconnected',
-            (participant: RemoteParticipant) => /*this.participants.remove*/this.removeParticipant(participant))
+        .on('disconnected', (room: Room) => { /*room.localParticipant.tracks.forEach(publication => this.detachLocalTrack(publication.track))*/ } )
+        .on('participantConnected', (participant: RemoteParticipant) => this.addParticipant(participant))
+        .on('participantDisconnected', (participant: RemoteParticipant) => this.removeParticipant(participant))
+        //.on('trackDisabled', track => {
+        //    console.log('remote trackDisabled:  track = ', track)
+        //})
+        //.on('trackEnabled', track => {
+        //    console.log('remote trackEnabled:  track = ', track)
+        //})
+
         // .on('trackSubscribed', (track:RemoteTrack, publication:RemoteTrackPublication, participant:RemoteParticipant) => {
         //     this.d('registerRoomEvents(): track = '+ track);
         //     this.d('registerRoomEvents(): publication = '+ publication);
@@ -486,6 +525,33 @@ export class VideoCallComponent implements OnInit {
     //console.log('diff = ', diff);
     return diff
   }
+
+  setVideoMute(prevValue: boolean) {
+      this.videoMuted = !prevValue
+      if(this.videoMuted) this.videoTrack.disable()
+      else this.videoTrack.enable()
+  }
+
+  setAudioMute(prevValue: boolean) {
+      this.audioMuted = !prevValue
+      if(this.audioMuted) this.audioTrack.disable()
+      else this.audioTrack.enable()
+  }
+
+
+  /**
+    remoteParticipant.on('trackDisabled', track => {
+      // hide or remove the media element related to this track
+    }); 
+
+
+
+    remoteParticipant.on('trackEnabled', track => {
+      // show the track again
+    });
+
+
+   */
 
 
 }
