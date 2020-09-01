@@ -270,7 +270,7 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
  * The VideoCallCompleteGuard similarly sends the user to the /view-video screen in cases
  * where the user revisits an old /video-call screen.
  */
-exports.uploadToFirebaseStorageComplete = functions.https.onRequest((req, res) => {
+exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, res) => {
 
     /**
      *  passed in from index.js: /uploadToFirebaseStorage
