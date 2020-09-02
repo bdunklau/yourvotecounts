@@ -158,19 +158,22 @@
           </div>
         </div>
 
-        <!-- Progress updates for composition -->
-        <span  *ngIf="compositionInProgress">
+    <!-- Progress updates for composition -->
+    <span  *ngIf="compositionInProgress">
         <div class="row">
           <div class="col-12">
             <b>Coming right up!</b>
           </div>
         </div>
-        <div class="row" *ngFor="progress in roomObj['compositionProgress']">
+
+        <span *ngIf="roomObj && roomObj['compositionProgress']">
+        <div class="row" *ngFor="let progress in roomObj['compositionProgress']"> 
           <div class="col-12">
             {{progress}}
           </div>
         </div>
         </span>
+    </span>
 
 
     

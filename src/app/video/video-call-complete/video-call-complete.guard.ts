@@ -33,8 +33,8 @@ export class VideoCallCompleteGuard implements CanActivate {
 
         let roomRef = this.roomService.getRoom(next.paramMap.get('invitationId'))
         roomRef.subscribe(room => {
-            console.log('CHECK room: ', room[0].payload.doc.data())
             if(room && room.length > 0 && room[0].payload.doc.data()['CompositionSid']) {
+                console.log('CHECK room: ', room[0].payload.doc.data())
                 this.router.navigate(['/view-video', room[0].payload.doc.data()['CompositionSid']]);
                 return false
             }
@@ -44,15 +44,6 @@ export class VideoCallCompleteGuard implements CanActivate {
         console.log('CHECK return true')
         return true;
 
-        /************
-        if (user && user.hasRole(next.data.role)) {
-          return true;
-        }
-
-        // navigate to home page
-        this.router.navigate(['/']);
-        return false;
-        ************/
     }
   
 }

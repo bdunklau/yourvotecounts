@@ -106,7 +106,6 @@ exports.compose = functions.https.onRequest((req, res) => {
 
 // see compose() above
 exports.twilioCallback = functions.https.onRequest(async (req, res) => {
-    var db = admin.firestore();
 
     if(req.body.RoomSid
         && req.body.PercentageDone
@@ -115,7 +114,7 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
         && req.body.StatusCallbackEvent === 'composition-progress') {
             let compositionProgress = []
             compositionProgress.push(`Creating composition: ${req.body.PercentageDone}% (${req.body.SecondsRemaining} secs remaining...)`)
-            db.collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
+            await admin.firestore().collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
             return res.status(200).send(JSON.stringify({PercentageDone: req.body.PercentageDone, SecondsRemaining: req.body.SecondsRemaining}));
     }
     else if(req.body.RoomSid && req.body.StatusCallbackEvent && req.body.StatusCallbackEvent === 'composition-available') {
@@ -125,32 +124,32 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
         // and "cloud_host" is passed to exports.compose from video-call.component.ts:compose()
         // "cloud_host" is in the 'config' > 'settings'
         let compositionProgress = ['Creating composition: complete']
-        db.collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
+        await admin.firestore().collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
 
 
         let cloudUrl = `http://${req.query.cloud_host}/downloadComposition`
         
-        var keys = await db.collection('config').doc('keys').get()
+        var keys = await admin.firestore().collection('config').doc('keys').get()
         const twilioAccountSid = keys.data().twilio_account_sid;   
-        const twilioAuthToken = createToken() 
+        const twilioAuthToken = keys.data().twilio_auth_key;   
 
         var formData = {
             RoomSid: req.body.RoomSid,
             twilio_account_sid: twilioAccountSid,
             twilio_auth_token: twilioAuthToken,
             domain: 'video.twilio.com',
-            MediaUri: "",
+            MediaUri: req.body.MediaUri,
             CompositionSid: req.body.CompositionSid,
             Ttl: 3600,
             firebase_functions_host: req.query.firebase_functions_host,
             firebase_function: '/downloadComplete'
-         };
+        };
 
 
-         request.post(
+        request.post(
             {
                 url: cloudUrl,
-                form: formData
+                json: formData
             },
             function (err, httpResponse, body) {
                 console.log(cloudUrl+":  ", err, body);
@@ -162,8 +161,7 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
         );
 
     }
-    
-    //return res.status(200).send('ok');
+    else return res.status(200).send(JSON.stringify({"result": "else condition"}));
     
 })
 
@@ -327,7 +325,7 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
 		},
 		function (err, httpResponse, body) {
 			if(err) {
-				return res.status(500).send(JSON.stringify({"error": err, "vm url": vmUrl}));
+				return res.status(500).send(JSON.stringify({"error": err, "vm url": `http://${req.body.cloud_host}/deleteVideo`}));
 			}
 			//console.log(err, body);
 			else return res.status(200).send(JSON.stringify({"result": "ok"}));
@@ -337,7 +335,7 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
 })
 
 
-exports.deleteVideoComplete = functions.https.onRequest((req, res) => {
+exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
     /**
      * passed in from /deleteVideo
      * 

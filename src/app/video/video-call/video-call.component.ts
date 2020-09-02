@@ -490,19 +490,23 @@ export class VideoCallComponent implements OnInit {
     this.setRecordingState()
   } 
 
-  async stop_recording() {
+  stop_recording() {
     this.roomObj['recording_state'] = ""
-    await this.setRecordingState()
-    if(!this.roomObj['mark_time']) // leave_call() calls stop_recording().  There could be a non-existent or empty 'mark_time' object
+    if(!this.roomObj['mark_time']) {// leave_call() calls stop_recording().  There could be a non-existent or empty 'mark_time' object
+        console.log("there is no mark_time element")
         return
+    }
     let lastIdx = this.roomObj['mark_time'].length - 1
-    if(lastIdx == -1) 
+    if(lastIdx == -1) {
+        console.log("lastIdx = ", lastIdx)        
         return
+    }
     let lastTimePair = this.roomObj['mark_time'][lastIdx]
     if(!lastTimePair["duration"]) {
       let diff = this.getTimeDiff({first: lastTimePair['start_recording_ms'], second: new Date().getTime()})
       lastTimePair['duration'] = diff
     }
+    this.setRecordingState()
   }
 
   pause_recording() {
