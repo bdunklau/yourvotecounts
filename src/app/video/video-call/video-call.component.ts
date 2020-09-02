@@ -60,6 +60,7 @@ export class VideoCallComponent implements OnInit {
   connecting: boolean = false
   videoMuted: boolean = false
   audioMuted: boolean = false
+  compositionInProgress: boolean = false
 
 
   constructor(private route: ActivatedRoute,
@@ -233,6 +234,7 @@ export class VideoCallComponent implements OnInit {
 
 
   async compose() {
+    this.compositionInProgress = true
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',

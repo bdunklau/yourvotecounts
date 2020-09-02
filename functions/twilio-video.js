@@ -106,11 +106,16 @@ exports.compose = functions.https.onRequest((req, res) => {
 
 // see compose() above
 exports.twilioCallback = functions.https.onRequest(async (req, res) => {
+    var db = admin.firestore();
+
     if(req.body.RoomSid
         && req.body.PercentageDone
         && req.body.SecondsRemaining
         && req.body.StatusCallbackEvent
         && req.body.StatusCallbackEvent === 'composition-progress') {
+            let compositionProgress = []
+            compositionProgress.push(`Creating composition: ${req.body.PercentageDone}% (${req.body.SecondsRemaining} secs remaining...)`)
+            db.collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
             return res.status(200).send(JSON.stringify({PercentageDone: req.body.PercentageDone, SecondsRemaining: req.body.SecondsRemaining}));
     }
     else if(req.body.RoomSid && req.body.StatusCallbackEvent && req.body.StatusCallbackEvent === 'composition-available') {
@@ -119,10 +124,12 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
         // "cloud_host" is part of statusCallback in exports.compose just above this function
         // and "cloud_host" is passed to exports.compose from video-call.component.ts:compose()
         // "cloud_host" is in the 'config' > 'settings'
+        let compositionProgress = ['Creating composition: complete']
+        db.collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
+
 
         let cloudUrl = `http://${req.query.cloud_host}/downloadComposition`
         
-        var db = admin.firestore();
         var keys = await db.collection('config').doc('keys').get()
         const twilioAccountSid = keys.data().twilio_account_sid;   
         const twilioAuthToken = createToken() 
@@ -178,13 +185,16 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
       CompositionSid:  CompositionSid,
       RoomSid: req.body.RoomSid,
 	  tempEditFolder:  `/home/bdunklau/videos/${req.body.CompositionSid}`,
-      downloadComplete: true}
+      downloadComplete: true,}
      */
 
 
     cors(req, res, async () => {
         var db = admin.firestore();
-        let roomDoc = await db.collection('room').doc(req.body.RoomSid).get()        
+        let roomDoc = await db.collection('room').doc(req.body.RoomSid).get()   
+        roomDoc.data()['compositionProgress'].push("Download complete")
+        db.collection('room').doc(req.body.RoomSid).update({compositionProgress: roomDoc.data()['compositionProgress']})
+
         let settingsObj = await db.collection('config').doc('settings').get()
         
         let formData = {
@@ -194,7 +204,8 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
             roomObj: roomDoc.data(),
             firebase_functions_host: settingsObj.data().firebase_functions_host,
             cloud_host: settingsObj.data().cloud_host,
-            callbackUrl: `https://${settingsObj.data().firebase_functions_host}/cutVideoComplete` // just below this function
+            callbackUrl: `https://${settingsObj.data().firebase_functions_host}/cutVideoComplete`, // just below this function
+            compositionProgress: roomDoc.data()['compositionProgress']
         }
         let vmUrl = `http://${settingsObj.data().cloud_host}/cutVideo`
         request.post(
@@ -229,16 +240,22 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
             CompositionSid:  req.body.CompositionSid,
             RoomSid: req.body.roomObj['RoomSid'],
             firebase_functions_host: req.body.firebase_functions_host,
-            cloud_host: req.body.cloud_host  // this host, so we don't have to keep querying config/settings doc
+            cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
+            compositionProgress: compositionProgress
         }
      */
+    var db = admin.firestore()
+    var compositionProgress = req.body.compositionProgress
+    compositionProgress.push('Slicing and dicing done')
+    db.collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
 
     let formData = {
         compositionFile: req.body.compositionFile,
         CompositionSid:  req.body.CompositionSid,
         RoomSid: req.body.RoomSid,
         cloud_host: req.body.cloud_host,
-        callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete` // just below this function
+        callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete`, // just below this function
+        compositionProgress: compositionProgress
     }
 
 	request.post(
@@ -281,7 +298,8 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
             CompositionSid:  req.body.CompositionSid,
             RoomSid: req.body.RoomSid,
             firebase_functions_host: req.body.firebase_functions_host,
-            cloud_host: req.body.cloud_host  // this host, so we don't have to keep querying config/settings doc
+            cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
+		    compositionProgress: req.body.compositionProgress
         }
 
      */
@@ -289,13 +307,17 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
     
     var db = admin.firestore();
     // video-call.component.ts: monitorRoom() and VideoCallCompleteGuard both pick up on this
-    await db.collection('room').doc(req.body.RoomSid).update({CompositionSid: req.body.CompositionSid})
+    var compositionProgress = req.body.compositionProgress
+    compositionProgress.push('Uploading to storage complete')
+    await db.collection('room').doc(req.body.RoomSid).update({CompositionSid: req.body.CompositionSid, compositionProgress: compositionProgress})
 
     
     let formData = {
+		RoomSid: req.body.RoomSid,
         compositionFile: req.body.compositionFile,
         cloud_host: req.body.cloud_host,
-        callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete` // just below this function
+        callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete`, // just below this function
+        compositionProgress: compositionProgress
     }
 
 	request.post(
@@ -321,11 +343,19 @@ exports.deleteVideoComplete = functions.https.onRequest((req, res) => {
      * 
      
 	let formData = {
+		RoomSid: req.body.RoomSid,
 		filesDeleted: [req.body.compositionFile, origFile],
 		firebase_functions_host: req.body.firebase_functions_host,
-		cloud_host: req.body.cloud_host  // this host, so we don't have to keep querying config/settings doc
+		cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
+        compositionProgress: compositionProgress
 	}
      */
+    
+    var db = admin.firestore();
+    var compositionProgress = req.body.compositionProgress
+    compositionProgress.push('Video is ready!')
+    await db.collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
+
 
     let filesDeleted = _.join(req.body.filesDeleted, ',')
     let message = `Deleted these video files: ${filesDeleted}`

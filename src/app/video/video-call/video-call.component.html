@@ -85,7 +85,7 @@
         -->
         
         
-        <div class="row" *ngIf="!joined">
+        <div class="row" *ngIf="!joined && !compositionInProgress">
           <div class="col-sm-12">
             <button id="join_call" (click)="join_call()" class="btn btn-success col-sm-12"> <i class="fas fa-phone-alt"></i> &nbsp; Join </button>
             <P>&nbsp;</P>
@@ -144,19 +144,33 @@
     
         
         <div class="row" *ngIf="joined">
-          <div class="col-sm-12">                                           <!-- fa-rotate-135 is special style defined in local css file  -->
+          <div class="col-12">                                           <!-- fa-rotate-135 is special style defined in local css file  -->
             <button id="leave_call" (click)="leave_call()" class="btn btn-danger col-sm-12"><i class="fas fa-phone-alt fa-rotate-135"></i> &nbsp; Hang up </button>
             <P>&nbsp;</P>
           </div>
         </div>
         
         
-        <div class="row" *ngIf="isHost && roomObj && roomObj['call_ended_ms']">
-          <div class="col-sm-12">
+        <div class="row" *ngIf="isHost && roomObj && roomObj['call_ended_ms'] && roomObj['mark_time'] && roomObj['mark_time'].length > 0">
+          <div class="col-12">
             <button id="compose" (click)="compose()" class="btn btn-success col-sm-12"><i class="fas fa-cloud-download-alt"></i> &nbsp; Get Recording </button>
             <P>&nbsp;</P>
           </div>
         </div>
+
+        <!-- Progress updates for composition -->
+        <span  *ngIf="compositionInProgress">
+        <div class="row">
+          <div class="col-12">
+            <b>Coming right up!</b>
+          </div>
+        </div>
+        <div class="row" *ngFor="progress in roomObj['compositionProgress']">
+          <div class="col-12">
+            {{progress}}
+          </div>
+        </div>
+        </span>
 
 
     
