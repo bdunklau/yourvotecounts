@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -105,6 +105,9 @@ import { ViewVideoComponent } from './video/view-video/view-video.component';
     BrowserAnimationsModule,
     AngularFireStorageModule,
     RoundProgressModule,
+  ],
+  providers: [
+    Title
   ],
   bootstrap: [AppComponent]
 })
