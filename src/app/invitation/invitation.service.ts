@@ -3,6 +3,8 @@ import { Invitation } from './invitation.model';
 import { AngularFirestore, AngularFirestoreCollection/*, CollectionReference*/ } from '@angular/fire/firestore';
 import { UserService } from '../user/user.service';
 import { LogService } from '../log/log.service';
+import { take } from 'rxjs/operators';
+import * as _ from 'lodash'
 
 
 @Injectable({
@@ -11,6 +13,9 @@ import { LogService } from '../log/log.service';
 export class InvitationService {
   
   private ngrok = "ca5ef009dcd4.ngrok.io";
+
+  // use to pass invitation objects from guards to components
+  invitation: Invitation
 
   constructor(
     private afs: AngularFirestore,
@@ -30,7 +35,10 @@ export class InvitationService {
     }
 
     let batch = this.afs.firestore.batch();
-    var invitationRef = this.afs.collection('invitation').doc(invitation.id).ref;
+
+    // make the doc key different from the invitation id so that the invitation id can be duplicated (so we can invite more than one guest)
+    let docKey = this.afs.createId();
+    var invitationRef = this.afs.collection('invitation').doc(docKey).ref;
     batch.set(invitationRef, invitation.toObj());
     
     await batch.commit();
@@ -60,6 +68,22 @@ export class InvitationService {
   }
 
 
+  async getInvitations(invitationId: string) {
+    var observable = this.afs.collection('invitation', ref => ref.where("id", "==", invitationId)).snapshotChanges().pipe(take(1));
+    let docChangeActions = await observable.toPromise()
+    let invitations:Invitation[] = []
+    if(docChangeActions && docChangeActions.length > 0) {
+      _.each(docChangeActions, obj => {
+        let inv = obj.payload.doc.data() as Invitation
+        invitations.push(inv)
+      })
+    }
+    return invitations
+  }
+
+
+  // TODO FIXME is this fixed?
+  /************
   async getInvitation(invitationId: string) {
     var invitationDoc = await this.afs.collection('invitation').doc(invitationId).ref.get();
     if(!invitationDoc || !invitationDoc.data()) {
@@ -79,8 +103,10 @@ export class InvitationService {
     console.log('invitationDoc.data() = ', invitationDoc.data());
     return invitation;
   }
+  ***********/
 
 
+  /************
   async getInvitationMessage(displayName: string, parm: {protocol: string, host: string, pathname: string}): Promise<string> {
     var res = await this.afs.collection('config').doc('invitation_template').ref.get();
     let invitation = res.data().text.replace(/name/, displayName);
@@ -90,6 +116,7 @@ export class InvitationService {
     invitation = invitation.replace(/\\n/g, "\n");
     return invitation;
   }
+  ***********/
 
 
 

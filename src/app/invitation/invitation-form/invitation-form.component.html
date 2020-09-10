@@ -40,7 +40,7 @@
       <div class="field" style="margin-bottom:20px">
         <!-- label class="label" for="phone">Phone</label -->
         <div class="control">
-          <input
+          <input  (ngModelChange)='updateMessage()'
             class="form-control"
             type="phone"
             id="phone"
@@ -83,7 +83,9 @@
 
       
       <div class="field" style="margin-bottom:20px">
-        <textarea class="form-control" 
+        <span class="text-muted">Text Message</span>
+        <br/>
+        <textarea class="form-control"
                   id="message" 
                   formControlName="message"
                   placeholder="Text message"

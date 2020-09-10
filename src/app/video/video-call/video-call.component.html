@@ -1,173 +1,183 @@
 
+<!--
+  I DON'T WANT THE VIDEO CELLS IN A CONTAINER - I WANT THEM TO SPAN THE FULL WIDTH OF THE SCREEN
+-->
+
+<div class="row">
+
+    <!-- local participant -->
+    <div class="col" style="background-color:#000000;">
+        <div id="preview" #preview style="width:50vw;height:28vw">
+            <div *ngIf="isInitializing"><!-- We COULD display something like this: Loading preview... Please wait.   But we really don't need to.  We are only showing the local camera once we are connected to a room --></div>
+        </div>
+    </div>
+    <!-- local participant -->
+
+    <!-- remote participant -->
+    <div class="col" style="background-color:#000000">
+        <div #list></div>
+    </div>
+    <!-- remote participant -->
+</div>
+
+
+
+
+
+
+
 <div class="container">
 
-    <div class="row" *ngIf="!browserOk">
-      <div class="col">
-        <h5>Switch to Safari.  Your Mac/iOS device will not allow this page to load using Chrome.  Don't blame us - blame Apple.</h5>
+
+    
+    <div class="row" style="margin-top:10px">
+
+      <!--
+        begin:  video invitation details - who invited who and when
+      -->
+      <div class="col-12" *ngIf="invitation">
+          <div class="row">
+            <div class="col-6">
+              <span class="text-muted">Host:</span> {{invitation.creatorName}}
+            </div>
+            <div class="col-6">
+              <a href="tel:{{invitation.creatorPhone}}">{{invitation.creatorPhone | phone}}</a>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6">
+              <span class="text-muted">Guests:</span> {{invitation.displayName}}
+            </div>
+            <div class="col-6">
+              <a href="tel:{{invitation.phoneNumber}}">{{invitation.phoneNumber | phone}}</a>
+            </div>
+          </div>
+          
+          <!-- works but don't need to display the invitation date
+          <div class="row">
+            <div class="col">
+              <span class="text-muted">Date:</span> {{invitation.created_ms | date:'long'}}
+            </div>
+          </div>
+          -->
+
+          <div class="row" style="margin-top:20px;margin-bottom:50px" *ngIf="!joined && !compositionInProgress && !callEnded">
+            <div class="col" *ngIf="isHost">
+              You invited {{invitation.displayName}} to participate in a SeeSaw video call.  Click "Join" to join the call.
+            </div>
+            <div class="col" *ngIf="!isHost">
+              {{invitation.creatorName}} invited you to participate in a SeeSaw video call.  Click "Join" to join the call.
+            </div>
+          </div>
+      </div>
+      <!--
+        end:  video invitation details - who invited who and when
+      -->
+    </div>
+
+    
+
+    <!-- display true/false - it works but really just for diagnostics
+    <div class="row">
+      <div class="col-sm-12">
+        Host: {{isHost}}
+      </div>
+    </div>
+    -->
+    
+    
+    <div class="row" *ngIf="!joined && !compositionInProgress && !callEnded" style="margin-top:10px">
+      <div class="col-sm-12">
+        <button id="join_call" (click)="join_call()" class="btn btn-success col-sm-12"> <i class="fas fa-phone-alt"></i> &nbsp; Join </button>
+        <P>&nbsp;</P>
+      </div>
+    </div>
+    
+    <div class="row" *ngIf="callEnded">
+      <div class="col-sm-12">
+        <b>Call ended - was that <i>awesome</i> or what!</b>
+        <P>&nbsp;</P>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-sm-12">
+        <span *ngIf="connecting"><b>Status:</b> Connecting...</span>
+        <span *ngIf="activeRoom && activeRoom.state == 'connected'"><b>Status:</b> Connected &nbsp;&nbsp;&nbsp;</span>
+        <span *ngIf="recording_state" [ngStyle]="{'color': recording_state=='recording' ? '#ff0000' : '#000000' }" >{{recording_state}}</span>
       </div>
     </div>
     
     
+    <span *ngIf="isHost && activeRoom && activeRoom.state == 'connected'">
+    <div class="row" *ngIf="recording_state == ''">
+      <div class="col-12">
+        <button  id="start_recording" (click)="start_recording()" class="btn btn-danger col-sm-12"> <i class="fas fa-circle"></i> &nbsp; Start Recording </button>
+        <P>&nbsp;</P>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="recording_state != ''">
+      <div class="col-6">
+        <button *ngIf="recording_state == 'recording'" id="pause_recording" (click)="pause_recording()" class="btn btn-light col-12"><i class="fas fa-pause"></i> &nbsp; Pause </button>
+        <button *ngIf="recording_state == 'paused'" id="resume_recording" (click)="resume_recording()" class="btn btn-light col-12"><i class="fas fa-play"></i> &nbsp; Resume </button>
+      </div>
+
+      <div class="col-6">
+        <button *ngIf="recording_state == 'recording' || recording_state == 'paused'" id="stop_recording" (click)="stop_recording()" class="btn btn-danger col-12"><i class="fas fa-stop"></i> &nbsp; Stop Recording </button>
+        <P>&nbsp;</P>
+      </div>
+    </div>
+    </span>
     
-    <span *ngIf="okUrl && browserOk">
-        <div class="row" *ngIf="browserOk">
+
+    <div class="row" *ngIf="joined">
+      <div class="col-6">
+        <button (click)="setVideoMute(videoMuted)" class="btn btn-light col-sm-12"> 
+            <i [ngClass]="{'fas': true,
+                            'fa-video-slash': videoMuted, 
+                            'fa-video': !videoMuted}"></i> <!-- Video muted: {{videoMuted}}--> </button>
+        <P>&nbsp;</P>
+      </div>
+
+      <div class="col-6">
+        <button (click)="setAudioMute(audioMuted)" class="btn btn-light col-sm-12"> 
+            <i [ngClass]="{'fas': true,
+                            'fa-microphone-slash': audioMuted, 
+                            'fa-microphone': !audioMuted}"></i> <!-- Audio muted: {{audioMuted}} --> </button>
+        <P>&nbsp;</P>
+      </div>
+    </div>
+
+
     
-          <!--
-            begin:  video invitation details - who invited who and when
-          -->
-          <div class="col-12" *ngIf="invitation">
-              <h3>SeeSaw Invitation</h3>
-              <div class="row">
-                <div class="col-6">
-                  <span class="text-muted">To:</span> {{invitation.displayName}}
-                </div>
-                <div class="col-6">
-                  <a href="tel:{{invitation.phoneNumber}}">{{invitation.phoneNumber | phone}}</a>
-                </div>
-              </div>
-              
-              <div class="row">
-                <div class="col-6">
-                  <span class="text-muted">From:</span> {{invitation.creatorName}}
-                </div>
-                <div class="col-6">
-                  <a href="tel:{{invitation.creatorPhone}}">{{invitation.creatorPhone | phone}}</a>
-                </div>
-              </div>
-          
-              <div class="row">
-                <div class="col">
-                  <span class="text-muted">Date:</span> {{invitation.created_ms | date:'long'}}
-                </div>
-              </div>
-          
-              <div class="row" style="margin-top:20px;margin-bottom:50px">
-                <div class="col" *ngIf="isHost">
-                  You invited {{invitation.displayName}} to participate in a SeeSaw video call.  Click "Join" to join the call.
-                </div>
-                <div class="col" *ngIf="!isHost">
-                  {{invitation.creatorName}} invited you to participate in a SeeSaw video call.  Click "Join" to join the call.
-                </div>
-              </div>
-          </div>
-          <!--
-            end:  video invitation details - who invited who and when
-          -->
-
-
-
-
-
-
-
-          <!-- local participant -->
-          <div class="col">
-            <div id="preview" #preview style="width:30vw;">
-                <div *ngIf="isInitializing"><!-- We COULD display something like this: Loading preview... Please wait.   But we really don't need to.  We are only showing the local camera once we are connected to a room --></div>
-            </div>
-          </div>
-          <!-- local participant -->
-    
-          <!-- remote participant -->
-          <div class="col">
-            <div #list></div>
-          </div>
-          <!-- remote participant -->
-        </div>
+    <div class="row" *ngIf="joined">
+      <div class="col-12">                                           <!-- fa-rotate-135 is special style defined in local css file  -->
+        <button id="leave_call" (click)="leave_call()" class="btn btn-danger col-sm-12"><i class="fas fa-phone-alt fa-rotate-135"></i> &nbsp; Hang up </button>
+        <P>&nbsp;</P>
+      </div>
+    </div>
     
     
-        <!-- display true/false - it works but really just for diagnostics
-        <div class="row">
-          <div class="col-sm-12">
-            Host: {{isHost}}
-          </div>
-        </div>
-        -->
-        
-        
-        <div class="row" *ngIf="!joined && !compositionInProgress">
-          <div class="col-sm-12">
-            <button id="join_call" (click)="join_call()" class="btn btn-success col-sm-12"> <i class="fas fa-phone-alt"></i> &nbsp; Join </button>
-            <P>&nbsp;</P>
-          </div>
-        </div>
-        
-        <div class="row">
-          <div class="col-sm-12">
-            <span *ngIf="connecting"><b>Status:</b> Connecting...</span>
-            <span *ngIf="activeRoom && activeRoom.state == 'connected'"><b>Status:</b> Connected &nbsp;&nbsp;&nbsp;</span>
-            <span *ngIf="recording_state" [ngStyle]="{'color': recording_state=='recording' ? '#ff0000' : '#000000' }" >{{recording_state}}</span>
-          </div>
-        </div>
-        
-        
-        <span *ngIf="isHost && activeRoom && activeRoom.state == 'connected'">
-        <div class="row" *ngIf="recording_state == ''">
-          <div class="col-12">
-            <button  id="start_recording" (click)="start_recording()" class="btn btn-danger col-sm-12"> <i class="fas fa-circle"></i> &nbsp; Start Recording </button>
-            <P>&nbsp;</P>
-          </div>
-        </div>
+    <div class="row" *ngIf="isHost && roomObj && roomObj['call_ended_ms'] && roomObj['mark_time'] && roomObj['mark_time'].length > 0">
+      <div class="col-12">
+        <button [disabled]="compositionInProgress" id="compose" (click)="compose()" class="btn btn-success col-sm-12"><i class="fas fa-cloud-download-alt"></i> &nbsp; {{publishButtonText}} </button>
+        <P>&nbsp;</P>
+      </div>
+    </div>
 
-        <div class="row" *ngIf="recording_state != ''">
-          <div class="col-6">
-            <button *ngIf="recording_state == 'recording'" id="pause_recording" (click)="pause_recording()" class="btn btn-light col-12"><i class="fas fa-pause"></i> &nbsp; Pause </button>
-            <button *ngIf="recording_state == 'paused'" id="resume_recording" (click)="resume_recording()" class="btn btn-light col-12"><i class="fas fa-play"></i> &nbsp; Resume </button>
-          </div>
-
-          <div class="col-6">
-            <button *ngIf="recording_state == 'recording' || recording_state == 'paused'" id="stop_recording" (click)="stop_recording()" class="btn btn-danger col-12"><i class="fas fa-stop"></i> &nbsp; Stop Recording </button>
-            <P>&nbsp;</P>
-          </div>
-        </div>
-        </span>
-        
-
-        <div class="row" *ngIf="joined">
-          <div class="col-6">
-            <button (click)="setVideoMute(videoMuted)" class="btn btn-light col-sm-12"> 
-                <i [ngClass]="{'fas': true,
-                               'fa-video-slash': videoMuted, 
-                               'fa-video': !videoMuted}"></i> <!-- Video muted: {{videoMuted}}--> </button>
-            <P>&nbsp;</P>
-          </div>
-
-          <div class="col-6">
-            <button (click)="setAudioMute(audioMuted)" class="btn btn-light col-sm-12"> 
-                <i [ngClass]="{'fas': true,
-                               'fa-microphone-slash': audioMuted, 
-                               'fa-microphone': !audioMuted}"></i> <!-- Audio muted: {{audioMuted}} --> </button>
-            <P>&nbsp;</P>
-          </div>
-        </div>
-    
-    
-        
-        <div class="row" *ngIf="joined">
-          <div class="col-12">                                           <!-- fa-rotate-135 is special style defined in local css file  -->
-            <button id="leave_call" (click)="leave_call()" class="btn btn-danger col-sm-12"><i class="fas fa-phone-alt fa-rotate-135"></i> &nbsp; Hang up </button>
-            <P>&nbsp;</P>
-          </div>
-        </div>
-        
-        
-        <div class="row" *ngIf="isHost && roomObj && roomObj['call_ended_ms'] && roomObj['mark_time'] && roomObj['mark_time'].length > 0">
-          <div class="col-12">
-            <button id="compose" (click)="compose()" class="btn btn-success col-sm-12"><i class="fas fa-cloud-download-alt"></i> &nbsp; Get Recording </button>
-            <P>&nbsp;</P>
-          </div>
-        </div>
 
     <!-- Progress updates for composition -->
     <span  *ngIf="compositionInProgress">
         <div class="row">
           <div class="col-12">
-            <b>Coming right up!</b>
+            <b>Preparing your video now!</b> - We will text you when it's done
           </div>
         </div>
 
         <span *ngIf="roomObj && roomObj['compositionProgress']">
-        <div class="row" *ngFor="let progress in roomObj['compositionProgress']"> 
+        <div class="row" *ngFor="let progress of roomObj['compositionProgress']"> 
           <div class="col-12">
             {{progress}}
           </div>
@@ -175,14 +185,5 @@
         </span>
     </span>
 
-
     
-    </span>
-    
-    
-    <span *ngIf="!okUrl">
-    bad url
-    </span>
-    
-    
-    </div>
+</div>

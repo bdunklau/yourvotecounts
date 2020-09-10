@@ -1,19 +1,74 @@
-<div class="container">
-    <h5>SeeSaw Video</h5>
 
-    <div class="row" style="margin-bottom:20px"><div class="col">Here's your video</div></div>
-    
-    <!-- div class="row" style="margin-bottom:20px"><div class="col">Created:</div><div class="col-sm-11">{{composition.date_ms | date:'long'}}</div></div -->
-
-    <!-- div class="row" style="margin-bottom:20px"><div class="col">{{composition.composition_MediaUri}}</div></div -->
     <div class="row" style="margin-bottom:20px">
         <div class="col" *ngIf="videoUrl">
-            <video width="800" height="450" controls>
-                <source src="{{videoUrl}}" type="video/mp4">
-                <!-- source src="movie.ogg" type="video/ogg" -->
+            <video style="width:100vw;" controls muted playsinline preload="metadata">
+                <source src="{{videoUrl}}" type="{{videoType}}">
                 Your browser does not support the video tag.
             </video>
+
         </div>
     </div>
+    
+    <!-- sanity check...  
+    <div class="row" style="margin-bottom:20px">
+        <div class="col" *ngIf="videoUrl">
+            <a href="{{videoUrl}}">{{videoUrl}}</a>
+            <br/>{{browser}}
+        </div>
+    </div> 
+     -->
+
+<div class="container">
+
+    <!-- ==================== VIDEO TITLE LABEL AND FIELD ========================= -->
+    <div class="row" *ngIf="!editing_title">
+        <div class="col" (click)="beginEditTitle()">
+            <h3>
+                <span *ngIf="video_title">{{video_title}}</span>  
+                <span *ngIf="!video_title">(Add title)</span>  
+            </h3>
+        </div>
+    </div>
+
+    <div class="row no-gutters" *ngIf="editing_title">
+        <div class="col-10 col-lg-11">
+            <input class="form-control col-12"
+                type="text"
+                id="video_title"
+                [(ngModel)]="video_title"
+                placeholder="Title" />
+        </div>
+
+        <div class="col-2 col-lg-1">
+            <button id="save_title" (click)="save_title()" class="btn btn-success col-12" ><i class="fas fa-check"></i>  </button>
+        </div>
+    </div>
+
+
+
+    <!-- ==================== VIDEO DESCRIPTION LABEL AND FIELD ========================= -->
+    <div class="row" *ngIf="!editing_description" style="margin-top:10px">
+        <div class="col text-style" (click)="beginEditDescription()">
+                <span *ngIf="video_description">{{video_description}}</span>
+                <span *ngIf="!video_description">(Add description)</span>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="editing_description" style="margin-top:10px">
+        <div class="col">
+            <textarea class="form-control col-12"
+                      id="video_description" 
+                      placeholder="Video description"
+                      [(ngModel)]="video_description"
+                      rows="10">{{video_description}}</textarea>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="editing_description" style="margin-top:10px">
+        <div class="col">
+            <button id="save_description" (click)="save_description()" class="btn btn-success col-12"><i class="fas fa-check"></i>  Save Description </button>
+        </div>
+    </div>
+
 
 </div>

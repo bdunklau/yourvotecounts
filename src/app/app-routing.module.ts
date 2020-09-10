@@ -34,6 +34,7 @@ import { ValidInvitationGuard } from './invitation/valid-invitation.guard';
 import { ErrorPageComponent } from './util/error-page/error-page.component';
 import { ViewVideoComponent } from './video/view-video/view-video.component';
 import { VideoCallCompleteGuard } from './video/video-call-complete/video-call-complete.guard';
+import { VideoReadyGuard } from './video/video-ready/video-ready.guard';
 
 
 const routes: Routes = [
@@ -43,7 +44,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   
   { path: 'invitations', component: InvitationsComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
-  { path: 'invitation-details/:invitationId/:phoneNumber', component: InvitationDetailsComponent, canActivate: [DisabledGuard, ValidInvitationGuard], resolve: {invitation: InvitationResolver} },
+  { path: 'invitation-details/:invitationId/:phoneNumber', component: InvitationDetailsComponent, canActivate: [DisabledGuard, ValidInvitationGuard] /*, resolve: {invitation: InvitationResolver}*/ },
   { path: 'invitation-form', component: InvitationFormComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'invitation-list', component: InvitationListComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   
@@ -63,9 +64,9 @@ const routes: Routes = [
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, MinimalAccountInfoGuard], data: {role: 'admin'} },
-  { path: 'video-call/:invitationId/:phoneNumber/:join', component: VideoCallComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard], resolve: {invitation: InvitationResolver} },
-  { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard], resolve: {invitation: InvitationResolver} },
-  { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [DisabledGuard] },
+  { path: 'video-call/:invitationId/:phoneNumber/:join', component: VideoCallComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] /*, resolve: {invitation: InvitationResolver}*/ },
+  { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] /*, resolve: {invitation: InvitationResolver}*/ },
+  { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [DisabledGuard, VideoReadyGuard] },
   { path: '**', component: LoginComponent },
 ];
 

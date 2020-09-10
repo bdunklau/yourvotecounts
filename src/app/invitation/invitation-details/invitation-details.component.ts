@@ -52,6 +52,12 @@ export class InvitationDetailsComponent implements OnInit {
               private router: Router) { }
 
   async ngOnInit() {
+    // simpler...  got this from valid-invitation.guard.ts
+    this.invitation = this.invitationService.invitation
+    this.phoneNumber = this.route.params['phoneNumber']
+    this.isHost = this.invitation.creatorPhone === this.phoneNumber
+
+    /*******************
     //this.user = await this.userService.getCurrentUser();
     this.routeSubscription = this.route.data.subscribe(routeData => {
       //console.log('routeData = ', routeData);  // type:  plain ol' Object
@@ -71,6 +77,7 @@ export class InvitationDetailsComponent implements OnInit {
       //console.log('navigator = ', navigator); to see the operation sys, browser type and other stuff
       
     })
+    *******************/
 
   }
 

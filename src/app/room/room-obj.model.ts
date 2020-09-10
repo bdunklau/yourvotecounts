@@ -10,7 +10,7 @@ export class RoomObj {
     CompositionSid?: string
     RoomSid: string
     created_ms: number
-    guests: {guestName: string, guestPhone: string, joined_ms?: number}[]
+    guests?: {guestName: string, guestPhone: string, joined_ms?: number}[]
     hostId: string
     hostName: string
     hostPhone: string
@@ -18,6 +18,10 @@ export class RoomObj {
     host_left_ms?: number
     invitationId: string
     call_ended_ms?: number
+    videoUrl?: string
+    videoUrlAlt?: string
+    video_title?: string
+    video_description?: string
     //mark_time: {"start_recording_ms": number, "start_recording": string, "duration": string}[]
 
     constructor() {

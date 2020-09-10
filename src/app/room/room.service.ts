@@ -26,6 +26,9 @@ import * as firebase from 'firebase/app';
 })
 export class RoomService {
 
+  // hack for passing room from video-ready.guard to view-video.component
+  roomObj: RoomObj
+
   constructor(
     private afs: AngularFirestore,) { 
   }
@@ -74,12 +77,16 @@ export class RoomService {
     let isHost = invitation.creatorPhone === phoneNumber;
     if(isHost) {
       roomObj['host_joined_ms'] = new Date().getTime()
+      // roomObj['host_left_ms'] = null  // don't allow the host to hang up and re-join.  If the host leaves, the call is over
     }
     else {
       let guest = _.find(roomObj['guests'], obj => {
         return obj['guestPhone'] === phoneNumber
       })
-      guest['joined_ms'] = new Date().getTime()
+      if(guest) {
+        guest['joined_ms'] = new Date().getTime()
+        delete guest['left_ms']// = null // allows guest to hang up and rejoin the call
+      }
     }
     //return roomObj
   }
@@ -138,7 +145,7 @@ export class RoomService {
     // is this the host phone or the guest phone?
     let isHost = roomObj.hostPhone === phoneNumber;
     if(isHost) {
-      this.disconnectHost(roomObj, phoneNumber)
+      this.disconnectEveryone(roomObj, phoneNumber)
     }
     else {     
       this.disconnectGuest(roomObj, phoneNumber)
@@ -151,7 +158,7 @@ export class RoomService {
    * If the host is disconnecting, then all other participants should be disconnected also
    * and the call is over.
    */
-  private disconnectHost(roomObj: RoomObj, phoneNumber: string) {
+  private disconnectEveryone(roomObj: RoomObj, phoneNumber: string) {
     roomObj['host_left_ms'] = new Date().getTime()
     _.each(roomObj['guests'], guest => {
       guest['left_ms'] = new Date().getTime()
@@ -180,6 +187,28 @@ export class RoomService {
   }
 
 
+  async getRoomData(compositionSid: string) {
+    let ret = this.afs.collection('room', ref => ref.where("CompositionSid", "==", compositionSid).limit(1)).snapshotChanges().pipe(take(1))
+    let ret2 = ret.toPromise()
+    return ret2
+
+     /*******
+    var teamDoc = await this.afs.collection('room').doc(teamDocId).ref.get();
+    const team = new Team();
+    team.id = teamDoc.data().id;
+    team.name = teamDoc.data().name;
+    team.created = teamDoc.data().created;
+    team.creatorId = teamDoc.data().creatorId;
+    team.creatorName = teamDoc.data().creatorName;
+    team.creatorPhone = teamDoc.data().creatorPhone;
+    team.leaderCount = teamDoc.data().leaderCount; // e2e testing caught this omission :)
+    team.memberCount = teamDoc.data().memberCount; // e2e testing caught this omission :)
+    console.log('teamDoc.data() = ', teamDoc.data());
+    return team;
+    *********/
+  }
+
+
   /**
    * Sets the 'recording_state' attribute on the Room doc so that all connected clients
    * know whether recording is on/off/paused
@@ -188,6 +217,16 @@ export class RoomService {
    */
   setRecordingState(roomObj: RoomObj) {
     this.afs.collection('room').doc(roomObj['RoomSid']).update({recording_state: roomObj['recording_state'], mark_time: roomObj['mark_time']})
+  }
+
+
+  saveVideoTitle(roomSid: string, video_title: string) {
+      this.afs.collection('room').doc(roomSid).update({video_title: video_title})
+  }
+
+
+  saveVideoDescription(roomSid: string, video_description: string) {
+      this.afs.collection('room').doc(roomSid).update({video_description: video_description})
   }
 
 

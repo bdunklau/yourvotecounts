@@ -36,10 +36,10 @@ import * as moment from 'moment';
 })
 export class VideoCallComponent implements OnInit {
 
-  browserOk:boolean = true
+  //browserOk:boolean = true
   invitation: Invitation;
   private routeSubscription: Subscription;
-  okUrl = true;
+  //okUrl = true;
   @ViewChild('preview', {static: false}) previewElement: ElementRef;
   @ViewChild('list', {static: false}) listRef: ElementRef;
   isInitializing: boolean = true;
@@ -54,13 +54,15 @@ export class VideoCallComponent implements OnInit {
   participants: Map<Participant.SID, RemoteParticipant>;
   joined = false // whether the user has connected to the room or not
   private roomSubscription: Subscription;
-  private completedWatcher: Subscription;
+  private altRoomWatcher: Subscription;
   settingsDoc: Settings
   recording_state = "" // "", recording, paused
   connecting: boolean = false
   videoMuted: boolean = false
   audioMuted: boolean = false
   compositionInProgress: boolean = false
+  publishButtonText = "Get Recording" // we change this to "Workin' on it" at the beginning of compose()
+  callEnded: boolean = false
 
 
   constructor(private route: ActivatedRoute,
@@ -72,43 +74,28 @@ export class VideoCallComponent implements OnInit {
               private roomService: RoomService,
               private settingsService: SettingsService) { }
 
-  async ngOnInit() {
-    if(!this.isBrowserOk())
-      return;
-    this.routeSubscription = this.route.data.subscribe(routeData => {
-      console.log('routeData = ', routeData);
-      if(!routeData['invitation']) {
-        this.okUrl = false;
-        return;
-      }
-      let data = routeData['invitation'];
-      this.invitation = data.invitation
-      if(!this.invitation) {
-        this.okUrl = false;
-        return;
-      }
-      this.isHost = data.isHost ? true : false;
-      this.phoneNumber = data.phoneNumber;
-      if(data.join) {
-        // join right away
-        this.joinOnLoad = true;
-      }
 
-      //console.log('navigator = ', navigator); to see the operation sys, browser type and other stuff
-      
+  async ngOnInit() {
+    // got all this stuff from video-call-complete.guard.ts
+    this.joinOnLoad = this.route.params['join']
+    this.invitation = this.invitationService.invitation
+    this.settingsDoc = await this.settingsService.getSettingsDoc()
+    this.routeSubscription = this.route.params.subscribe(async params => {
+      this.phoneNumber = params['phoneNumber'];
+      console.log('VideoCallComponent:  this.phoneNumber = ', this.phoneNumber)
+      this.isHost = this.invitation.creatorPhone == this.phoneNumber
     })
 
-    this.settingsDoc = await this.settingsService.getSettingsDoc()
   }
 
-
+/***********
   async ngAfterViewInit() {
       // Are we coming to this page after the video call is already completed?...      
       let xxxx = this.roomService.monitorRoomByInvitationId(this.invitation.id);
-      this.roomSubscription = xxxx.subscribe(res => {
+      this.altRoomWatcher = xxxx.subscribe(res => {
           if(res.length > 0) { 
               let theRoomObj = res[0].payload.doc.data() as RoomObj
-              let videoReady: boolean = theRoomObj.CompositionSid ? true : false
+              let videoReady: boolean = theRoomObj.CompositionSid ? true : false // becomes true in twilio-video.js:cutVideoComplete()
 
               // short-circuit: redirect to /view-video if the video is already produced (just like ViewCallCompleteGuard)
               if(videoReady) {
@@ -126,15 +113,19 @@ export class VideoCallComponent implements OnInit {
           }
       }
   }
+  *************/
 
 
   ngOnDestroy() {
     if(this.routeSubscription) this.routeSubscription.unsubscribe();
     if(this.roomSubscription) this.roomSubscription.unsubscribe();
-    if(this.completedWatcher) this.completedWatcher.unsubscribe();
+    if(this.altRoomWatcher) this.altRoomWatcher.unsubscribe();
   }
 
 
+  /**
+   * "Edge case": Have to allow for guest to hang up, then join again to a call that's still live
+   */
   async join_call() {
     this.connecting = true;
     await this.initializeDevice();
@@ -178,16 +169,13 @@ export class VideoCallComponent implements OnInit {
   roomObj: RoomObj
   monitorRoom(roomSid: string) {
     // quit this other subscription now that we're monitoring the room by RoomSid
-    if(this.completedWatcher) this.completedWatcher.unsubscribe();
+    if(this.altRoomWatcher) this.altRoomWatcher.unsubscribe();
 
-    //console.log('XXXXXXXXXXXXXXXX   roomSid = ', roomSid);
     let xxxx = this.roomService.monitorRoom(roomSid);
-    //console.log('XXXXXXXXXXXXXXXX   xxxx = ', xxxx);
     this.roomSubscription = xxxx.subscribe(res => {
-      //console.log('XXXXXXXXXXXXXXXX   res = ', res)
       if(res.length > 0) { 
         this.roomObj = res[0].payload.doc.data() as RoomObj
-        let videoReady: boolean = this.roomObj.CompositionSid ? true : false
+        let videoReady: boolean = this.roomObj.CompositionSid ? true : false // becomes true in twilio-video.js:cutVideoComplete()
 
         // short-circuit: redirect to /view-video if the video is already produced (just like ViewCallCompleteGuard)
         if(videoReady) {
@@ -199,6 +187,8 @@ export class VideoCallComponent implements OnInit {
             console.log('XXXXXXXXXXXXXXXX   this.roomObj = ', this.roomObj)
             this.disconnect_all_when_host_leaves(this.roomObj)
             this.recording_state = this.roomObj['recording_state']
+
+            this.callEnded = this.roomObj['call_ended_ms'] ? true : false
         }
       }
     })
@@ -210,13 +200,15 @@ export class VideoCallComponent implements OnInit {
     if(!roomObj || !roomObj['guests'] || roomObj['guests'].length === 0) {
       return
     } 
-    let me = _.find(this.roomObj['guests'], guest => {
-      return guest["guestPhone"] === this.phoneNumber
-    })
-    if(me && me['left_ms']) {
+    
+    if(roomObj['host_left_ms']) {
+      console.log("forced disconnect !!!")
       const connected = this.activeRoom != null && (this.activeRoom.state == "connected" || this.activeRoom.state == "reconnecting" || this.activeRoom.state == "reconnected");
-      if(connected) this.activeRoom.disconnect();  
-      this.joined = false 
+      if(connected) {
+        this.activeRoom.disconnect();  
+        this.joined = false 
+        this.finalizePreview();
+      }
     }
 
   }
@@ -235,6 +227,7 @@ export class VideoCallComponent implements OnInit {
 
   async compose() {
     this.compositionInProgress = true
+    this.publishButtonText = "Workin' on it!..."
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
@@ -315,6 +308,8 @@ export class VideoCallComponent implements OnInit {
   }
 
 
+  /********** handled by video-call-complete.guard.ts
+   * 
   isBrowserOk() {
     let mac = navigator.appVersion.toLowerCase().indexOf('mac os x') != -1
     let chrome = navigator.appVersion.toLowerCase().indexOf('chrome') != -1
@@ -322,6 +317,7 @@ export class VideoCallComponent implements OnInit {
     this.browserOk = !wrongBrowser;
     return this.browserOk;
   }
+  ************/
 
 
   private attachRemoteTrack(track: RemoteTrack) {

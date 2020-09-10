@@ -14,7 +14,7 @@ const VideoGrant = AccessToken.VideoGrant;
 //admin.initializeApp(functions.config().firebase);
 
 
-// firebase deploy --only functions:downloadComplete,functions:generateTwilioToken,functions:compose,functions:twilioCallback,functions:cutVideoComplete,functions:uploadToFirebaseStorageComplete,functions:deleteVideoComplete
+// firebase deploy --only functions:downloadComplete,functions:generateTwilioToken,functions:compose,functions:twilioCallback,functions:cutVideoComplete,functions:uploadToFirebaseStorageComplete,functions:deleteVideoComplete,functions:createHlsComplete,functions:uploadToFirebaseStorageComplete,functions:deleteVideoComplete
 
 
 
@@ -142,7 +142,8 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
             CompositionSid: req.body.CompositionSid,
             Ttl: 3600,
             firebase_functions_host: req.query.firebase_functions_host,
-            firebase_function: '/downloadComplete'
+            firebase_function: '/downloadComplete',
+            website_domain_name: req.query.website_domain_name
         };
 
 
@@ -153,15 +154,44 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
             },
             function (err, httpResponse, body) {
                 console.log(cloudUrl+":  ", err, body);
+                /**** TODO FIXME can't send 500's back to twilio - only 200's
+                 * Figure something else out
+                 * see:   https://www.twilio.com/console/debugger/NO92750e021280500fc4e1bfd304feac53
                 if(err) {
                     return res.status(500).send({error: err});
                 }
-                else return res.status(200).send('ok');
+                *****/
+                return res.status(200).send('ok');
             }
         );
 
     }
-    else return res.status(200).send(JSON.stringify({"result": "else condition"}));
+    else {
+        console.log("got the else condition:  req.body = ", req.body)
+        console.log("got the else condition:  req.query = ", req.query)
+        return res.status(200).send(JSON.stringify({"result": "else condition"}));
+
+        /********************************
+         FYI - here is a post that got captured by this else block
+
+         req.body =  { RoomSid: 'RMd492394235f4202b5de5f89c3f02df76',
+  CompositionSid: 'CJ67fdd76b78de2a9ec31700019014f5e8',
+  StatusCallbackEvent: 'composition-started',
+  Timestamp: '2020-09-02T15:29:19.010Z',
+  AccountSid: 'ACce7e5e5cbf309ac4eb81b6579793a1b1',
+  CompositionUri: '/v1/Compositions/CJ67fdd76b78de2a9ec31700019014f5e8' } 
+
+        req.query =  { room_name: 'qabiBC09OSbFiT6VWiqT',
+  firebase_functions_host: 'us-central1-yourvotecounts-bd737.cloudfunctions.net',
+  website_domain_name: 'seesaw.video',
+  cloud_host: '34.68.114.174:7000' }
+  
+
+         ********************************/
+
+
+
+    } // end the final else condition
     
 })
 
@@ -183,7 +213,8 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
       CompositionSid:  CompositionSid,
       RoomSid: req.body.RoomSid,
 	  tempEditFolder:  `/home/bdunklau/videos/${req.body.CompositionSid}`,
-      downloadComplete: true,}
+      downloadComplete: true,
+	  website_domain_name: req.body.website_domain_name}
      */
 
 
@@ -192,6 +223,18 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
         let roomDoc = await db.collection('room').doc(req.body.RoomSid).get()   
         roomDoc.data()['compositionProgress'].push("Download complete")
         db.collection('room').doc(req.body.RoomSid).update({compositionProgress: roomDoc.data()['compositionProgress']})
+        
+
+        if(req.body.stop) {
+            // let's us stop early when testing
+            return res.status(200).send(JSON.stringify({"result": "ok", "stopped early": "true"}));
+        }
+
+        // capture phone numbers in a list for the very end when we sms everyone in /deleteVideoComplete below
+        let phones = _.map(roomDoc.data().guests, guest => {
+            return guest['guestPhone']
+        })
+        phones.push(roomDoc.data()['hostPhone'])
 
         let settingsObj = await db.collection('config').doc('settings').get()
         
@@ -200,10 +243,12 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
             tempEditFolder: req.body.tempEditFolder,
             CompositionSid:  req.body.CompositionSid,
             roomObj: roomDoc.data(),
+            phones: phones,
             firebase_functions_host: settingsObj.data().firebase_functions_host,
             cloud_host: settingsObj.data().cloud_host,
             callbackUrl: `https://${settingsObj.data().firebase_functions_host}/cutVideoComplete`, // just below this function
-            compositionProgress: roomDoc.data()['compositionProgress']
+            compositionProgress: roomDoc.data()['compositionProgress'],
+            website_domain_name: req.body.website_domain_name
         }
         let vmUrl = `http://${settingsObj.data().cloud_host}/cutVideo`
         request.post(
@@ -212,11 +257,15 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
                 json: formData // 'json' attr name is KEY HERE, don't use 'form'
             },
             function (err, httpResponse, body) {
+                /**** TODO FIXME can't send 500's back to twilio - only 200's
+                 * Figure something else out
+                 * see:   https://www.twilio.com/console/debugger/NO92750e021280500fc4e1bfd304feac53
                 if(err) {
                     return res.status(500).send(JSON.stringify({"error": err, "vm url": vmUrl}));
                 }
-                //console.log(err, body);
-                else return res.status(200).send(JSON.stringify({"result": "ok"}));
+                **********/
+                console.log(err, body);
+                return res.status(200).send(JSON.stringify({"result": "ok"}));
             }
         );
     })
@@ -234,42 +283,129 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
      * 
      
         let formData = {
+		    outputFile: outputFile,
             compositionFile: compositionFile,
             CompositionSid:  req.body.CompositionSid,
             RoomSid: req.body.roomObj['RoomSid'],
+	     	phones: req.body.phones,
             firebase_functions_host: req.body.firebase_functions_host,
             cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
-            compositionProgress: compositionProgress
+            compositionProgress: compositionProgress,
+		    website_domain_name: req.body.website_domain_name
         }
      */
     var db = admin.firestore()
     var compositionProgress = req.body.compositionProgress
-    compositionProgress.push('Slicing and dicing done')
-    db.collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
+    compositionProgress.push('slicing and dicing...')
+    db.collection('room').doc(req.body.RoomSid)
+        .update({
+            compositionProgress: compositionProgress
+        })
+
+
+    if(req.body.stop) {
+        // let's us stop early when testing
+        return res.status(200).send(JSON.stringify({"result": "ok", "stopped early": "true"}));
+    }
 
     let formData = {
+		outputFile: req.body.outputFile,
         compositionFile: req.body.compositionFile,
         CompositionSid:  req.body.CompositionSid,
         RoomSid: req.body.RoomSid,
+		tempEditFolder: req.body.tempEditFolder,
+		phones: req.body.phones,
         cloud_host: req.body.cloud_host,
-        callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete`, // just below this function
-        compositionProgress: compositionProgress
+        firebase_functions_host: req.body.firebase_functions_host,
+        //callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete`, // just below this function
+        callbackUrl: `https://${req.body.firebase_functions_host}/createHlsComplete`, // just below this function
+        compositionProgress: compositionProgress,
+        website_domain_name: req.body.website_domain_name
     }
 
+	request.post(
+		{
+			url: `http://${req.body.cloud_host}/createHls`, // `http://${req.body.cloud_host}/uploadToFirebaseStorage`, 
+			json: formData // 'json' attr name is KEY HERE, don't use 'form'
+		},
+		function (err, httpResponse, body) {
+            /**** TODO FIXME can't send 500's back to twilio - only 200's
+             * Figure something else out
+             * see:   https://www.twilio.com/console/debugger/NO92750e021280500fc4e1bfd304feac53
+			if(err) {
+				return res.status(500).send(JSON.stringify({"error": err, "vm url": vmUrl}));
+            }
+            *****/
+			console.log(err, body);
+			return res.status(200).send(JSON.stringify({"result": "ok"}));
+		}
+	);
+
+})
+
+
+exports.createHlsComplete = functions.https.onRequest(async (req, res) => { 
+
+    /**
+        called from /createHls
+        
+        let formData = {
+		    outputFile: req.body.outputFile,
+			compositionFile: req.body.compositionFile,
+			uploadFiles: uploadFiles,
+			CompositionSid:  req.body.CompositionSid,
+			RoomSid: req.body.RoomSid,
+			tempEditFolder: req.body.tempEditFolder,
+			phones: req.body.phones,
+			firebase_functions_host: req.body.firebase_functions_host,
+			cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
+			compositionProgress: req.body.compositionProgress,
+			website_domain_name: req.body.website_domain_name
+		}
+		if(req.body.stop) formData['stop'] = true
+
+     */
+    
+
+    if(req.body.stop) {
+        // let's us stop early when testing
+        return res.status(200).send(JSON.stringify({"result": "ok", "stopped early": "true", "video files": req.body.uploadedFiles}));
+    }
+
+
+    let formData = {
+        outputFile: req.body.outputFile,
+        compositionFile: req.body.compositionFile,
+        uploadFiles: req.body.uploadFiles,
+        CompositionSid:  req.body.CompositionSid,
+        RoomSid: req.body.RoomSid,
+        tempEditFolder: req.body.tempEditFolder,
+        phones: req.body.phones,
+        firebase_functions_host: req.body.firebase_functions_host,
+        cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
+        callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete`, // just below this function
+        compositionProgress: req.body.compositionProgress,
+        website_domain_name: req.body.website_domain_name
+    }
+    
+    
 	request.post(
 		{
 			url: `http://${req.body.cloud_host}/uploadToFirebaseStorage`, 
 			json: formData // 'json' attr name is KEY HERE, don't use 'form'
 		},
 		function (err, httpResponse, body) {
+            /**** TODO FIXME can't send 500's back to twilio - only 200's
+             * Figure something else out
+             * see:   https://www.twilio.com/console/debugger/NO92750e021280500fc4e1bfd304feac53
 			if(err) {
 				return res.status(500).send(JSON.stringify({"error": err, "vm url": vmUrl}));
-			}
-			//console.log(err, body);
-			else return res.status(200).send(JSON.stringify({"result": "ok"}));
+            }
+            *****/
+			console.log(err, body);
+			return res.status(200).send(JSON.stringify({"result": "ok"}));
 		}
 	);
-
 })
 
 
@@ -286,19 +422,28 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
  * where the user revisits an old /video-call screen.
  */
 exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, res) => {
+    //var shortcircuit = true
+	//if(shortcircuit) return res.status(200).send(JSON.stringify({"result": "ok"})); // short-circuit this whole function
 
     /**
      *  passed in from index.js: /uploadToFirebaseStorage
       
       
         let formData = {
-            compositionFile: req.body.compositionFile,
+            outputFile: req.body.outputFile, 
+            uploadFiles: req.body.uploadFiles,
+            compositionFile: req.body.compositionFile, 
             CompositionSid:  req.body.CompositionSid,
             RoomSid: req.body.RoomSid,
+            phones: req.body.phones,
+            //videoUrl: signedUrl,
             firebase_functions_host: req.body.firebase_functions_host,
             cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
-		    compositionProgress: req.body.compositionProgress
+            compositionProgress: req.body.compositionProgress,
+            website_domain_name: req.body.website_domain_name
         }
+        if(req.body.stop) formData['stop'] = true
+
 
      */
 
@@ -306,16 +451,37 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
     var db = admin.firestore();
     // video-call.component.ts: monitorRoom() and VideoCallCompleteGuard both pick up on this
     var compositionProgress = req.body.compositionProgress
-    compositionProgress.push('Uploading to storage complete')
-    await db.collection('room').doc(req.body.RoomSid).update({CompositionSid: req.body.CompositionSid, compositionProgress: compositionProgress})
+    compositionProgress.push('Uploading to the cloud :)')
+    let videoUrl = `https://storage.googleapis.com/yourvotecounts-bd737.appspot.com/${req.body.CompositionSid}/${req.body.CompositionSid}.m3u8`
+    let videoUrlAlt = `https://storage.googleapis.com/yourvotecounts-bd737.appspot.com/${req.body.CompositionSid}/${req.body.CompositionSid}-output.mp4`
+    //let videoUrl = req.body.videoUrl // if it was a signed url
+    await db.collection('room').doc(req.body.RoomSid)
+            .update({
+                compositionProgress: compositionProgress,
+                CompositionSid: req.body.CompositionSid, // <- video-call-component.ts redirects the user to /view-video when this is set
+                videoUrl: videoUrl,
+                videoUrlAlt: videoUrlAlt
+            })
 
+    if(req.body.stop) {
+        // let's us stop early when testing
+        return res.status(200).send(JSON.stringify({"result": "ok", "stopped early": "true", "uploaded files": req.body.uploadFiles}));
+    }
     
     let formData = {
+        outputFile: req.body.outputFile,
+        uploadFiles: req.body.uploadFiles,
 		RoomSid: req.body.RoomSid,
+        CompositionSid:  req.body.CompositionSid,
         compositionFile: req.body.compositionFile,
+        videoUrl: videoUrl,
+        videoUrlAlt: videoUrlAlt,
+        phones: req.body.phones,
         cloud_host: req.body.cloud_host,
+        firebase_functions_host: req.body.firebase_functions_host,
         callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete`, // just below this function
-        compositionProgress: compositionProgress
+        compositionProgress: compositionProgress,
+        website_domain_name: req.body.website_domain_name
     }
 
 	request.post(
@@ -324,28 +490,44 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
 			json: formData // 'json' attr name is KEY HERE, don't use 'form'
 		},
 		function (err, httpResponse, body) {
+            /**** TODO FIXME can't send 500's back to twilio - only 200's
+             * Figure something else out
+             * see:   https://www.twilio.com/console/debugger/NO92750e021280500fc4e1bfd304feac53
 			if(err) {
 				return res.status(500).send(JSON.stringify({"error": err, "vm url": `http://${req.body.cloud_host}/deleteVideo`}));
-			}
-			//console.log(err, body);
-			else return res.status(200).send(JSON.stringify({"result": "ok"}));
+            }
+            *********/
+			console.log(err, body);
+			return res.status(200).send(JSON.stringify({"result": "ok"}));
 		}
 	);
 
 })
 
 
+/**
+ * What about deleting the video stored on twilio - we aren't doing that yet
+ * ...and delete the individual audiot and video recordings on twilio also
+ */
 exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
+    //var shortcircuit = true
+	//if(shortcircuit) return res.status(200).send(JSON.stringify({"result": "ok"})); // short-circuit this whole function
+    
     /**
      * passed in from /deleteVideo
      * 
      
 	let formData = {
 		RoomSid: req.body.RoomSid,
-		filesDeleted: [req.body.compositionFile, origFile],
+		CompositionSid:  req.body.CompositionSid,
+		videoUrl: req.body.videoUrl,
+		videoUrlAlt: req.body.videoUrlAlt,
+		phones: req.body.phones,
+		filesDeleted: deleteThese,
 		firebase_functions_host: req.body.firebase_functions_host,
 		cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
-        compositionProgress: compositionProgress
+		compositionProgress: req.body.compositionProgress,
+        website_domain_name: req.body.website_domain_name
 	}
      */
     
@@ -354,6 +536,26 @@ exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
     compositionProgress.push('Video is ready!')
     await db.collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
 
+    
+    /**
+     * Send SMS message to all participants - provide link to /view-video page
+     * 
+     * write to /sms/{id} - that will trigger twilio-sms.js:sendSms()
+     */
+    let videoUrl = `https://${req.body.website_domain_name}/view-video/${req.body.CompositionSid}`
+    _.each(req.body.phones, phone => {
+        // don't need to await, right?
+        db.collection('sms').add({
+            from: '+12673314843', 
+            to: phone, 
+            //mediaUrl: string, // do we need this? 
+            message: `YeeHaw!! Your video is ready!  Check it out...\n\n${videoUrl}\n\nPlease don't thank us by replying to this text.  This number is not being monitored.`,
+            date: new Date(),
+            date_ms: new Date().getTime(),
+            RoomSid: req.body.RoomSid,              // so we can query/delete later on
+            CompositionSid: req.body.CompositionSid
+        })
+    })
 
     let filesDeleted = _.join(req.body.filesDeleted, ',')
     let message = `Deleted these video files: ${filesDeleted}`

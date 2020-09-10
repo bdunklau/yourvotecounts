@@ -1,5 +1,7 @@
 a:hover, .fa-bars:hover {cursor: pointer}
 
+.gray { color:#555555 }
+
 .nav-heading {
   background-color: #002699;
   color:#ababab;

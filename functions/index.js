@@ -38,6 +38,7 @@ exports.compose = twilio_video.compose
 exports.twilioCallback = twilio_video.twilioCallback
 exports.downloadComplete = twilio_video.downloadComplete
 exports.cutVideoComplete = twilio_video.cutVideoComplete
+exports.createHlsComplete = twilio_video.createHlsComplete
 exports.uploadToFirebaseStorageComplete = twilio_video.uploadToFirebaseStorageComplete
 exports.deleteVideoComplete = twilio_video.deleteVideoComplete
 

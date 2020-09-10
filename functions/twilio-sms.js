@@ -33,6 +33,16 @@ var addCountryCode = function(phone) {
 }
 
 
+/**
+ * NOT SURE I LIKE DOING IT THIS WAY
+ * Pro's: we have a record of the text message that was sent
+ * Con's: we now have to deal with these records
+ * 
+ * WOULD IT BE BETTER TO HAVE AN HTTPS FUNCTION that listens for GETS/POSTS and have those web requests trigger the same code as below?
+ * 
+ * MAYBE KEEP THIS THE WAY IT IS... At some point, we're going to want to review the messages that were
+ * send.  If we trigger by http calls, we won't be able to see what was sent
+ */
 // triggered from  sms.service.ts
 exports.sendSms = functions.firestore.document('sms/{id}').onCreate(async (snap, context) => {
   let keys = await getKeys();
