@@ -18,7 +18,8 @@ import { Invitation } from '../invitation/invitation.model';
 import { take } from 'rxjs/operators';
 //import { Observable } from 'rxjs';
 import * as _ from 'lodash';
-import * as firebase from 'firebase/app';
+import { Subject } from 'rxjs';
+import { Official } from '../civic/officials/view-official/view-official.component'
 
 
 @Injectable({
@@ -28,6 +29,8 @@ export class RoomService {
 
   // hack for passing room from video-ready.guard to view-video.component
   roomObj: RoomObj
+  official_selected = new Subject<Official>()
+  official_deleted = new Subject<Official>()
 
   constructor(
     private afs: AngularFirestore,) { 
@@ -37,7 +40,6 @@ export class RoomService {
   saveRoom(roomObj: any) {
     // How do we keep from overwriting data when the second person joins?
     // see video-call.component.ts:join_call()
-    console.log('YYYYYYYYYYYY roomObj = ', roomObj)
     this.afs.collection('room').doc(roomObj['RoomSid']).set(roomObj)
   }
 
@@ -229,6 +231,32 @@ export class RoomService {
       this.afs.collection('room').doc(roomSid).update({video_description: video_description})
   }
 
+
+  setOfficials(room: RoomObj) {
+      this.afs.collection('room').doc(room.RoomSid).update({officials: room.officials})
+  }
+
+
+  //  https://github.com/bdunklau/drp-aws/blob/master/drp-client/src/app/charge.service.ts
+  /**
+   * view-video.component.ts picks up these officials in listenForOfficials()
+   */
+  // listenForOfficials() {
+  //     return this.officials_selected // field accessed directly because chrome was saying listenForOfficials() wasn't recognized
+  // }
+
+  /**
+   * view-official.component.ts calls this - passes the selected officials here
+   * view-video.component.ts picks up these officials in listenForOfficials()
+   * @param officials 
+   */
+  officialSelected(official: Official) {
+      this.official_selected.next(official);
+  }
+
+  officialDeleted(official: Official) {
+      this.official_deleted.next(official)
+  }
 
 
 }

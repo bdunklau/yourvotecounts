@@ -1,7 +1,7 @@
 
     <div class="row" style="margin-bottom:20px">
-        <div class="col" *ngIf="videoUrl">
-            <video style="width:100vw;" controls muted playsinline preload="metadata">
+        <div class="col" *ngIf="videoUrl" style="background-color:#000000">
+            <video style="width:100vw;" controls playsinline preload="metadata">
                 <source src="{{videoUrl}}" type="{{videoType}}">
                 Your browser does not support the video tag.
             </video>
@@ -18,7 +18,7 @@
     </div> 
      -->
 
-<div class="container">
+<div class="container" style="margin-bottom:32px">
 
     <!-- ==================== VIDEO TITLE LABEL AND FIELD ========================= -->
     <div class="row" *ngIf="!editing_title">
@@ -71,4 +71,31 @@
     </div>
 
 
+    <div class="row" style="margin-top:10px" *ngIf="isHost || isGuest">
+        <div class="col">
+            <button id="mybtn1" class="btn btn-primary col-12" (click)="openOfficialDialog()"> <i class="fas fa-user-plus"></i> Add Elected Official  </button>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px" *ngFor="let official of room.officials">
+        <div class="col">
+            <hr/>
+            <app-view-official [canDelete]="isHost || isGuest" [official]="official"></app-view-official>
+        </div>
+    </div>
+
+    
+
 </div>
+
+
+
+
+<div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': translated}">   
+                
+    <a href="javascript:void(0)" class="pull-right" (click)="translated = !translated"><i class="fa fa-close"></i></a>   
+    <app-search-officials></app-search-officials>
+  
+</div> 
+

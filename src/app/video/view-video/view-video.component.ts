@@ -8,6 +8,8 @@ import { UserService } from '../../user/user.service';
 import { FirebaseUserModel } from 'src/app/user/user.model';
 import * as _ from 'lodash'
 import { BrowserModule, Title } from '@angular/platform-browser';
+import { Official } from '../../civic/officials/view-official/view-official.component'
+
 
 
 @Component({
@@ -31,12 +33,19 @@ export class ViewVideoComponent implements OnInit {
     editing_title = false
     editing_description = false
     editing_allowed = false // if logged in and host or guest of video
+    collapsed = false
+    translated = false
+    private official_selected_sub: Subscription
+    private official_deleted_sub: Subscription
+    isHost = false
+    isGuest = false
 
 
     constructor(private afStorage: AngularFireStorage,
                 private roomService: RoomService,
                 private userService: UserService,
                 private titleService: Title,
+                //private _modalService: NgbModal,
                 private route: ActivatedRoute) { }
 
 
@@ -58,10 +67,13 @@ export class ViewVideoComponent implements OnInit {
         if(this.room.video_description) this.video_description = this.room.video_description
         let user = await this.userService.getCurrentUser()
         let allowed = this.allowedToEdit(user)
-        console.log('allowed: ', allowed)
+        console.log('this.room: ', this.room)
         if(allowed) {
             this.editing_allowed = true
         }
+        this.listenForOfficials()
+        this.isHost = this.room.isHost(user)
+        this.isGuest = this.room.isGuest(user)
     }
 
     private safari():boolean {
@@ -76,7 +88,8 @@ export class ViewVideoComponent implements OnInit {
     }
 
     ngOnDestroy() {
-      // if(this.routeSubscription) this.routeSubscription.unsubscribe();
+        if(this.official_selected_sub) this.official_selected_sub.unsubscribe();
+        if(this.official_deleted_sub) this.official_deleted_sub.unsubscribe();
     }
     
     async ngAfterViewInit() {
@@ -126,7 +139,50 @@ export class ViewVideoComponent implements OnInit {
     
     setDocTitle(title: string) {
         this.titleService.setTitle(title);
-   }
+    }
+
+
+    // opens a modal to /search-officials
+    openOfficialDialog() {
+        // this.showOkCancel(function() {console.log('callback called')})
+        //this.collapsed = true
+        this.translated = true
+    }
+
+    
+    private listenForOfficials() {
+        let self = this;
+  
+        this.official_selected_sub = this.roomService.official_selected.subscribe({
+            next: function(official:Official) {
+                if(!self.room.officials) self.room.officials = []
+                self.room.officials.push(official)
+                self.roomService.setOfficials(self.room)
+                //console.log('self.room.officials = ', self.room.officials)
+                // now close the search-officials.component.ts slide up footer
+                self.translated = false
+            },
+            error: function(value) {
+            },
+            complete: function() {
+            }
+        }); 
+
+
+        this.official_deleted_sub = this.roomService.official_deleted.subscribe({
+            next: function(official:Official) {
+                _.remove(self.room.officials, (off:Official) => {
+                    return off.name === official.name
+                })
+                self.roomService.setOfficials(self.room)
+                //console.log('self.room.officials = ', self.room.officials)
+            },
+            error: function(value) {
+            },
+            complete: function() {
+            }
+        })
+    }
 
 
 }

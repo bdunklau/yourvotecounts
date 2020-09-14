@@ -1,0 +1,21 @@
+.twitter_color { background-color:#00acee }
+
+.youtube_color { background-color:#c4302b }
+
+.instagram_color { background-color:##E1306C } 
+
+.facebook_color { background-color:#3b5998 }
+
+
+.circular--portrait {
+    position: relative;
+    width: 75px;
+    height: 75px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+  
+.circular--portrait img {
+    width: 100%;
+    height: auto;
+}

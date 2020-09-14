@@ -51,7 +51,12 @@ export class InvitationService {
   }
 
 
-  /* async */ deleteInvitation(invitation: Invitation) {
+
+  /**
+   * THIS DOESN'T WORK ANYMORE BECAUSE invitation.id IS NOT THE DOC ID ANYMORE
+   */
+  // TODO FIXME
+  /* async */ deleteInvitation_needs_fixing(invitation: Invitation) {
     let batch = this.afs.firestore.batch();
     var invitationRef = this.afs.collection('invitation').doc(invitation.id).ref;
     batch.delete(invitationRef);
@@ -59,6 +64,11 @@ export class InvitationService {
     /* await */ batch.commit();
     this.log.i('deleted '+invitation.id);
     //return await this.getTeamData(team_member.teamDocId);
+  }
+
+
+  deleteInvitation(docId: string) {
+      this.afs.collection('invitation').doc(docId).update({deleted_ms: new Date().getTime()})
   }
 
 
@@ -75,11 +85,24 @@ export class InvitationService {
     if(docChangeActions && docChangeActions.length > 0) {
       _.each(docChangeActions, obj => {
         let inv = obj.payload.doc.data() as Invitation
+        inv.docId = obj.payload.doc.id
         invitations.push(inv)
       })
     }
     return invitations
   }
+
+
+  /**
+   * Originally created for video-call.component.ts so that we could send the user to /invitation-deleted
+   * if the host ever deletes an invitation
+   * @param invitationId 
+   */
+  monitorInvitation(docId: string) {      
+      var retThis = this.afs.collection('invitation').doc(docId).snapshotChanges();
+      return retThis;
+  }
+
 
 
   // TODO FIXME is this fixed?

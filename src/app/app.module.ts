@@ -51,6 +51,12 @@ import { InvitationDetailsComponent } from './invitation/invitation-details/invi
 import { VideoCallComponent } from './video/video-call/video-call.component';
 import { ErrorPageComponent } from './util/error-page/error-page.component';
 import { ViewVideoComponent } from './video/view-video/view-video.component';
+import { SearchOfficialsComponent } from './civic/officials/search-officials/search-officials.component';
+import { GooglePlaceModule } from "ngx-google-places-autocomplete";
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { ViewOfficialComponent } from './civic/officials/view-official/view-official.component';
+import { ClipboardModule } from 'ngx-clipboard';
+import { InvitationDeletedComponent } from './invitation/invitation-deleted/invitation-deleted.component';
 
 
 @NgModule({
@@ -90,6 +96,9 @@ import { ViewVideoComponent } from './video/view-video/view-video.component';
     VideoCallComponent,
     ErrorPageComponent,
     ViewVideoComponent,
+    SearchOfficialsComponent,
+    ViewOfficialComponent,
+    InvitationDeletedComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
@@ -105,6 +114,9 @@ import { ViewVideoComponent } from './video/view-video/view-video.component';
     BrowserAnimationsModule,
     AngularFireStorageModule,
     RoundProgressModule,
+    GooglePlaceModule,
+    MatButtonToggleModule,
+    ClipboardModule
   ],
   providers: [
     Title

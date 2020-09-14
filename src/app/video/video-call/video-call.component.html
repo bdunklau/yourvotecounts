@@ -108,12 +108,20 @@
         <span *ngIf="recording_state" [ngStyle]="{'color': recording_state=='recording' ? '#ff0000' : '#000000' }" >{{recording_state}}</span>
       </div>
     </div>
+
+    
+    <div class="row" *ngIf="recording_state == ''">
+      <div class="col-12">
+        <button [hidden]="!canDelete"  (click)="delete_invitation()" class="btn btn-danger col-12"> <i class="fas fa-times"></i> Delete Invitation </button>
+        <P>&nbsp;</P>
+      </div>
+    </div>
     
     
     <span *ngIf="isHost && activeRoom && activeRoom.state == 'connected'">
     <div class="row" *ngIf="recording_state == ''">
       <div class="col-12">
-        <button  id="start_recording" (click)="start_recording()" class="btn btn-danger col-sm-12"> <i class="fas fa-circle"></i> &nbsp; Start Recording </button>
+        <button  id="start_recording" (click)="start_recording()" class="btn btn-danger col-12"> <i class="fas fa-circle"></i> &nbsp; Start Recording </button>
         <P>&nbsp;</P>
       </div>
     </div>

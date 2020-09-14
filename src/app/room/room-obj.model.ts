@@ -1,3 +1,9 @@
+
+import { Official } from '../civic/officials/view-official/view-official.component'
+import * as _ from 'lodash'
+import { FirebaseUserModel } from '../user/user.model'
+
+
 export class RoomObj {
     
 /**
@@ -23,10 +29,25 @@ export class RoomObj {
     video_title?: string
     video_description?: string
     //mark_time: {"start_recording_ms": number, "start_recording": string, "duration": string}[]
+    officials?: Official[]
 
     constructor() {
 
     }
 
+
+    isHost(user: FirebaseUserModel) {
+        return user && this.hostPhone == user.phoneNumber
+    }
+
+    isGuest(user: FirebaseUserModel) {
+        if(!user || !this.guests || this.guests.length == 0)
+            return false
+        let found = _.find(this.guests, guest => {
+            return guest.guestPhone == user.phoneNumber
+        })
+        if(found) return true
+        else return false
+    }
     
 }

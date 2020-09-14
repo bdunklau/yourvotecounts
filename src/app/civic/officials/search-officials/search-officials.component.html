@@ -1,0 +1,112 @@
+<div style="padding:10px"> 
+    <h3>Find Elected Officials</h3> 
+
+
+    <div class="row">
+        <div class="col-12 col-lg-6" style="margin-bottom:20px">
+            <input ngx-google-places-autocomplete [options]= 
+            'options' (onAddressChange)="AddressChange($event)" class="col-12 form-control" placeholder="Residential address"/> 
+            <!-- works but not needed {{ formattedaddress }}  -->
+        </div>
+        
+
+        <div class="col-12 col-lg-6">
+            <!--
+                see:   https://material.angular.io/guide/getting-started
+                see:   https://material.angular.io/components/button-toggle/overview
+            -->
+            <mat-button-toggle-group class="btn-primary" name="officialType"  [(ngModel)]="officialType" aria-label="elected official type">
+                <mat-button-toggle class="btn-primary" value="Federal">Federal</mat-button-toggle>
+                <mat-button-toggle class="btn-primary" value="State">State</mat-button-toggle>
+                <!-- not sure the best way to get local officials -->
+                <!-- mat-button-toggle class="btn-primary" value="Local">Local</mat-button-toggle -->
+            </mat-button-toggle-group>  <!-- works but not needed {{ officialType }}  -->
+        </div>
+    </div> 
+
+
+    <div class="row" style="margin-top:20px">
+        <div class="col">
+            <button id="get_officials_button" (click)="getOfficials()" class="btn btn-success col-12"><!-- i class="fas fa-check"></i -->  Look up Officials </button>
+        </div>
+    </div>
+
+
+
+
+    <!--
+        CIVIC RESULTS
+    -->
+    <span  *ngIf="civicResult">
+        <div class="row" style="margin-top:20px">
+            <div class="col">
+                <h4>Officials</h4>
+            </div>
+        </div>
+
+        <span *ngFor="let official of civicResult.officials">
+            <hr/>
+            <app-view-official [canSelect]="true" [official]="official"></app-view-official>
+        </span>
+    </span>
+
+
+
+    <!-- NOT SURE IF normalizedInput, Divisions and Offices are needed.
+         THERE DOES SEEM TO BE SOME CORRELATION BETWEEN Division.officeIndices and Offices
+         AND BETWEEN Office.officialIndices and Officials
+         MAYBE THAT'S HOW WE KNOW WHAT ROLE AN OFFICIAL HAS.  BECAUSE WHEN YOU LOOK AT JUST THE OFFICIAL'S INFO,
+         IT DOESN'T SAY WHETHER HE IS A REP OR SENATOR OR GOVERNOR...
+
+    <div class="row" style="margin-top:20px" *ngIf="civicResult">
+        <div class="col">
+            normalizedInput: {{civicResult.normalizedInput.line1}}  {{civicResult.normalizedInput.city}}  {{civicResult.normalizedInput.state}}  {{civicResult.normalizedInput.zip}}
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:20px" *ngIf="civicResult">
+        <div class="col">
+            kind: {{civicResult.kind}}
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:20px" *ngIf="civicResult">
+        <div class="col">
+            <hr/>
+            Divisions
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:20px" *ngIf="civicResult">
+        <div class="col">
+            <div class="row"  *ngFor="let division of civicResult.divisions | keyvalue">
+                <div class="col">
+                    <BR/>{{division.key}}
+                    <BR/>&nbsp;&nbsp;&nbsp;Name: {{division.value['name']}}
+                    <BR/>&nbsp;&nbsp;&nbsp;officeIndices: {{division.value['officeIndices']}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:20px" *ngIf="civicResult">
+        <div class="col">
+            <hr/>
+            Offices
+        </div>
+    </div>
+
+    <span  *ngIf="civicResult">
+    <div class="row" style="margin-top:20px" *ngFor="let office of civicResult.offices">
+        <div class="col">
+            name: {{office.name}}
+            <br/>divisionId: {{office.divisionId}}
+            <br/>levels: <span *ngFor="let level of office.levels">{{level}} </span>
+            <br/>roles: <span *ngFor="let role of office.roles">{{role}} </span>
+            <br/>officialIndices: <span *ngFor="let officialIndice of office.officialIndices">{{officialIndice}} </span>
+        </div>
+    </div>
+    </span>
+    -->
+
+</div>  

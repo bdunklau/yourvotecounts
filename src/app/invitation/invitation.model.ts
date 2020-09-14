@@ -4,6 +4,7 @@ import { FirebaseUserModel } from '../user/user.model';
 
 // ng generate class invitation/invitation --type=model
 export class Invitation {
+    docId?: string  // the actual doc id.  See InvitationService.getInvitations(invitationId: string) 
     id: string;
     displayName: string;
     phoneNumber: string;
@@ -13,6 +14,7 @@ export class Invitation {
     creatorName: string;
     creatorPhone: string;
     message: string;
+    deleted_ms?: number
     
     constructor() {
       this.created = new Date();

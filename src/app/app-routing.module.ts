@@ -35,6 +35,10 @@ import { ErrorPageComponent } from './util/error-page/error-page.component';
 import { ViewVideoComponent } from './video/view-video/view-video.component';
 import { VideoCallCompleteGuard } from './video/video-call-complete/video-call-complete.guard';
 import { VideoReadyGuard } from './video/video-ready/video-ready.guard';
+import { SearchOfficialsComponent } from './civic/officials/search-officials/search-officials.component'
+import { SearchOfficialsGuard } from './civic/officials/search-officials/search-officials.guard'
+import { SettingsGuard } from './settings/settings.guard'
+import { InvitationDeletedComponent } from './invitation/invitation-deleted/invitation-deleted.component'
 
 
 const routes: Routes = [
@@ -45,6 +49,7 @@ const routes: Routes = [
   
   { path: 'invitations', component: InvitationsComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'invitation-details/:invitationId/:phoneNumber', component: InvitationDetailsComponent, canActivate: [DisabledGuard, ValidInvitationGuard] /*, resolve: {invitation: InvitationResolver}*/ },
+  { path: 'invitation-deleted', component: InvitationDeletedComponent },
   { path: 'invitation-form', component: InvitationFormComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'invitation-list', component: InvitationListComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   
@@ -54,6 +59,7 @@ const routes: Routes = [
   { path: 'minimal-account-info', component: MinimalAccountInfoComponent, canActivate: [AuthGuard, DisabledGuard], resolve: { user: UserResolver} },
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
   { path: 'privacy', component: PrivacyPolicyComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
+  { path: 'search-officials', component: SearchOfficialsComponent, canActivate: [SearchOfficialsGuard] },
   { path: 'sms', component: SmsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: {team: TeamResolver, user: UserResolver} },
@@ -66,7 +72,7 @@ const routes: Routes = [
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, MinimalAccountInfoGuard], data: {role: 'admin'} },
   { path: 'video-call/:invitationId/:phoneNumber/:join', component: VideoCallComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] /*, resolve: {invitation: InvitationResolver}*/ },
   { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] /*, resolve: {invitation: InvitationResolver}*/ },
-  { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [DisabledGuard, VideoReadyGuard] },
+  { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [DisabledGuard, SettingsGuard, VideoReadyGuard] },
   { path: '**', component: LoginComponent },
 ];
 

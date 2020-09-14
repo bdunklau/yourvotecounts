@@ -27,8 +27,16 @@ export class VideoReadyGuard implements CanActivate {
     let obj = await this.roomService.getRoomData(next.params.compositionSid)
     if(obj && obj.length > 0) {
       let roomObj = obj[0].payload.doc.data() as RoomObj
+
+      // hack? Don't know why functions aren't preserved when casting "as RoomObj" - so had to do this
+      let rm = new RoomObj()
+      roomObj.isHost = rm.isHost
+      roomObj.isGuest = rm.isGuest
+
+      console.log('ths.roomService.roomObj.:  ', this.roomService.roomObj)
       if(roomObj.videoUrl) {
         this.roomService.roomObj = roomObj
+
         return true;
       }
     }

@@ -54,6 +54,7 @@ export class VideoCallComponent implements OnInit {
   participants: Map<Participant.SID, RemoteParticipant>;
   joined = false // whether the user has connected to the room or not
   private roomSubscription: Subscription;
+  private invitationWatcher: Subscription;
   private altRoomWatcher: Subscription;
   settingsDoc: Settings
   recording_state = "" // "", recording, paused
@@ -63,6 +64,7 @@ export class VideoCallComponent implements OnInit {
   compositionInProgress: boolean = false
   publishButtonText = "Get Recording" // we change this to "Workin' on it" at the beginning of compose()
   callEnded: boolean = false
+  canDelete: boolean = true
 
 
   constructor(private route: ActivatedRoute,
@@ -86,6 +88,7 @@ export class VideoCallComponent implements OnInit {
       this.isHost = this.invitation.creatorPhone == this.phoneNumber
     })
 
+    this.monitorInvitation(this.invitation)
   }
 
 /***********
@@ -117,9 +120,10 @@ export class VideoCallComponent implements OnInit {
 
 
   ngOnDestroy() {
-    if(this.routeSubscription) this.routeSubscription.unsubscribe();
-    if(this.roomSubscription) this.roomSubscription.unsubscribe();
-    if(this.altRoomWatcher) this.altRoomWatcher.unsubscribe();
+    if(this.routeSubscription) this.routeSubscription.unsubscribe()
+    if(this.roomSubscription) this.roomSubscription.unsubscribe()
+    if(this.altRoomWatcher) this.altRoomWatcher.unsubscribe()
+    if(this.invitationWatcher) this.invitationWatcher.unsubscribe()
   }
 
 
@@ -127,6 +131,7 @@ export class VideoCallComponent implements OnInit {
    * "Edge case": Have to allow for guest to hang up, then join again to a call that's still live
    */
   async join_call() {
+    this.canDelete = false
     this.connecting = true;
     await this.initializeDevice();
 
@@ -166,6 +171,21 @@ export class VideoCallComponent implements OnInit {
   }
 
 
+  /**
+   * Has someone else joined this room/call ?
+   * @param roomObj 
+   */
+  private someoneHasJoined(roomObj: RoomObj) {
+      if(!roomObj) return false
+      if(!roomObj.guests) return false
+      if(roomObj.guests.length < 1) return
+      let joined = _.find(roomObj.guests, guest => {
+          return guest['joined_ms'] != null
+      })
+      return joined
+  }
+
+
   roomObj: RoomObj
   monitorRoom(roomSid: string) {
     // quit this other subscription now that we're monitoring the room by RoomSid
@@ -174,7 +194,12 @@ export class VideoCallComponent implements OnInit {
     let xxxx = this.roomService.monitorRoom(roomSid);
     this.roomSubscription = xxxx.subscribe(res => {
       if(res.length > 0) { 
+        let someoneAlreadyJoined = this.someoneHasJoined(this.roomObj)
         this.roomObj = res[0].payload.doc.data() as RoomObj
+        let someoneJoined = this.someoneHasJoined(this.roomObj)
+        let firstGuestJoined = !someoneAlreadyJoined && someoneJoined
+        this.canDelete = this.canDelete && !firstGuestJoined
+        
         let videoReady: boolean = this.roomObj.CompositionSid ? true : false // becomes true in twilio-video.js:cutVideoComplete()
 
         // short-circuit: redirect to /view-video if the video is already produced (just like ViewCallCompleteGuard)
@@ -193,6 +218,23 @@ export class VideoCallComponent implements OnInit {
       }
     })
     
+  }
+
+
+  // watch for the invitation to be deleted
+  monitorInvitation(invitation: Invitation) {
+      let xxxx = this.invitationService.monitorInvitation(invitation.docId)
+      this.invitationWatcher = xxxx.subscribe( res => {
+          console.log('res: ', res)
+          let inv = res.payload.data() as Invitation
+          if(inv.deleted_ms)
+              this.router.navigate(['/invitation-deleted'])
+      })
+  }
+
+
+  delete_invitation() {
+      this.invitationService.deleteInvitation(this.invitation.docId)
   }
 
 
