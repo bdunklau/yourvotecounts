@@ -48,7 +48,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   
   { path: 'invitations', component: InvitationsComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
-  { path: 'invitation-details/:invitationId/:phoneNumber', component: InvitationDetailsComponent, canActivate: [DisabledGuard, ValidInvitationGuard] /*, resolve: {invitation: InvitationResolver}*/ },
+  //{ path: 'invitation-details/:invitationId/:phoneNumber', component: InvitationDetailsComponent, canActivate: [DisabledGuard, ValidInvitationGuard] /*, resolve: {invitation: InvitationResolver}*/ },
   { path: 'invitation-deleted', component: InvitationDeletedComponent },
   { path: 'invitation-form', component: InvitationFormComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'invitation-list', component: InvitationListComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },

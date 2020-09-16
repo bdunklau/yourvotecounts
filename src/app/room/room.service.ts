@@ -51,21 +51,28 @@ export class RoomService {
    * @param phoneNumber the phone of the current user - compare with the phone numbers in the invitation object to tell 
    * if this person is the host or a guest 
    */
-  createRoomObj(rm: Room, invitation: Invitation, phoneNumber: string) {
+  createRoomObj(rm: Room, invitations: Invitation[], phoneNumber: string) {
     let roomObj = {        
-      RoomSid: rm.sid,
-      created_ms: new Date().getTime(),
-      hostId: invitation.creatorId,
-      hostName: invitation.creatorName,
-      hostPhone: invitation.creatorPhone,
-      invitationId: invitation.id,
-      guests: [
-        { guestName: invitation.displayName, guestPhone: invitation.phoneNumber }
-      ],
-      recording_state: '',
-      mark_time: [], // the start- and stop-recording times
+        RoomSid: rm.sid,
+        created_ms: new Date().getTime(),
+        hostId: invitations[0].creatorId,  // all these [0] values are shared by all guests
+        hostName: invitations[0].creatorName,
+        hostPhone: invitations[0].creatorPhone,
+        invitationId: invitations[0].id,
+        //guestsX: [
+        //  { guestName: invitation.displayName, guestPhone: invitation.phoneNumber }
+        //],
+        guests: _.map(invitations, invitation => {return {guestName: invitation.displayName, guestPhone: invitation.phoneNumber}}),
+        recording_state: '',
+        mark_time: [], // the start- and stop-recording times
     }
-    if(phoneNumber === invitation.phoneNumber) roomObj['guests'][0]['joined_ms'] = new Date().getTime()
+    let guest = _.find(roomObj['guests'], g => {
+        return g['guestPhone'] === phoneNumber
+    })
+    if(guest) {
+        guest['joined_ms'] = new Date().getTime()
+    }
+    //if(phoneNumber === invitation.phoneNumber) roomObj['guests'][0]['joined_ms'] = new Date().getTime()
     else roomObj['host_joined_ms'] = new Date().getTime()
     
     return roomObj;
@@ -75,8 +82,8 @@ export class RoomService {
   // the room already exists.  see video-call.component.ts:join_call()
   // the join time here is for someone OTHER than the first person to join.  The first person's join time is 
   // written when the room is created/connected to
-  addJoinTime(roomObj: any, invitation: Invitation, phoneNumber: string) {
-    let isHost = invitation.creatorPhone === phoneNumber;
+  addJoinTime(roomObj: any, invitations: Invitation[], phoneNumber: string) {
+    let isHost = invitations[0].creatorPhone === phoneNumber;
     if(isHost) {
       roomObj['host_joined_ms'] = new Date().getTime()
       // roomObj['host_left_ms'] = null  // don't allow the host to hang up and re-join.  If the host leaves, the call is over
@@ -102,7 +109,7 @@ export class RoomService {
    * @param invitation 
    * @param phoneNumber 
    */
-  async saveOnJoin(rm: Room, invitation: Invitation, phoneNumber: string) {
+  async saveOnJoin(rm: Room, invitations: Invitation[], phoneNumber: string) {
     
     let roomDocs = this.afs.collection('room', ref => ref.where("RoomSid", "==", rm.sid)).snapshotChanges().pipe(take(1));
     
@@ -117,10 +124,10 @@ export class RoomService {
       if(found) {
         // Since the room already exists, all we need to do is figure out if the user is the host or guest
         // and write the corresponding "join" time to the database
-        this.addJoinTime(roomObj, invitation, phoneNumber)
+        this.addJoinTime(roomObj, invitations, phoneNumber)
       }
       else {
-        roomObj = this.createRoomObj(rm, invitation, phoneNumber);
+        roomObj = this.createRoomObj(rm, invitations, phoneNumber);
       }
       
       this.saveRoom(roomObj);

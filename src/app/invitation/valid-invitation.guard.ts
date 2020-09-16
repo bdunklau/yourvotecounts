@@ -18,37 +18,42 @@ export class ValidInvitationGuard implements CanActivate {
   ) {}
 
   async canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Promise<boolean> {
+      next: ActivatedRouteSnapshot,
+      state: RouterStateSnapshot): Promise<boolean> {
 
-    let invId = next.params['invitationId'];
-    let phoneNumber = next.params['phoneNumber'];
+      let invId = next.params['invitationId'];
+      let phoneNumber = next.params['phoneNumber'];
 
-    //////////////////////////////////////////////////////////////////////////////
-    // INVITATION MUST EXIST
-    let invitations = await this.invitationService.getInvitations(invId)
-    if(invitations.length < 1) {
-      this.errorPageService.errorMsg = "That URL doesn't make any sense"
-      this.router.navigate(['/error-page'])
-      console.log('ValidInvitationGuard: no invitation found')
-      return false
-    }
+      //////////////////////////////////////////////////////////////////////////////
+      // INVITATION MUST EXIST
+      let invitations = await this.invitationService.getInvitations(invId)
+      if(invitations.length < 1) {
+        this.errorPageService.errorMsg = "That URL doesn't make any sense"
+        this.router.navigate(['/error-page'])
+        console.log('ValidInvitationGuard: no invitation found')
+        return false
+      }
 
 
-    ///////////////////////////////////////////////////////////////////////////////
-    // INVITATION MUST CONTAIN THE PHONE NUMBER
-    let foundInvitation = _.find(invitations, inv => {
-      return inv.creatorPhone == phoneNumber || inv.phoneNumber == phoneNumber
-    })
-    if(!foundInvitation) {
-      this.errorPageService.errorMsg = "Uh...  how'd you get *that* URL?"
-      this.router.navigate(['/error-page'])
-      console.log('ValidInvitationGuard: phone number is wrong')
-      return false
-    }
+      ///////////////////////////////////////////////////////////////////////////////
+      // INVITATION MUST CONTAIN THE PHONE NUMBER
+      /************** return all invitations now so that /video-call can display all guests
+      let foundInvitation = _.find(invitations, inv => {
+        return inv.creatorPhone == phoneNumber || inv.phoneNumber == phoneNumber
+      })
+      if(!foundInvitation) {
+        this.errorPageService.errorMsg = "Uh...  how'd you get *that* URL?"
+        this.router.navigate(['/error-page'])
+        console.log('ValidInvitationGuard: phone number is wrong')
+        return false
+      }
 
-    this.invitationService.invitation = foundInvitation
+      this.invitationService.invitation = foundInvitation
+      **********************/
     
-    return true;
+      this.invitationService.invitations = invitations // now go see VideoCallComponent
+      //console.log('this.invitationService.invitations = ', this.invitationService.invitations)
+ 
+      return true;
   }
 }

@@ -11,12 +11,14 @@
    <a [hidden]="!isLoggedIn" id="myaccount_link" class="nav-link" (click)="closeNav()" routerLink="['/myaccount']"><i class="fas fa-user-circle"></i> My Account</a>
    
    <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/invitations']"><i class="fa fa-user-plus"></i> Invitations</a>
-   <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/search-officials']"><i class="fa fa-users"></i> Elected Officials</a>
    
+   <!-- works but displays "Select" buttons that don't make sense in standalone context
+   <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/search-officials']"><i class="fa fa-users"></i> Elected Officials</a>
+   -->
    
    
    <a [hidden]="!isLoggedIn" id="teams_link" class="nav-link" (click)="closeNav()" [routerLink]="['/teams']"><i class="fa fa-users"></i> Teams</a>
-   <a [hidden]="isLoggedIn" id="login_link" class="nav-link" (click)="closeNav()" routerLink="/login"><i class="fa fa-sign-in"></i> Login</a>
+   <a [hidden]="isLoggedIn" id="login_link" class="nav-link" (click)="closeNav()" routerLink="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
    <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
 
    <div [hidden]="!isAdmin" class="nav-heading">Administration</div>
@@ -38,6 +40,7 @@
 
 <router-outlet></router-outlet>
 
+<!--
 <div id="footer">
     <div class="row no-gutters">
         <div class="col-4"><button class="col-12 btn btn-light" [routerLink]="['/']"><i class="fas fa-home"></i></button></div>
@@ -45,3 +48,4 @@
         <div class="col-4"><button class="col-12 btn btn-light" routerLink="['/myaccount']"><i class="fas fa-user"></i></button></div>
     </div>
 </div>
+-->

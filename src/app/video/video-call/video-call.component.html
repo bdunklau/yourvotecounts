@@ -3,71 +3,82 @@
   I DON'T WANT THE VIDEO CELLS IN A CONTAINER - I WANT THEM TO SPAN THE FULL WIDTH OF THE SCREEN
 -->
 
+<!-- WE EITHER SHOW THIS ROW OR THE NEXT -->
+
 <div class="row">
 
-    <!-- local participant -->
-    <div class="col" style="background-color:#000000;">
-        <div id="preview" #preview style="width:50vw;height:28vw">
-            <div *ngIf="isInitializing"><!-- We COULD display something like this: Loading preview... Please wait.   But we really don't need to.  We are only showing the local camera once we are connected to a room --></div>
-        </div>
-    </div>
-    <!-- local participant -->
+  <!-- local participant -->
+  <div class="col" style="background-color:#000000;">
+      <div id="preview" #preview style="width:40vw;">
+          <!-- gives us the black bar across the screen when no video present -->
+          <div *ngIf="isInitializing || callEnded" style="height:28vh"><!-- We COULD display something like this: Loading preview... Please wait.   But we really don't need to.  We are only showing the local camera once we are connected to a room --></div>
+      </div>
+  </div>
+  <!-- local participant -->
 
-    <!-- remote participant -->
-    <div class="col" style="background-color:#000000">
-        <div #list></div>
-    </div>
-    <!-- remote participant -->
+  <!-- remote participant -->
+  <div class="col" style="background-color:#000000">
+      <div #list></div>
+  </div>
+  <!-- remote participant -->
 </div>
 
 
 
 
 
-
-
 <div class="container">
-
-
     
     <div class="row" style="margin-top:10px">
 
       <!--
         begin:  video invitation details - who invited who and when
       -->
-      <div class="col-12" *ngIf="invitation">
+      <div class="col-12" *ngIf="invitations">
           <div class="row">
             <div class="col-6">
-              <span class="text-muted">Host:</span> {{invitation.creatorName}}
+              <span class="text-muted">Host:</span> {{invitations[0].creatorName}}
             </div>
             <div class="col-6">
-              <a href="tel:{{invitation.creatorPhone}}">{{invitation.creatorPhone | phone}}</a>
+              <a href="tel:{{invitations[0].creatorPhone}}">{{invitations[0].creatorPhone | phone}}</a>
             </div>
           </div>
 
           <div class="row">
-            <div class="col-6">
-              <span class="text-muted">Guests:</span> {{invitation.displayName}}
-            </div>
-            <div class="col-6">
-              <a href="tel:{{invitation.phoneNumber}}">{{invitation.phoneNumber | phone}}</a>
+            <div class="col-12">
+              <hr/>
+              <span class="text-muted">Guests</span>
             </div>
           </div>
+
+          <div class="row" *ngFor="let invitation of invitations">
+            <div class="col-4 col-sm-4 col-md-4">
+              {{invitation.displayName}}
+            </div>
+            <div class="col-6 col-sm-4 col-md-4" nowrap>
+              <a href="tel:{{invitation.phoneNumber}}">{{invitation.phoneNumber | phone}}</a>
+            </div>
+            <div class="col-2" style="margin-top:-5px" *ngIf="isHost"> <!--only host can delete guests-->
+              <button class="btn btn-default" (click)="delete_guest(invitation)"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+
+
           
           <!-- works but don't need to display the invitation date
           <div class="row">
             <div class="col">
-              <span class="text-muted">Date:</span> {{invitation.created_ms | date:'long'}}
+              <span class="text-muted">Date:</span> {{invitations[0].created_ms | date:'long'}}
             </div>
           </div>
           -->
 
           <div class="row" style="margin-top:20px;margin-bottom:50px" *ngIf="!joined && !compositionInProgress && !callEnded">
             <div class="col" *ngIf="isHost">
-              You invited {{invitation.displayName}} to participate in a SeeSaw video call.  Click "Join" to join the call.
+              You invited {{invitations[0].displayName}} to participate in a SeeSaw video call.  Click "Join" to join the call.
             </div>
             <div class="col" *ngIf="!isHost">
-              {{invitation.creatorName}} invited you to participate in a SeeSaw video call.  Click "Join" to join the call.
+              {{invitations[0].creatorName}} invited you to participate in a SeeSaw video call.  Click "Join" to join the call.
             </div>
           </div>
       </div>
@@ -110,7 +121,7 @@
     </div>
 
     
-    <div class="row" *ngIf="recording_state == ''">
+    <div class="row" *ngIf="isHost && recording_state == ''">
       <div class="col-12">
         <button [hidden]="!canDelete"  (click)="delete_invitation()" class="btn btn-danger col-12"> <i class="fas fa-times"></i> Delete Invitation </button>
         <P>&nbsp;</P>

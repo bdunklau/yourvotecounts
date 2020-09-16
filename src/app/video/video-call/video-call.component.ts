@@ -37,7 +37,8 @@ import * as moment from 'moment';
 export class VideoCallComponent implements OnInit {
 
   //browserOk:boolean = true
-  invitation: Invitation;
+  //invitation: Invitation;
+  invitations: Invitation[];
   private routeSubscription: Subscription;
   //okUrl = true;
   @ViewChild('preview', {static: false}) previewElement: ElementRef;
@@ -65,6 +66,7 @@ export class VideoCallComponent implements OnInit {
   publishButtonText = "Get Recording" // we change this to "Workin' on it" at the beginning of compose()
   callEnded: boolean = false
   canDelete: boolean = true
+  // me: FirebaseUserModel
 
 
   constructor(private route: ActivatedRoute,
@@ -78,17 +80,21 @@ export class VideoCallComponent implements OnInit {
 
 
   async ngOnInit() {
-    // got all this stuff from video-call-complete.guard.ts
-    this.joinOnLoad = this.route.params['join']
-    this.invitation = this.invitationService.invitation
-    this.settingsDoc = await this.settingsService.getSettingsDoc()
-    this.routeSubscription = this.route.params.subscribe(async params => {
-      this.phoneNumber = params['phoneNumber'];
-      console.log('VideoCallComponent:  this.phoneNumber = ', this.phoneNumber)
-      this.isHost = this.invitation.creatorPhone == this.phoneNumber
-    })
+      // got all this stuff from video-call-complete.guard.ts
+      //this.me = await this.userService.getCurrentUser() // this is NOT how we tell if I am the guest
+      this.joinOnLoad = this.route.params['join']
+      this.invitations = this.invitationService.invitations  // see  ValidInvitationGuard
+      //console.log('this.invitations = ', this.invitations)
+      this.settingsDoc = await this.settingsService.getSettingsDoc()
+      this.routeSubscription = this.route.params.subscribe(async params => {
+          this.phoneNumber = params['phoneNumber'];
+          console.log('VideoCallComponent:  this.phoneNumber = ', this.phoneNumber)
+          this.isHost = this.invitations[0].creatorPhone == this.phoneNumber
+      })
 
-    this.monitorInvitation(this.invitation)
+      _.each(this.invitations, invitation => {
+          this.monitorInvitation(invitation)
+      })
   }
 
 /***********
@@ -135,7 +141,7 @@ export class VideoCallComponent implements OnInit {
     this.connecting = true;
     await this.initializeDevice();
 
-    let roomName = this.invitation.id;
+    let roomName = this.invitations[0].id; // id is shared among all guests
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -161,7 +167,7 @@ export class VideoCallComponent implements OnInit {
               } as ConnectOptions);
         console.log('this.activeRoom = ', this.activeRoom);
         this.joined = true
-        await this.roomService.saveOnJoin(this.activeRoom, this.invitation, this.phoneNumber)
+        await this.roomService.saveOnJoin(this.activeRoom, this.invitations, this.phoneNumber)
         this.monitorRoom(this.activeRoom.sid)
         this.initialize(this.activeRoom.participants)  
         this.registerRoomEvents()
@@ -221,20 +227,39 @@ export class VideoCallComponent implements OnInit {
   }
 
 
-  // watch for the invitation to be deleted
+  /**
+   * watch for the invitation to be deleted
+   * The effect:  a guest is deleted
+   */
   monitorInvitation(invitation: Invitation) {
       let xxxx = this.invitationService.monitorInvitation(invitation.docId)
       this.invitationWatcher = xxxx.subscribe( res => {
           console.log('res: ', res)
           let inv = res.payload.data() as Invitation
-          if(inv.deleted_ms)
-              this.router.navigate(['/invitation-deleted'])
+          if(inv.deleted_ms) {
+              // remove the deleted guest
+              _.remove(this.invitations, (invitation:Invitation) => {
+                  return invitation.phoneNumber === inv.phoneNumber
+              })
+              this.invitationService.invitations = this.invitations // just keeping this.invitationService.invitations in sync
+
+              // find out if guest deleted was "me" 
+              if(inv.phoneNumber === this.phoneNumber) // route.params should have returned phoneNumber by the time we try to delete someone
+                  this.router.navigate(['/invitation-deleted'])
+          }
       })
   }
 
 
+  delete_guest(invitation) {
+      this.invitationService.deleteInvitation(invitation.docId)
+  }
+
+
   delete_invitation() {
-      this.invitationService.deleteInvitation(this.invitation.docId)
+      //this.invitationService.deleteInvitation(this.invitation.docId)
+      // TODO FIXME 
+      console.log('REWORK DELETING INVITATIONS ')
   }
 
 
@@ -369,8 +394,8 @@ export class VideoCallComponent implements OnInit {
         // the second time, element is a <video> element, type unknown
         const element = track.attach();
         this.renderer.data.id = track.sid;
-        this.renderer.setStyle(element, 'width', '30vw');
-        // this.renderer.setStyle(element, 'height', '28vh');
+        this.renderer.setStyle(element, 'width', '40vw');
+        //this.renderer.setStyle(element, 'height', '28vh');
         this.renderer.setStyle(element, 'margin-left', '0%');
         this.renderer.appendChild(this.listRef.nativeElement, element);
     }

@@ -5,7 +5,7 @@ import { FirebaseUserModel } from '../user/user.model';
 // ng generate class invitation/invitation --type=model
 export class Invitation {
     docId?: string  // the actual doc id.  See InvitationService.getInvitations(invitationId: string) 
-    id: string;
+    id: string;  // can be shared among several Invitation documents
     displayName: string;
     phoneNumber: string;
     created: Date;

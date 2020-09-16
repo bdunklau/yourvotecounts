@@ -15,7 +15,8 @@ export class InvitationService {
   private ngrok = "ca5ef009dcd4.ngrok.io";
 
   // use to pass invitation objects from guards to components
-  invitation: Invitation
+  //invitation: Invitation
+  invitations: Invitation[] // see  ValidInvitationGuard
 
   constructor(
     private afs: AngularFirestore,
@@ -29,25 +30,27 @@ export class InvitationService {
 
 
   async create(invitation: Invitation): Promise<string> {
-    let name = invitation.displayName;
-    if(!invitation.id) {
-      invitation.id = this.afs.createId();
-    }
+      let name = invitation.displayName;
+      if(!invitation.id) { // this BETTER be there   (invitation-form.component.ts: onSubmit())
+        invitation.id = this.afs.createId();
+      }
 
-    let batch = this.afs.firestore.batch();
+      let batch = this.afs.firestore.batch();
 
-    // make the doc key different from the invitation id so that the invitation id can be duplicated (so we can invite more than one guest)
-    let docKey = this.afs.createId();
-    var invitationRef = this.afs.collection('invitation').doc(docKey).ref;
-    batch.set(invitationRef, invitation.toObj());
+      // make the doc key different from the invitation id so that the invitation id can be duplicated (so we can invite more than one guest)
+      let docKey = this.afs.createId();
+      var invitationRef = this.afs.collection('invitation').doc(docKey).ref;
+      batch.set(invitationRef, invitation.toObj());
+      
+      await batch.commit();
+      this.log.i('created invitation: docKey = '+docKey);
+
+      // not sure if there's really a need to return this
+      return invitation.id;
+
+      // good example of transactions:
+      // https://stackoverflow.com/questions/47532694/firestore-transaction-update-multiple-documents-in-a-single-transaction?rq=1
     
-    await batch.commit();
-    this.log.i('created invitation '+invitation.id);
-    return invitation.id;
-
-    // good example of transactions:
-    // https://stackoverflow.com/questions/47532694/firestore-transaction-update-multiple-documents-in-a-single-transaction?rq=1
-  
   }
 
 
@@ -89,6 +92,7 @@ export class InvitationService {
         invitations.push(inv)
       })
     }
+    //console.log('invitationId: ', invitationId,'  invitations: ', invitations)
     return invitations
   }
 
