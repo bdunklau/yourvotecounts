@@ -8,6 +8,7 @@ import { Settings } from './settings.model';
 export class SettingsService {
 
     keys: Keys
+    continuePath: string  // see InvitationFormGuard for example of this being set
 
     constructor(public afs: AngularFirestore,) { }
 

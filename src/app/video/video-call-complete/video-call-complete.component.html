@@ -1,0 +1,59 @@
+<!-- Sent here after the host hangs up
+Need to put the "Get Recording" button and logic on this page.
+This is where we will publish the video
+Reason: We want to move the guests off the /video-call page so they can't refresh the page,
+so we don't have to code so defensively
+-->
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+        Video call has ended
+        </div>
+    </div>
+
+    
+    <div class="row" *ngIf="isHost">
+        <div class="col">
+        Ready to produce your video?
+        </div>
+    </div>
+
+    
+    <div class="row" *ngIf="!isHost">
+        <div class="col">
+        You will soon receive a text message containing a link to the recorded call.
+        </div>
+    </div>
+
+
+
+
+    <!-- move this to video-call-complete.component.html   -->
+    <div class="row" *ngIf="isHost && roomObj && roomObj['call_ended_ms'] && roomObj['mark_time'] && roomObj['mark_time'].length > 0">
+        <div class="col-12">
+          <button [disabled]="compositionInProgress" id="compose" (click)="compose()" class="btn btn-success col-sm-12"><i class="fas fa-cloud-download-alt"></i> &nbsp; {{publishButtonText}} </button>
+          <P>&nbsp;</P>
+        </div>
+      </div>
+  
+  
+      <!-- move this to video-call-complete.component.html   -->
+      <!-- Progress updates for composition -->
+      <span  *ngIf="compositionInProgress">
+          <div class="row">
+            <div class="col-12">
+              <b>Preparing your video now!</b> - We will text you when it's done
+            </div>
+          </div>
+  
+          <span *ngIf="roomObj && roomObj['compositionProgress']">
+          <div class="row" *ngFor="let progress of roomObj['compositionProgress']"> 
+            <div class="col-12">
+              {{progress}}
+            </div>
+          </div>
+          </span>
+      </span>
+
+</div>

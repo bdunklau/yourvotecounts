@@ -29,6 +29,8 @@ export class RoomService {
 
   // hack for passing room from video-ready.guard to view-video.component
   roomObj: RoomObj
+  isHost = false
+
   official_selected = new Subject<Official>()
   official_deleted = new Subject<Official>()
 
@@ -215,6 +217,12 @@ export class RoomService {
     console.log('teamDoc.data() = ', teamDoc.data());
     return team;
     *********/
+  }
+
+
+  async getRoomByRoomSid(roomSid: string): Promise<RoomObj> {
+      var roomDoc = await this.afs.collection('room').doc(roomSid).ref.get();
+      return roomDoc.data() as RoomObj
   }
 
 

@@ -57,6 +57,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ViewOfficialComponent } from './civic/officials/view-official/view-official.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { InvitationDeletedComponent } from './invitation/invitation-deleted/invitation-deleted.component';
+import { VideoCallCompleteComponent } from './video/video-call-complete/video-call-complete.component';
+import { VideoProducingComponent } from './video/video-producing/video-producing.component';
+import { PromoCodeComponent } from './promo-code/promo-code.component';
 
 
 @NgModule({
@@ -99,6 +102,9 @@ import { InvitationDeletedComponent } from './invitation/invitation-deleted/invi
     SearchOfficialsComponent,
     ViewOfficialComponent,
     InvitationDeletedComponent,
+    VideoCallCompleteComponent,
+    VideoProducingComponent,
+    PromoCodeComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

@@ -201,8 +201,8 @@ export class InvitationFormComponent implements OnInit {
           // don't think we have to await this before we send the sms
           this.invitationService.create(invitation);
 
-          console.log('SMS COMMENTED OUT *****************')
-          //this.smsService.sendSms({from: "+12673314843", to: invitation.phoneNumber, mediaUrl: "", message: invitation.message});
+          //console.log('SMS COMMENTED OUT *****************')
+          this.smsService.sendSms({from: "+12673314843", to: invitation.phoneNumber, mediaUrl: "", message: invitation.message});
       }
 
 

@@ -20,6 +20,9 @@ export class FirebaseUserModel {
   privacyPolicyRead: boolean = false;
   // teams: Team[];
   RoomSid: string; // can only be in one room at a time
+  promo_code?: string
+  // IF YOU ADD MORE FIELDS HERE, YOU HAVE TO ADD THEM TO populate() BELOW ALSO
+
 
   constructor(){
     this.uid = "";
@@ -58,6 +61,7 @@ export class FirebaseUserModel {
     this.privacyPolicyRead = obj.privacyPolicyRead;
     if(obj.isDisabled === true || obj.isDisabled === false) this.isDisabled = obj.isDisabled;
     else this.isDisabled = false;
+    if(obj.promo_code) this.promo_code = obj.promo_code
     // console.log('populate: this = ', this);
   }
 

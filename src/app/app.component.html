@@ -10,7 +10,7 @@
    <a id="home_link" class="nav-link" (click)="closeNav()" routerLink="/home"><i class="fa fa-home"></i> Home</a>
    <a [hidden]="!isLoggedIn" id="myaccount_link" class="nav-link" (click)="closeNav()" routerLink="['/myaccount']"><i class="fas fa-user-circle"></i> My Account</a>
    
-   <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/invitations']"><i class="fa fa-user-plus"></i> Invitations</a>
+   <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/invitations']"><i class="fa fa-video"></i> Video Call</a>
    
    <!-- works but displays "Select" buttons that don't make sense in standalone context
    <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/search-officials']"><i class="fa fa-users"></i> Elected Officials</a>
@@ -39,7 +39,6 @@
 </nav>
 
 <router-outlet></router-outlet>
-
 <!--
 <div id="footer">
     <div class="row no-gutters">

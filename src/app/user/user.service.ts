@@ -262,4 +262,9 @@ export class UserService {
     this.afs.collection('guest').doc(guest.phoneNumber).set(guest);
   }
 
+
+    async setPromoCode(user: FirebaseUserModel) {
+        await this.afs.collection('user').doc(user.uid).update({promo_code: user.promo_code})
+    }
+
 }

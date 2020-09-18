@@ -98,7 +98,7 @@
     -->
     
     
-    <div class="row" *ngIf="!joined && !compositionInProgress && !callEnded" style="margin-top:10px">
+    <div class="row" *ngIf="!joined && !callEnded" style="margin-top:10px">
       <div class="col-sm-12">
         <button id="join_call" (click)="join_call()" class="btn btn-success col-sm-12"> <i class="fas fa-phone-alt"></i> &nbsp; Join </button>
         <P>&nbsp;</P>
@@ -171,6 +171,7 @@
 
 
     
+    <!-- if the host hangs up, send everyone to /video-call-complete    -->
     <div class="row" *ngIf="joined">
       <div class="col-12">                                           <!-- fa-rotate-135 is special style defined in local css file  -->
         <button id="leave_call" (click)="leave_call()" class="btn btn-danger col-sm-12"><i class="fas fa-phone-alt fa-rotate-135"></i> &nbsp; Hang up </button>
@@ -179,15 +180,25 @@
     </div>
     
     
+
+
+
+
+
+    <!-- move this to video-call-complete.component.html   -->
+    <!--
     <div class="row" *ngIf="isHost && roomObj && roomObj['call_ended_ms'] && roomObj['mark_time'] && roomObj['mark_time'].length > 0">
       <div class="col-12">
         <button [disabled]="compositionInProgress" id="compose" (click)="compose()" class="btn btn-success col-sm-12"><i class="fas fa-cloud-download-alt"></i> &nbsp; {{publishButtonText}} </button>
         <P>&nbsp;</P>
       </div>
     </div>
+    -->
 
 
+    <!-- move this to video-producing.component.html   -->
     <!-- Progress updates for composition -->
+    <!--
     <span  *ngIf="compositionInProgress">
         <div class="row">
           <div class="col-12">
@@ -203,6 +214,7 @@
         </div>
         </span>
     </span>
+    -->
 
     
 </div>

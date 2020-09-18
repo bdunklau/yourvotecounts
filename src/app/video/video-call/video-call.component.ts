@@ -22,7 +22,6 @@ import { connect,
           createLocalTracks } from 'twilio-video';
 import { RoomService } from '../../room/room.service';
 import { RoomObj } from '../../room/room-obj.model';
-import { map, take } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { SettingsService } from '../../settings/settings.service';
 import { Settings } from '../../settings/settings.model';
@@ -62,8 +61,8 @@ export class VideoCallComponent implements OnInit {
   connecting: boolean = false
   videoMuted: boolean = false
   audioMuted: boolean = false
-  compositionInProgress: boolean = false
-  publishButtonText = "Get Recording" // we change this to "Workin' on it" at the beginning of compose()
+  // compositionInProgress: boolean = false
+  // publishButtonText = "Get Recording" // we change this to "Workin' on it" at the beginning of compose()
   callEnded: boolean = false
   canDelete: boolean = true
   // me: FirebaseUserModel
@@ -97,39 +96,13 @@ export class VideoCallComponent implements OnInit {
       })
   }
 
-/***********
-  async ngAfterViewInit() {
-      // Are we coming to this page after the video call is already completed?...      
-      let xxxx = this.roomService.monitorRoomByInvitationId(this.invitation.id);
-      this.altRoomWatcher = xxxx.subscribe(res => {
-          if(res.length > 0) { 
-              let theRoomObj = res[0].payload.doc.data() as RoomObj
-              let videoReady: boolean = theRoomObj.CompositionSid ? true : false // becomes true in twilio-video.js:cutVideoComplete()
-
-              // short-circuit: redirect to /view-video if the video is already produced (just like ViewCallCompleteGuard)
-              if(videoReady) {
-                  // do what VideoCallCompleteGuard does: redirects to /view-video
-                  this.router.navigate(['/view-video', theRoomObj.CompositionSid])
-              }
-          }
-      })
-
-
-      // should we join the room as soon as we come to this screen?...
-      if (this.previewElement && this.previewElement.nativeElement) {
-          if(this.joinOnLoad) {
-            this.join_call();
-          }
-      }
-  }
-  *************/
-
 
   ngOnDestroy() {
-    if(this.routeSubscription) this.routeSubscription.unsubscribe()
-    if(this.roomSubscription) this.roomSubscription.unsubscribe()
-    if(this.altRoomWatcher) this.altRoomWatcher.unsubscribe()
-    if(this.invitationWatcher) this.invitationWatcher.unsubscribe()
+      if(this.routeSubscription) this.routeSubscription.unsubscribe()
+      if(this.roomSubscription) this.roomSubscription.unsubscribe()
+      if(this.altRoomWatcher) this.altRoomWatcher.unsubscribe()
+      if(this.invitationWatcher) this.invitationWatcher.unsubscribe()
+      console.log('ngOnDestroy()')
   }
 
 
@@ -206,21 +179,27 @@ export class VideoCallComponent implements OnInit {
         let firstGuestJoined = !someoneAlreadyJoined && someoneJoined
         this.canDelete = this.canDelete && !firstGuestJoined
         
-        let videoReady: boolean = this.roomObj.CompositionSid ? true : false // becomes true in twilio-video.js:cutVideoComplete()
+        // // video-call.guard should check this and keep us from coming to this page if the Composition already exists
+        // let videoReady: boolean = this.roomObj.CompositionSid ? true : false // becomes true in twilio-video.js:cutVideoComplete()
 
-        // short-circuit: redirect to /view-video if the video is already produced (just like ViewCallCompleteGuard)
-        if(videoReady) {
-            console.log('XXXXXXXXXXXXXXXX   this.roomObj = ', this.roomObj)
-            // do what VideoCallCompleteGuard does: redirects to /view-video
-            this.router.navigate(['/view-video', this.roomObj.CompositionSid])
-        }
-        else { // normal operation: stay on this screen
-            console.log('XXXXXXXXXXXXXXXX   this.roomObj = ', this.roomObj)
-            this.disconnect_all_when_host_leaves(this.roomObj)
-            this.recording_state = this.roomObj['recording_state']
+        // // short-circuit: redirect to /view-video if the video is already produced (just like ViewCallCompleteGuard)
+        // if(videoReady) {
+        //     console.log('XXXXXXXXXXXXXXXX   this.roomObj = ', this.roomObj)
+        //     // do what VideoCallCompleteGuard does: redirects to /view-video
+        //     this.router.navigate(['/view-video', this.roomObj.CompositionSid])
+        // }
+        // else { // normal operation: stay on this screen
+        //     console.log('XXXXXXXXXXXXXXXX   this.roomObj = ', this.roomObj)
+        //     this.disconnect_all_when_host_leaves(this.roomObj)
+        //     this.recording_state = this.roomObj['recording_state']
 
-            this.callEnded = this.roomObj['call_ended_ms'] ? true : false
-        }
+        //     this.callEnded = this.roomObj['call_ended_ms'] ? true : false
+        // }
+        
+        this.disconnect_all_when_host_leaves(this.roomObj)
+        this.recording_state = this.roomObj['recording_state']
+        //this.callEnded = this.roomObj['call_ended_ms'] ? true : false
+
       }
     })
     
@@ -275,6 +254,7 @@ export class VideoCallComponent implements OnInit {
         this.activeRoom.disconnect();  
         this.joined = false 
         this.finalizePreview();
+        this.router.navigate(['/video-call-complete', this.activeRoom.sid, 'guest', this.phoneNumber])
       }
     }
 
@@ -289,33 +269,35 @@ export class VideoCallComponent implements OnInit {
     this.roomService.disconnect(this.roomObj, this.phoneNumber);
     this.joined = false 
     this.finalizePreview();
+    if(this.isHost)
+        this.router.navigate(['/video-call-complete', this.roomObj.RoomSid, 'host', this.phoneNumber])
   }
 
 
-  async compose() {
-    this.compositionInProgress = true
-    this.publishButtonText = "Workin' on it!..."
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'Authorization': 'my-auth-token',
-        'Access-Control-Allow-Origin': '*'
-      }),
-      //params: new HttpParams().set('uid', uid)
-    };
+  // async compose() {
+  //   this.compositionInProgress = true
+  //   this.publishButtonText = "Workin' on it!..."
+  //   const httpOptions = {
+  //     headers: new HttpHeaders({
+  //       'Content-Type':  'application/json',
+  //       'Authorization': 'my-auth-token',
+  //       'Access-Control-Allow-Origin': '*'
+  //     }),
+  //     //params: new HttpParams().set('uid', uid)
+  //   };
 
-    // do a POST here not a GET
-    // and post the whole room document.  No need to query for it in the firebase function
+  //   // do a POST here not a GET
+  //   // and post the whole room document.  No need to query for it in the firebase function
 
-    // NOTE: ${this.settingsDoc.website_domain_name} will be the ngrok host if running locally.  See invitation.service.ts:ngrok field
-    let composeUrl = `https://${this.settingsDoc.firebase_functions_host}/compose?RoomSid=${this.activeRoom.sid}&firebase_functions_host=${this.settingsDoc.firebase_functions_host}&room_name=${this.activeRoom.name}&website_domain_name=${this.settingsDoc.website_domain_name}&cloud_host=${this.settingsDoc.cloud_host}                         `
-    this.http.get(composeUrl, httpOptions)
-      .subscribe(async (data: any) => {
-        console.log('data = ', data) 
+  //   // NOTE: ${this.settingsDoc.website_domain_name} will be the ngrok host if running locally.  See invitation.service.ts:ngrok field
+  //   let composeUrl = `https://${this.settingsDoc.firebase_functions_host}/compose?RoomSid=${this.activeRoom.sid}&firebase_functions_host=${this.settingsDoc.firebase_functions_host}&room_name=${this.activeRoom.name}&website_domain_name=${this.settingsDoc.website_domain_name}&cloud_host=${this.settingsDoc.cloud_host}                         `
+  //   this.http.get(composeUrl, httpOptions)
+  //     .subscribe(async (data: any) => {
+  //       console.log('data = ', data) 
               
-    });
+  //   });
 
-  }
+  // }
 
 
   private async initializeDevice(kind?: MediaDeviceKind, deviceId?: string) {

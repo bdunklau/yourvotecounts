@@ -6,7 +6,6 @@ import { RoleGuard } from './core/role.guard';
 import { AuthService } from './core/auth.service';
 import { UserResolver } from './user/user.resolver';
 import { UserService } from './user/user.service';
-// import { RegisterGuard } from './register/register.guard';
 import { HomeComponent } from './home/home.component';
 import { LogComponent } from './log/log.component';
 import { UsersComponent } from './users/users.component';
@@ -33,12 +32,18 @@ import { VideoCallComponent } from './video/video-call/video-call.component';
 import { ValidInvitationGuard } from './invitation/valid-invitation.guard';
 import { ErrorPageComponent } from './util/error-page/error-page.component';
 import { ViewVideoComponent } from './video/view-video/view-video.component';
-import { VideoCallCompleteGuard } from './video/video-call-complete/video-call-complete.guard';
 import { VideoReadyGuard } from './video/video-ready/video-ready.guard';
 import { SearchOfficialsComponent } from './civic/officials/search-officials/search-officials.component'
 import { SearchOfficialsGuard } from './civic/officials/search-officials/search-officials.guard'
 import { SettingsGuard } from './settings/settings.guard'
 import { InvitationDeletedComponent } from './invitation/invitation-deleted/invitation-deleted.component'
+import { VideoCallCompleteComponent } from './video/video-call-complete/video-call-complete.component';
+import { VideoCallGuard } from './video/video-call/video-call.guard';
+import { VideoCallCompleteGuard } from './video/video-call-complete/video-call-complete.guard';
+import { VideoProducingComponent } from './video/video-producing/video-producing.component';
+import { VideoProducingGuard } from './video/video-producing/video-producing.guard';
+import { PromoCodeComponent } from './promo-code/promo-code.component'
+import { InvitationFormGuard } from './invitation/invitation-form/invitation-form.guard';
 
 
 const routes: Routes = [
@@ -50,7 +55,7 @@ const routes: Routes = [
   { path: 'invitations', component: InvitationsComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   //{ path: 'invitation-details/:invitationId/:phoneNumber', component: InvitationDetailsComponent, canActivate: [DisabledGuard, ValidInvitationGuard] /*, resolve: {invitation: InvitationResolver}*/ },
   { path: 'invitation-deleted', component: InvitationDeletedComponent },
-  { path: 'invitation-form', component: InvitationFormComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
+  { path: 'invitation-form', component: InvitationFormComponent, canActivate: [InvitationFormGuard], resolve: { user: UserResolver} },
   { path: 'invitation-list', component: InvitationListComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   
   
@@ -59,6 +64,7 @@ const routes: Routes = [
   { path: 'minimal-account-info', component: MinimalAccountInfoComponent, canActivate: [AuthGuard, DisabledGuard], resolve: { user: UserResolver} },
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
   { path: 'privacy', component: PrivacyPolicyComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
+  { path: 'promo-code', component: PromoCodeComponent, canActivate: [AuthGuard, DisabledGuard] },
   { path: 'search-officials', component: SearchOfficialsComponent, canActivate: [SearchOfficialsGuard] },
   { path: 'sms', component: SmsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
@@ -70,8 +76,10 @@ const routes: Routes = [
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, MinimalAccountInfoGuard], data: {role: 'admin'} },
-  { path: 'video-call/:invitationId/:phoneNumber/:join', component: VideoCallComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] /*, resolve: {invitation: InvitationResolver}*/ },
-  { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] /*, resolve: {invitation: InvitationResolver}*/ },
+  { path: 'video-call/:invitationId/:phoneNumber/:join', component: VideoCallComponent, canActivate: [VideoCallGuard] /*, resolve: {invitation: InvitationResolver}*/ },
+  { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [VideoCallGuard] /*, resolve: {invitation: InvitationResolver}*/ },
+  { path: 'video-call-complete/:RoomSid/:hostOrGuest/:phoneNumber', component: VideoCallCompleteComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] },
+  { path: 'video/producing/:RoomSid', component: VideoProducingComponent, canActivate: [DisabledGuard, VideoProducingGuard] },
   { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [DisabledGuard, SettingsGuard, VideoReadyGuard] },
   { path: '**', component: LoginComponent },
 ];
