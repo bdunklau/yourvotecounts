@@ -79,13 +79,15 @@ exports.compose = functions.https.onRequest((req, res) => {
         return client.video.compositions.create({
             roomSid: req.query.RoomSid,
             audioSources: '*',
+            // videoLayout:  see  https://www.twilio.com/docs/video/api/compositions-resource#specifying-video-layouts
             videoLayout: {
               grid : {
+                max_rows: 1,
                 video_sources: ['*']
               }
             },
             statusCallback: `https://${req.query.firebase_functions_host}/twilioCallback?room_name=${req.query.room_name}&firebase_functions_host=${req.query.firebase_functions_host}&website_domain_name=${req.query.website_domain_name}&cloud_host=${req.query.cloud_host}`,
-            resolution: '1280x720',
+            resolution: '1280x550', // 21:9 also 32:9  1280 is max width
             format: 'mp4'
         })
         .then(composition => {
