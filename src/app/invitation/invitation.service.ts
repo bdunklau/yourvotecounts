@@ -16,7 +16,7 @@ export class InvitationService {
 
   // use to pass invitation objects from guards to components
   //invitation: Invitation
-  invitations: Invitation[] // see  ValidInvitationGuard
+  invitations: Invitation[] = [] // see  ValidInvitationGuard
 
   constructor(
     private afs: AngularFirestore,
@@ -75,6 +75,22 @@ export class InvitationService {
   }
 
 
+  async deleteInvitations(invitationId: string) {      
+      let batch = this.afs.firestore.batch();
+      let observable = this.afs.collection('invitation', ref => ref.where("id", "==", invitationId)).snapshotChanges().pipe(take(1));
+      let docChangeActions = await observable.toPromise()
+      if(docChangeActions && docChangeActions.length > 0) {
+          _.each(docChangeActions, obj => {
+              let inv = obj.payload.doc.data() as Invitation
+              let docId = obj.payload.doc.id
+              let ref = this.afs.collection('invitation').doc(docId).ref
+              batch.update(ref, {deleted_ms: new Date().getTime()})
+          })
+          batch.commit()
+      }
+  }
+
+
   getInvitationsForUser(userId: string) {
     var retThis = this.afs.collection('invitation', ref => ref.where("creatorId", "==", userId).orderBy('created_ms')).snapshotChanges();
     return retThis;
@@ -89,10 +105,14 @@ export class InvitationService {
       _.each(docChangeActions, obj => {
         let inv = obj.payload.doc.data() as Invitation
         inv.docId = obj.payload.doc.id
+        console.log('invitation: ', inv)
         invitations.push(inv)
+        this.invitations.push(inv)
+        console.log('invitations: ', invitations)
       })
     }
-    //console.log('invitationId: ', invitationId,'  invitations: ', invitations)
+    console.log('invitationId: ', invitationId)
+    console.log('invitations: ', invitations)
     return invitations
   }
 

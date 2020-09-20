@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { InvitationService } from './invitation.service';
 import { ErrorPageService } from '../util/error-page/error-page.service';
 import * as _ from 'lodash'
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Injectable({
   providedIn: 'root'
@@ -33,26 +32,9 @@ export class ValidInvitationGuard implements CanActivate {
         console.log('ValidInvitationGuard: no invitation found')
         return false
       }
-
-
-      ///////////////////////////////////////////////////////////////////////////////
-      // INVITATION MUST CONTAIN THE PHONE NUMBER
-      /************** return all invitations now so that /video-call can display all guests
-      let foundInvitation = _.find(invitations, inv => {
-        return inv.creatorPhone == phoneNumber || inv.phoneNumber == phoneNumber
-      })
-      if(!foundInvitation) {
-        this.errorPageService.errorMsg = "Uh...  how'd you get *that* URL?"
-        this.router.navigate(['/error-page'])
-        console.log('ValidInvitationGuard: phone number is wrong')
-        return false
-      }
-
-      this.invitationService.invitation = foundInvitation
-      **********************/
     
-      this.invitationService.invitations = invitations // now go see VideoCallComponent
-      //console.log('this.invitationService.invitations = ', this.invitationService.invitations)
+      //this.invitationService.invitations = invitations // now go see VideoCallComponent
+      console.log('this.invitationService.invitations = ', this.invitationService.invitations)
  
       return true;
   }

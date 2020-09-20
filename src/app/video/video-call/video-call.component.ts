@@ -235,10 +235,11 @@ export class VideoCallComponent implements OnInit {
   }
 
 
-  delete_invitation() {
-      //this.invitationService.deleteInvitation(this.invitation.docId)
-      // TODO FIXME 
-      console.log('REWORK DELETING INVITATIONS ')
+  delete_invitations() {
+      // id's can be shared - that's how we know who all is invited to be on a call
+      let sharedInvitationId = this.invitations[0].id
+      this.invitationService.deleteInvitations(sharedInvitationId)
+      this.router.navigate(['/invitation-deleted'])
   }
 
 

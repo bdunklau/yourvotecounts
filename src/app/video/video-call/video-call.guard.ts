@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { InvitationService } from '../../invitation/invitation.service';
 import { ValidInvitationGuard } from '../../invitation/valid-invitation.guard';
 import { DisabledGuard } from '../../disabled/disabled.guard';
+import { InvitationDeletedGuard } from '../../invitation/invitation-deleted/invitation-deleted.guard';
 
 
 /**
@@ -33,8 +34,9 @@ export class VideoCallGuard implements CanActivate {
         private invitationService: InvitationService,
         private router: Router,
         private errorPageService: ErrorPageService,
-        private invitationGuard: ValidInvitationGuard,
-        private disabledGuard: DisabledGuard
+        private validInvitationGuard: ValidInvitationGuard,
+        private disabledGuard: DisabledGuard,
+        private invitationDeletedGuard: InvitationDeletedGuard
     ) {}
 
     async canActivate(
@@ -44,19 +46,27 @@ export class VideoCallGuard implements CanActivate {
         let enabled = await this.disabledGuard.canActivate(next, state)
         if(!enabled)
             return false
-
-        let ok = await this.invitationGuard.canActivate(next, state);
-        if(!ok) {
-            return false
-        }
-
-        //console.log("check navigator: ", navigator)
+    
 
         if(this.wrongBrowser()) {
             this.errorPageService.errorMsg = "Switch to Safari.  Your Mac/iOS device will not allow this page to load using Chrome.  Don't blame us - blame Apple."
             this.router.navigate(['/error-page'])
             return false
         }
+
+
+        let ok = await this.validInvitationGuard.canActivate(next, state);
+        if(!ok) {
+            return false
+        }
+
+        let stillGood = this.invitationDeletedGuard.canActivate(next, state)
+        if(!stillGood) {
+            return false
+        }
+
+        console.log("this.invitationService.invitations: ", this.invitationService.invitations)
+
 
         let phoneNumber = next.paramMap.get('phoneNumber')
         if(!phoneNumber) {
