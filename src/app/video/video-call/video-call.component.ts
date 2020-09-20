@@ -231,7 +231,13 @@ export class VideoCallComponent implements OnInit {
 
 
   delete_guest(invitation) {
+      let callCancelled = false
+      if(this.invitations.length == 1) {
+          callCancelled = true
+      }
       this.invitationService.deleteInvitation(invitation.docId)
+      if(callCancelled)
+          this.router.navigate(['/invitation-deleted'])
   }
 
 
