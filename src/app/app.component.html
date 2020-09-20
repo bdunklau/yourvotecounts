@@ -1,16 +1,27 @@
 <!--The content below is only a placeholder and can be replaced.-->
 
-<nav class="navbar navbar-expand-md navbar-light bg-faded">
+<nav class="navbar navbar-expand-md navbar-light bg-faded" style="background-color:#1167b1">  <!-- 03254c -->
 
  <!-- https://www.w3schools.com/howto/howto_js_sidenav.asp -->
  <div id="mySidenav" class="sidenav">
-   <a class="nav-link">{{name_or_phone}}</a>
-   <a href="javascript:void(0)" class="closebtn" id="closeNav" (click)="closeNav()"><i class="fa fa-close"></i></a>
-   <div class="nav-heading">Main Menu</div>
-   <a id="home_link" class="nav-link" (click)="closeNav()" routerLink="/home"><i class="fa fa-home"></i> Home</a>
-   <a [hidden]="!isLoggedIn" id="myaccount_link" class="nav-link" (click)="closeNav()" routerLink="['/myaccount']"><i class="fas fa-user-circle"></i> My Account</a>
-   
+   <div class="nav-heading" style="padding-top:20px;padding-bottom:20px" (click)="closeNav()" [routerLink]="['/myaccount']">
+       
+       <div class="row">
+           <div class="col-2">
+               <div class="circular--portrait">
+                   <img src="{{photoURL}}" width="29">
+               </div>
+           </div>
+
+           <div class="col-10">
+               <span *ngIf="name_or_phone">{{name_or_phone}}</span>
+           </div> 
+      </div>
+
+   </div>
+   <a href="javascript:void(0)" class="closebtn" id="closeNav" (click)="closeNav()"><i class="fa fa-close" style="color:#ffffff"></i></a>
    <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/invitations']"><i class="fa fa-video"></i> Video Call</a>
+   
    
    <!-- works but displays "Select" buttons that don't make sense in standalone context
    <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/search-officials']"><i class="fa fa-users"></i> Elected Officials</a>
@@ -18,10 +29,11 @@
    
    
    <a [hidden]="!isLoggedIn" id="teams_link" class="nav-link" (click)="closeNav()" [routerLink]="['/teams']"><i class="fa fa-users"></i> Teams</a>
+   <a id="home_link" class="nav-link" (click)="closeNav()" routerLink="/home"><i class="fa fa-home"></i> Home</a>
    <a [hidden]="isLoggedIn" id="login_link" class="nav-link" (click)="closeNav()" routerLink="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
    <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
 
-   <div [hidden]="!isAdmin" class="nav-heading">Administration</div>
+   <div [hidden]="!isAdmin"><hr/></div>
    <a [hidden]="!isAdmin" id="users_link" class="nav-link" (click)="closeNav()" [routerLink]="['/users']"><i class="fa fa-users"></i> Users</a>
    <a [hidden]="!isAdmin" id="sms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/sms']"> <i class="fa fa-sms"></i> SMS</a>
    <a [hidden]="!isAdmin" id="log_link" class="nav-link" (click)="closeNav()" [routerLink]="['/log']"><i class="far fa-file"></i> Logs</a>
@@ -31,12 +43,13 @@
 
  <!-- Use any element to open the sidenav -->
  <span (click)="openNav($event)">
-   <i id="hamburger_menu_icon" class="fa fa-bars"></i>
+   <i id="hamburger_menu_icon" class="fa fa-bars" style="color:#ffffff"></i>
  </span>
 
- <a class="navbar-brand" style="padding-left:10px" href="#"><i class="fa fa-video gray"></i> {{ title }} <i class="fa fa-video fa-rotate-180 gray"></i> </a>
+ <a class="navbar-brand" style="padding-left:10px;color:#ffffff" href="#">{{ title }} <i class="fa fa-video"></i> </a>
 
 </nav>
+
 
 <router-outlet></router-outlet>
 <!--

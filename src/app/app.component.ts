@@ -19,10 +19,11 @@ import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser
   providers: [{provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter}]
 })
 export class AppComponent {
-  title = 'SeeSaw';
+  title = 'HeadsUp';
   isAdmin: boolean;
   isLoggedIn: boolean;
   name_or_phone: string;
+  photoURL?: string
   private userSubscription: Subscription;
 
 
@@ -42,6 +43,7 @@ export class AppComponent {
       if(value) this.isLoggedIn = true;
       if(value && value.phoneNumber) this.name_or_phone = value.phoneNumber; // TODO not tested
       if(value && value.displayName) this.name_or_phone = value.displayName; // TODO not tested
+      if(value && value.photoURL) this.photoURL = value.photoURL             // TODO not tested
       if(!value) this.isLoggedIn = false;
       if(!value) this.name_or_phone = ""; // TODO not tested
       if(!value) this.setAdmin(false); // TODO not tested

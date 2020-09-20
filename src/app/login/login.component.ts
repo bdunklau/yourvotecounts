@@ -6,6 +6,7 @@ import {firebase, firebaseui} from 'firebaseui-angular'
 import { BehaviorSubject, of } from 'rxjs';
 import { LogService } from '../log/log.service'
 import { UserService } from '../user/user.service'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private afAuth: AngularFireAuth,
               private log: LogService,
+              private router: Router,
               private userService: UserService) { }
 
   ngOnInit() {
@@ -45,6 +47,7 @@ export class LoginComponent implements OnInit {
       // this.log.i('login');
       // this.userService.setFirebaseUser(user);
       this.userService.signIn(this.log, user);
+      this.router.navigate(['/home'])
     }
   }
 

@@ -16,6 +16,7 @@ import { map } from 'rxjs/operators';
 import { Subject, /*Observable,*/ Subscription } from 'rxjs';
 import { LogService } from '../log/log.service'; // injected in signIn() below
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
+import { environment } from '../../environments/environment';
 
 
 @Injectable()
@@ -161,6 +162,15 @@ export class UserService {
     var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
     console.log('setFirebaseUser(): userDoc.data() = ', userDoc.data());
     this.user.populate(userDoc.data());
+
+    await this.afStorage.storage
+    .refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName)
+    .getDownloadURL().then(url => {
+        console.log("this.photoURL = ", url)
+        this.user.photoURL = url
+        this.messageService.updateUser(this.user) // see app.component.ts:ngOnInit()
+     })
+
     this.user.online = online;
     this.updateUser(this.user); // saves the online state
     console.log('setFirebaseUser(): this.user = ', this.user);

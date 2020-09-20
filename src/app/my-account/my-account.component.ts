@@ -5,6 +5,8 @@ import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs';
 //import { PhonePipe } from '../util/phone/phone.pipe';
+import { environment } from '../../environments/environment';
+import { MessageService } from '../core/message.service';
 
 
 @Component({
@@ -32,6 +34,7 @@ export class MyAccountComponent implements OnInit {
 
     constructor(private userService: UserService,
                 private afStorage: AngularFireStorage,
+                private messageService: MessageService,
               ) { }
 
     async ngOnInit() {
@@ -54,9 +57,11 @@ export class MyAccountComponent implements OnInit {
           this.oldPhotoFileName = this.user.photoFileName;
           
           // Create a reference from a Google Cloud Storage URI
+          console.log('environment.firebase.storageBucket:  ', environment.firebase.storageBucket)
           if(this.user.photoFileName) {
-            await this.afStorage.storage
-                 .refFromURL('gs://yourvotecounts-bd737.appspot.com/'+this.user.photoFileName)
+              console.log('this.user.photoFileName:  '+this.user.photoFileName)
+              await this.afStorage.storage
+                 .refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName)
                  .getDownloadURL().then(url => {
                      console.log("this.photoURL = ", url)
                      this.photoURL = url;

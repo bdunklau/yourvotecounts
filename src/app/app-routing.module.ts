@@ -81,7 +81,7 @@ const routes: Routes = [
   { path: 'video-call-complete/:RoomSid/:hostOrGuest/:phoneNumber', component: VideoCallCompleteComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] },
   { path: 'video/producing/:RoomSid', component: VideoProducingComponent, canActivate: [DisabledGuard, VideoProducingGuard] },
   { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [DisabledGuard, SettingsGuard, VideoReadyGuard] },
-  { path: '**', component: LoginComponent },
+  { path: '**', component: HomeComponent },
 ];
 
 @NgModule({
