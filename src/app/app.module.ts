@@ -12,7 +12,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 // currently there is a bug while building the app with --prod
 // - https://github.com/RaphaelJenni/FirebaseUI-Angular/issues/76
 // the plugin exposes the two libraries as well. You can use those:
-import {FirebaseUIModule, firebase, firebaseui} from 'firebaseui-angular';
+//import {FirebaseUIModule, firebase, firebaseui} from 'firebaseui-angular';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap'; // https://ng-bootstrap.github.io/#/getting-started
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './core/auth.service';
@@ -109,7 +109,7 @@ import { PromoCodeComponent } from './promo-code/promo-code.component';
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule, // imports firebase/firestore, only needed for database features
