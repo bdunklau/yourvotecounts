@@ -4,9 +4,10 @@
   "engines": {
     "node": "10"
   },
+  "main": "dist/yourvotecounts/server/main.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng build --prod && ng run yourvotecounts:server:production && node dist/yourvotecounts/server/main.js",
+    "start": "node dist/yourvotecounts/server/main.js",
     "start-angular": "ng serve",
     "build": "ng build",
     "test": "ng test",
