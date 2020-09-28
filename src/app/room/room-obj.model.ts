@@ -30,6 +30,7 @@ export class RoomObj {
     video_description?: string
     //mark_time: {"start_recording_ms": number, "start_recording": string, "duration": string}[]
     officials?: Official[]
+    screenshotUrl?: string
 
     constructor() {
 

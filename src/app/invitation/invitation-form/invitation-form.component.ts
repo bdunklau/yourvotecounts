@@ -193,7 +193,8 @@ export class InvitationFormComponent implements OnInit {
           //this.themessage = this.getInvitationMessage(this.user.displayName, url);
           
           invitation.phoneNumber = "+1"+this.names[i].phoneNumber
-          let url = `https://${window.location.host}/video-call/${invitation.id}/${invitation.phoneNumber}`
+          // TODO FIXME figure out host name
+          let url = 'TODO FIXME'//let url = `https://${window.location.host}/video-call/${invitation.id}/${invitation.phoneNumber}`
           let msg = `${invitation.creatorName} is inviting you to participate in a video call on SeeSaw.  Click the link below to see this invitation. \n\nDo not reply to this text message.  This number is not being monitored. \n\n${url}`
           invitation.message = msg
           console.log('invitation.message:  ', invitation.message)

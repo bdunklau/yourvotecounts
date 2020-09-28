@@ -198,10 +198,22 @@ export class RoomService {
   }
 
 
-  async getRoomData(compositionSid: string) {
-    let ret = this.afs.collection('room', ref => ref.where("CompositionSid", "==", compositionSid).limit(1)).snapshotChanges().pipe(take(1))
-    let ret2 = ret.toPromise()
-    return ret2
+  /*async*/ getRoomData(compositionSid: string) {
+    // // RoomSid:  RM3fcbe2ee06ecca4b9256249e0af9574b    
+    // let ret = await this.afs.collection('room').doc('RM3fcbe2ee06ecca4b9256249e0af9574b').ref.get()
+    // return ret.data() as RoomObj
+
+
+    let ret = this.afs.collection('room', ref => ref.where("CompositionSid", "==", compositionSid).limit(1)).snapshotChanges()
+    return ret
+    
+
+
+    // let ret = this.afs.collection('room', ref => ref.where("CompositionSid", "==", compositionSid).limit(1)).snapshotChanges().pipe(take(1))
+    // let ret2 = ret.toPromise()
+    // return ret2
+
+
 
      /*******
     var teamDoc = await this.afs.collection('room').doc(teamDocId).ref.get();

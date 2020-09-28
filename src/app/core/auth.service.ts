@@ -19,7 +19,8 @@ export class AuthService {
   doPhoneLogin() {
     return new Promise<any>((resolve, reject) => {
       let provider = new firebase.auth.PhoneAuthProvider();
-      this.afAuth.auth
+      // this.afAuth.auth
+      this.afAuth   //.auth  // .auth will go away when you upgrade @angular/fire
       .signInWithPopup(provider)
       .then(res => {
         resolve(res);
@@ -33,7 +34,8 @@ export class AuthService {
   doFacebookLogin(){
     return new Promise<any>((resolve, reject) => {
       let provider = new firebase.auth.FacebookAuthProvider();
-      this.afAuth.auth
+      // this.afAuth.auth
+      this.afAuth  // .auth  // .auth will go away when you upgrade @angular/fire
       .signInWithPopup(provider)
       .then(res => {
         resolve(res);
@@ -47,7 +49,8 @@ export class AuthService {
   doTwitterLogin(){
     return new Promise<any>((resolve, reject) => {
       let provider = new firebase.auth.TwitterAuthProvider();
-      this.afAuth.auth
+      // this.afAuth.auth
+      this.afAuth  //  .auth  // .auth will go away when you upgrade @angular/fire
       .signInWithPopup(provider)
       .then(res => {
         resolve(res);
@@ -63,7 +66,8 @@ export class AuthService {
       let provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('profile');
       provider.addScope('email');
-      this.afAuth.auth
+      // this.afAuth.auth
+      this.afAuth  //  .auth  // .auth will go away when you upgrade @angular/fire
       .signInWithPopup(provider)
       .then(res => {
         resolve(res);
@@ -97,7 +101,9 @@ export class AuthService {
       var user = firebase.auth().currentUser
       if(user) {
         this.log.i('logout'); // write this before we obliterate the current user
-        this.afAuth.auth.signOut().then(() => {
+        // this.afAuth.auth
+        this.afAuth  //  .auth  // .auth will go away when you upgrade @angular/fire
+        .signOut().then(() => {
           this.userService.signOut();
         });
       }

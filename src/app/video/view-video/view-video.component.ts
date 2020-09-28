@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
@@ -7,9 +7,9 @@ import { RoomService } from '../../room/room.service';
 import { UserService } from '../../user/user.service';
 import { FirebaseUserModel } from 'src/app/user/user.model';
 import * as _ from 'lodash'
-import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserModule, Title, Meta } from '@angular/platform-browser';
 import { Official } from '../../civic/officials/view-official/view-official.component'
-
+import { isPlatformBrowser } from '@angular/common';
 
 
 @Component({
@@ -45,47 +45,88 @@ export class ViewVideoComponent implements OnInit {
                 private roomService: RoomService,
                 private userService: UserService,
                 private titleService: Title,
+                private metaTagService: Meta,
+                @Inject(PLATFORM_ID) private platformId,
                 //private _modalService: NgbModal,
                 private route: ActivatedRoute) { }
 
 
     async ngOnInit() {
+
+
         this.room = this.roomService.roomObj
         //this.videoUrl = this.room.videoUrl
-        console.log("check this room:  ", this.room)
-        this.browser = window.navigator.userAgent
-        if(this.safari()) {
-          this.videoUrl = this.room.videoUrl
-          this.videoType = "application/x-mpegURL"
+        //console.log("check this room:  ", this.room)
+
+        if(this.room) {
+            this.metaTagService.addTags([
+              { name: 'keywords', content: 'Angular SEO Integration - did this work' },
+              { name: 'robots', content: 'index, follow' },
+              { name: 'author', content: 'Digamber Singh' },
+              { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+              { property: 'og:image', content: this.room.screenshotUrl },
+              { name: 'date', content: '2019-10-31', scheme: 'YYYY-MM-DD' },
+              { charset: 'UTF-8' }
+            ]);
         }
-        else {
-          this.videoUrl = this.room.videoUrlAlt
-          this.videoType = "video/mp4"
+
+
+        console.log('isPlatformBrowser(this.platformId)...')
+        let isBrowser = isPlatformBrowser(this.platformId)
+        console.log('isPlatformBrowser(this.platformId) = ', isBrowser)
+        
+        if(isBrowser) {
+
+            let safari = function() {
+                // Detect Safari
+                let safariAgent = window.navigator.userAgent.indexOf("Safari") > -1
+                // Detect Chrome 
+                let chromeAgent = window.navigator.userAgent.indexOf("Chrome") > -1
+                if(!safariAgent) return false
+                // Discard Safari since it also matches Chrome 
+                if ((chromeAgent) && (safariAgent)) return false
+                else return true
+            }
+
+            this.browser = window.navigator.userAgent
+            if(safari()) {
+                this.videoUrl = this.room.videoUrl
+                this.videoType = "application/x-mpegURL"
+            }
+            else {
+                this.videoUrl = this.room.videoUrlAlt
+                this.videoType = "video/mp4"
+            }
+            if(this.room.video_title) this.video_title = this.room.video_title
+            if(this.room.video_title) this.setDocTitle(this.video_title)
+            if(this.room.video_description) this.video_description = this.room.video_description
+            let user = await this.userService.getCurrentUser()
+            let allowed = this.allowedToEdit(user)
+            console.log('this.room: ', this.room)
+            if(allowed) {
+                this.editing_allowed = true
+            }
+            this.listenForOfficials()
+            this.isHost = this.room.isHost(user)
+            this.isGuest = this.room.isGuest(user)
+
         }
-        if(this.room.video_title) this.video_title = this.room.video_title
-        if(this.room.video_title) this.setDocTitle(this.video_title)
-        if(this.room.video_description) this.video_description = this.room.video_description
-        let user = await this.userService.getCurrentUser()
-        let allowed = this.allowedToEdit(user)
-        console.log('this.room: ', this.room)
-        if(allowed) {
-            this.editing_allowed = true
-        }
-        this.listenForOfficials()
-        this.isHost = this.room.isHost(user)
-        this.isGuest = this.room.isGuest(user)
+        console.log('ngOnInit():  done')
+
     }
 
-    private safari():boolean {
-      // Detect Safari
-      let safariAgent = window.navigator.userAgent.indexOf("Safari") > -1
-      // Detect Chrome 
-      let chromeAgent = window.navigator.userAgent.indexOf("Chrome") > -1
-      if(!safariAgent) return false
-      // Discard Safari since it also matches Chrome 
-      if ((chromeAgent) && (safariAgent)) return false
-      else return true
-    }
+
+
+    // private safari():boolean {
+    //   // Detect Safari
+    //   let safariAgent = window.navigator.userAgent.indexOf("Safari") > -1
+    //   // Detect Chrome 
+    //   let chromeAgent = window.navigator.userAgent.indexOf("Chrome") > -1
+    //   if(!safariAgent) return false
+    //   // Discard Safari since it also matches Chrome 
+    //   if ((chromeAgent) && (safariAgent)) return false
+    //   else return true
+    // }
 
     ngOnDestroy() {
         if(this.official_selected_sub) this.official_selected_sub.unsubscribe();
@@ -93,6 +134,7 @@ export class ViewVideoComponent implements OnInit {
     }
     
     async ngAfterViewInit() {
+        console.log('ngAfterViewInit():  done')
     }
 
 
@@ -153,35 +195,39 @@ export class ViewVideoComponent implements OnInit {
     private listenForOfficials() {
         let self = this;
   
-        this.official_selected_sub = this.roomService.official_selected.subscribe({
-            next: function(official:Official) {
-                if(!self.room.officials) self.room.officials = []
-                self.room.officials.push(official)
-                self.roomService.setOfficials(self.room)
-                //console.log('self.room.officials = ', self.room.officials)
-                // now close the search-officials.component.ts slide up footer
-                self.translated = false
-            },
-            error: function(value) {
-            },
-            complete: function() {
-            }
-        }); 
+        let isBrowser = isPlatformBrowser(this.platformId)
+        
+        if(isBrowser) {
+            this.official_selected_sub = this.roomService.official_selected.subscribe({
+                next: function(official:Official) {
+                    if(!self.room.officials) self.room.officials = []
+                    self.room.officials.push(official)
+                    self.roomService.setOfficials(self.room)
+                    //console.log('self.room.officials = ', self.room.officials)
+                    // now close the search-officials.component.ts slide up footer
+                    self.translated = false
+                },
+                error: function(value) {
+                },
+                complete: function() {
+                }
+            }); 
 
 
-        this.official_deleted_sub = this.roomService.official_deleted.subscribe({
-            next: function(official:Official) {
-                _.remove(self.room.officials, (off:Official) => {
-                    return off.name === official.name
-                })
-                self.roomService.setOfficials(self.room)
-                //console.log('self.room.officials = ', self.room.officials)
-            },
-            error: function(value) {
-            },
-            complete: function() {
-            }
-        })
+            this.official_deleted_sub = this.roomService.official_deleted.subscribe({
+                next: function(official:Official) {
+                    _.remove(self.room.officials, (off:Official) => {
+                        return off.name === official.name
+                    })
+                    self.roomService.setOfficials(self.room)
+                    //console.log('self.room.officials = ', self.room.officials)
+                },
+                error: function(value) {
+                },
+                complete: function() {
+                }
+            })
+        }
     }
 
 

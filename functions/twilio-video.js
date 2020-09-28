@@ -14,7 +14,7 @@ const VideoGrant = AccessToken.VideoGrant;
 //admin.initializeApp(functions.config().firebase);
 
 
-// firebase deploy --only functions:downloadComplete,functions:generateTwilioToken,functions:compose,functions:twilioCallback,functions:cutVideoComplete,functions:uploadToFirebaseStorageComplete,functions:deleteVideoComplete,functions:createHlsComplete,functions:uploadToFirebaseStorageComplete,functions:deleteVideoComplete
+// firebase deploy --only functions:downloadComplete,functions:generateTwilioToken,functions:compose,functions:twilioCallback,functions:cutVideoComplete,functions:uploadToFirebaseStorageComplete,functions:deleteVideoComplete,functions:createHlsComplete,functions:uploadToFirebaseStorageComplete,functions:deleteVideoComplete,functions:uploadScreenshotToStorageComplete
 
 
 
@@ -481,6 +481,78 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
         phones: req.body.phones,
         cloud_host: req.body.cloud_host,
         firebase_functions_host: req.body.firebase_functions_host,
+        //callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete`, // just below this function
+        callbackUrl: `https://${req.body.firebase_functions_host}/uploadScreenshotToStorageComplete`, // just below this function
+        compositionProgress: compositionProgress,
+        website_domain_name: req.body.website_domain_name
+    }
+
+	request.post(
+		{
+			//url: `http://${req.body.cloud_host}/deleteVideo`, 
+			url: `http://${req.body.cloud_host}/uploadScreenshotToStorage`, 
+			json: formData // 'json' attr name is KEY HERE, don't use 'form'
+		},
+		function (err, httpResponse, body) {
+            /**** TODO FIXME can't send 500's back to twilio - only 200's
+             * Figure something else out
+             * see:   https://www.twilio.com/console/debugger/NO92750e021280500fc4e1bfd304feac53
+			if(err) {
+				return res.status(500).send(JSON.stringify({"error": err, "vm url": `http://${req.body.cloud_host}/deleteVideo`}));
+            }
+            *********/
+			console.log(err, body);
+			return res.status(200).send(JSON.stringify({"result": "ok"}));
+		}
+	);
+
+})
+
+
+
+exports.uploadScreenshotToStorageComplete = functions.https.onRequest(async (req, res) => {
+    /**
+     * passed in from vm /uploadScreenshotToStorage:     
+        
+        let formData = {
+            outputFile: req.body.outputFile,
+            uploadFiles: req.body.uploadFiles,
+            RoomSid: req.body.RoomSid,
+            CompositionSid:  req.body.CompositionSid,
+            compositionFile: req.body.compositionFile, 
+            screenshot: filename,         <------- THIS IS THE NEW THING
+            phones: req.body.phones,
+            //videoUrl: signedUrl,
+            firebase_functions_host: req.body.firebase_functions_host,
+            cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
+            compositionProgress: req.body.compositionProgress,
+            website_domain_name: req.body.website_domain_name
+        }
+        if(req.body.stop) formData['stop'] = true
+     */
+
+     // WRITE SCREENSHOT URL TO THE ROOMSID DOC SO WE CAN DISPLAY THIS VIA SSR AND THE og:image TAG
+    var db = admin.firestore();
+    let screenshotUrl = `https://storage.googleapis.com/yourvotecounts-bd737.appspot.com/${req.body.CompositionSid}/${req.body.screenshot}`
+    await db.collection('room').doc(req.body.RoomSid)
+            .update({ screenshotUrl: screenshotUrl })
+     
+    if(req.body.stop) {
+        // let's us stop early when testing
+        return res.status(200).send(JSON.stringify({"result": "ok", "stopped early": "true", "screenshot file": req.body.screenshot}));
+    }
+    
+    let formData = {
+        outputFile: req.body.outputFile,
+        uploadFiles: req.body.uploadFiles,
+		RoomSid: req.body.RoomSid,
+        CompositionSid:  req.body.CompositionSid,
+        compositionFile: req.body.compositionFile,
+        //videoUrl: videoUrl,
+        //videoUrlAlt: videoUrlAlt,
+        phones: req.body.phones,
+        cloud_host: req.body.cloud_host,
+        firebase_functions_host: req.body.firebase_functions_host,
         callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete`, // just below this function
         compositionProgress: compositionProgress,
         website_domain_name: req.body.website_domain_name
@@ -503,8 +575,8 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
 			return res.status(200).send(JSON.stringify({"result": "ok"}));
 		}
 	);
-
 })
+
 
 
 /**
@@ -522,8 +594,6 @@ exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
 	let formData = {
 		RoomSid: req.body.RoomSid,
 		CompositionSid:  req.body.CompositionSid,
-		videoUrl: req.body.videoUrl,
-		videoUrlAlt: req.body.videoUrlAlt,
 		phones: req.body.phones,
 		filesDeleted: deleteThese,
 		firebase_functions_host: req.body.firebase_functions_host,
@@ -551,7 +621,7 @@ exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
             from: '+12673314843', 
             to: phone, 
             //mediaUrl: string, // do we need this? 
-            message: `YeeHaw!! Your video is ready!  Check it out...\n\n${videoUrl}\n\nPlease don't thank us by replying to this text.  This number is not being monitored.`,
+            message: `YeeHaw!! Your video is ready!  Check it out below\n\nPlease don't thank us by replying to this text.  This number is not being monitored.\n\n${videoUrl}`,
             date: new Date(),
             date_ms: new Date().getTime(),
             RoomSid: req.body.RoomSid,              // so we can query/delete later on

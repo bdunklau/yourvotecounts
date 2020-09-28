@@ -1,8 +1,5 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-// import * as firebaseui from 'firebaseui'
-// import { firebase} from 'firebase/app'
-//import {firebase, firebaseui} from 'firebaseui-angular'
 import { BehaviorSubject, of } from 'rxjs';
 import { LogService } from '../log/log.service'
 import { UserService } from '../user/user.service'
@@ -16,13 +13,14 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class LoginComponent implements OnInit {
 
-  ui: firebaseui.auth.AuthUI
+  //ui: firebaseui.auth.AuthUI
 
   constructor(private afAuth: AngularFireAuth,
               private log: LogService,
               private router: Router,
               @Inject(PLATFORM_ID) private platformId,
               private userService: UserService) { }
+
 
   async ngOnInit() {
     console.log("login.component.ts: ngOnInit()")
@@ -33,10 +31,12 @@ export class LoginComponent implements OnInit {
         console.log('firebaseui = ', firebaseui)
 
 
-
+        /**
+         * GOOD REFERENCE:  https://github.com/firebase/firebaseui-web#starting-the-sign-in-flow
+         */
+        let ui: firebaseui.auth.AuthUI
         
         let onLoginSuccessful = function() {
-          console.log("onLoginSuccessful()");
           var user = firebase.auth().currentUser;
           if(user){
             // this.log.i('login');
@@ -45,8 +45,6 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/home'])
           }
         }
-
-        console.log('ah ha!!')
 
 
         // see:  https://www.youtube.com/watch?v=vAX7PyhbU6s
@@ -60,26 +58,28 @@ export class LoginComponent implements OnInit {
         }
 
         // starts the firebase ui library
-        this.ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(this.afAuth.auth);
-        this.ui.start('#firebaseui-auth-container', uiConfig);
+
+        //   this.ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(this.afAuth.auth);
+        // /*this.*/ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(this.afAuth.auth);
+        //*this.*/ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(this.afAuth/*.auth*/);
+        // /*this.*/ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI({apiKey: "xxxxxx", options: "ssss"}/*this.afAuth*//*.auth*/);
+        //*this.*/ui.start('#firebaseui-auth-container', uiConfig);
       
+
+        try {
+            // Code throwing an exception
+            //ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(this.afAuth);
+            ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth()); //@see  https://github.com/firebase/firebaseui-web/issues/216#issuecomment-459302414
+            console.log('did we get to ui.start() ????')
+            ui.start('#firebaseui-auth-container', uiConfig);
+        } catch(e) {
+          console.log(e.stack);
+        }
 
 
     }
 
   }
-
-
-  // onLoginSuccessful() {
-  //   console.log("onLoginSuccessful()");
-  //   var user = firebase.auth().currentUser;
-  //   if(user){
-  //     // this.log.i('login');
-  //     // this.userService.setFirebaseUser(user);
-  //     this.userService.signIn(this.log, user);
-  //     this.router.navigate(['/home'])
-  //   }
-  // }
 
 
 }

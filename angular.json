@@ -126,7 +126,10 @@
           "options": {
             "outputPath": "dist/yourvotecounts/server",
             "main": "server.ts",
-            "tsConfig": "src/tsconfig.server.json"
+            "tsConfig": "src/tsconfig.server.json",
+            "externalDependencies": [
+              "@firebase/firestore"
+            ]
           },
           "configurations": {
             "production": {

@@ -9,10 +9,12 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { environment } from '../environments/environment';
 import { LoginComponent } from './login/login.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import * as firebase from 'firebase/app'
+import * as firebaseui from 'firebaseui'
 // currently there is a bug while building the app with --prod
 // - https://github.com/RaphaelJenni/FirebaseUI-Angular/issues/76
 // the plugin exposes the two libraries as well. You can use those:
-//import {FirebaseUIModule, firebase, firebaseui} from 'firebaseui-angular';
+import {FirebaseUIModule/*, firebase, firebaseui*/} from 'firebaseui-angular';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap'; // https://ng-bootstrap.github.io/#/getting-started
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './core/auth.service';
@@ -60,6 +62,49 @@ import { InvitationDeletedComponent } from './invitation/invitation-deleted/invi
 import { VideoCallCompleteComponent } from './video/video-call-complete/video-call-complete.component';
 import { VideoProducingComponent } from './video/video-producing/video-producing.component';
 import { PromoCodeComponent } from './promo-code/promo-code.component';
+
+
+
+const ORIGINAL_NOT_USED_firebaseUiAuthConfig: firebaseui.auth.Config = {
+  signInFlow: 'popup',
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    {
+      scopes: [
+        'public_profile',
+        'email',
+        'user_likes',
+        'user_friends'
+      ],
+      customParameters: {
+        'auth_type': 'reauthenticate'
+      },
+      provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID
+    },
+    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+    firebase.auth.GithubAuthProvider.PROVIDER_ID,
+    {
+      requireDisplayName: false,
+      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID
+    },
+    firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID,
+    firebase.auth.PhoneAuthProvider.PROVIDER_ID
+  ],
+  tosUrl: '/terms',
+  privacyPolicyUrl: '/privacy',
+  credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM
+};
+
+
+const firebaseUiAuthConfig: firebaseui.auth.Config = {
+  signInFlow: 'popup',
+  signInOptions: [
+    firebase.auth.PhoneAuthProvider.PROVIDER_ID
+  ],
+  tosUrl: '/terms',
+  privacyPolicyUrl: '/privacy',
+  credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM
+};
 
 
 @NgModule({
@@ -112,7 +157,8 @@ import { PromoCodeComponent } from './promo-code/promo-code.component';
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule, // imports firebase/firestore, only needed for database features
+    //AngularFirestoreModule, // imports firebase/firestore, only needed for database features
+    AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features
     FormsModule, ReactiveFormsModule,
     NgbModule.forRoot(),
@@ -122,7 +168,8 @@ import { PromoCodeComponent } from './promo-code/promo-code.component';
     RoundProgressModule,
     GooglePlaceModule,
     MatButtonToggleModule,
-    ClipboardModule
+    ClipboardModule,
+    FirebaseUIModule.forRoot(firebaseUiAuthConfig)
   ],
   providers: [
     Title

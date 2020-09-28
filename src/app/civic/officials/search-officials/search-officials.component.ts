@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import * as _ from 'lodash'
 import { Divisions, Office, Official, CivicResult } from '../view-official/view-official.component'
 import { RoomService } from '../../../room/room.service'
 import { SettingsService } from '../../../settings/settings.service'
+import { isPlatformBrowser } from '@angular/common';
+
 
 declare var gapi: any;
 
@@ -36,13 +38,40 @@ export class SearchOfficialsComponent implements OnInit {
     }
 
     constructor(private roomService: RoomService,
+                @Inject(PLATFORM_ID) private platformId,
                 private settingsService: SettingsService) { }
 
 
     ngOnInit(): void {
-        gapi.load("client");
-        this.loadClient()
+        
+        if(isPlatformBrowser(this.platformId)) {
+            gapi.load("client");
+            //this.loadClient()
+            
+            /**
+             * Sample JavaScript code for civicinfo.representatives.representativeInfoByAddress
+             * See instructions for running APIs Explorer code samples locally:
+             * https://developers.google.com/explorer-help/guides/code_samples#javascript
+             */
+            gapi.client.setApiKey(this.settingsService.keys.civic_information_api_key); // get this key in SettingsGuard
+            //console.log('this.settingsService.keys.civic_information_api_key:  ', this.settingsService.keys.civic_information_api_key)
+
+            return gapi.client.load("https://civicinfo.googleapis.com/$discovery/rest?version=v2")
+                .then(function() { console.log("GAPI client loaded for API"); },
+                        function(err) { console.error("Error loading GAPI client for API", err); });
+        
+        }
     }
+
+
+    // ngAfterViewInit(): void {
+    //     // Load google maps script after view init
+    //     const DSLScript = document.createElement('script');
+    //     DSLScript.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBdVvBbQRVIRGlQo_xxKEEmX6ndigE8iDM'; // replace by your API key
+    //     DSLScript.type = 'text/javascript';
+    //     document.body.appendChild(DSLScript);
+    //     document.body.removeChild(DSLScript);
+    //   }
 
   
   
@@ -89,56 +118,60 @@ export class SearchOfficialsComponent implements OnInit {
      * https://developers.google.com/explorer-help/guides/code_samples#javascript
      */
 
-    loadClient() {
-      gapi.client.setApiKey(this.settingsService.keys.civic_information_api_key); // get this key in SettingsGuard
-      //console.log('this.settingsService.keys.civic_information_api_key:  ', this.settingsService.keys.civic_information_api_key)
+    // loadClient() {
+    //   gapi.client.setApiKey(this.settingsService.keys.civic_information_api_key); // get this key in SettingsGuard
+    //   //console.log('this.settingsService.keys.civic_information_api_key:  ', this.settingsService.keys.civic_information_api_key)
 
-      return gapi.client.load("https://civicinfo.googleapis.com/$discovery/rest?version=v2")
-          .then(function() { console.log("GAPI client loaded for API"); },
-                function(err) { console.error("Error loading GAPI client for API", err); });
-    }
+    //   return gapi.client.load("https://civicinfo.googleapis.com/$discovery/rest?version=v2")
+    //       .then(function() { console.log("GAPI client loaded for API"); },
+    //             function(err) { console.error("Error loading GAPI client for API", err); });
+    // }
     
     
     // Make sure the client is loaded before calling this method.
     async execute() {        
-        let obj = await gapi.client.civicinfo.representatives.representativeInfoByAddress({
-          "address": this.formattedaddress,
-          "includeOffices": true,
-          "levels": this.parms[this.officialType]['levels'],
-          "roles": [
-            "legislatorUpperBody",
-            "legislatorLowerBody",
-            "headOfState",
-            "headOfGovernment",
-            "deputyHeadOfGovernment",
-            "governmentOfficer"
-          ]
-        })
-        this.civicResult = obj.result as CivicResult
-        console.log("this.civicResult  :  ", this.civicResult );
+        if(isPlatformBrowser(this.platformId)) {
 
-        _.each(this.civicResult.officials, official => {
-            _.map(official.channels, channel => {
-                channel.url = `https://www.${channel.type}.com/${channel.id}`
-                channel.color_class = ''
-                if(channel.type.toLowerCase() === 'facebook') {
-                    channel.icon = "fab fa-facebook-f"
-                    channel.color_class = 'facebook_color'
-                }
-                if(channel.type.toLowerCase() === 'twitter') {
-                    channel.icon = "fab fa-twitter"
-                    channel.color_class = 'twitter_color'
-                }
-                if(channel.type.toLowerCase() === 'youtube') {
-                    channel.icon = "fab fa-youtube"
-                    channel.color_class = 'youtube_color'
-                }
-                if(channel.type.toLowerCase() === 'instagram') {
-                    channel.icon = "fab fa-instagram"
-                    channel.color_class = 'instagram_color'
-                }
+            let obj = await gapi.client.civicinfo.representatives.representativeInfoByAddress({
+            "address": this.formattedaddress,
+            "includeOffices": true,
+            "levels": this.parms[this.officialType]['levels'],
+            "roles": [
+                "legislatorUpperBody",
+                "legislatorLowerBody",
+                "headOfState",
+                "headOfGovernment",
+                "deputyHeadOfGovernment",
+                "governmentOfficer"
+            ]
             })
-        }) 
+            this.civicResult = obj.result as CivicResult
+            console.log("this.civicResult  :  ", this.civicResult );
+
+            _.each(this.civicResult.officials, official => {
+                _.map(official.channels, channel => {
+                    channel.url = `https://www.${channel.type}.com/${channel.id}`
+                    channel.color_class = ''
+                    if(channel.type.toLowerCase() === 'facebook') {
+                        channel.icon = "fab fa-facebook-f"
+                        channel.color_class = 'facebook_color'
+                    }
+                    if(channel.type.toLowerCase() === 'twitter') {
+                        channel.icon = "fab fa-twitter"
+                        channel.color_class = 'twitter_color'
+                    }
+                    if(channel.type.toLowerCase() === 'youtube') {
+                        channel.icon = "fab fa-youtube"
+                        channel.color_class = 'youtube_color'
+                    }
+                    if(channel.type.toLowerCase() === 'instagram') {
+                        channel.icon = "fab fa-instagram"
+                        channel.color_class = 'instagram_color'
+                    }
+                })
+            }) 
+            
+        }
     }
 
 
