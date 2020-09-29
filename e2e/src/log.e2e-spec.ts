@@ -299,8 +299,8 @@ xdescribe('Log page', () => {
 
 
 
-  // passed 7/18/19, 8/13/20
-  fit('should allow query by date', async () => {
+  // passed 7/18/19, 8/13/20, FAILED 9/29/20
+  it('should allow query by date', async () => {
 
     testSupport.setNames(testSupport.names);
 
