@@ -62,16 +62,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'SeeSaw'`, () => {
+  it(`should have as title 'HeadsUp'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('SeeSaw');
+    expect(app.title).toEqual('HeadsUp');
   });
 
   it('should find title in the navbar', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('nav > a').textContent).toContain('SeeSaw');
+    expect(compiled.querySelector('nav > a').textContent).toContain('HeadsUp');
   });
 });
