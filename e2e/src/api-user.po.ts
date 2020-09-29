@@ -9,7 +9,7 @@ export class ApiUser {
 
   async getUser(phoneNumber: string) {
 
-    var url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/getUser?phoneNumber='+phoneNumber+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
+    var url = 'https://us-central1-yourvotecounts-dev.cloudfunctions.net/getUser?phoneNumber='+phoneNumber+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
     var flow = protractor.promise.controlFlow();
     var result = await flow.execute(function() {
         var defer = protractor.promise.defer();
@@ -40,7 +40,7 @@ export class ApiUser {
 
 
   async postUser(form) {
-    var url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/setUser?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
+    var url = 'https://us-central1-yourvotecounts-dev.cloudfunctions.net/setUser?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
 
     var flow = protractor.promise.controlFlow();
     var result = await flow.execute(function() {

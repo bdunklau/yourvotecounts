@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
-describe('Log page', () => {
+fdescribe('Log page', () => {
   // let page: PublicPage;
   let apiUser: ApiUser;
   let page: MainPage;
@@ -299,7 +299,7 @@ describe('Log page', () => {
 
 
   // passed 7/18/19, 8/13/20
-  it('should allow query by date', async () => {
+  fit('should allow query by date', async () => {
 
     testSupport.setNames(testSupport.names);
 
@@ -501,6 +501,7 @@ describe('Log page', () => {
 
     // Can't get the value of the datepicker <input> field.  It's not your typical
     // <input> field.  Inspect it via Chrome and you'll see
+    /**********
     page.clickLogout();
 
     _.forEach(logs, (log) => {
@@ -508,6 +509,7 @@ describe('Log page', () => {
     })
 
     testSupport.deleteLogs({by:'phoneNumber', value: testSupport.adminUser.phoneNumber}); // deletes the login and logout events so they don't fill up the log screen and cause future false failures
+     *********/
   })
 
 
