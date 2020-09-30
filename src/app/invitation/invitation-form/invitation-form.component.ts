@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional, Inject, PLATFORM_ID } from '@angular/core';
+import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { Invitation } from '../invitation.model';
 import { NgForm, FormControl, /*FormControl, FormGroup*/ } from '@angular/forms';
 import { Router } from "@angular/router";
@@ -39,18 +41,31 @@ export class InvitationFormComponent implements OnInit {
   invitations: Invitation[] = [];
   themessage: string;
   user: FirebaseUserModel;
+  host: string;  //also includes port
 
   constructor(
     private smsService: SmsService,
     private fb: FormBuilder,
     private invitationService: InvitationService,
     private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    @Optional() @Inject(REQUEST) private request: any,
     private userService: UserService) { 
 
       this.createForm();
   }
 
   async ngOnInit(): Promise<void> {
+    
+    if (isPlatformServer(this.platformId)) {
+        this.host = this.request.headers['x-forwarded-host']
+        console.log('InvitationFormComponent: x-forwarded-host:  ', this.request.headers['x-forwarded-host'])
+    }
+    if (isPlatformBrowser(this.platformId)) {
+        this.host = window.location.host
+        console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
+    }
+
     //this.arrayItems = [];
     //this.phones = []
 
@@ -63,10 +78,6 @@ export class InvitationFormComponent implements OnInit {
     //this.invitation.setCreator(this.user);
 
     // get the form started...
-
-    // TODO FIXME temp - remove me
-    //this.invitationForm.get("phone").setValue("2146325613") 
-    //this.invitationForm.get("name").setValue("Brent")
 
     //this.invitation.phoneNumber = this.getPhoneNumber();
 
@@ -194,7 +205,7 @@ export class InvitationFormComponent implements OnInit {
           
           invitation.phoneNumber = "+1"+this.names[i].phoneNumber
           // TODO FIXME figure out host name
-          let url = 'TODO FIXME'//let url = `https://${window.location.host}/video-call/${invitation.id}/${invitation.phoneNumber}`
+          let url = `https://${this.host}/video-call/${invitation.id}/${invitation.phoneNumber}`
           let msg = `${invitation.creatorName} is inviting you to participate in a video call on SeeSaw.  Click the link below to see this invitation. \n\nDo not reply to this text message.  This number is not being monitored. \n\n${url}`
           invitation.message = msg
           console.log('invitation.message:  ', invitation.message)
