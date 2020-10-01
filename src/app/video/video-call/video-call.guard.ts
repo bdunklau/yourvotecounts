@@ -176,7 +176,7 @@ export class VideoCallGuard implements CanActivate {
 
                             }
                             else {
-                                //this.router.navigate(['/error-page'])
+                                this.router.navigate(['/error-page'])
                                 ob.next(false) // this is how you pass a return value out of an observable
                             }
 

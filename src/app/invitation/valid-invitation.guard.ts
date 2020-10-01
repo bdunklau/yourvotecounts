@@ -33,7 +33,11 @@ export class ValidInvitationGuard implements CanActivate {
 
               if(invitations.length < 1) {
                 this.errorPageService.errorMsg = "That URL doesn't make any sense"
-                this.router.navigate(['/error-page'])
+
+                // see video-call.guard.ts - that's where we send to /error-page
+                // For some reason, angular universal doesn't honor the call below, so we have to do the navigate()
+                // in any guard that calls this guard - hassle
+                // this.router.navigate(['/error-page'])
                 console.log('ValidInvitationGuard: no invitation found')
                 ob.next(false) // this is how you pass a return value out of an observable
               }
