@@ -83,8 +83,9 @@ export class VideoCallComponent implements OnInit {
       //this.me = await this.userService.getCurrentUser() // this is NOT how we tell if I am the guest
       this.joinOnLoad = this.route.params['join']
       this.invitations = this.invitationService.invitations  // see  ValidInvitationGuard
-      //console.log('this.invitations = ', this.invitations)
+      console.log('this.settingsService.getSettingsDoc()...')
       this.settingsDoc = await this.settingsService.getSettingsDoc()
+      console.log('this.settingsService.getSettingsDoc()... GOT IT -> ', this.settingsDoc)
       this.routeSubscription = this.route.params.subscribe(async params => {
           this.phoneNumber = params['phoneNumber'];
           console.log('VideoCallComponent:  this.phoneNumber = ', this.phoneNumber)

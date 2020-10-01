@@ -16,26 +16,85 @@ export class ValidInvitationGuard implements CanActivate {
     private router: Router
   ) {}
 
-  async canActivate(
+
+  // try: no async, return observal instead
+  canActivate(
       next: ActivatedRouteSnapshot,
-      state: RouterStateSnapshot): Promise<boolean> {
+      state: RouterStateSnapshot): Observable<boolean> {
 
       let invId = next.params['invitationId'];
       let phoneNumber = next.params['phoneNumber'];
+      
+      return new Observable<boolean>(ob => { 
 
-      //////////////////////////////////////////////////////////////////////////////
-      // INVITATION MUST EXIST
-      let invitations = await this.invitationService.getInvitations(invId)
-      if(invitations.length < 1) {
-        this.errorPageService.errorMsg = "That URL doesn't make any sense"
-        this.router.navigate(['/error-page'])
-        console.log('ValidInvitationGuard: no invitation found')
-        return false
-      }
+          //////////////////////////////////////////////////////////////////////////////
+          // INVITATION MUST EXIST
+          this.invitationService.getInvitations(invId).subscribe(invitations => {
+
+              if(invitations.length < 1) {
+                this.errorPageService.errorMsg = "That URL doesn't make any sense"
+                this.router.navigate(['/error-page'])
+                console.log('ValidInvitationGuard: no invitation found')
+                ob.next(false) // this is how you pass a return value out of an observable
+              }
+              else {
+                  //this.invitationService.invitations = invitations // now go see VideoCallComponent
+                  console.log('this.invitationService.invitations = ', this.invitationService.invitations)
+                  ob.next(true) // this is how you pass a return value out of an observable
+              }
+
+          })
+
+
+
+
+
+
+
+      })
+
+
+
+
+      // //////////////////////////////////////////////////////////////////////////////
+      // // INVITATION MUST EXIST
+      // let invitations = await this.invitationService.getInvitations(invId)
+      // if(invitations.length < 1) {
+      //   this.errorPageService.errorMsg = "That URL doesn't make any sense"
+      //   this.router.navigate(['/error-page'])
+      //   console.log('ValidInvitationGuard: no invitation found')
+      //   return false
+      // }
     
-      //this.invitationService.invitations = invitations // now go see VideoCallComponent
-      console.log('this.invitationService.invitations = ', this.invitationService.invitations)
+      // //this.invitationService.invitations = invitations // now go see VideoCallComponent
+      // console.log('this.invitationService.invitations = ', this.invitationService.invitations)
  
-      return true;
+      // return true;
+
   }
+
+  
+
+  // async canActivate(
+  //     next: ActivatedRouteSnapshot,
+  //     state: RouterStateSnapshot): Promise<boolean> {
+
+  //     let invId = next.params['invitationId'];
+  //     let phoneNumber = next.params['phoneNumber'];
+
+  //     //////////////////////////////////////////////////////////////////////////////
+  //     // INVITATION MUST EXIST
+  //     let invitations = await this.invitationService.getInvitations(invId)
+  //     if(invitations.length < 1) {
+  //       this.errorPageService.errorMsg = "That URL doesn't make any sense"
+  //       this.router.navigate(['/error-page'])
+  //       console.log('ValidInvitationGuard: no invitation found')
+  //       return false
+  //     }
+    
+  //     //this.invitationService.invitations = invitations // now go see VideoCallComponent
+  //     console.log('this.invitationService.invitations = ', this.invitationService.invitations)
+
+  //     return true;
+  // }
 }

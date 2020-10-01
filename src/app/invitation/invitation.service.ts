@@ -5,6 +5,7 @@ import { UserService } from '../user/user.service';
 import { LogService } from '../log/log.service';
 import { take } from 'rxjs/operators';
 import * as _ from 'lodash'
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -97,24 +98,56 @@ export class InvitationService {
   }
 
 
-  async getInvitations(invitationId: string) {
-    var observable = this.afs.collection('invitation', ref => ref.where("id", "==", invitationId)).snapshotChanges().pipe(take(1));
-    let docChangeActions = await observable.toPromise()
-    let invitations:Invitation[] = []
-    if(docChangeActions && docChangeActions.length > 0) {
-      _.each(docChangeActions, obj => {
-        let inv = obj.payload.doc.data() as Invitation
-        inv.docId = obj.payload.doc.id
-        console.log('invitation: ', inv)
-        invitations.push(inv)
-        this.invitations.push(inv)
-        console.log('invitations: ', invitations)
+  getInvitations(invitationId: string) {
+      var observable = this.afs.collection('invitation', ref => ref.where("id", "==", invitationId)).snapshotChanges().pipe(take(1));
+      return new Observable<any>(ob => { 
+
+        observable.subscribe(docChangeActions => {
+            let invitations:Invitation[] = []
+            if(docChangeActions && docChangeActions.length > 0) {
+                _.each(docChangeActions, obj => {
+                    let inv = obj.payload.doc.data() as Invitation
+                    inv.docId = obj.payload.doc.id
+                    console.log('invitation: ', inv)
+                    invitations.push(inv)
+                    this.invitations.push(inv)
+                    console.log('invitations: ', invitations)
+                })
+            }
+            console.log('invitationId: ', invitationId)
+            console.log('invitations: ', invitations)
+            ob.next(invitations)
+        })
+
       })
-    }
-    console.log('invitationId: ', invitationId)
-    console.log('invitations: ', invitations)
-    return invitations
+
+
+
+
   }
+
+
+  /////////////////////////////////////////////////////////////////////////////////
+  // REPLACED BY THE VERSION ABOVE THAT STICKS WITH OBSERVABLES BECAUSE OF ANGULAR UNIVERSAL
+  //
+  // async getInvitations(invitationId: string) {
+  //   var observable = this.afs.collection('invitation', ref => ref.where("id", "==", invitationId)).snapshotChanges().pipe(take(1));
+  //   let docChangeActions = await observable.toPromise()
+  //   let invitations:Invitation[] = []
+  //   if(docChangeActions && docChangeActions.length > 0) {
+  //     _.each(docChangeActions, obj => {
+  //       let inv = obj.payload.doc.data() as Invitation
+  //       inv.docId = obj.payload.doc.id
+  //       console.log('invitation: ', inv)
+  //       invitations.push(inv)
+  //       this.invitations.push(inv)
+  //       console.log('invitations: ', invitations)
+  //     })
+  //   }
+  //   console.log('invitationId: ', invitationId)
+  //   console.log('invitations: ', invitations)
+  //   return invitations
+  // }
 
 
   /**

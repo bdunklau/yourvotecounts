@@ -16,32 +16,67 @@ export class DisabledGuard implements CanActivate {
     private settingsService: SettingsService,
   ) {}
 
-  async canActivate(
+  canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Promise<boolean> {
 
     try {
-      var user = await this.userService.getCurrentUser();
-      var globalDisabled = await this.settingsService.isDisabled();
-      console.log('globalDisabled = ', globalDisabled);
+      return this.userService.getCurrentUser().then(user => {
+          return this.settingsService.isDisabled().then(globalDisabled => {
+              
+              // RULE: admins cannot be disabled via the global setting
+              // RULE: admins CAN be disabled individually
+              // RULE: But you can't disable your own account
+              console.log('globalDisabled = ', globalDisabled);
+              var allDisabled = globalDisabled && user && !user.hasRole('admin');
+              let reroute = (user && user.isDisabled) || allDisabled
+              
+              // if there's no user, then send the user to /login and return false
+              // otherwise return true
+              if(reroute) {
+                  this.router.navigate(['/disabled']);
+                  return Promise.resolve(false);
+              }
+              else return Promise.resolve(true);
 
-      // RULE: admins cannot be disabled via the global setting
-      // RULE: admins CAN be disabled individually
-      // RULE: But you can't disable your own account
-      var allDisabled = globalDisabled && user && !user.hasRole('admin');
+          })
+      })
 
-      let reroute = (user && user.isDisabled) || allDisabled
-
-      // if there's no user, then send the user to /login and return false
-      // otherwise return true
-      if(reroute) {
-        this.router.navigate(['/disabled']);
-        return false;
-      }
-      else return true;
     } catch(e) {
-      return false;
+        return Promise.resolve(false);
     }
 
   }
+
+
+  ///////////////////////////////////////////////////////////////////////////////////
+  // promised-based with async doesn't work on angular universal
+  // async canActivate(
+  //   next: ActivatedRouteSnapshot,
+  //   state: RouterStateSnapshot): Promise<boolean> {
+
+  //   try {
+  //     var user = await this.userService.getCurrentUser();
+  //     var globalDisabled = await this.settingsService.isDisabled();
+  //     console.log('globalDisabled = ', globalDisabled);
+
+  //     // RULE: admins cannot be disabled via the global setting
+  //     // RULE: admins CAN be disabled individually
+  //     // RULE: But you can't disable your own account
+  //     var allDisabled = globalDisabled && user && !user.hasRole('admin');
+
+  //     let reroute = (user && user.isDisabled) || allDisabled
+
+  //     // if there's no user, then send the user to /login and return false
+  //     // otherwise return true
+  //     if(reroute) {
+  //       this.router.navigate(['/disabled']);
+  //       return false;
+  //     }
+  //     else return true;
+  //   } catch(e) {
+  //     return false;
+  //   }
+
+  // }
 }

@@ -95,6 +95,9 @@ export class UserService {
     return user;
   }
 
+  ///////////////////////////////////////////////////////////////////////
+  // may not be useful if angular universal makes us get rid of promises in favor of observables
+  // we'll see...   10.1.20
   async getCurrentUser() : Promise<FirebaseUserModel> {
     if(this.user) {
       console.log('getCurrentUser():  get cached user: ', this.user);
