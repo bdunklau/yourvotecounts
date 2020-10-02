@@ -55,14 +55,18 @@ export class ViewVideoComponent implements OnInit {
 
 
         this.room = this.roomService.roomObj
-        //this.videoUrl = this.room.videoUrl
-        //console.log("check this room:  ", this.room)
+        if(this.room.video_title) this.video_title = this.room.video_title
+        if(this.room.video_description) this.video_description = this.room.video_description
+
 
         if(this.room) {
+            if(this.room.video_title) this.titleService.setTitle(this.room.video_title)
+            else this.titleService.setTitle('HeadsUp!')
+
             this.metaTagService.addTags([
-              { name: 'keywords', content: 'Angular SEO Integration - did this work' },
+              { name: 'keywords', content: 'HeadsUp video elected officials candidates for office' },
               { name: 'robots', content: 'index, follow' },
-              { name: 'author', content: 'Digamber Singh' },
+              { name: 'author', content: 'genius' },
               { name: 'viewport', content: 'width=device-width, initial-scale=1' },
               { property: 'og:image', content: this.room.screenshotUrl },
               { name: 'date', content: '2019-10-31', scheme: 'YYYY-MM-DD' },
@@ -97,9 +101,6 @@ export class ViewVideoComponent implements OnInit {
                 this.videoUrl = this.room.videoUrlAlt
                 this.videoType = "video/mp4"
             }
-            if(this.room.video_title) this.video_title = this.room.video_title
-            if(this.room.video_title) this.setDocTitle(this.video_title)
-            if(this.room.video_description) this.video_description = this.room.video_description
             let user = await this.userService.getCurrentUser()
             let allowed = this.allowedToEdit(user)
             console.log('this.room: ', this.room)
@@ -179,9 +180,9 @@ export class ViewVideoComponent implements OnInit {
     }
     
     
-    setDocTitle(title: string) {
-        this.titleService.setTitle(title);
-    }
+    // setDocTitle(title: string) {
+    //     this.titleService.setTitle(title);
+    // }
 
 
     // opens a modal to /search-officials

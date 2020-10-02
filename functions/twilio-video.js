@@ -171,7 +171,9 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
     else {
         console.log("got the else condition:  req.body = ", req.body)
         console.log("got the else condition:  req.query = ", req.query)
-        return res.status(200).send(JSON.stringify({"result": "else condition"}));
+
+        // I forget...  Does twilio need a simple 'ok' back, and anything else isn't properly handled?
+        return res.status(200).send('ok');
 
         /********************************
          FYI - here is a post that got captured by this else block
@@ -252,8 +254,8 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
             callbackUrl: `https://${settingsObj.data().firebase_functions_host}/cutVideoComplete`, // just below this function
             compositionProgress: roomDoc.data()['compositionProgress'],
             website_domain_name: req.body.website_domain_name,
-            projectId: settingsObj.projectId,
-            storage_keyfile: settingsObj.storage_keyfile
+            projectId: settingsObj.data().projectId,
+            storage_keyfile: settingsObj.data().storage_keyfile
         }
         let vmUrl = `http://${settingsObj.data().cloud_host}/cutVideo`
         request.post(
@@ -550,7 +552,7 @@ exports.uploadScreenshotToStorageComplete = functions.https.onRequest(async (req
 
      // WRITE SCREENSHOT URL TO THE ROOMSID DOC SO WE CAN DISPLAY THIS VIA SSR AND THE og:image TAG
     var db = admin.firestore();
-    let screenshotUrl = `https://storage.googleapis.com/yourvotecounts-bd737.appspot.com/${req.body.CompositionSid}/${req.body.screenshot}`
+    let screenshotUrl = `https://storage.googleapis.com/${req.body.projectId}.appspot.com/${req.body.CompositionSid}/${req.body.screenshot}`
     await db.collection('room').doc(req.body.RoomSid)
             .update({ screenshotUrl: screenshotUrl })
      
