@@ -211,12 +211,13 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
      * POST data passed in from 
      * vm: index.js: /downloadComposition
      * 
-     {compositionFile: compositionFile,
-      CompositionSid:  CompositionSid,
-      RoomSid: req.body.RoomSid,
-	  tempEditFolder:  `/home/bdunklau/videos/${req.body.CompositionSid}`,
-      downloadComplete: true,
-	  website_domain_name: req.body.website_domain_name}
+     {  compositionFile: compositionFile,
+        CompositionSid:  CompositionSid,
+        RoomSid: req.body.RoomSid,
+        tempEditFolder:  `/home/bdunklau/videos/${req.body.CompositionSid}`,
+        downloadComplete: true,
+        website_domain_name: req.body.website_domain_name
+    }
      */
 
 
@@ -250,7 +251,9 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
             cloud_host: settingsObj.data().cloud_host,
             callbackUrl: `https://${settingsObj.data().firebase_functions_host}/cutVideoComplete`, // just below this function
             compositionProgress: roomDoc.data()['compositionProgress'],
-            website_domain_name: req.body.website_domain_name
+            website_domain_name: req.body.website_domain_name,
+            projectId: settingsObj.projectId,
+            storage_keyfile: settingsObj.storage_keyfile
         }
         let vmUrl = `http://${settingsObj.data().cloud_host}/cutVideo`
         request.post(
@@ -293,7 +296,9 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
             firebase_functions_host: req.body.firebase_functions_host,
             cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
             compositionProgress: compositionProgress,
-		    website_domain_name: req.body.website_domain_name
+		    website_domain_name: req.body.website_domain_name,
+            projectId: req.body.projectId,
+            storage_keyfile: req.body.storage_keyfile
         }
      */
     var db = admin.firestore()
@@ -322,7 +327,9 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
         //callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete`, // just below this function
         callbackUrl: `https://${req.body.firebase_functions_host}/createHlsComplete`, // just below this function
         compositionProgress: compositionProgress,
-        website_domain_name: req.body.website_domain_name
+        website_domain_name: req.body.website_domain_name,
+        projectId: req.body.projectId,
+        storage_keyfile: req.body.storage_keyfile
     }
 
 	request.post(
@@ -362,7 +369,9 @@ exports.createHlsComplete = functions.https.onRequest(async (req, res) => {
 			firebase_functions_host: req.body.firebase_functions_host,
 			cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
 			compositionProgress: req.body.compositionProgress,
-			website_domain_name: req.body.website_domain_name
+			website_domain_name: req.body.website_domain_name,
+            projectId: req.body.projectId,
+            storage_keyfile: req.body.storage_keyfile
 		}
 		if(req.body.stop) formData['stop'] = true
 
@@ -387,7 +396,9 @@ exports.createHlsComplete = functions.https.onRequest(async (req, res) => {
         cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
         callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete`, // just below this function
         compositionProgress: req.body.compositionProgress,
-        website_domain_name: req.body.website_domain_name
+        website_domain_name: req.body.website_domain_name,
+        projectId: req.body.projectId,        
+        storage_keyfile: req.body.storage_keyfile
     }
     
     
@@ -442,7 +453,9 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
             firebase_functions_host: req.body.firebase_functions_host,
             cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
             compositionProgress: req.body.compositionProgress,
-            website_domain_name: req.body.website_domain_name
+            website_domain_name: req.body.website_domain_name,
+            projectId: req.body.projectId,
+            storage_keyfile: req.body.storage_keyfile
         }
         if(req.body.stop) formData['stop'] = true
 
@@ -454,8 +467,8 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
     // video-call.component.ts: monitorRoom() and VideoCallCompleteGuard both pick up on this
     var compositionProgress = req.body.compositionProgress
     compositionProgress.push('Uploading to the cloud :)')
-    let videoUrl = `https://storage.googleapis.com/yourvotecounts-bd737.appspot.com/${req.body.CompositionSid}/${req.body.CompositionSid}.m3u8`
-    let videoUrlAlt = `https://storage.googleapis.com/yourvotecounts-bd737.appspot.com/${req.body.CompositionSid}/${req.body.CompositionSid}-output.mp4`
+    let videoUrl = `https://storage.googleapis.com/${req.body.projectId}.appspot.com/${req.body.CompositionSid}/${req.body.CompositionSid}.m3u8`
+    let videoUrlAlt = `https://storage.googleapis.com/${req.body.projectId}.appspot.com/${req.body.CompositionSid}/${req.body.CompositionSid}-output.mp4`
     //let videoUrl = req.body.videoUrl // if it was a signed url
     await db.collection('room').doc(req.body.RoomSid)
             .update({
@@ -484,7 +497,9 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
         //callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete`, // just below this function
         callbackUrl: `https://${req.body.firebase_functions_host}/uploadScreenshotToStorageComplete`, // just below this function
         compositionProgress: compositionProgress,
-        website_domain_name: req.body.website_domain_name
+        website_domain_name: req.body.website_domain_name,
+        projectId: req.body.projectId,
+        storage_keyfile: req.body.storage_keyfile
     }
 
 	request.post(
@@ -526,7 +541,9 @@ exports.uploadScreenshotToStorageComplete = functions.https.onRequest(async (req
             firebase_functions_host: req.body.firebase_functions_host,
             cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
             compositionProgress: req.body.compositionProgress,
-            website_domain_name: req.body.website_domain_name
+            website_domain_name: req.body.website_domain_name,
+            projectId: req.body.projectId,
+            storage_keyfile: req.body.storage_keyfile
         }
         if(req.body.stop) formData['stop'] = true
      */
@@ -555,7 +572,9 @@ exports.uploadScreenshotToStorageComplete = functions.https.onRequest(async (req
         firebase_functions_host: req.body.firebase_functions_host,
         callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete`, // just below this function
         compositionProgress: compositionProgress,
-        website_domain_name: req.body.website_domain_name
+        website_domain_name: req.body.website_domain_name,
+        projectId: req.body.projectId,
+        storage_keyfile: req.body.storage_keyfile
     }
 
 	request.post(
@@ -599,7 +618,9 @@ exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
 		firebase_functions_host: req.body.firebase_functions_host,
 		cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
 		compositionProgress: req.body.compositionProgress,
-        website_domain_name: req.body.website_domain_name
+        website_domain_name: req.body.website_domain_name,
+        projectId: req.body.projectId,
+        storage_keyfile: req.body.storage_keyfile
 	}
      */
     

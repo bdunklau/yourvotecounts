@@ -6,4 +6,6 @@ export class Settings {
   to_sms: string;
   website_domain_name: string
   promo_codes: string[]
+  projectId: string
+  storage_keyfile: string
 }
