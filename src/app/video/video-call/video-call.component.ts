@@ -214,7 +214,7 @@ export class VideoCallComponent implements OnInit {
   monitorInvitation(invitation: Invitation) {
       let xxxx = this.invitationService.monitorInvitation(invitation.docId)
       this.invitationWatcher = xxxx.subscribe( res => {
-          console.log('res: ', res)
+          console.log('monitorInvitation():  res: ', res)
           let inv = res.payload.data() as Invitation
           if(inv.deleted_ms) {
               // remove the deleted guest

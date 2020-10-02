@@ -99,23 +99,23 @@ export class InvitationService {
 
 
   getInvitations(invitationId: string) {
-      var observable = this.afs.collection('invitation', ref => ref.where("id", "==", invitationId)).snapshotChanges().pipe(take(1));
       return new Observable<any>(ob => { 
 
+        var observable = this.afs.collection('invitation', ref => ref.where("id", "==", invitationId)).snapshotChanges().pipe(take(1));
         observable.subscribe(docChangeActions => {
             let invitations:Invitation[] = []
             if(docChangeActions && docChangeActions.length > 0) {
                 _.each(docChangeActions, obj => {
                     let inv = obj.payload.doc.data() as Invitation
                     inv.docId = obj.payload.doc.id
-                    console.log('invitation: ', inv)
+                    console.log('getInvitations():  invitation: ', inv)
                     invitations.push(inv)
                     this.invitations.push(inv)
-                    console.log('invitations: ', invitations)
+                    console.log('getInvitations():  invitations: ', invitations)
                 })
             }
-            console.log('invitationId: ', invitationId)
-            console.log('invitations: ', invitations)
+            console.log('getInvitations():  invitationId: ', invitationId)
+            console.log('getInvitations():  invitations: ', invitations)
             ob.next(invitations)
         })
 
