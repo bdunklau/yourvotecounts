@@ -69,7 +69,7 @@ export class VideoCallGuard implements CanActivate {
 
                                 this.invitationDeletedGuard.canActivate(next, state).subscribe(async (stillGood) => {
                                     if(stillGood) {
-                                        console.log('OK: invitation is stillGood')
+                                        console.log('video-call.guard:  OK: invitation is stillGood')
                                         // ok: not deleted
                                         // now we have to get the room info
 
@@ -97,16 +97,21 @@ export class VideoCallGuard implements CanActivate {
                                                 this.router.navigate(['/video-call-complete', roomObj['RoomSid'], hostOrGuest, phoneNumber ]);
                                                 ob.next(false) // this is how you pass a return value out of an observable
                                             }
+                                            else {
+                                                console.log("video-call.guard:  return true - but didn't expect this")
+                                                ob.next(true) // this is how you pass a return value out of an observable                                                
+                                            }
                                         }
                                         else {
                                             // typical use case: move on to 
-                                            console.log("THIS IS WHAT WE WANT TO SEE sort of")
+                                            console.log("video-call.guard:  THIS IS WHAT WE WANT TO SEE sort of")
                                             ob.next(true) // this is how you pass a return value out of an observable
                                         }
 
                                     }
                                     else {
-                                        //this.router.navigate(['/error-page'])
+                                        console.log('video-call.guard:  going to /error-page because stillGood = ', stillGood)
+                                        this.router.navigate(['/error-page'])
                                         ob.next(false) // this is how you pass a return value out of an observable
                                     }
 
@@ -176,6 +181,7 @@ export class VideoCallGuard implements CanActivate {
 
                             }
                             else {
+                                console.log('video-call.guard:  ok = ', ok)
                                 this.router.navigate(['/error-page'])
                                 ob.next(false) // this is how you pass a return value out of an observable
                             }
