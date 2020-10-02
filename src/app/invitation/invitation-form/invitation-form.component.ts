@@ -73,7 +73,7 @@ export class InvitationFormComponent implements OnInit {
     this.addSomeone()
 
     //this.invitation = new Invitation();
-    //this.invitation.id = this.invitationService.createId();
+    //this.invitation.invitationId = this.invitationService.createId();
     this.user = await this.userService.getCurrentUser();
     //this.invitation.setCreator(this.user);
 
@@ -82,7 +82,7 @@ export class InvitationFormComponent implements OnInit {
     //this.invitation.phoneNumber = this.getPhoneNumber();
 
     // see:   https://stackoverflow.com/a/56058977
-    //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.id+"/"+this.invitation.phoneNumber};
+    //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.invitationId+"/"+this.invitation.phoneNumber};
     //this.themessage = await this.invitationService.getInvitationMessage(this.user.displayName, url);
     //this.invitationForm.get("message").setValue(this.themessage);
   }
@@ -196,16 +196,16 @@ export class InvitationFormComponent implements OnInit {
 
           // create the invitation
           let invitation = new Invitation();
-          invitation.id = commonInvitationId;
+          invitation.invitationId = commonInvitationId;
           invitation.setCreator(this.user);
           invitation.displayName = this.names[i].displayName
          
-          //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+invitation.id+"/"+this.names[i].phoneNumber};
+          //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+invitation.invitationId+"/"+this.names[i].phoneNumber};
           //this.themessage = this.getInvitationMessage(this.user.displayName, url);
           
           invitation.phoneNumber = "+1"+this.names[i].phoneNumber
           // TODO FIXME figure out host name
-          let url = `https://${this.host}/video-call/${invitation.id}/${invitation.phoneNumber}`
+          let url = `https://${this.host}/video-call/${invitation.invitationId}/${invitation.phoneNumber}`
           let msg = `${invitation.creatorName} is inviting you to participate in a video call on SeeSaw.  Click the link below to see this invitation. \n\nDo not reply to this text message.  This number is not being monitored. \n\n${url}`
           invitation.message = msg
           console.log('invitation.message:  ', invitation.message)
@@ -257,7 +257,7 @@ export class InvitationFormComponent implements OnInit {
   /***********
   updateMessage() {
       console.log("updateMessage()")    
-      let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.id+"/"+this.invitation.phoneNumber};
+      let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.invitationId+"/"+this.invitation.phoneNumber};
       this.themessage = this.getInvitationMessage(this.user.displayName, url);
       this.invitationForm.get("message").setValue(this.themessage);
   }
@@ -268,10 +268,10 @@ export class InvitationFormComponent implements OnInit {
     //var res = await this.afs.collection('config').doc('invitation_template').ref.get();
     let msg = baseMsg.replace(/name/, displayName);
     //let host = parm.host.indexOf("localhost") == -1 ? parm.host : this.ngrok
-    //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.id+"/"+this.invitation.phoneNumber};
+    //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.invitationId+"/"+this.invitation.phoneNumber};
     
     this.invitation.phoneNumber = this.getPhoneNumber();
-    let url = `${parm.protocol}//${parm.host}/video-call/${this.invitation.id}/${this.invitation.phoneNumber}`
+    let url = `${parm.protocol}//${parm.host}/video-call/${this.invitation.invitationId}/${this.invitation.phoneNumber}`
 
     //this.themessage = await this.invitationService.getInvitationMessage(this.user.displayName, url);
     //let url = parm.protocol+"//"+parm.host+parm.pathname

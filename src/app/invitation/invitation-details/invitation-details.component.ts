@@ -89,8 +89,8 @@ export class InvitationDetailsComponent implements OnInit {
 
   
   async join_call() {
-    let roomName = this.invitations[0].id;
-    this.router.navigate(['/video-call', this.invitations[0].id, this.invitations[0].creatorPhone, 'join'])
+    let roomName = this.invitations[0].invitationId;
+    this.router.navigate(['/video-call', this.invitations[0].invitationId, this.invitations[0].creatorPhone, 'join'])
   }
 
 

@@ -60,7 +60,7 @@ export class RoomService {
         hostId: invitations[0].creatorId,  // all these [0] values are shared by all guests
         hostName: invitations[0].creatorName,
         hostPhone: invitations[0].creatorPhone,
-        invitationId: invitations[0].id,
+        invitationId: invitations[0].invitationId,
         //guestsX: [
         //  { guestName: invitation.displayName, guestPhone: invitation.phoneNumber }
         //],

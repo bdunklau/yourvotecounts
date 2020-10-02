@@ -115,7 +115,7 @@ export class VideoCallComponent implements OnInit {
     this.connecting = true;
     await this.initializeDevice();
 
-    let roomName = this.invitations[0].id; // id is shared among all guests
+    let roomName = this.invitations[0].invitationId; // id is shared among all guests
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -244,7 +244,7 @@ export class VideoCallComponent implements OnInit {
 
   delete_invitations() {
       // id's can be shared - that's how we know who all is invited to be on a call
-      let sharedInvitationId = this.invitations[0].id
+      let sharedInvitationId = this.invitations[0].invitationId
       this.invitationService.deleteInvitations(sharedInvitationId)
       this.router.navigate(['/invitation-deleted'])
   }

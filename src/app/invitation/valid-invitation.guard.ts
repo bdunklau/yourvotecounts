@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { InvitationService } from './invitation.service';
+import { Invitation } from './invitation.model';
 import { ErrorPageService } from '../util/error-page/error-page.service';
 import * as _ from 'lodash'
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +32,27 @@ export class ValidInvitationGuard implements CanActivate {
 
           //////////////////////////////////////////////////////////////////////////////
           // INVITATION MUST EXIST
-          this.invitationService.getInvitations(invId).subscribe(invitations => {
+          this.invitationService.getInvitations(invId).subscribe(docChangeActions => {
+
+
+              let invitations:Invitation[] = []
+              console.log('canActivate():  docChangeActions: ', docChangeActions)
+              if(docChangeActions && docChangeActions.length > 0) {
+                  _.each(docChangeActions, obj => {
+                      let inv = obj.payload.doc.data() as Invitation
+                      inv.docId = obj.payload.doc.id
+                      console.log('canActivate():  invitation: ', inv)
+                      this.invitationService.invitations.push(inv)
+                      invitations.push(inv)
+                      console.log('canActivate():  invitations: ', invitations)
+                  })
+              }
+              console.log('canActivate():  invitationId: ', invId)
+              console.log('canActivate():  invitations: ', invitations)
+              // ob.next(invitations)
+
+
+
 
               if(invitations.length < 1) {
                 this.errorPageService.errorMsg = "That URL doesn't make any sense"

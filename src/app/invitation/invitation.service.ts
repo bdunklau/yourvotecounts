@@ -32,8 +32,8 @@ export class InvitationService {
 
   async create(invitation: Invitation): Promise<string> {
       let name = invitation.displayName;
-      if(!invitation.id) { // this BETTER be there   (invitation-form.component.ts: onSubmit())
-        invitation.id = this.afs.createId();
+      if(!invitation.invitationId) { // this BETTER be there   (invitation-form.component.ts: onSubmit())
+        invitation.invitationId = this.afs.createId();
       }
 
       let batch = this.afs.firestore.batch();
@@ -47,7 +47,7 @@ export class InvitationService {
       this.log.i('created invitation: docKey = '+docKey);
 
       // not sure if there's really a need to return this
-      return invitation.id;
+      return invitation.invitationId;
 
       // good example of transactions:
       // https://stackoverflow.com/questions/47532694/firestore-transaction-update-multiple-documents-in-a-single-transaction?rq=1
@@ -57,16 +57,16 @@ export class InvitationService {
 
 
   /**
-   * THIS DOESN'T WORK ANYMORE BECAUSE invitation.id IS NOT THE DOC ID ANYMORE
+   * THIS DOESN'T WORK ANYMORE BECAUSE invitation.invitationId IS NOT THE DOC ID ANYMORE
    */
   // TODO FIXME
   /* async */ deleteInvitation_needs_fixing(invitation: Invitation) {
     let batch = this.afs.firestore.batch();
-    var invitationRef = this.afs.collection('invitation').doc(invitation.id).ref;
+    var invitationRef = this.afs.collection('invitation').doc(invitation.invitationId).ref;
     batch.delete(invitationRef);
     //batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(-1)});
     /* await */ batch.commit();
-    this.log.i('deleted '+invitation.id);
+    this.log.i('deleted '+invitation.invitationId);
     //return await this.getTeamData(team_member.teamDocId);
   }
 
@@ -78,7 +78,7 @@ export class InvitationService {
 
   async deleteInvitations(invitationId: string) {      
       let batch = this.afs.firestore.batch();
-      let observable = this.afs.collection('invitation', ref => ref.where("id", "==", invitationId)).snapshotChanges().pipe(take(1));
+      let observable = this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges().pipe(take(1));
       let docChangeActions = await observable.toPromise()
       if(docChangeActions && docChangeActions.length > 0) {
           _.each(docChangeActions, obj => {
@@ -98,30 +98,31 @@ export class InvitationService {
   }
 
 
+  // TODO FIXME invitation id needs to be changed to invitationId, not just 'id'
   getInvitations(invitationId: string) {
-      return new Observable<any>(ob => { 
+      console.log('invitation.service:  invitationId: ', invitationId, 'query by iinvitationIdd')
+      return this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges()//.pipe(take(1));
+      // return new Observable<any>(ob => { 
+      //   console.log('getInvitations():  invitationId = ', invitationId)
+      //   var observable = this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges().pipe(take(1));
+      //   observable.subscribe(docChangeActions => {
+      //       let invitations:Invitation[] = []
+      //       if(docChangeActions && docChangeActions.length > 0) {
+      //           _.each(docChangeActions, obj => {
+      //               let inv = obj.payload.doc.data() as Invitation
+      //               inv.docId = obj.payload.doc.id
+      //               console.log('getInvitations():  invitation: ', inv)
+      //               invitations.push(inv)
+      //               this.invitations.push(inv)
+      //               console.log('getInvitations():  invitations: ', invitations)
+      //           })
+      //       }
+      //       console.log('getInvitations():  invitationId: ', invitationId)
+      //       console.log('getInvitations():  invitations: ', invitations)
+      //       ob.next(invitations)
+      //   })
 
-        var observable = this.afs.collection('invitation', ref => ref.where("id", "==", invitationId)).snapshotChanges().pipe(take(1));
-        observable.subscribe(docChangeActions => {
-            let invitations:Invitation[] = []
-            if(docChangeActions && docChangeActions.length > 0) {
-                _.each(docChangeActions, obj => {
-                    let inv = obj.payload.doc.data() as Invitation
-                    inv.docId = obj.payload.doc.id
-                    console.log('getInvitations():  invitation: ', inv)
-                    invitations.push(inv)
-                    this.invitations.push(inv)
-                    console.log('getInvitations():  invitations: ', invitations)
-                })
-            }
-            console.log('getInvitations():  invitationId: ', invitationId)
-            console.log('getInvitations():  invitations: ', invitations)
-            ob.next(invitations)
-        })
-
-      })
-
-
+      // })
 
 
   }
@@ -131,7 +132,7 @@ export class InvitationService {
   // REPLACED BY THE VERSION ABOVE THAT STICKS WITH OBSERVABLES BECAUSE OF ANGULAR UNIVERSAL
   //
   // async getInvitations(invitationId: string) {
-  //   var observable = this.afs.collection('invitation', ref => ref.where("id", "==", invitationId)).snapshotChanges().pipe(take(1));
+  //   var observable = this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges().pipe(take(1));
   //   let docChangeActions = await observable.toPromise()
   //   let invitations:Invitation[] = []
   //   if(docChangeActions && docChangeActions.length > 0) {
@@ -171,7 +172,7 @@ export class InvitationService {
       return null;
     }
     const invitation = new Invitation();
-    invitation.id = invitationDoc.data().id;
+    invitation.invitationId = invitationDoc.data().invitationId;
     invitation.displayName = invitationDoc.data().displayName;
     invitation.phoneNumber = invitationDoc.data().phoneNumber;
     invitation.created = invitationDoc.data().created;
