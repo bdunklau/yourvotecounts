@@ -202,7 +202,7 @@ export class InvitationService {
 
 
   /**
-name  is inviting you to participate in a video call on SeeSaw.  Click the link below to see this invitation.
+name  is inviting you to participate in a video call on HeadsUp.  Click the link below to see this invitation.
 \n\n
 url
 \n\n

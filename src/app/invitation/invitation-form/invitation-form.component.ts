@@ -206,7 +206,7 @@ export class InvitationFormComponent implements OnInit {
           invitation.phoneNumber = "+1"+this.names[i].phoneNumber
           // TODO FIXME figure out host name
           let url = `https://${this.host}/video-call/${invitation.invitationId}/${invitation.phoneNumber}`
-          let msg = `${invitation.creatorName} is inviting you to participate in a video call on SeeSaw.  Click the link below to see this invitation. \n\nDo not reply to this text message.  This number is not being monitored. \n\n${url}`
+          let msg = `${invitation.creatorName} is inviting you to participate in a video call on HeadsUp.  Click the link below to see this invitation. \n\nDo not reply to this text message.  This number is not being monitored. \n\n${url}`
           invitation.message = msg
           console.log('invitation.message:  ', invitation.message)
 
@@ -264,7 +264,7 @@ export class InvitationFormComponent implements OnInit {
 
 
   getInvitationMessage(displayName: string, parm: {protocol: string, host: string, pathname: string}) {
-    let baseMsg = 'name  is inviting you to participate in a video call on SeeSaw.  Click the link below to see this invitation. \n\n url \n\n Do not reply to this text message.  This number is not being monitored.'
+    let baseMsg = 'name  is inviting you to participate in a video call on HeadsUp.  Click the link below to see this invitation. \n\n url \n\n Do not reply to this text message.  This number is not being monitored.'
     //var res = await this.afs.collection('config').doc('invitation_template').ref.get();
     let msg = baseMsg.replace(/name/, displayName);
     //let host = parm.host.indexOf("localhost") == -1 ? parm.host : this.ngrok
