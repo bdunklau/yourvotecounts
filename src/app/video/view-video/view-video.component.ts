@@ -55,7 +55,7 @@ export class ViewVideoComponent implements OnInit {
     async ngOnInit() {
 
          
-        this.roomService.getRoomData(this.route.snapshot.paramMap.get("compositionSid")).subscribe(obj => {
+        this.roomService.getRoomData(this.route.snapshot.paramMap.get("compositionSid")).subscribe(async obj => {
             // if(!obj || obj.length < 1) {
             //     this.router.navigate(['/error-page'])
             //     ob.next(false) // this is how you pass a return value out of an observable
