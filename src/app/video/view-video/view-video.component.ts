@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy, AfterViewInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { RoomObj } from '../../room/room-obj.model'
@@ -48,71 +48,105 @@ export class ViewVideoComponent implements OnInit {
                 private metaTagService: Meta,
                 @Inject(PLATFORM_ID) private platformId,
                 //private _modalService: NgbModal,
+                private router: Router,
                 private route: ActivatedRoute) { }
 
 
     async ngOnInit() {
 
+         
+        this.roomService.getRoomData(this.route.snapshot.paramMap.get("compositionSid")).subscribe(obj => {
+            // if(!obj || obj.length < 1) {
+            //     this.router.navigate(['/error-page'])
+            //     ob.next(false) // this is how you pass a return value out of an observable
+            // }
+            // else { 
+                console.log('got this from roomService: ', obj)
+                let roomObj = obj[0].payload.doc.data() as RoomObj
+                // hack? Don't know why functions aren't preserved when casting "as RoomObj" - so had to do this
+                let rm = new RoomObj()
+                roomObj.isHost = rm.isHost
+                roomObj.isGuest = rm.isGuest
 
-        this.room = this.roomService.roomObj
-        if(this.room.video_title) this.video_title = this.room.video_title
-        if(this.room.video_description) this.video_description = this.room.video_description
+                if(roomObj.videoUrl) {
+                    this.roomService.roomObj = roomObj
+                    console.log('VideoReadyGuard: this.roomService.roomObj.:  ', this.roomService.roomObj)
+                    console.log('VideoReadyGuard: return true')
+                }
+                else {
+                    this.router.navigate(['/error-page'])
+                }
+
+                this.room = this.roomService.roomObj
+                if(this.room.video_title) this.video_title = this.room.video_title
+                if(this.room.video_description) this.video_description = this.room.video_description
 
 
-        if(this.room) {
-            if(this.room.video_title) this.titleService.setTitle(this.room.video_title)
-            else this.titleService.setTitle('HeadsUp!')
+                if(this.room) {
+                    if(this.room.video_title) this.titleService.setTitle(this.room.video_title)
+                    else this.titleService.setTitle('HeadsUp!')
 
-            this.metaTagService.addTags([
-              { name: 'keywords', content: 'HeadsUp video elected officials candidates for office' },
-              { name: 'robots', content: 'index, follow' },
-              { name: 'author', content: 'genius' },
-              { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-              { property: 'og:image', content: this.room.screenshotUrl },
-              { name: 'date', content: '2019-10-31', scheme: 'YYYY-MM-DD' },
-              { charset: 'UTF-8' }
-            ]);
-        }
+                    this.metaTagService.addTags([
+                    { name: 'keywords', content: 'HeadsUp video elected officials candidates for office' },
+                    { name: 'robots', content: 'index, follow' },
+                    { name: 'author', content: 'genius' },
+                    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+                    { property: 'og:image', content: this.room.screenshotUrl },
+                    { name: 'date', content: '2019-10-31', scheme: 'YYYY-MM-DD' },
+                    { charset: 'UTF-8' }
+                    ]);
+                }
 
 
-        console.log('isPlatformBrowser(this.platformId)...')
-        let isBrowser = isPlatformBrowser(this.platformId)
-        console.log('isPlatformBrowser(this.platformId) = ', isBrowser)
-        
-        if(isBrowser) {
+                console.log('isPlatformBrowser(this.platformId)...')
+                let isBrowser = isPlatformBrowser(this.platformId)
+                console.log('isPlatformBrowser(this.platformId) = ', isBrowser)
+                
+                if(isBrowser) {
 
-            let safari = function() {
-                // Detect Safari
-                let safariAgent = window.navigator.userAgent.indexOf("Safari") > -1
-                // Detect Chrome 
-                let chromeAgent = window.navigator.userAgent.indexOf("Chrome") > -1
-                if(!safariAgent) return false
-                // Discard Safari since it also matches Chrome 
-                if ((chromeAgent) && (safariAgent)) return false
-                else return true
-            }
+                    let safari = function() {
+                        // Detect Safari
+                        let safariAgent = window.navigator.userAgent.indexOf("Safari") > -1
+                        // Detect Chrome 
+                        let chromeAgent = window.navigator.userAgent.indexOf("Chrome") > -1
+                        if(!safariAgent) return false
+                        // Discard Safari since it also matches Chrome 
+                        if ((chromeAgent) && (safariAgent)) return false
+                        else return true
+                    }
 
-            this.browser = window.navigator.userAgent
-            if(safari()) {
-                this.videoUrl = this.room.videoUrl
-                this.videoType = "application/x-mpegURL"
-            }
-            else {
-                this.videoUrl = this.room.videoUrlAlt
-                this.videoType = "video/mp4"
-            }
-            let user = await this.userService.getCurrentUser()
-            let allowed = this.allowedToEdit(user)
-            console.log('this.room: ', this.room)
-            if(allowed) {
-                this.editing_allowed = true
-            }
-            this.listenForOfficials()
-            this.isHost = this.room.isHost(user)
-            this.isGuest = this.room.isGuest(user)
+                    this.browser = window.navigator.userAgent
+                    if(safari()) {
+                        this.videoUrl = this.room.videoUrl
+                        this.videoType = "application/x-mpegURL"
+                    }
+                    else {
+                        this.videoUrl = this.room.videoUrlAlt
+                        this.videoType = "video/mp4"
+                    }
+                    let user = await this.userService.getCurrentUser()
+                    let allowed = this.allowedToEdit(user)
+                    console.log('this.room: ', this.room)
+                    if(allowed) {
+                        this.editing_allowed = true
+                    }
+                    this.listenForOfficials()
+                    this.isHost = this.room.isHost(user)
+                    this.isGuest = this.room.isGuest(user)
 
-        }
-        console.log('ngOnInit():  done')
+                }
+                console.log('ngOnInit():  done')
+
+
+
+
+
+
+            // }  // end else
+        })
+
+
+
 
     }
 
