@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { RoomService } from '../../room/room.service';
 import { RoomObj } from '../../room/room-obj.model';
 import { isPlatformBrowser } from '@angular/common';
-// import { /*Title,*/ Meta } from '@angular/platform-browser';
+import { Title, Meta } from '@angular/platform-browser';
 
 
 @Injectable({
@@ -15,7 +15,8 @@ export class VideoReadyGuard implements CanActivate {
 
   constructor(
     public roomService: RoomService,
-    // private metaTagService: Meta,
+    private metaTagService: Meta,
+    private titleService: Title,
     @Inject(PLATFORM_ID) private platformId,
     private router: Router
   ) {}
@@ -66,6 +67,27 @@ export class VideoReadyGuard implements CanActivate {
                 let rm = new RoomObj()
                 roomObj.isHost = rm.isHost
                 roomObj.isGuest = rm.isGuest
+
+
+                
+                if(roomObj.video_title) this.titleService.setTitle(roomObj.video_title)
+                else this.titleService.setTitle('HeadsUp!')
+
+                this.metaTagService.addTags([
+                    { name: 'keywords', content: 'HeadsUp video elected officials candidates for office' },
+                    { name: 'robots', content: 'index, follow' },
+                    { name: 'author', content: 'genius' },
+                    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+                    { property: 'og:image', content: roomObj.screenshotUrl },
+                    { name: 'date', content: '2019-10-31', scheme: 'YYYY-MM-DD' },
+                    { charset: 'UTF-8' }
+                ]);
+
+
+
+
+
+
 
                 if(roomObj.videoUrl) {
                     this.roomService.roomObj = roomObj

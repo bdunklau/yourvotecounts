@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy, AfterViewInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { RoomObj } from '../../room/room-obj.model'
@@ -48,38 +48,17 @@ export class ViewVideoComponent implements OnInit {
                 private metaTagService: Meta,
                 @Inject(PLATFORM_ID) private platformId,
                 //private _modalService: NgbModal,
-                private router: Router,
                 private route: ActivatedRoute) { }
 
 
     async ngOnInit() {
 
-        
-        let obj = await this.roomService.getRoomData(this.route.snapshot.paramMap.get("compositionSid")).toPromise()
-        this.room = obj[0].payload.doc.data() as RoomObj
-        let rm = new RoomObj()
-        this.room.isHost = rm.isHost
-        this.room.isGuest = rm.isGuest
-        if(!this.room.videoUrl) {
-            this.router.navigate(['/error-page'])            
-        }
-        if(this.room.video_title) this.video_title = this.room.video_title
-        if(this.room.video_description) this.video_description = this.room.video_description
 
-        if(this.room.video_title) this.titleService.setTitle(this.room.video_title)
-        else this.titleService.setTitle('HeadsUp!')
+        this.room = this.roomService.roomObj
+        //this.videoUrl = this.room.videoUrl
+        //console.log("check this room:  ", this.room)
 
-        this.metaTagService.addTags([
-            { name: 'keywords', content: 'HeadsUp video elected officials candidates for office' },
-            { name: 'robots', content: 'index, follow' },
-            { name: 'author', content: 'genius' },
-            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-            { property: 'og:image', content: this.room.screenshotUrl },
-            { name: 'date', content: '2019-10-31', scheme: 'YYYY-MM-DD' },
-            { charset: 'UTF-8' }
-        ]);
 
-        
         console.log('isPlatformBrowser(this.platformId)...')
         let isBrowser = isPlatformBrowser(this.platformId)
         console.log('isPlatformBrowser(this.platformId) = ', isBrowser)
@@ -106,6 +85,9 @@ export class ViewVideoComponent implements OnInit {
                 this.videoUrl = this.room.videoUrlAlt
                 this.videoType = "video/mp4"
             }
+            if(this.room.video_title) this.video_title = this.room.video_title
+            if(this.room.video_title) this.setDocTitle(this.video_title)
+            if(this.room.video_description) this.video_description = this.room.video_description
             let user = await this.userService.getCurrentUser()
             let allowed = this.allowedToEdit(user)
             console.log('this.room: ', this.room)
@@ -118,8 +100,6 @@ export class ViewVideoComponent implements OnInit {
 
         }
         console.log('ngOnInit():  done')
-
-
 
     }
 
@@ -187,9 +167,9 @@ export class ViewVideoComponent implements OnInit {
     }
     
     
-    // setDocTitle(title: string) {
-    //     this.titleService.setTitle(title);
-    // }
+    setDocTitle(title: string) {
+        this.titleService.setTitle(title);
+    }
 
 
     // opens a modal to /search-officials
