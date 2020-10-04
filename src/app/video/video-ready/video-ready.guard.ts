@@ -61,6 +61,7 @@ export class VideoReadyGuard implements CanActivate {
             //     ob.next(false) // this is how you pass a return value out of an observable
             // }
             // else { 
+            if(obj && obj.length > 0) {
                 console.log('got this from roomService: ', obj)
                 let roomObj = obj[0].payload.doc.data() as RoomObj
                 // hack? Don't know why functions aren't preserved when casting "as RoomObj" - so had to do this
@@ -99,7 +100,8 @@ export class VideoReadyGuard implements CanActivate {
                     this.router.navigate(['/error-page'])
                     ob.next(false)  // this is how you pass a return value out of an observable
                 }
-            // }
+            }
+            // }  // end:   else
 
 
         })
