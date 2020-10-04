@@ -62,6 +62,7 @@ import { InvitationDeletedComponent } from './invitation/invitation-deleted/invi
 import { VideoCallCompleteComponent } from './video/video-call-complete/video-call-complete.component';
 import { VideoProducingComponent } from './video/video-producing/video-producing.component';
 import { PromoCodeComponent } from './promo-code/promo-code.component';
+import { RoomResolver } from './room/room.resolver'
 
 
 
@@ -172,7 +173,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     FirebaseUIModule.forRoot(firebaseUiAuthConfig)
   ],
   providers: [
-    Title
+    Title,
+    RoomResolver
   ],
   bootstrap: [AppComponent]
 })

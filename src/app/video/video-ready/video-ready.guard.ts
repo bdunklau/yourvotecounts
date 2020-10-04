@@ -91,7 +91,7 @@ export class VideoReadyGuard implements CanActivate {
 
                 if(roomObj.videoUrl) {
                     this.roomService.roomObj = roomObj
-                    console.log('VideoReadyGuard: this.roomService.roomObj.:  ', this.roomService.roomObj)
+                    console.log('VideoReadyGuard: this.roomService.roomObj:  ', this.roomService.roomObj)
                     console.log('VideoReadyGuard: return true')
                     ob.next(true)  // this is how you pass a return value out of an observable
                 }

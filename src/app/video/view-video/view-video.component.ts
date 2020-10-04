@@ -53,10 +53,14 @@ export class ViewVideoComponent implements OnInit {
 
     async ngOnInit() {
 
+        // console.log('ngOnInit():  this.room = this.route.snapshot.data[\'room\']...')
+        // this.room = this.route.snapshot.data['room']
+        // console.log('ngOnInit():  this.room = this.route.snapshot.data[\'room\']:  done')
+
 
         this.room = this.roomService.roomObj
-        //this.videoUrl = this.room.videoUrl
-        //console.log("check this room:  ", this.room)
+        this.videoUrl = this.room.videoUrl
+        console.log("check this room:  ", this.room)
 
 
         console.log('isPlatformBrowser(this.platformId)...')
