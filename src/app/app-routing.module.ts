@@ -44,7 +44,6 @@ import { VideoProducingComponent } from './video/video-producing/video-producing
 import { VideoProducingGuard } from './video/video-producing/video-producing.guard';
 import { PromoCodeComponent } from './promo-code/promo-code.component'
 import { InvitationFormGuard } from './invitation/invitation-form/invitation-form.guard';
-import { RoomResolver } from './room/room.resolver';
 
 
 const routes: Routes = [
