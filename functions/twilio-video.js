@@ -20,23 +20,6 @@ const VideoGrant = AccessToken.VideoGrant;
 
 exports.generateTwilioToken = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
-        /************** 
-        var db = admin.firestore();
-        var keys = await db.collection('config').doc('keys').get()
-        const twilioAccountSid = keys.data().twilio_account_sid;    
-        // create API key:  https://www.twilio.com/console/project/api-keys
-        const twilioApiKey = keys.data().twilio_api_key
-        const twilioApiSecret = keys.data().twilio_secret
-        // Create Video Grant
-        const videoGrant = new VideoGrant({
-            room: req.query.room_name,  // room name, not RoomSid   (optional?)
-        });
-        // Create an access token which we will sign and return to the client,
-        // containing the grant we just created
-        const token = new AccessToken(twilioAccountSid, twilioApiKey, twilioApiSecret)
-        token.addGrant(videoGrant)
-        token.identity = req.query.name
-        ************************/
         let token = await createToken(req)
         return res.status(200).send({token: token})
 
@@ -48,7 +31,7 @@ exports.generateTwilioToken = functions.https.onRequest((req, res) => {
 
 var createToken = async function(req) {
     var db = admin.firestore();
-    var keys = await db.collection('config').doc('keys').get()
+    var keys = await db.collection('config').doc('twilio').get()
     const twilioAccountSid = keys.data().twilio_account_sid;    
     // create API key:  https://www.twilio.com/console/project/api-keys
     const twilioApiKey = keys.data().twilio_api_key
@@ -70,7 +53,7 @@ var createToken = async function(req) {
 exports.compose = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
         var db = admin.firestore();
-        var keys = await db.collection('config').doc('keys').get()
+        var keys = await db.collection('config').doc('twilio').get()
         const twilioAccountSid = keys.data().twilio_account_sid;    
         // create API key:  https://www.twilio.com/console/project/api-keys
         const twilioApiKey = keys.data().twilio_api_key
@@ -131,7 +114,7 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
 
         let cloudUrl = `http://${req.query.cloud_host}/downloadComposition`
         
-        var keys = await admin.firestore().collection('config').doc('keys').get()
+        var keys = await admin.firestore().collection('config').doc('twilio').get()
         const twilioAccountSid = keys.data().twilio_account_sid;   
         const twilioAuthToken = keys.data().twilio_auth_key;   
 
