@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
 import { RoomObj } from './room-obj.model';
 import { //connect,
           //Participant,
@@ -20,6 +20,7 @@ import { take } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Subject } from 'rxjs';
 import { Official } from '../civic/officials/view-official/view-official.component'
+import { Observable } from 'rxjs'
 
 
 @Injectable({
@@ -198,37 +199,10 @@ export class RoomService {
   }
 
 
-  /*async*/ getRoomData(compositionSid: string) {
-    // // RoomSid:  RM3fcbe2ee06ecca4b9256249e0af9574b    
-    // let ret = await this.afs.collection('room').doc('RM3fcbe2ee06ecca4b9256249e0af9574b').ref.get()
-    // return ret.data() as RoomObj
-
-
-    let ret = this.afs.collection('room', ref => ref.where("CompositionSid", "==", compositionSid).limit(1)).snapshotChanges()
+  getRoomData(compositionSid: string): Observable<any> {
+    let ret = this.afs.collection('room', ref => ref.where("CompositionSid", "==", compositionSid).limit(1)).snapshotChanges().pipe(take(1))
     return ret
     
-
-
-    // let ret = this.afs.collection('room', ref => ref.where("CompositionSid", "==", compositionSid).limit(1)).snapshotChanges().pipe(take(1))
-    // let ret2 = ret.toPromise()
-    // return ret2
-
-
-
-     /*******
-    var teamDoc = await this.afs.collection('room').doc(teamDocId).ref.get();
-    const team = new Team();
-    team.id = teamDoc.data().id;
-    team.name = teamDoc.data().name;
-    team.created = teamDoc.data().created;
-    team.creatorId = teamDoc.data().creatorId;
-    team.creatorName = teamDoc.data().creatorName;
-    team.creatorPhone = teamDoc.data().creatorPhone;
-    team.leaderCount = teamDoc.data().leaderCount; // e2e testing caught this omission :)
-    team.memberCount = teamDoc.data().memberCount; // e2e testing caught this omission :)
-    console.log('teamDoc.data() = ', teamDoc.data());
-    return team;
-    *********/
   }
 
 
@@ -263,14 +237,6 @@ export class RoomService {
       this.afs.collection('room').doc(room.RoomSid).update({officials: room.officials})
   }
 
-
-  //  https://github.com/bdunklau/drp-aws/blob/master/drp-client/src/app/charge.service.ts
-  /**
-   * view-video.component.ts picks up these officials in listenForOfficials()
-   */
-  // listenForOfficials() {
-  //     return this.officials_selected // field accessed directly because chrome was saying listenForOfficials() wasn't recognized
-  // }
 
   /**
    * view-official.component.ts calls this - passes the selected officials here
