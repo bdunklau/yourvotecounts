@@ -11,7 +11,6 @@ const functions = require('firebase-functions')
 exports.getVideoInfo = functions.https.onRequest(async (req, res) => {
 
     var db = admin.firestore();
-    var keys = await db.collection('room').doc('keys').get()
 
     const roomRef = db.collection('room');
     const rooms = await roomRef.where('CompositionSid', '==', req.query.compositionSid).limit(1).get();
