@@ -282,6 +282,9 @@ export class VideoCallComponent implements OnInit {
   }
 
 
+  //////////////////////////////////////////////
+  // moved to video-call-complete.component.ts
+  //
   // async compose() {
   //   this.compositionInProgress = true
   //   this.publishButtonText = "Workin' on it!..."

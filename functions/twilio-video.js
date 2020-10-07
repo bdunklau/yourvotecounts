@@ -49,7 +49,7 @@ var createToken = async function(req) {
 }
 
 
-// called from video-call.component.ts: compose()
+// called from video-call-complete.component.ts: compose()
 exports.compose = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
         var db = admin.firestore();
@@ -59,18 +59,30 @@ exports.compose = functions.https.onRequest((req, res) => {
         const twilioApiKey = keys.data().twilio_api_key
         const twilioApiSecret = keys.data().twilio_secret
         const client = twilio(twilioApiKey, twilioApiSecret, {accountSid: twilioAccountSid})
+        const participantCount = parseInt(req.query.participantCount)
+
+        // layout: if 3 people or less, they all go on one row
+        //   If more than 3, then we add a row, allowing for up to 3 people to be on each row
+        //   In the case of 4 people, the layout should be 2x2 because max_rows will be 2
+        const max_rows = participantCount < 4 ? 1 : parseInt(participantCount / 3) + 1
+
+        let aspectRatio = 9/16
+        if(participantCount === 3) aspectRatio = 9/21
+        let height = parseInt(1280 * aspectRatio)
+        let resolution = `1280x${height}`  // 21:9 also 32:9  1280 is max width
+
         return client.video.compositions.create({
             roomSid: req.query.RoomSid,
             audioSources: '*',
             // videoLayout:  see  https://www.twilio.com/docs/video/api/compositions-resource#specifying-video-layouts
             videoLayout: {
               grid : {
-                max_rows: 1,
+                max_rows: max_rows,
                 video_sources: ['*']
               }
             },
             statusCallback: `https://${req.query.firebase_functions_host}/twilioCallback?room_name=${req.query.room_name}&firebase_functions_host=${req.query.firebase_functions_host}&website_domain_name=${req.query.website_domain_name}&cloud_host=${req.query.cloud_host}`,
-            resolution: '1280x550', // 21:9 also 32:9  1280 is max width
+            resolution: resolution, 
             format: 'mp4'
         })
         .then(composition => {

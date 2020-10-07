@@ -28,7 +28,7 @@ export class InvitationFormComponent implements OnInit {
 
 
   invitationForm: FormGroup;
-  maxGuests = 2; // for now
+  maxGuests = 3; // for now
   canInvite = true
 
 
