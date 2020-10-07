@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserService } from '../../user/user.service';
@@ -16,37 +17,41 @@ import { UserService } from '../../user/user.service';
 // Privacy Policy read
 export class MinimalAccountInfoGuard implements CanActivate {
 
-  constructor(
-    public userService: UserService,
-    private router: Router,
-  ) {}
+    constructor(
+        public userService: UserService,
+        @Inject(PLATFORM_ID) private platformId,
+        private router: Router,
+    ) {}
 
 
-  async canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Promise<boolean> {
+    async canActivate(
+        next: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot): Promise<boolean> {
 
-    let hasMinimalInfo:boolean = await this.hasMinimalInfo();
-    if(!hasMinimalInfo) {
-      this.router.navigate(['/minimal-account-info']);
-      return false;
+        if(isPlatformBrowser(this.platformId)) {
+            let hasMinimalInfo:boolean = await this.hasMinimalInfo();
+            if(!hasMinimalInfo) {
+              this.router.navigate(['/minimal-account-info']);
+              return false;
+            }
+            else return true;
+        }
+        else return true; // should the default be false on the server?
     }
-    else return true;
-  }
 
-  async hasMinimalInfo():Promise<boolean> {
-    // must have displayName set
-    // must have accepted the TOS
-    var user = await this.userService.getCurrentUser();
-    var nameGood = false;
-    if(user && user.displayName) nameGood = true;
+    async hasMinimalInfo():Promise<boolean> {
+        // must have displayName set
+        // must have accepted the TOS
+        var user = await this.userService.getCurrentUser();
+        var nameGood = false;
+        if(user && user.displayName) nameGood = true;
 
-    var tosAccepted = false;
-    if(user && user.tosAccepted) tosAccepted = true;
+        var tosAccepted = false;
+        if(user && user.tosAccepted) tosAccepted = true;
 
-    var privacyPolicyRead = false;
-    if(user && user.privacyPolicyRead) privacyPolicyRead = true;
-    console.log('hasMinimalInfo: nameGood=',nameGood,'  tosAccepted=',tosAccepted,' privacyPolicyRead=',privacyPolicyRead);
-    return nameGood && tosAccepted && privacyPolicyRead;
-  }
+        var privacyPolicyRead = false;
+        if(user && user.privacyPolicyRead) privacyPolicyRead = true;
+        console.log('hasMinimalInfo: nameGood=',nameGood,'  tosAccepted=',tosAccepted,' privacyPolicyRead=',privacyPolicyRead);
+        return nameGood && tosAccepted && privacyPolicyRead;
+    }
 }
