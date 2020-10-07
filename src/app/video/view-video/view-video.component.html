@@ -77,15 +77,15 @@
         </div>
     </div>
 
-
+    <span *ngIf="room && room.officials">
     <div class="row" style="margin-top:10px" *ngFor="let official of room.officials">
         <div class="col">
             <hr/>
             <app-view-official [canDelete]="isHost || isGuest" [official]="official"></app-view-official>
         </div>
     </div>
+    </span>
 
-    
 
 </div>
 

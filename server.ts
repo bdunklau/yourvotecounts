@@ -4,6 +4,7 @@ import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { join } from 'path';
 import 'localstorage-polyfill'
+var tiny = require('tiny-json-http')
 
 const domino = require("domino");
 const fs = require("fs");
@@ -47,6 +48,34 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
+  async function generateMetaTags(req, res, next) {
+      /**
+       * Call firebase function (check for "-bd737" or "-dev")
+       *     -  /getVideoInfo?compositionSid=[CompositionSid]
+       *     -  use  https://www.npmjs.com/package/tiny-json-http
+       * Pass the compositionSid - get the response (json)
+       * put that info in req object
+       * server.get('*') below looks for these req attributes
+       */
+      let host = req.hostname.indexOf("-bd737") != -1 ? "us-central1-yourvotecounts-bd737.cloudfunctions.net" : "us-central1-yourvotecounts-dev.cloudfunctions.net"
+      let url = `https://${host}/getVideoInfo?compositionSid=${req.params.compositionSid}`
+      let meta = await tiny.get({url}) // https://www.npmjs.com/package/tiny-json-http
+      console.log("generateMetaTags():  meta.body.image = \n", meta.body.image)
+      console.log("generateMetaTags():  meta.body.title = \n", meta.body.title)
+      console.log("generateMetaTags():  meta.body.description = \n", meta.body.description)
+      req['image'] = meta.body.image
+      req['description'] = meta.body.description
+      req['title'] = meta.body.title
+      console.log('generateMetaTags():  compositionSid = ', req.params.compositionSid)
+      console.log('generateMetaTags():  req[\'image\'] = ', req['image'])
+      next()
+  }
+
+
+  // Only this route will call generateMetaTags()
+  server.use('/view-video/:compositionSid', generateMetaTags)
+
+  
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
@@ -56,7 +85,19 @@ export function app(): express.Express {
 
   // All regular routes use the Universal engine
   server.get('*', (req, res) => {
-    res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
+      // look at req.image, .description, .title - if they exist, do find/replace in the (err, html) callback below
+      res.render(indexHtml, 
+               { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] },
+                 (err, html) => {                   
+                  // see    https://css-tricks.com/essential-meta-tags-social-media/
+                  if(req['image']) html = html.replace(/\$OG_IMAGE/, req['image']);
+                  if(req['title']) html = html.replace(/\$OG_TITLE/, req['title']);
+                  if(req['description']) html = html.replace(/\$OG_DESCRIPTION/, req['description']);
+                  // console.log('server.get(*): html  = \n\n', html)
+                  // console.log('server.get(\'*\'):  req[\'image\'] = ', req['image'])
+                  res.send(html)
+               }
+      );
   });
 
   return server;

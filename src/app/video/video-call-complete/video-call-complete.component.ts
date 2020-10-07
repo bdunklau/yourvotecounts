@@ -53,8 +53,10 @@ export class VideoCallCompleteComponent implements OnInit {
         // do a POST here not a GET
         // and post the whole room document.  No need to query for it in the firebase function
 
+        let participantCount = this.roomObj.guests ? this.roomObj.guests.length + 1 : 1
+
         // NOTE: ${this.settingsDoc.website_domain_name} will be the ngrok host if running locally.  See invitation.service.ts:ngrok field
-        let composeUrl = `https://${this.settingsDoc.firebase_functions_host}/compose?RoomSid=${this.roomObj.RoomSid}&firebase_functions_host=${this.settingsDoc.firebase_functions_host}&room_name=${this.roomObj.invitationId}&website_domain_name=${this.settingsDoc.website_domain_name}&cloud_host=${this.settingsDoc.cloud_host}                         `
+        let composeUrl = `https://${this.settingsDoc.firebase_functions_host}/compose?RoomSid=${this.roomObj.RoomSid}&firebase_functions_host=${this.settingsDoc.firebase_functions_host}&room_name=${this.roomObj.invitationId}&website_domain_name=${this.settingsDoc.website_domain_name}&cloud_host=${this.settingsDoc.cloud_host}&participantCount=${participantCount}`
         this.compositionSubscription = this.http.get(composeUrl, httpOptions).subscribe(async (data: any) => {
               console.log('data = ', data) 
               this.router.navigate(['/video/producing', this.roomObj.RoomSid])   

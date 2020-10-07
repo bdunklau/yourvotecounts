@@ -1,10 +1,9 @@
-import { Component, ViewChild, OnInit, OnDestroy, HostListener, ElementRef, AfterViewInit, Renderer2 } from '@angular/core';
+import { Component, ViewChild, OnInit, ElementRef, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Invitation } from '../../invitation/invitation.model';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { InvitationService } from '../../invitation/invitation.service';
 import { UserService } from '../../user/user.service';
-import { FirebaseUserModel } from '../../user/user.model';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';  // ref:   https://angular.io/guide/http
 // should go in a service ??
 import { connect,
@@ -26,6 +25,7 @@ import * as _ from 'lodash';
 import { SettingsService } from '../../settings/settings.service';
 import { Settings } from '../../settings/settings.model';
 import * as moment from 'moment';
+import { isPlatformBrowser } from '@angular/common';
 
 
 @Component({
@@ -75,25 +75,31 @@ export class VideoCallComponent implements OnInit {
               private http: HttpClient,
               private userService: UserService,
               private roomService: RoomService,
+              @Inject(PLATFORM_ID) private platformId,
               private settingsService: SettingsService) { }
 
 
   async ngOnInit() {
-      // got all this stuff from video-call-complete.guard.ts
-      //this.me = await this.userService.getCurrentUser() // this is NOT how we tell if I am the guest
-      this.joinOnLoad = this.route.params['join']
-      this.invitations = this.invitationService.invitations  // see  ValidInvitationGuard
-      //console.log('this.invitations = ', this.invitations)
-      this.settingsDoc = await this.settingsService.getSettingsDoc()
-      this.routeSubscription = this.route.params.subscribe(async params => {
-          this.phoneNumber = params['phoneNumber'];
-          console.log('VideoCallComponent:  this.phoneNumber = ', this.phoneNumber)
-          this.isHost = this.invitations[0].creatorPhone == this.phoneNumber
-      })
+    
+      if(isPlatformBrowser(this.platformId)) {
+        
+          // got all this stuff from video-call-complete.guard.ts
+          //this.me = await this.userService.getCurrentUser() // this is NOT how we tell if I am the guest
+          this.joinOnLoad = this.route.params['join']
+          this.invitations = this.invitationService.invitations  // see  ValidInvitationGuard
+          console.log('VideoCallComponent:  this.invitations = ', this.invitations)
+          this.settingsDoc = await this.settingsService.getSettingsDoc()
+          console.log('this.settingsService.getSettingsDoc()... GOT IT -> ', this.settingsDoc)
+          this.routeSubscription = this.route.params.subscribe(async params => {
+              this.phoneNumber = params['phoneNumber'];
+              console.log('VideoCallComponent:  this.phoneNumber = ', this.phoneNumber)
+              this.isHost = this.invitations[0].creatorPhone == this.phoneNumber
+          })
 
-      _.each(this.invitations, invitation => {
-          this.monitorInvitation(invitation)
-      })
+          _.each(this.invitations, invitation => {
+              this.monitorInvitation(invitation)
+          })
+      }
   }
 
 
@@ -114,7 +120,7 @@ export class VideoCallComponent implements OnInit {
     this.connecting = true;
     await this.initializeDevice();
 
-    let roomName = this.invitations[0].id; // id is shared among all guests
+    let roomName = this.invitations[0].invitationId; // id is shared among all guests
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -213,7 +219,7 @@ export class VideoCallComponent implements OnInit {
   monitorInvitation(invitation: Invitation) {
       let xxxx = this.invitationService.monitorInvitation(invitation.docId)
       this.invitationWatcher = xxxx.subscribe( res => {
-          console.log('res: ', res)
+          console.log('monitorInvitation():  res: ', res)
           let inv = res.payload.data() as Invitation
           if(inv.deleted_ms) {
               // remove the deleted guest
@@ -243,7 +249,7 @@ export class VideoCallComponent implements OnInit {
 
   delete_invitations() {
       // id's can be shared - that's how we know who all is invited to be on a call
-      let sharedInvitationId = this.invitations[0].id
+      let sharedInvitationId = this.invitations[0].invitationId
       this.invitationService.deleteInvitations(sharedInvitationId)
       this.router.navigate(['/invitation-deleted'])
   }
@@ -281,6 +287,9 @@ export class VideoCallComponent implements OnInit {
   }
 
 
+  //////////////////////////////////////////////
+  // moved to video-call-complete.component.ts
+  //
   // async compose() {
   //   this.compositionInProgress = true
   //   this.publishButtonText = "Workin' on it!..."

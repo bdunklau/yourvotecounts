@@ -20,23 +20,6 @@ const VideoGrant = AccessToken.VideoGrant;
 
 exports.generateTwilioToken = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
-        /************** 
-        var db = admin.firestore();
-        var keys = await db.collection('config').doc('keys').get()
-        const twilioAccountSid = keys.data().twilio_account_sid;    
-        // create API key:  https://www.twilio.com/console/project/api-keys
-        const twilioApiKey = keys.data().twilio_api_key
-        const twilioApiSecret = keys.data().twilio_secret
-        // Create Video Grant
-        const videoGrant = new VideoGrant({
-            room: req.query.room_name,  // room name, not RoomSid   (optional?)
-        });
-        // Create an access token which we will sign and return to the client,
-        // containing the grant we just created
-        const token = new AccessToken(twilioAccountSid, twilioApiKey, twilioApiSecret)
-        token.addGrant(videoGrant)
-        token.identity = req.query.name
-        ************************/
         let token = await createToken(req)
         return res.status(200).send({token: token})
 
@@ -48,7 +31,7 @@ exports.generateTwilioToken = functions.https.onRequest((req, res) => {
 
 var createToken = async function(req) {
     var db = admin.firestore();
-    var keys = await db.collection('config').doc('keys').get()
+    var keys = await db.collection('config').doc('twilio').get()
     const twilioAccountSid = keys.data().twilio_account_sid;    
     // create API key:  https://www.twilio.com/console/project/api-keys
     const twilioApiKey = keys.data().twilio_api_key
@@ -66,28 +49,40 @@ var createToken = async function(req) {
 }
 
 
-// called from video-call.component.ts: compose()
+// called from video-call-complete.component.ts: compose()
 exports.compose = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
         var db = admin.firestore();
-        var keys = await db.collection('config').doc('keys').get()
+        var keys = await db.collection('config').doc('twilio').get()
         const twilioAccountSid = keys.data().twilio_account_sid;    
         // create API key:  https://www.twilio.com/console/project/api-keys
         const twilioApiKey = keys.data().twilio_api_key
         const twilioApiSecret = keys.data().twilio_secret
         const client = twilio(twilioApiKey, twilioApiSecret, {accountSid: twilioAccountSid})
+        const participantCount = parseInt(req.query.participantCount)
+
+        // layout: if 3 people or less, they all go on one row
+        //   If more than 3, then we add a row, allowing for up to 3 people to be on each row
+        //   In the case of 4 people, the layout should be 2x2 because max_rows will be 2
+        const max_rows = participantCount < 4 ? 1 : parseInt(participantCount / 3) + 1
+
+        let aspectRatio = 9/16
+        if(participantCount === 3) aspectRatio = 9/21
+        let height = parseInt(1280 * aspectRatio)
+        let resolution = `1280x${height}`  // 21:9 also 32:9  1280 is max width
+
         return client.video.compositions.create({
             roomSid: req.query.RoomSid,
             audioSources: '*',
             // videoLayout:  see  https://www.twilio.com/docs/video/api/compositions-resource#specifying-video-layouts
             videoLayout: {
               grid : {
-                max_rows: 1,
+                max_rows: max_rows,
                 video_sources: ['*']
               }
             },
             statusCallback: `https://${req.query.firebase_functions_host}/twilioCallback?room_name=${req.query.room_name}&firebase_functions_host=${req.query.firebase_functions_host}&website_domain_name=${req.query.website_domain_name}&cloud_host=${req.query.cloud_host}`,
-            resolution: '1280x550', // 21:9 also 32:9  1280 is max width
+            resolution: resolution, 
             format: 'mp4'
         })
         .then(composition => {
@@ -131,7 +126,7 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
 
         let cloudUrl = `http://${req.query.cloud_host}/downloadComposition`
         
-        var keys = await admin.firestore().collection('config').doc('keys').get()
+        var keys = await admin.firestore().collection('config').doc('twilio').get()
         const twilioAccountSid = keys.data().twilio_account_sid;   
         const twilioAuthToken = keys.data().twilio_auth_key;   
 
@@ -171,7 +166,9 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
     else {
         console.log("got the else condition:  req.body = ", req.body)
         console.log("got the else condition:  req.query = ", req.query)
-        return res.status(200).send(JSON.stringify({"result": "else condition"}));
+
+        // I forget...  Does twilio need a simple 'ok' back, and anything else isn't properly handled?
+        return res.status(200).send('ok');
 
         /********************************
          FYI - here is a post that got captured by this else block
@@ -185,7 +182,7 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
 
         req.query =  { room_name: 'qabiBC09OSbFiT6VWiqT',
   firebase_functions_host: 'us-central1-yourvotecounts-bd737.cloudfunctions.net',
-  website_domain_name: 'seesaw.video',
+  website_domain_name: 'headsup.video',
   cloud_host: '34.68.114.174:7000' }
   
 
@@ -211,12 +208,13 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
      * POST data passed in from 
      * vm: index.js: /downloadComposition
      * 
-     {compositionFile: compositionFile,
-      CompositionSid:  CompositionSid,
-      RoomSid: req.body.RoomSid,
-	  tempEditFolder:  `/home/bdunklau/videos/${req.body.CompositionSid}`,
-      downloadComplete: true,
-	  website_domain_name: req.body.website_domain_name}
+     {  compositionFile: compositionFile,
+        CompositionSid:  CompositionSid,
+        RoomSid: req.body.RoomSid,
+        tempEditFolder:  `/home/bdunklau/videos/${req.body.CompositionSid}`,
+        downloadComplete: true,
+        website_domain_name: req.body.website_domain_name
+    }
      */
 
 
@@ -250,7 +248,9 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
             cloud_host: settingsObj.data().cloud_host,
             callbackUrl: `https://${settingsObj.data().firebase_functions_host}/cutVideoComplete`, // just below this function
             compositionProgress: roomDoc.data()['compositionProgress'],
-            website_domain_name: req.body.website_domain_name
+            website_domain_name: req.body.website_domain_name,
+            projectId: settingsObj.data().projectId,
+            storage_keyfile: settingsObj.data().storage_keyfile
         }
         let vmUrl = `http://${settingsObj.data().cloud_host}/cutVideo`
         request.post(
@@ -293,7 +293,9 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
             firebase_functions_host: req.body.firebase_functions_host,
             cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
             compositionProgress: compositionProgress,
-		    website_domain_name: req.body.website_domain_name
+		    website_domain_name: req.body.website_domain_name,
+            projectId: req.body.projectId,
+            storage_keyfile: req.body.storage_keyfile
         }
      */
     var db = admin.firestore()
@@ -322,7 +324,9 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
         //callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete`, // just below this function
         callbackUrl: `https://${req.body.firebase_functions_host}/createHlsComplete`, // just below this function
         compositionProgress: compositionProgress,
-        website_domain_name: req.body.website_domain_name
+        website_domain_name: req.body.website_domain_name,
+        projectId: req.body.projectId,
+        storage_keyfile: req.body.storage_keyfile
     }
 
 	request.post(
@@ -362,7 +366,9 @@ exports.createHlsComplete = functions.https.onRequest(async (req, res) => {
 			firebase_functions_host: req.body.firebase_functions_host,
 			cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
 			compositionProgress: req.body.compositionProgress,
-			website_domain_name: req.body.website_domain_name
+			website_domain_name: req.body.website_domain_name,
+            projectId: req.body.projectId,
+            storage_keyfile: req.body.storage_keyfile
 		}
 		if(req.body.stop) formData['stop'] = true
 
@@ -387,7 +393,9 @@ exports.createHlsComplete = functions.https.onRequest(async (req, res) => {
         cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
         callbackUrl: `https://${req.body.firebase_functions_host}/uploadToFirebaseStorageComplete`, // just below this function
         compositionProgress: req.body.compositionProgress,
-        website_domain_name: req.body.website_domain_name
+        website_domain_name: req.body.website_domain_name,
+        projectId: req.body.projectId,        
+        storage_keyfile: req.body.storage_keyfile
     }
     
     
@@ -442,7 +450,9 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
             firebase_functions_host: req.body.firebase_functions_host,
             cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
             compositionProgress: req.body.compositionProgress,
-            website_domain_name: req.body.website_domain_name
+            website_domain_name: req.body.website_domain_name,
+            projectId: req.body.projectId,
+            storage_keyfile: req.body.storage_keyfile
         }
         if(req.body.stop) formData['stop'] = true
 
@@ -454,8 +464,8 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
     // video-call.component.ts: monitorRoom() and VideoCallCompleteGuard both pick up on this
     var compositionProgress = req.body.compositionProgress
     compositionProgress.push('Uploading to the cloud :)')
-    let videoUrl = `https://storage.googleapis.com/yourvotecounts-bd737.appspot.com/${req.body.CompositionSid}/${req.body.CompositionSid}.m3u8`
-    let videoUrlAlt = `https://storage.googleapis.com/yourvotecounts-bd737.appspot.com/${req.body.CompositionSid}/${req.body.CompositionSid}-output.mp4`
+    let videoUrl = `https://storage.googleapis.com/${req.body.projectId}.appspot.com/${req.body.CompositionSid}/${req.body.CompositionSid}.m3u8`
+    let videoUrlAlt = `https://storage.googleapis.com/${req.body.projectId}.appspot.com/${req.body.CompositionSid}/${req.body.CompositionSid}-output.mp4`
     //let videoUrl = req.body.videoUrl // if it was a signed url
     await db.collection('room').doc(req.body.RoomSid)
             .update({
@@ -484,7 +494,9 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
         //callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete`, // just below this function
         callbackUrl: `https://${req.body.firebase_functions_host}/uploadScreenshotToStorageComplete`, // just below this function
         compositionProgress: compositionProgress,
-        website_domain_name: req.body.website_domain_name
+        website_domain_name: req.body.website_domain_name,
+        projectId: req.body.projectId,
+        storage_keyfile: req.body.storage_keyfile
     }
 
 	request.post(
@@ -526,14 +538,16 @@ exports.uploadScreenshotToStorageComplete = functions.https.onRequest(async (req
             firebase_functions_host: req.body.firebase_functions_host,
             cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
             compositionProgress: req.body.compositionProgress,
-            website_domain_name: req.body.website_domain_name
+            website_domain_name: req.body.website_domain_name,
+            projectId: req.body.projectId,
+            storage_keyfile: req.body.storage_keyfile
         }
         if(req.body.stop) formData['stop'] = true
      */
 
      // WRITE SCREENSHOT URL TO THE ROOMSID DOC SO WE CAN DISPLAY THIS VIA SSR AND THE og:image TAG
     var db = admin.firestore();
-    let screenshotUrl = `https://storage.googleapis.com/yourvotecounts-bd737.appspot.com/${req.body.CompositionSid}/${req.body.screenshot}`
+    let screenshotUrl = `https://storage.googleapis.com/${req.body.projectId}.appspot.com/${req.body.CompositionSid}/${req.body.screenshot}`
     await db.collection('room').doc(req.body.RoomSid)
             .update({ screenshotUrl: screenshotUrl })
      
@@ -555,7 +569,9 @@ exports.uploadScreenshotToStorageComplete = functions.https.onRequest(async (req
         firebase_functions_host: req.body.firebase_functions_host,
         callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete`, // just below this function
         compositionProgress: compositionProgress,
-        website_domain_name: req.body.website_domain_name
+        website_domain_name: req.body.website_domain_name,
+        projectId: req.body.projectId,
+        storage_keyfile: req.body.storage_keyfile
     }
 
 	request.post(
@@ -599,7 +615,9 @@ exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
 		firebase_functions_host: req.body.firebase_functions_host,
 		cloud_host: req.body.cloud_host,  // this host, so we don't have to keep querying config/settings doc
 		compositionProgress: req.body.compositionProgress,
-        website_domain_name: req.body.website_domain_name
+        website_domain_name: req.body.website_domain_name,
+        projectId: req.body.projectId,
+        storage_keyfile: req.body.storage_keyfile
 	}
      */
     

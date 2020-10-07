@@ -75,10 +75,10 @@
 
           <div class="row" style="margin-top:20px;margin-bottom:50px" *ngIf="!joined && !compositionInProgress && !callEnded">
             <div class="col" *ngIf="isHost">
-              You invited {{invitations[0].displayName}} to participate in a SeeSaw video call.  Click "Join" to join the call.
+              You invited {{invitations[0].displayName}} to participate in a HeadsUp video call.  Click "Join" to join the call.
             </div>
             <div class="col" *ngIf="!isHost">
-              {{invitations[0].creatorName}} invited you to participate in a SeeSaw video call.  Click "Join" to join the call.
+              {{invitations[0].creatorName}} invited you to participate in a HeadsUp video call.  Click "Join" to join the call.
             </div>
           </div>
       </div>

@@ -89,7 +89,7 @@ export class InvitationListComponent implements OnInit {
   }
 
   invitationDetails(invitation: Invitation) {
-      this.router.navigate(['/video-call', invitation.id, this.me.phoneNumber])
+      this.router.navigate(['/video-call', invitation.invitationId, this.me.phoneNumber])
   }
 
 }
