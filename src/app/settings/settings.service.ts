@@ -47,8 +47,8 @@ export class SettingsService {
 
 export class Keys {
     civic_information_api_key: string
-    twilio_account_sid: string
-    twilio_api_key: string
-    twilio_auth_key: string
-    twilio_secret: string
+    // twilio_account_sid: string
+    // twilio_api_key: string
+    // twilio_auth_key: string
+    // twilio_secret: string
 }
