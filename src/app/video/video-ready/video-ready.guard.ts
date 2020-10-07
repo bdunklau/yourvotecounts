@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { RoomService } from '../../room/room.service';
 import { RoomObj } from '../../room/room-obj.model';
 import { isPlatformBrowser } from '@angular/common';
-import { Title, Meta } from '@angular/platform-browser';
 
 
 @Injectable({
@@ -15,8 +14,6 @@ export class VideoReadyGuard implements CanActivate {
 
   constructor(
     public roomService: RoomService,
-    private metaTagService: Meta,
-    private titleService: Title,
     @Inject(PLATFORM_ID) private platformId,
     private router: Router
   ) {}

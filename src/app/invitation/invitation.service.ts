@@ -98,57 +98,54 @@ export class InvitationService {
   }
 
 
-  // TODO FIXME invitation id needs to be changed to invitationId, not just 'id'
-  getInvitations(invitationId: string) {
-      console.log('invitation.service:  invitationId: ', invitationId, 'query by iinvitationIdd')
-      return this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges()//.pipe(take(1));
-      // return new Observable<any>(ob => { 
-      //   console.log('getInvitations():  invitationId = ', invitationId)
-      //   var observable = this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges().pipe(take(1));
-      //   observable.subscribe(docChangeActions => {
-      //       let invitations:Invitation[] = []
-      //       if(docChangeActions && docChangeActions.length > 0) {
-      //           _.each(docChangeActions, obj => {
-      //               let inv = obj.payload.doc.data() as Invitation
-      //               inv.docId = obj.payload.doc.id
-      //               console.log('getInvitations():  invitation: ', inv)
-      //               invitations.push(inv)
-      //               this.invitations.push(inv)
-      //               console.log('getInvitations():  invitations: ', invitations)
-      //           })
-      //       }
-      //       console.log('getInvitations():  invitationId: ', invitationId)
-      //       console.log('getInvitations():  invitations: ', invitations)
-      //       ob.next(invitations)
-      //   })
+  // getInvitations(invitationId: string) {
+  //     console.log('invitation.service:  invitationId: ', invitationId, 'query by iinvitationIdd')
+  //     // return this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges()//.pipe(take(1));
 
-      // })
+  //     return new Observable<any>(ob => { 
+  //       console.log('getInvitations():  invitationId = ', invitationId)
+  //       var observable = this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges().pipe(take(1));
+  //       observable.subscribe(docChangeActions => {
+  //           let invitations:Invitation[] = []
+  //           if(docChangeActions && docChangeActions.length > 0) {
+  //               _.each(docChangeActions, obj => {
+  //                   let inv = obj.payload.doc.data() as Invitation
+  //                   inv.docId = obj.payload.doc.id
+  //                   console.log('getInvitations():  invitation: ', inv)
+  //                   invitations.push(inv)
+  //                   this.invitations.push(inv)
+  //                   console.log('getInvitations():  invitations: ', invitations)
+  //               })
+  //           }
+  //           console.log('getInvitations():  invitationId: ', invitationId)
+  //           console.log('getInvitations():  invitations: ', invitations)
+  //           ob.next(invitations)
+  //       })
 
-
-  }
-
-
-  /////////////////////////////////////////////////////////////////////////////////
-  // REPLACED BY THE VERSION ABOVE THAT STICKS WITH OBSERVABLES BECAUSE OF ANGULAR UNIVERSAL
-  //
-  // async getInvitations(invitationId: string) {
-  //   var observable = this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges().pipe(take(1));
-  //   let docChangeActions = await observable.toPromise()
-  //   let invitations:Invitation[] = []
-  //   if(docChangeActions && docChangeActions.length > 0) {
-  //     _.each(docChangeActions, obj => {
-  //       let inv = obj.payload.doc.data() as Invitation
-  //       inv.docId = obj.payload.doc.id
-  //       console.log('invitation: ', inv)
-  //       invitations.push(inv)
-  //       this.invitations.push(inv)
-  //       console.log('invitations: ', invitations)
   //     })
-  //   }
-  //   console.log('invitationId: ', invitationId)
-  //   console.log('invitations: ', invitations)
-  //   return invitations
+
+
   // }
+
+
+    async getInvitations(invitationId: string) {
+      var observable = this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges().pipe(take(1));
+      let docChangeActions = await observable.toPromise()
+      let invitations:Invitation[] = []
+      if(docChangeActions && docChangeActions.length > 0) {
+        _.each(docChangeActions, obj => {
+          let inv = obj.payload.doc.data() as Invitation
+          inv.docId = obj.payload.doc.id
+          console.log('invitation: ', inv)
+          invitations.push(inv)
+          this.invitations.push(inv)
+          console.log('invitations: ', invitations)
+        })
+      }
+      console.log('invitationId: ', invitationId)
+      console.log('invitations: ', invitations)
+      return invitations
+    }
 
 
   /**

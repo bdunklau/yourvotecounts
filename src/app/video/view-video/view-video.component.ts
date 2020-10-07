@@ -1,13 +1,11 @@
 import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
-import { AngularFireStorage } from '@angular/fire/storage';
 import { RoomObj } from '../../room/room-obj.model'
 import { RoomService } from '../../room/room.service';
 import { UserService } from '../../user/user.service';
 import { FirebaseUserModel } from 'src/app/user/user.model';
 import * as _ from 'lodash'
-import { BrowserModule, Title, Meta } from '@angular/platform-browser';
 import { Official } from '../../civic/officials/view-official/view-official.component'
 import { isPlatformBrowser } from '@angular/common';
 
@@ -41,11 +39,8 @@ export class ViewVideoComponent implements OnInit {
     isGuest = false
 
 
-    constructor(private afStorage: AngularFireStorage,
-                private roomService: RoomService,
+    constructor(private roomService: RoomService,
                 private userService: UserService,
-                private titleService: Title,
-                private metaTagService: Meta,
                 @Inject(PLATFORM_ID) private platformId,
                 //private _modalService: NgbModal,
                 private route: ActivatedRoute) { }
@@ -90,7 +85,6 @@ export class ViewVideoComponent implements OnInit {
                 this.videoType = "video/mp4"
             }
             if(this.room.video_title) this.video_title = this.room.video_title
-            if(this.room.video_title) this.setDocTitle(this.video_title)
             if(this.room.video_description) this.video_description = this.room.video_description
             let user = await this.userService.getCurrentUser()
             let allowed = this.allowedToEdit(user)
@@ -168,11 +162,6 @@ export class ViewVideoComponent implements OnInit {
         if(!this.editing_allowed)
             return // ignore user touch/click
         this.editing_description = true
-    }
-    
-    
-    setDocTitle(title: string) {
-        this.titleService.setTitle(title);
     }
 
 
