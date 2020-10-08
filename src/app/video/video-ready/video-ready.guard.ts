@@ -18,7 +18,7 @@ export class VideoReadyGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(
+  async canActivate(
       next: ActivatedRouteSnapshot,
       state: RouterStateSnapshot): Promise<boolean> {
 
@@ -42,18 +42,18 @@ export class VideoReadyGuard implements CanActivate {
                         this.roomService.roomObj = roomObj
                         console.log('VideoReadyGuard: this.roomService.roomObj:  ', this.roomService.roomObj)
                         console.log('VideoReadyGuard: return true')
-                        return Promise.resolve(true)
+                        return true
                     }
                     else {
                         this.router.navigate(['/error-page'])
-                        return Promise.resolve(false)
+                        return false
                     }
 
                 }
                 else {
                     console.log('VideoReadyGuard:  else - not good 1')
                     this.router.navigate(['/error-page'])
-                    return Promise.resolve(false)
+                    return false
                 }
 
 
@@ -61,7 +61,7 @@ export class VideoReadyGuard implements CanActivate {
             
       }
       else {
-          return Promise.resolve(true)
+          return true
       }
 
 

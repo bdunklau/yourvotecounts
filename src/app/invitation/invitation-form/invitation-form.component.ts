@@ -16,6 +16,7 @@ import { UserService } from '../../user/user.service';
 import { SmsService } from '../../sms/sms.service';
 import { FirebaseUserModel } from 'src/app/user/user.model';
 import * as _ from 'lodash'
+//import { SettingsService } from 'src/app/settings/settings.service';
 
 
 
@@ -45,6 +46,7 @@ export class InvitationFormComponent implements OnInit {
 
   constructor(
     private smsService: SmsService,
+    //private settingsService: SettingsService,
     private fb: FormBuilder,
     private invitationService: InvitationService,
     private router: Router,
@@ -58,33 +60,21 @@ export class InvitationFormComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     
     if (isPlatformServer(this.platformId)) {
-        this.host = this.request.headers['x-forwarded-host']
+        this.host = this.request.headers['x-forwarded-host'] // this is just the name of the server/host
         console.log('InvitationFormComponent: x-forwarded-host:  ', this.request.headers['x-forwarded-host'])
     }
+
+    // we don't want this - we want config/settings/website_domain_name
     if (isPlatformBrowser(this.platformId)) {
-        this.host = window.location.host
+        this.host = window.location.host //this.settingsService.settings.website_domain_name
         console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
     }
 
-    //this.arrayItems = [];
-    //this.phones = []
 
     this.names = []
     this.addSomeone()
 
-    //this.invitation = new Invitation();
-    //this.invitation.invitationId = this.invitationService.createId();
     this.user = await this.userService.getCurrentUser();
-    //this.invitation.setCreator(this.user);
-
-    // get the form started...
-
-    //this.invitation.phoneNumber = this.getPhoneNumber();
-
-    // see:   https://stackoverflow.com/a/56058977
-    //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.invitationId+"/"+this.invitation.phoneNumber};
-    //this.themessage = await this.invitationService.getInvitationMessage(this.user.displayName, url);
-    //this.invitationForm.get("message").setValue(this.themessage);
   }
 
   //  https://medium.com/aubergine-solutions/add-push-and-remove-form-fields-dynamically-to-formarray-with-reactive-forms-in-angular-acf61b4a2afe

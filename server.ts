@@ -90,9 +90,9 @@ export function app(): express.Express {
                { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] },
                  (err, html) => {                   
                   // see    https://css-tricks.com/essential-meta-tags-social-media/
-                  if(req['image']) html = html.replace(/\$OG_IMAGE/, req['image']);
-                  if(req['title']) html = html.replace(/\$OG_TITLE/, req['title']);
-                  if(req['description']) html = html.replace(/\$OG_DESCRIPTION/, req['description']);
+                  if(req['image']) html = html.replace(/\$OG_IMAGE/g, req['image']);
+                  if(req['title']) html = html.replace(/\$OG_TITLE/g, req['title']);
+                  if(req['description']) html = html.replace(/\$OG_DESCRIPTION/g, req['description']);
                   // console.log('server.get(*): html  = \n\n', html)
                   // console.log('server.get(\'*\'):  req[\'image\'] = ', req['image'])
                   res.send(html)
