@@ -493,7 +493,7 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
         firebase_functions_host: req.body.firebase_functions_host,
         //callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete`, // just below this function
         callbackUrl: `https://${req.body.firebase_functions_host}/uploadScreenshotToStorageComplete`, // just below this function
-        compositionProgress: compositionProgress,
+        compositionProgress: req.body.compositionProgress,
         website_domain_name: req.body.website_domain_name,
         projectId: req.body.projectId,
         storage_keyfile: req.body.storage_keyfile
@@ -568,7 +568,7 @@ exports.uploadScreenshotToStorageComplete = functions.https.onRequest(async (req
         cloud_host: req.body.cloud_host,
         firebase_functions_host: req.body.firebase_functions_host,
         callbackUrl: `https://${req.body.firebase_functions_host}/deleteVideoComplete`, // just below this function
-        compositionProgress: compositionProgress,
+		compositionProgress: req.body.compositionProgress,
         website_domain_name: req.body.website_domain_name,
         projectId: req.body.projectId,
         storage_keyfile: req.body.storage_keyfile
