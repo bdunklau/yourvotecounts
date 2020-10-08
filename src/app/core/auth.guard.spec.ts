@@ -57,7 +57,6 @@ describe('AuthGuard', () => {
                imports: [CommonServiceModuleStub],
                // I used 'useValue' because it is just a json. If it was class, I'd use 'useClass'
                providers: [{provide: AngularFirestore, useValue: angularFirestoreStub},
-                           { provide: PLATFORM_ID, useValue: 'browser' },
                            {provide: AngularFireAuth, useValue: {}/*mockAngularFireAuth*/}],
                schemas: [ NO_ERRORS_SCHEMA ],
                declarations: [ AppComponent ]
@@ -71,7 +70,7 @@ describe('AuthGuard', () => {
     it('should allow route to be accessed for a logged in user', async () => {
       spyOn(userService, 'getCurrentUser').and.returnValue({displayName: "Bob Meader", phoneNumber: "469-555-0000"});
       router = new MockRouter();
-      authGuard = new AuthGuard(userService, PLATFORM_ID, router);
+      authGuard = new AuthGuard(userService, 'browser', router);
       spyOn(router, 'navigate');
       let canAct = await authGuard.canActivate()
       expect(canAct).toBeTruthy();
@@ -83,7 +82,7 @@ describe('AuthGuard', () => {
     it('should return false for a logged out user', async () => {
       router = new MockRouter();
       spyOn(userService, 'getCurrentUser').and.returnValue(null);
-      authGuard = new AuthGuard(userService, PLATFORM_ID, router);
+      authGuard = new AuthGuard(userService, 'browser', router);
       spyOn(router, 'navigate');
       let res = await authGuard.canActivate();
       expect(res).toBeFalsy();
