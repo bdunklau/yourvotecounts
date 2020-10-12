@@ -8,6 +8,8 @@ import { MessageService } from './core/message.service';
 import { Subscription } from 'rxjs';
 import { NgbDatepickerConfig, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser-formatter";
+import { FirebaseUserModel } from './user/user.model';
+import { UserService } from './user/user.service';
 //import Hammer from 'hammerjs'; // to capture touch events
 // import { BrowserModule } from '@angular/platform-browser';
 
@@ -25,16 +27,30 @@ export class AppComponent {
   name_or_phone: string;
   photoURL?: string
   private userSubscription: Subscription;
+  me: FirebaseUserModel
 
 
   constructor(private authService: AuthService,
               private router: Router,
+              private userService: UserService,
               private messageService: MessageService) {}
 
 
   async ngOnInit() {
-    // console.log('user = ', this.user);
-    // this.me = await this.userService.getCurrentUser();
+    this.me = await this.userService.getCurrentUser();
+    console.log('AppComponent:  user = ', this.me);
+    if(this.me) {
+        this.setAdmin(this.me.isAdmin())
+        this.isLoggedIn = true;
+        if(this.me.phoneNumber) this.name_or_phone = this.me.phoneNumber; // TODO not tested
+        if(this.me.displayName) this.name_or_phone = this.me.displayName; // TODO not tested
+        if(this.me.photoURL) this.photoURL = this.me.photoURL             // TODO not tested
+    }
+    else {
+        this.isLoggedIn = false
+        this.name_or_phone = ""; // TODO not tested
+        this.setAdmin(false); // TODO not tested   
+    }
 
     var nxt = function(value /* FirebaseUserModel */) {
       console.log('AppComponent: next(): value = ', value);

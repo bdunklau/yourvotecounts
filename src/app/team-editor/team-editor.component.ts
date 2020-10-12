@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Team } from '../team/team.model';
 import { TeamService } from '../team/team.service';
-import * as firebase from 'firebase/app';
 import { FirebaseUserModel } from '../user/user.model';
 import { TeamMember } from '../team/team-member.model';
 import { NgForm, /*FormControl, FormGroup*/ } from '@angular/forms';

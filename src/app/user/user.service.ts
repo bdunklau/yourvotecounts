@@ -114,12 +114,19 @@ export class UserService {
     }
 
     return new Promise<FirebaseUserModel>(async (resolve, reject) => {
-      var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
-      this.user = user;
-      this.user.populate(userDoc.data());
-      console.log('getCurrentUser(): DATABASE HIT this.user = ', this.user);
-      this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
-      resolve(this.user);
+        var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
+        this.user = user;
+        this.user.populate(userDoc.data());
+        
+        if(this.user.photoFileName) {
+            console.log('this.user.photoFileName:  '+this.user.photoFileName)
+            let photoURL = await this.afStorage.storage.refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName).getDownloadURL()
+            this.user.photoURL = photoURL
+        }
+
+        console.log('getCurrentUser(): DATABASE HIT this.user = ', this.user);
+        this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
+        resolve(this.user);
     });
   }
 
