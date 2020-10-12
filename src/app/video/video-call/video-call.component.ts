@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, ElementRef, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterViewInit, ElementRef, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Invitation } from '../../invitation/invitation.model';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
@@ -42,6 +42,14 @@ export class VideoCallComponent implements OnInit {
   //okUrl = true;
   @ViewChild('preview', {static: false}) previewElement: ElementRef;
   @ViewChild('list', {static: false}) listRef: ElementRef;
+  @ViewChild('videoCells', {static: false}) videoCellsRef: ElementRef; // instead of #list
+  
+  // @ViewChild('guest1', {static: false}) guest1Ref: ElementRef;  
+  // @ViewChild('guest2', {static: false}) guest2Ref: ElementRef;  
+  // @ViewChild('guest3', {static: false}) guest3Ref: ElementRef;
+
+  // private guestRefs: ElementRef[]
+
   isInitializing: boolean = true;
   videoTrack: LocalVideoTrack;
   audioTrack: LocalAudioTrack;
@@ -66,6 +74,8 @@ export class VideoCallComponent implements OnInit {
   callEnded: boolean = false
   canDelete: boolean = true
   // me: FirebaseUserModel
+  //trackMap: Map<RemoteTrack, ElementRef> = new Map<RemoteTrack, ElementRef>()
+  showTestPattern = true
 
 
   constructor(private route: ActivatedRoute,
@@ -99,8 +109,22 @@ export class VideoCallComponent implements OnInit {
           _.each(this.invitations, invitation => {
               this.monitorInvitation(invitation)
           })
+          
       }
   }
+
+  ngAfterViewInit() {
+    
+  }
+
+
+  // ngAfterViewInit() {      
+  //     if(isPlatformBrowser(this.platformId)) {
+
+  //         this.guestRefs = [this.guest3Ref, this.guest2Ref, this.guest1Ref] // reverse order so we can call .pop() below
+  //         console.log('ngAfterViewInit():   this.guestRefs = ', this.guestRefs)
+  //     }
+  // }
 
 
   ngOnDestroy() {
@@ -290,30 +314,7 @@ export class VideoCallComponent implements OnInit {
   //////////////////////////////////////////////
   // moved to video-call-complete.component.ts
   //
-  // async compose() {
-  //   this.compositionInProgress = true
-  //   this.publishButtonText = "Workin' on it!..."
-  //   const httpOptions = {
-  //     headers: new HttpHeaders({
-  //       'Content-Type':  'application/json',
-  //       'Authorization': 'my-auth-token',
-  //       'Access-Control-Allow-Origin': '*'
-  //     }),
-  //     //params: new HttpParams().set('uid', uid)
-  //   };
-
-  //   // do a POST here not a GET
-  //   // and post the whole room document.  No need to query for it in the firebase function
-
-  //   // NOTE: ${this.settingsDoc.website_domain_name} will be the ngrok host if running locally.  See invitation.service.ts:ngrok field
-  //   let composeUrl = `https://${this.settingsDoc.firebase_functions_host}/compose?RoomSid=${this.activeRoom.sid}&firebase_functions_host=${this.settingsDoc.firebase_functions_host}&room_name=${this.activeRoom.name}&website_domain_name=${this.settingsDoc.website_domain_name}&cloud_host=${this.settingsDoc.cloud_host}                         `
-  //   this.http.get(composeUrl, httpOptions)
-  //     .subscribe(async (data: any) => {
-  //       console.log('data = ', data) 
-              
-  //   });
-
-  // }
+  // async compose() { ... }
 
 
   private async initializeDevice(kind?: MediaDeviceKind, deviceId?: string) {
@@ -329,24 +330,41 @@ export class VideoCallComponent implements OnInit {
         this.videoTrack = this.localTracks.find(t => t.kind === 'video') as LocalVideoTrack;
         this.audioTrack = this.localTracks.find(t => t.kind === 'audio') as LocalAudioTrack;
         const videoElement = this.videoTrack.attach();
-        // console.log('videoElement = ', videoElement);
-        // this.d('initializeDevice(): videoElement='+videoElement);
-        // this.renderer.setStyle(videoElement, 'mute', 'true');
-        this.renderer.setStyle(videoElement, 'height', '100%');
-        this.renderer.setStyle(videoElement, 'width', '100%');
-        this.renderer.appendChild(this.previewElement.nativeElement, videoElement);
+        // this.renderer.setStyle(videoElement, 'height', '100%');
+        this.renderer.setStyle(videoElement, 'width', '50vw');
+        this.renderer.setStyle(videoElement, 'margin', 'auto');
+        //this.renderer.appendChild(this.previewElement.nativeElement, videoElement);   // <=== OLD WAY
+
+        
+        // let div = this.renderer.createElement('div');                                   // <=== NEW WAY
+        // this.renderer.addClass(div, 'col')
+        this.renderer.setStyle(this.videoCellsRef.nativeElement, 'background-image', '');
+        this.renderer.appendChild(this.videoCellsRef.nativeElement, videoElement);
+
+
+        console.log('initializeDevice(): -----------------------------')
+        console.log('initializeDevice(): this.renderer = ', this.renderer)
+        console.log('initializeDevice(): videoElement = ', videoElement)
     } finally {
         this.isInitializing = false;
+        this.showTestPattern = false
     }
   }
-
+s
 
 
 
   finalizePreview() {
     try {
+        this.showTestPattern = true
         if (this.videoTrack) {
             this.videoTrack.detach().forEach(element => {
+                this.renderer.setStyle(this.videoCellsRef.nativeElement, "-webkit-background-size", "contain");
+                this.renderer.setStyle(this.videoCellsRef.nativeElement, "-moz-background-size", "contain");
+                this.renderer.setStyle(this.videoCellsRef.nativeElement, "-o-background-size", "contain");
+                this.renderer.setStyle(this.videoCellsRef.nativeElement, "min-height", "25vh");
+                this.renderer.setStyle(this.videoCellsRef.nativeElement, "min-width", "100vw");
+                this.renderer.setStyle(this.videoCellsRef.nativeElement, 'background', "url('assets/test_pattern.png') no-repeat center contain;");
                 element.remove()
               }
             );
@@ -385,17 +403,45 @@ export class VideoCallComponent implements OnInit {
   ************/
 
 
+
+  /**
+   * 
+   * @param track is either a RemoteAudioTrack or a RemoteVideoTrack
+   */
   private attachRemoteTrack(track: RemoteTrack) {
     if (this.isAttachable(track)) {
-        // this method called twice for a participant
-        // the first time, element is an <audio> element, type unknown
-        // the second time, element is a <video> element, type unknown
+        // this method is called twice for a participant
+        // When track is RemoteAudioTrack, element is an <audio> element
+        // When track is RemoteVideoTrack, element is an <video> element
         const element = track.attach();
-        this.renderer.data.id = track.sid;
-        this.renderer.setStyle(element, 'width', '40vw');
+        this.renderer.data.id = track.sid;                    // <=== NEW WAY
+        this.renderer.setStyle(element, 'width', '50vw');
         //this.renderer.setStyle(element, 'height', '28vh');
-        this.renderer.setStyle(element, 'margin-left', '0%');
-        this.renderer.appendChild(this.listRef.nativeElement, element);
+        this.renderer.setStyle(element, 'margin', 'auto');
+        /**
+         * this.listRef.nativeElement - the parent <div #list></div> tag
+         * element - either <audio> or <video> tag
+         * 
+         * .appendChild() adds the <audio> or <video> tag as a child node to the parent <div> tag
+         */
+        //this.renderer.appendChild(this.listRef.nativeElement, element);     // <=== OLD WAY
+
+
+        console.log('attachRemoteTrack(): ----------------------------')      
+        console.log('attachRemoteTrack(): typeof track = ', (typeof track))
+        // if(typeof track == RemoteVideoTrack) {
+        //     console.log('attachRemoteTrack(): RemoteVideoTrack')
+            // let div = this.renderer.createElement('div'); 
+            // this.renderer.addClass(div, 'col')
+            this.renderer.appendChild(this.videoCellsRef.nativeElement, element);
+            // this.renderer.appendChild(div.nativeElement, element);
+        // }
+        // else {
+        //     console.log('attachRemoteTrack(): RemoteAudioTrack - hidden')
+        //     // just add the <audio> tag as child of videoCellsRef tag
+        //     this.renderer.appendChild(this.videoCellsRef.nativeElement, element);
+        // }
+
     }
   
   }
@@ -431,12 +477,18 @@ export class VideoCallComponent implements OnInit {
     if (this.isDetachable(track)) {
         console.log('detachRemoteTrack:  track = ', track)
         track.detach().forEach(el => {
-            console.log('detachRemoteTrack:  el = ', el)
+            // console.log('detachRemoteTrack():  el = ', el)
+            // console.log('detachRemoteTrack():  el.parentNode = ', el.parentNode)
+            // console.log('detachRemoteTrack():  el.parentNode.parentNode = ', el.parentNode.parentNode)
+
+            // the RemoteAUDIOTrack doesn't have the same parent as the video track, so only remove the parent
+            // when the track is a RemoteVideoTrack.  The parent of the RemoteVideoTrack is the <div class="col"> that contains the remote <video> tag 
+            if(typeof track == RemoteVideoTrack) {
+                el.parentNode.remove()
+            }
             el.remove() // makes the video square literally go away
             //this.renderer.setStyle(el, 'background-color', '#000000');
-        });
-        // GET RID OF THIS
-        // this.videoChatService.canSeeRemoteParticipant({myUid: this.myUid, video_node_key: this.video_node_key, canSeeRemote: false});
+        })
     }
   }
 

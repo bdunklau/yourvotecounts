@@ -3,24 +3,12 @@
   I DON'T WANT THE VIDEO CELLS IN A CONTAINER - I WANT THEM TO SPAN THE FULL WIDTH OF THE SCREEN
 -->
 
-<!-- WE EITHER SHOW THIS ROW OR THE NEXT -->
-
-<div class="row">
-
-  <!-- local participant -->
-  <div class="col" style="background-color:#000000;">
-      <div id="preview" #preview style="width:40vw;">
-          <!-- gives us the black bar across the screen when no video present -->
-          <div *ngIf="isInitializing || callEnded" style="height:28vh"><!-- We COULD display something like this: Loading preview... Please wait.   But we really don't need to.  We are only showing the local camera once we are connected to a room --></div>
-      </div>
-  </div>
-  <!-- local participant -->
-
-  <!-- remote participant -->
-  <div class="col" style="background-color:#000000">
-      <div #list></div>
-  </div>
-  <!-- remote participant -->
+<div class="row" #videoCells
+    style="background-color:#000000;
+          min-height:25vh;
+          min-width:100vw
+          ">
+    <img *ngIf="showTestPattern" src="/assets/test_pattern.png" style="height: 25vh;  width: auto; margin: auto;">
 </div>
 
 
