@@ -4,9 +4,9 @@
 
  <!-- https://www.w3schools.com/howto/howto_js_sidenav.asp -->
  <div id="mySidenav" class="sidenav">
-   <div class="nav-heading" style="padding-top:20px;padding-bottom:20px" (click)="closeNav()" [routerLink]="['/myaccount']">
+   <div class="nav-heading" (click)="closeNav()" [routerLink]="['/myaccount']">
        
-       <div class="row">
+       <div class="row" [hidden]="!isLoggedIn" style="padding-top:20px;padding-bottom:20px">
            <div class="col-2">
                <div class="circular--portrait">
                    <img src="{{photoURL}}" width="29">
@@ -17,6 +17,10 @@
                <span *ngIf="name_or_phone">{{name_or_phone}}</span>
            </div> 
       </div>
+      <div class="row" [hidden]="isLoggedIn">
+          <div class="col" style="margin-left:-20px"><a id="login_link" class="nav-link" (click)="closeNav()" routerLink="/login" style="color:#ffffff"><i class="fas fa-sign-in-alt"></i> Login</a>
+          </div> 
+     </div>
 
    </div>
    <a href="javascript:void(0)" class="closebtn" id="closeNav" (click)="closeNav()"><i class="fa fa-close" style="color:#ffffff"></i></a>
@@ -30,7 +34,7 @@
    
    <!-- a [hidden]="!isLoggedIn" id="teams_link" class="nav-link" (click)="closeNav()" [routerLink]="['/teams']"><i class="fa fa-users"></i> Teams</a -->
    <a id="home_link" class="nav-link" (click)="closeNav()" routerLink="/home"><i class="fa fa-home"></i> Home</a>
-   <a [hidden]="isLoggedIn" id="login_link" class="nav-link" (click)="closeNav()" routerLink="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+   
    <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
 
    <div [hidden]="!isAdmin"><hr/></div>
