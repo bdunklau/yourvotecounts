@@ -58,7 +58,6 @@ export class VideoCallComponent implements OnInit {
   //user: FirebaseUserModel;
   isHost: boolean = false;
   phoneNumber: string; // could be either the guest's number or the host's
-  joinOnLoad: boolean;
   participants: Map<Participant.SID, RemoteParticipant>;
   joined = false // whether the user has connected to the room or not
   private roomSubscription: Subscription;
@@ -76,6 +75,7 @@ export class VideoCallComponent implements OnInit {
   // me: FirebaseUserModel
   //trackMap: Map<RemoteTrack, ElementRef> = new Map<RemoteTrack, ElementRef>()
   showTestPattern = true
+  dimension: {type:string, value:string} = {type:'width', value:'48vw'}
 
 
   constructor(private route: ActivatedRoute,
@@ -95,7 +95,6 @@ export class VideoCallComponent implements OnInit {
         
           // got all this stuff from video-call-complete.guard.ts
           //this.me = await this.userService.getCurrentUser() // this is NOT how we tell if I am the guest
-          this.joinOnLoad = this.route.params['join']
           this.invitations = this.invitationService.invitations  // see  ValidInvitationGuard
           console.log('VideoCallComponent:  this.invitations = ', this.invitations)
           this.settingsDoc = await this.settingsService.getSettingsDoc()
@@ -106,6 +105,21 @@ export class VideoCallComponent implements OnInit {
               this.isHost = this.invitations[0].creatorPhone == this.phoneNumber
           })
 
+          // this.setVideoWidthHeight(this.invitations.length)
+          
+          // optional: override default width/height of the video cells 
+          let dim = this.route.snapshot.params.dimension
+          if(dim && dim.indexOf('vw') != -1) {
+              this.dimension.type = 'width'
+              this.dimension.value = dim
+          }
+          else if(dim && dim.indexOf('vh') != -1) {
+              this.dimension.type = 'height'
+              this.dimension.value = dim
+          }
+          console.log('ngOnInit():  dimension = ', this.dimension)
+
+
           _.each(this.invitations, invitation => {
               this.monitorInvitation(invitation)
           })
@@ -115,6 +129,15 @@ export class VideoCallComponent implements OnInit {
 
   ngAfterViewInit() {
     
+  }
+
+
+  setVideoWidthHeight(numberOfInvitations: number) {
+      let numberOfParticipants =  numberOfInvitations + 1
+      if(numberOfParticipants === 1) this.dimension = {type:'width', value:'99vw'}
+      else if(numberOfParticipants === 2) this.dimension = {type:'width', value:'49vw'}
+      else if(numberOfParticipants === 3) this.dimension = {type:'width', value:'33vw'}
+      else this.dimension = {type:'width', value:'25vw'}
   }
 
 
@@ -330,16 +353,13 @@ export class VideoCallComponent implements OnInit {
         this.videoTrack = this.localTracks.find(t => t.kind === 'video') as LocalVideoTrack;
         this.audioTrack = this.localTracks.find(t => t.kind === 'audio') as LocalAudioTrack;
         const videoElement = this.videoTrack.attach();
-        // this.renderer.setStyle(videoElement, 'height', '100%');
-        this.renderer.setStyle(videoElement, 'width', '50vw');
-        this.renderer.setStyle(videoElement, 'margin', 'auto');
+        this.renderer.setStyle(videoElement, this.dimension.type, this.dimension.value);
+        // this.renderer.setStyle(videoElement, 'display', 'table-cell');
+        // this.renderer.setStyle(videoElement, 'vertical-align', 'middle');
         //this.renderer.appendChild(this.previewElement.nativeElement, videoElement);   // <=== OLD WAY
 
         
-        // let div = this.renderer.createElement('div');                                   // <=== NEW WAY
-        // this.renderer.addClass(div, 'col')
-        this.renderer.setStyle(this.videoCellsRef.nativeElement, 'background-image', '');
-        this.renderer.appendChild(this.videoCellsRef.nativeElement, videoElement);
+        this.renderer.appendChild(this.videoCellsRef.nativeElement, videoElement);    // <=== NEW WAY
 
 
         console.log('initializeDevice(): -----------------------------')
@@ -359,12 +379,12 @@ s
         this.showTestPattern = true
         if (this.videoTrack) {
             this.videoTrack.detach().forEach(element => {
-                this.renderer.setStyle(this.videoCellsRef.nativeElement, "-webkit-background-size", "contain");
-                this.renderer.setStyle(this.videoCellsRef.nativeElement, "-moz-background-size", "contain");
-                this.renderer.setStyle(this.videoCellsRef.nativeElement, "-o-background-size", "contain");
-                this.renderer.setStyle(this.videoCellsRef.nativeElement, "min-height", "25vh");
-                this.renderer.setStyle(this.videoCellsRef.nativeElement, "min-width", "100vw");
-                this.renderer.setStyle(this.videoCellsRef.nativeElement, 'background', "url('assets/test_pattern.png') no-repeat center contain;");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, "-webkit-background-size", "contain");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, "-moz-background-size", "contain");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, "-o-background-size", "contain");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, "min-height", "25vh");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, "min-width", "100vw");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, 'background', "url('assets/test_pattern.png') no-repeat center contain;");
                 element.remove()
               }
             );
@@ -414,10 +434,9 @@ s
         // When track is RemoteAudioTrack, element is an <audio> element
         // When track is RemoteVideoTrack, element is an <video> element
         const element = track.attach();
-        this.renderer.data.id = track.sid;                    // <=== NEW WAY
-        this.renderer.setStyle(element, 'width', '50vw');
-        //this.renderer.setStyle(element, 'height', '28vh');
-        this.renderer.setStyle(element, 'margin', 'auto');
+        this.renderer.data.id = track.sid;       
+        this.renderer.setStyle(element, this.dimension.type, this.dimension.value);
+        // this.renderer.setStyle(element, 'margin', 'auto');
         /**
          * this.listRef.nativeElement - the parent <div #list></div> tag
          * element - either <audio> or <video> tag
@@ -433,7 +452,7 @@ s
         //     console.log('attachRemoteTrack(): RemoteVideoTrack')
             // let div = this.renderer.createElement('div'); 
             // this.renderer.addClass(div, 'col')
-            this.renderer.appendChild(this.videoCellsRef.nativeElement, element);
+            this.renderer.appendChild(this.videoCellsRef.nativeElement, element);     // <=== NEW WAY
             // this.renderer.appendChild(div.nativeElement, element);
         // }
         // else {
