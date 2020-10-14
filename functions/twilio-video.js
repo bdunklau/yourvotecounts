@@ -61,10 +61,10 @@ exports.compose = functions.https.onRequest((req, res) => {
         const client = twilio(twilioApiKey, twilioApiSecret, {accountSid: twilioAccountSid})
         const participantCount = parseInt(req.query.participantCount)
 
-        // layout: if 3 people or less, they all go on one row
-        //   If more than 3, then we add a row, allowing for up to 3 people to be on each row
-        //   In the case of 4 people, the layout should be 2x2 because max_rows will be 2
-        const max_rows = participantCount < 4 ? 1 : parseInt(participantCount / 3) + 1
+        // layout: if 4 people or less, they all go on one row
+        //   If more than 4, then we add a row, allowing for up to 4 people to be on each row
+        const maxOn1Row = 4
+        const max_rows = participantCount < (maxOn1Row+1) ? 1 : parseInt(participantCount / maxOn1Row) + 1
 
         let aspectRatio = 9/16
         if(participantCount === 3) aspectRatio = 9/21
@@ -639,7 +639,7 @@ exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
             from: '+12673314843', 
             to: phone, 
             //mediaUrl: string, // do we need this? 
-            message: `YeeHaw!! Your video is ready!  Check it out below\n\nPlease don't thank us by replying to this text.  This number is not being monitored.\n\n${videoUrl}`,
+            message: `Heads Up! Your video is ready!  Check it out below\n\nPlease don't thank us by replying to this text.  This number is not being monitored.\n\n${videoUrl}`,
             date: new Date(),
             date_ms: new Date().getTime(),
             RoomSid: req.body.RoomSid,              // so we can query/delete later on
