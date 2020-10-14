@@ -37,6 +37,7 @@ export class ViewVideoComponent implements OnInit {
     private official_deleted_sub: Subscription
     isHost = false
     isGuest = false
+    initialized = false
 
 
     constructor(private roomService: RoomService,
@@ -95,7 +96,7 @@ export class ViewVideoComponent implements OnInit {
             this.listenForOfficials()
             this.isHost = this.room.isHost(user)
             this.isGuest = this.room.isGuest(user)
-
+            this.initialized = true
         }
         console.log('ngOnInit():  done')
 
