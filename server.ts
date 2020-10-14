@@ -57,7 +57,7 @@ export function app(): express.Express {
        * put that info in req object
        * server.get('*') below looks for these req attributes
        */
-      let host = req.hostname.indexOf("-bd737") != -1 ? "us-central1-yourvotecounts-bd737.cloudfunctions.net" : "us-central1-yourvotecounts-dev.cloudfunctions.net"
+      let host = req.hostname.indexOf("-dev") != -1 ? "us-central1-yourvotecounts-dev.cloudfunctions.net" : "us-central1-yourvotecounts-bd737.cloudfunctions.net"
       let url = `https://${host}/getVideoInfo?compositionSid=${req.params.compositionSid}`
       let meta = await tiny.get({url}) // https://www.npmjs.com/package/tiny-json-http
       console.log("generateMetaTags():  meta.body.image = \n", meta.body.image)
