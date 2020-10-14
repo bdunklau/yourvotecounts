@@ -25,7 +25,7 @@
         <div class="col" (click)="beginEditTitle()">
             <h3>
                 <span *ngIf="video_title">{{video_title}}</span>  
-                <span *ngIf="!video_title">(Add title)</span>  
+                <span *ngIf="!video_title && initialized">(Add title)</span>  
             </h3>
         </div>
     </div>
@@ -50,7 +50,7 @@
     <div class="row" *ngIf="!editing_description" style="margin-top:10px">
         <div class="col text-style" (click)="beginEditDescription()">
                 <span *ngIf="video_description">{{video_description}}</span>
-                <span *ngIf="!video_description">(Add description)</span>
+                <span *ngIf="!video_description && initialized">(Add description)</span>
         </div>
     </div>
 
