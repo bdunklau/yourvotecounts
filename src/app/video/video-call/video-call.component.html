@@ -3,15 +3,20 @@
   I DON'T WANT THE VIDEO CELLS IN A CONTAINER - I WANT THEM TO SPAN THE FULL WIDTH OF THE SCREEN
 -->
 
-<div class="row" #videoCells
-    style="background-color:#000000;
-          min-height:25vh;
-          min-width:100vw
-          ">
-    <img *ngIf="showTestPattern" src="/assets/test_pattern.png" style="height: 25vh;  width: auto; margin: auto;">
+<div class="row">
+    <div class="col" #videoCells
+        style="background-color:#000000;
+              min-height:20vh;
+              min-width:100vw;
+              ">
+        <img *ngIf="showTestPattern" src="/assets/test_pattern.png" style="height: 20vh;  width: auto; display: block;
+        margin-left: auto;
+        margin-right: auto;">
+    </div>
 </div>
-
-
+<!-- ADD THIS TO col DIV ABOVE IF GOING WITH THE 1x4 LAYOUT.  THIS WILL VERTICALLY CENTER THE VIDEO CELLS IN THE BLACK BOX
+        display: flex;align-items: center;
+-->
 
 
 
