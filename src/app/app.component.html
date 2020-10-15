@@ -43,7 +43,7 @@
    <a [hidden]="!isAdmin" id="log_link" class="nav-link" (click)="closeNav()" [routerLink]="['/log']"><i class="far fa-file"></i> Logs</a>
    <a [hidden]="!isAdmin" id="terms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/terms']"><i class="fas fa-file-contract"></i> Terms</a>
    <a [hidden]="!isAdmin" id="privacy_link" class="nav-link" (click)="closeNav()" [routerLink]="['/privacy']"><i class="fas fa-file-contract"></i> Privacy</a>
-   <h5 class="nav-link">Settings</h5>
+   <h5 [hidden]="!isAdmin" class="nav-link">Settings</h5>
    <a [hidden]="!isAdmin" id="settings_link" class="nav-link" (click)="closeNav()" [routerLink]="['/settings/general']"><i class="fas fa-cog"></i> General</a>
    <a [hidden]="!isAdmin" id="settings_link" class="nav-link" (click)="closeNav()" [routerLink]="['/settings/twilio']"><i class="fas fa-cog"></i> Twilio</a>
  </div>
