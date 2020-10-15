@@ -62,6 +62,8 @@ import { InvitationDeletedComponent } from './invitation/invitation-deleted/invi
 import { VideoCallCompleteComponent } from './video/video-call-complete/video-call-complete.component';
 import { VideoProducingComponent } from './video/video-producing/video-producing.component';
 import { PromoCodeComponent } from './promo-code/promo-code.component';
+import { SettingsComponent } from './settings/settings.component';
+import { TwilioSettingsComponent } from './settings/twilio-settings/twilio-settings.component';
 
 
 
@@ -150,6 +152,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     VideoCallCompleteComponent,
     VideoProducingComponent,
     PromoCodeComponent,
+    SettingsComponent,
+    TwilioSettingsComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
