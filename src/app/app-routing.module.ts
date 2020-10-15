@@ -44,6 +44,8 @@ import { VideoProducingComponent } from './video/video-producing/video-producing
 import { VideoProducingGuard } from './video/video-producing/video-producing.guard';
 import { PromoCodeComponent } from './promo-code/promo-code.component'
 import { InvitationFormGuard } from './invitation/invitation-form/invitation-form.guard';
+import { SettingsComponent } from './settings/settings.component';
+import { TwilioSettingsComponent } from './settings/twilio-settings/twilio-settings.component';
 
 
 const routes: Routes = [
@@ -66,6 +68,8 @@ const routes: Routes = [
   { path: 'privacy', component: PrivacyPolicyComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'promo-code', component: PromoCodeComponent, canActivate: [AuthGuard, DisabledGuard] },
   { path: 'search-officials', component: SearchOfficialsComponent, canActivate: [SearchOfficialsGuard] },
+  { path: 'settings/general', component: SettingsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
+  { path: 'settings/twilio', component: TwilioSettingsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'sms', component: SmsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: {team: TeamResolver, user: UserResolver} },

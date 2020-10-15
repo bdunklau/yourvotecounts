@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Settings } from './settings.model';
+import { TwilioSettings } from './twilio-settings/twilio-settings.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,13 @@ export class SettingsService {
     getSettings() {
       var retThis = this.afs.collection('config').doc('settings').valueChanges();
       return retThis;
+    }
+
+
+    async getTwilioSettingsDoc() {
+      var twilioSettingsDoc = await this.afs.collection('config').doc('twilio').ref.get();
+      var twilioSettings = twilioSettingsDoc.data() as TwilioSettings;
+      return twilioSettings;
     }
 
 
@@ -41,7 +49,11 @@ export class SettingsService {
 
 
     updateSettings(settings: Settings) {
-      return this.afs.collection('config').doc('settings').ref.update(settings);
+        return this.afs.collection('config').doc('settings').ref.update(settings);
+    }
+
+    updateTwilioSettings(settings: TwilioSettings) {
+        return this.afs.collection('config').doc('twilio').ref.update(settings);
     }
 }
 
