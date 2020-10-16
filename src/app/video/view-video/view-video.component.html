@@ -71,7 +71,7 @@
     </div>
 
 
-    <div class="row" style="margin-top:10px" *ngIf="isHost || isGuest">
+    <div class="row" style="margin-top:10px" *ngIf="isHost">
         <div class="col">
             <button id="mybtn1" class="btn btn-primary col-12" (click)="openOfficialDialog()"> <i class="fas fa-user-plus"></i> Add Elected Official  </button>
         </div>
@@ -81,7 +81,7 @@
     <div class="row" style="margin-top:10px" *ngFor="let official of room.officials">
         <div class="col">
             <hr/>
-            <app-view-official [canDelete]="isHost || isGuest" [official]="official"></app-view-official>
+            <app-view-official [canDelete]="isHost" [official]="official"></app-view-official>
         </div>
     </div>
     </span>
