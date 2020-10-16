@@ -1,10 +1,9 @@
-import { Component, ViewChild, OnInit, OnDestroy, HostListener, ElementRef, AfterViewInit, Renderer2 } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterViewInit, ElementRef, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Invitation } from '../../invitation/invitation.model';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { InvitationService } from '../../invitation/invitation.service';
 import { UserService } from '../../user/user.service';
-import { FirebaseUserModel } from '../../user/user.model';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';  // ref:   https://angular.io/guide/http
 // should go in a service ??
 import { connect,
@@ -26,6 +25,7 @@ import * as _ from 'lodash';
 import { SettingsService } from '../../settings/settings.service';
 import { Settings } from '../../settings/settings.model';
 import * as moment from 'moment';
+import { isPlatformBrowser } from '@angular/common';
 
 
 @Component({
@@ -42,6 +42,14 @@ export class VideoCallComponent implements OnInit {
   //okUrl = true;
   @ViewChild('preview', {static: false}) previewElement: ElementRef;
   @ViewChild('list', {static: false}) listRef: ElementRef;
+  @ViewChild('videoCells', {static: false}) videoCellsRef: ElementRef; // instead of #list
+  
+  // @ViewChild('guest1', {static: false}) guest1Ref: ElementRef;  
+  // @ViewChild('guest2', {static: false}) guest2Ref: ElementRef;  
+  // @ViewChild('guest3', {static: false}) guest3Ref: ElementRef;
+
+  // private guestRefs: ElementRef[]
+
   isInitializing: boolean = true;
   videoTrack: LocalVideoTrack;
   audioTrack: LocalAudioTrack;
@@ -50,7 +58,6 @@ export class VideoCallComponent implements OnInit {
   //user: FirebaseUserModel;
   isHost: boolean = false;
   phoneNumber: string; // could be either the guest's number or the host's
-  joinOnLoad: boolean;
   participants: Map<Participant.SID, RemoteParticipant>;
   joined = false // whether the user has connected to the room or not
   private roomSubscription: Subscription;
@@ -66,6 +73,9 @@ export class VideoCallComponent implements OnInit {
   callEnded: boolean = false
   canDelete: boolean = true
   // me: FirebaseUserModel
+  //trackMap: Map<RemoteTrack, ElementRef> = new Map<RemoteTrack, ElementRef>()
+  showTestPattern = true
+  dimension: {type:string, value:string} = {type:'width', value:'48vw'}
 
 
   constructor(private route: ActivatedRoute,
@@ -75,26 +85,69 @@ export class VideoCallComponent implements OnInit {
               private http: HttpClient,
               private userService: UserService,
               private roomService: RoomService,
+              @Inject(PLATFORM_ID) private platformId,
               private settingsService: SettingsService) { }
 
 
   async ngOnInit() {
-      // got all this stuff from video-call-complete.guard.ts
-      //this.me = await this.userService.getCurrentUser() // this is NOT how we tell if I am the guest
-      this.joinOnLoad = this.route.params['join']
-      this.invitations = this.invitationService.invitations  // see  ValidInvitationGuard
-      //console.log('this.invitations = ', this.invitations)
-      this.settingsDoc = await this.settingsService.getSettingsDoc()
-      this.routeSubscription = this.route.params.subscribe(async params => {
-          this.phoneNumber = params['phoneNumber'];
-          console.log('VideoCallComponent:  this.phoneNumber = ', this.phoneNumber)
-          this.isHost = this.invitations[0].creatorPhone == this.phoneNumber
-      })
+    
+      if(isPlatformBrowser(this.platformId)) {
+        
+          // got all this stuff from video-call-complete.guard.ts
+          //this.me = await this.userService.getCurrentUser() // this is NOT how we tell if I am the guest
+          this.invitations = this.invitationService.invitations  // see  ValidInvitationGuard
+          console.log('VideoCallComponent:  this.invitations = ', this.invitations)
+          this.settingsDoc = await this.settingsService.getSettingsDoc()
+          console.log('this.settingsService.getSettingsDoc()... GOT IT -> ', this.settingsDoc)
+          this.routeSubscription = this.route.params.subscribe(async params => {
+              this.phoneNumber = params['phoneNumber'];
+              console.log('VideoCallComponent:  this.phoneNumber = ', this.phoneNumber)
+              this.isHost = this.invitations[0].creatorPhone == this.phoneNumber
+          })
 
-      _.each(this.invitations, invitation => {
-          this.monitorInvitation(invitation)
-      })
+          // this.setVideoWidthHeight(this.invitations.length)
+          
+          // optional: override default width/height of the video cells 
+          let dim = this.route.snapshot.params.dimension
+          if(dim && dim.indexOf('vw') != -1) {
+              this.dimension.type = 'width'
+              this.dimension.value = dim
+          }
+          else if(dim && dim.indexOf('vh') != -1) {
+              this.dimension.type = 'height'
+              this.dimension.value = dim
+          }
+          console.log('ngOnInit():  dimension = ', this.dimension)
+
+
+          _.each(this.invitations, invitation => {
+              this.monitorInvitation(invitation)
+          })
+          
+      }
   }
+
+  ngAfterViewInit() {
+    
+  }
+
+
+  setVideoWidthHeight(numberOfInvitations: number) {
+      let numberOfParticipants =  numberOfInvitations + 1
+      if(numberOfParticipants === 1) this.dimension = {type:'width', value:'99vw'}
+      else if(numberOfParticipants === 2) this.dimension = {type:'width', value:'49vw'}
+      else if(numberOfParticipants === 3) this.dimension = {type:'width', value:'33vw'}
+      else this.dimension = {type:'width', value:'25vw'}
+  }
+
+
+  // ngAfterViewInit() {      
+  //     if(isPlatformBrowser(this.platformId)) {
+
+  //         this.guestRefs = [this.guest3Ref, this.guest2Ref, this.guest1Ref] // reverse order so we can call .pop() below
+  //         console.log('ngAfterViewInit():   this.guestRefs = ', this.guestRefs)
+  //     }
+  // }
 
 
   ngOnDestroy() {
@@ -114,7 +167,7 @@ export class VideoCallComponent implements OnInit {
     this.connecting = true;
     await this.initializeDevice();
 
-    let roomName = this.invitations[0].id; // id is shared among all guests
+    let roomName = this.invitations[0].invitationId; // id is shared among all guests
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -213,7 +266,7 @@ export class VideoCallComponent implements OnInit {
   monitorInvitation(invitation: Invitation) {
       let xxxx = this.invitationService.monitorInvitation(invitation.docId)
       this.invitationWatcher = xxxx.subscribe( res => {
-          console.log('res: ', res)
+          console.log('monitorInvitation():  res: ', res)
           let inv = res.payload.data() as Invitation
           if(inv.deleted_ms) {
               // remove the deleted guest
@@ -243,7 +296,7 @@ export class VideoCallComponent implements OnInit {
 
   delete_invitations() {
       // id's can be shared - that's how we know who all is invited to be on a call
-      let sharedInvitationId = this.invitations[0].id
+      let sharedInvitationId = this.invitations[0].invitationId
       this.invitationService.deleteInvitations(sharedInvitationId)
       this.router.navigate(['/invitation-deleted'])
   }
@@ -281,30 +334,10 @@ export class VideoCallComponent implements OnInit {
   }
 
 
-  // async compose() {
-  //   this.compositionInProgress = true
-  //   this.publishButtonText = "Workin' on it!..."
-  //   const httpOptions = {
-  //     headers: new HttpHeaders({
-  //       'Content-Type':  'application/json',
-  //       'Authorization': 'my-auth-token',
-  //       'Access-Control-Allow-Origin': '*'
-  //     }),
-  //     //params: new HttpParams().set('uid', uid)
-  //   };
-
-  //   // do a POST here not a GET
-  //   // and post the whole room document.  No need to query for it in the firebase function
-
-  //   // NOTE: ${this.settingsDoc.website_domain_name} will be the ngrok host if running locally.  See invitation.service.ts:ngrok field
-  //   let composeUrl = `https://${this.settingsDoc.firebase_functions_host}/compose?RoomSid=${this.activeRoom.sid}&firebase_functions_host=${this.settingsDoc.firebase_functions_host}&room_name=${this.activeRoom.name}&website_domain_name=${this.settingsDoc.website_domain_name}&cloud_host=${this.settingsDoc.cloud_host}                         `
-  //   this.http.get(composeUrl, httpOptions)
-  //     .subscribe(async (data: any) => {
-  //       console.log('data = ', data) 
-              
-  //   });
-
-  // }
+  //////////////////////////////////////////////
+  // moved to video-call-complete.component.ts
+  //
+  // async compose() { ... }
 
 
   private async initializeDevice(kind?: MediaDeviceKind, deviceId?: string) {
@@ -320,24 +353,38 @@ export class VideoCallComponent implements OnInit {
         this.videoTrack = this.localTracks.find(t => t.kind === 'video') as LocalVideoTrack;
         this.audioTrack = this.localTracks.find(t => t.kind === 'audio') as LocalAudioTrack;
         const videoElement = this.videoTrack.attach();
-        // console.log('videoElement = ', videoElement);
-        // this.d('initializeDevice(): videoElement='+videoElement);
-        // this.renderer.setStyle(videoElement, 'mute', 'true');
-        this.renderer.setStyle(videoElement, 'height', '100%');
-        this.renderer.setStyle(videoElement, 'width', '100%');
-        this.renderer.appendChild(this.previewElement.nativeElement, videoElement);
+        this.renderer.setStyle(videoElement, this.dimension.type, this.dimension.value);
+        // this.renderer.setStyle(videoElement, 'display', 'table-cell');
+        // this.renderer.setStyle(videoElement, 'vertical-align', 'middle');
+        //this.renderer.appendChild(this.previewElement.nativeElement, videoElement);   // <=== OLD WAY
+
+        
+        this.renderer.appendChild(this.videoCellsRef.nativeElement, videoElement);    // <=== NEW WAY
+
+
+        console.log('initializeDevice(): -----------------------------')
+        console.log('initializeDevice(): this.renderer = ', this.renderer)
+        console.log('initializeDevice(): videoElement = ', videoElement)
     } finally {
         this.isInitializing = false;
+        this.showTestPattern = false
     }
   }
-
+s
 
 
 
   finalizePreview() {
     try {
+        this.showTestPattern = true
         if (this.videoTrack) {
             this.videoTrack.detach().forEach(element => {
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, "-webkit-background-size", "contain");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, "-moz-background-size", "contain");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, "-o-background-size", "contain");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, "min-height", "25vh");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, "min-width", "100vw");
+                // this.renderer.setStyle(this.videoCellsRef.nativeElement, 'background', "url('assets/test_pattern.png') no-repeat center contain;");
                 element.remove()
               }
             );
@@ -376,17 +423,44 @@ export class VideoCallComponent implements OnInit {
   ************/
 
 
+
+  /**
+   * 
+   * @param track is either a RemoteAudioTrack or a RemoteVideoTrack
+   */
   private attachRemoteTrack(track: RemoteTrack) {
     if (this.isAttachable(track)) {
-        // this method called twice for a participant
-        // the first time, element is an <audio> element, type unknown
-        // the second time, element is a <video> element, type unknown
+        // this method is called twice for a participant
+        // When track is RemoteAudioTrack, element is an <audio> element
+        // When track is RemoteVideoTrack, element is an <video> element
         const element = track.attach();
-        this.renderer.data.id = track.sid;
-        this.renderer.setStyle(element, 'width', '40vw');
-        //this.renderer.setStyle(element, 'height', '28vh');
-        this.renderer.setStyle(element, 'margin-left', '0%');
-        this.renderer.appendChild(this.listRef.nativeElement, element);
+        this.renderer.data.id = track.sid;       
+        this.renderer.setStyle(element, this.dimension.type, this.dimension.value);
+        // this.renderer.setStyle(element, 'margin', 'auto');
+        /**
+         * this.listRef.nativeElement - the parent <div #list></div> tag
+         * element - either <audio> or <video> tag
+         * 
+         * .appendChild() adds the <audio> or <video> tag as a child node to the parent <div> tag
+         */
+        //this.renderer.appendChild(this.listRef.nativeElement, element);     // <=== OLD WAY
+
+
+        console.log('attachRemoteTrack(): ----------------------------')      
+        console.log('attachRemoteTrack(): typeof track = ', (typeof track))
+        // if(typeof track == RemoteVideoTrack) {
+        //     console.log('attachRemoteTrack(): RemoteVideoTrack')
+            // let div = this.renderer.createElement('div'); 
+            // this.renderer.addClass(div, 'col')
+            this.renderer.appendChild(this.videoCellsRef.nativeElement, element);     // <=== NEW WAY
+            // this.renderer.appendChild(div.nativeElement, element);
+        // }
+        // else {
+        //     console.log('attachRemoteTrack(): RemoteAudioTrack - hidden')
+        //     // just add the <audio> tag as child of videoCellsRef tag
+        //     this.renderer.appendChild(this.videoCellsRef.nativeElement, element);
+        // }
+
     }
   
   }
@@ -422,12 +496,18 @@ export class VideoCallComponent implements OnInit {
     if (this.isDetachable(track)) {
         console.log('detachRemoteTrack:  track = ', track)
         track.detach().forEach(el => {
-            console.log('detachRemoteTrack:  el = ', el)
+            // console.log('detachRemoteTrack():  el = ', el)
+            // console.log('detachRemoteTrack():  el.parentNode = ', el.parentNode)
+            // console.log('detachRemoteTrack():  el.parentNode.parentNode = ', el.parentNode.parentNode)
+
+            // the RemoteAUDIOTrack doesn't have the same parent as the video track, so only remove the parent
+            // when the track is a RemoteVideoTrack.  The parent of the RemoteVideoTrack is the <div class="col"> that contains the remote <video> tag 
+            if(typeof track == RemoteVideoTrack) {
+                el.parentNode.remove()
+            }
             el.remove() // makes the video square literally go away
             //this.renderer.setStyle(el, 'background-color', '#000000');
-        });
-        // GET RID OF THIS
-        // this.videoChatService.canSeeRemoteParticipant({myUid: this.myUid, video_node_key: this.video_node_key, canSeeRemote: false});
+        })
     }
   }
 

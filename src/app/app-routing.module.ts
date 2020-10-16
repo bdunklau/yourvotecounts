@@ -44,6 +44,8 @@ import { VideoProducingComponent } from './video/video-producing/video-producing
 import { VideoProducingGuard } from './video/video-producing/video-producing.guard';
 import { PromoCodeComponent } from './promo-code/promo-code.component'
 import { InvitationFormGuard } from './invitation/invitation-form/invitation-form.guard';
+import { SettingsComponent } from './settings/settings.component';
+import { TwilioSettingsComponent } from './settings/twilio-settings/twilio-settings.component';
 
 
 const routes: Routes = [
@@ -66,6 +68,8 @@ const routes: Routes = [
   { path: 'privacy', component: PrivacyPolicyComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'promo-code', component: PromoCodeComponent, canActivate: [AuthGuard, DisabledGuard] },
   { path: 'search-officials', component: SearchOfficialsComponent, canActivate: [SearchOfficialsGuard] },
+  { path: 'settings/general', component: SettingsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
+  { path: 'settings/twilio', component: TwilioSettingsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'sms', component: SmsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'teams/add', component: TeamEditorComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: { user: UserResolver} },
   { path: 'teams/:teamDocId', component: TeamViewerComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard], resolve: {team: TeamResolver, user: UserResolver} },
@@ -76,11 +80,11 @@ const routes: Routes = [
   { path: 'token', component: TokenComponent },
   // TODO add guard on this route
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, MinimalAccountInfoGuard], data: {role: 'admin'} },
-  { path: 'video-call/:invitationId/:phoneNumber/:join', component: VideoCallComponent, canActivate: [VideoCallGuard] /*, resolve: {invitation: InvitationResolver}*/ },
+  { path: 'video-call/:invitationId/:phoneNumber/:dimension', component: VideoCallComponent, canActivate: [VideoCallGuard] /*, resolve: {invitation: InvitationResolver}*/ },
   { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [VideoCallGuard] /*, resolve: {invitation: InvitationResolver}*/ },
   { path: 'video-call-complete/:RoomSid/:hostOrGuest/:phoneNumber', component: VideoCallCompleteComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] },
   { path: 'video/producing/:RoomSid', component: VideoProducingComponent, canActivate: [DisabledGuard, VideoProducingGuard] },
-  { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [/*DisabledGuard, SettingsGuard,*/ VideoReadyGuard] },
+  { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [/*DisabledGuard, */SettingsGuard, VideoReadyGuard] },
   { path: '**', component: HomeComponent },
 ];
 

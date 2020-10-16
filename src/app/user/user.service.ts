@@ -95,6 +95,9 @@ export class UserService {
     return user;
   }
 
+  ///////////////////////////////////////////////////////////////////////
+  // may not be useful if angular universal makes us get rid of promises in favor of observables
+  // we'll see...   10.1.20
   async getCurrentUser() : Promise<FirebaseUserModel> {
     if(this.user) {
       console.log('getCurrentUser():  get cached user: ', this.user);
@@ -111,12 +114,19 @@ export class UserService {
     }
 
     return new Promise<FirebaseUserModel>(async (resolve, reject) => {
-      var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
-      this.user = user;
-      this.user.populate(userDoc.data());
-      console.log('getCurrentUser(): DATABASE HIT this.user = ', this.user);
-      this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
-      resolve(this.user);
+        var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
+        this.user = user;
+        this.user.populate(userDoc.data());
+        
+        if(this.user.photoFileName) {
+            console.log('this.user.photoFileName:  '+this.user.photoFileName)
+            let photoURL = await this.afStorage.storage.refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName).getDownloadURL()
+            this.user.photoURL = photoURL
+        }
+
+        console.log('getCurrentUser(): DATABASE HIT this.user = ', this.user);
+        this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
+        resolve(this.user);
     });
   }
 

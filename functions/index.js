@@ -44,6 +44,9 @@ exports.uploadScreenshotToStorageComplete = twilio_video.uploadScreenshotToStora
 exports.deleteVideoComplete = twilio_video.deleteVideoComplete
 
 
+const video = require('./video');
+exports.getVideoInfo = video.getVideoInfo;
+
 const privacy_policy = require('./api/privacy-policy');
 exports.getPrivacyPolicy = privacy_policy.getPrivacyPolicy;
 

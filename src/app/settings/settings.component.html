@@ -1,0 +1,142 @@
+<div class="container">
+<H3>General Settings</H3>
+
+<!-- 
+cloud_host: string
+disabled: boolean;
+firebase_functions_host: string
+from_sms: string;
+to_sms: string;
+website_domain_name: string
+promo_codes: string[]
+projectId: string
+storage_keyfile: string 
+
+
+See   invitation-form.component.html
+-->
+
+
+<span *ngIf="settings">
+
+
+<form (ngSubmit)="onSubmit()" #settingsForm="ngForm" novalidate>
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Cloud Host
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="cloud_host_field" [(ngModel)]="settings.cloud_host"  name="cloud_host" #cloud_host="ngModel" required>  
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Test Path
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="cloud_host_test_path_field" [(ngModel)]="settings.cloud_host_test_path"  name="cloud_host_test_path" #cloud_host_test_path="ngModel" required>  
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col" style="margin-top:5px">
+            Test Cloud Host: 
+        </div>
+        <div class="col-8"> <a href="http://{{settings.cloud_host}}{{settings.cloud_host_test_path}}" target="testcloud">http://{{settings.cloud_host}}{{settings.cloud_host_test_path}}</a>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Firebase Functions Host
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="firebase_functions_host_field" [(ngModel)]="settings.firebase_functions_host"  name="firebase_functions_host" #firebase_functions_host="ngModel" required> 
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Disabled
+        </div>
+        <div class="col-8">
+
+            <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
+            <label class="switch" id="disabled_switch">
+                <input id="disabled_checkbox" type="checkbox" class="success" [checked]="settings.disabled" (click)="checked($event)">
+                <span class="slider round"></span>
+            </label>
+
+        </div>
+    </div>
+
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            From SMS
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="from_sms_field" [(ngModel)]="settings.from_sms"  name="from_sms" #from_sms="ngModel" required>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Website Domain Name
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="website_domain_name_field" [(ngModel)]="settings.website_domain_name"  name="website_domain_name" #website_domain_name="ngModel" required>
+        </div>
+    </div>
+    
+    <!-- 
+
+ -->
+
+<!--     
+promo_codes: string[]
+ -->
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Project ID
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="projectId_field" [(ngModel)]="settings.projectId"  name="projectId" #projectId="ngModel" required>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Storage Key File
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="storage_keyfile_field" [(ngModel)]="settings.storage_keyfile"  name="storage_keyfile" #storage_keyfile="ngModel" required>
+        </div>
+    </div>
+
+<!-- 
+ -->
+
+    
+    <div class="row" style="margin-top:20px">
+        <div class="col">
+            <button id="doit" [disabled]="!settingsForm.valid" (click)="doit()" class="btn btn-primary col-sm-12">  Submit </button>
+        </div>
+    </div>
+
+</form>
+
+
+</span>   
+<!-- make sure settings object exists  -->
+
+
+</div>

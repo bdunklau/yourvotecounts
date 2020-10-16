@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/of';
 import { FirebaseUserModel } from '../user/user.model';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, PLATFORM_ID } from '@angular/core';
 import { CommonServiceModuleStub } from './common.module';
 
 // from:   https://atom-morgan.github.io/how-to-test-angular-canactivate-guards/
@@ -70,7 +70,7 @@ describe('AuthGuard', () => {
     it('should allow route to be accessed for a logged in user', async () => {
       spyOn(userService, 'getCurrentUser').and.returnValue({displayName: "Bob Meader", phoneNumber: "469-555-0000"});
       router = new MockRouter();
-      authGuard = new AuthGuard(userService, router);
+      authGuard = new AuthGuard(userService, 'browser', router);
       spyOn(router, 'navigate');
       let canAct = await authGuard.canActivate()
       expect(canAct).toBeTruthy();
@@ -82,7 +82,7 @@ describe('AuthGuard', () => {
     it('should return false for a logged out user', async () => {
       router = new MockRouter();
       spyOn(userService, 'getCurrentUser').and.returnValue(null);
-      authGuard = new AuthGuard(userService, router);
+      authGuard = new AuthGuard(userService, 'browser', router);
       spyOn(router, 'navigate');
       let res = await authGuard.canActivate();
       expect(res).toBeFalsy();

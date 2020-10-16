@@ -3,27 +3,20 @@
   I DON'T WANT THE VIDEO CELLS IN A CONTAINER - I WANT THEM TO SPAN THE FULL WIDTH OF THE SCREEN
 -->
 
-<!-- WE EITHER SHOW THIS ROW OR THE NEXT -->
-
 <div class="row">
-
-  <!-- local participant -->
-  <div class="col" style="background-color:#000000;">
-      <div id="preview" #preview style="width:40vw;">
-          <!-- gives us the black bar across the screen when no video present -->
-          <div *ngIf="isInitializing || callEnded" style="height:28vh"><!-- We COULD display something like this: Loading preview... Please wait.   But we really don't need to.  We are only showing the local camera once we are connected to a room --></div>
-      </div>
-  </div>
-  <!-- local participant -->
-
-  <!-- remote participant -->
-  <div class="col" style="background-color:#000000">
-      <div #list></div>
-  </div>
-  <!-- remote participant -->
+    <div class="col" #videoCells
+        style="background-color:#000000;
+              min-height:20vh;
+              min-width:100vw;
+              ">
+        <img *ngIf="showTestPattern" src="/assets/test_pattern.png" style="height: 20vh;  width: auto; display: block;
+        margin-left: auto;
+        margin-right: auto;">
+    </div>
 </div>
-
-
+<!-- ADD THIS TO col DIV ABOVE IF GOING WITH THE 1x4 LAYOUT.  THIS WILL VERTICALLY CENTER THE VIDEO CELLS IN THE BLACK BOX
+        display: flex;align-items: center;
+-->
 
 
 
@@ -75,10 +68,10 @@
 
           <div class="row" style="margin-top:20px;margin-bottom:50px" *ngIf="!joined && !compositionInProgress && !callEnded">
             <div class="col" *ngIf="isHost">
-              You invited {{invitations[0].displayName}} to participate in a SeeSaw video call.  Click "Join" to join the call.
+              You invited {{invitations[0].displayName}} to participate in a HeadsUp video call.  Click "Join" to join the call.
             </div>
             <div class="col" *ngIf="!isHost">
-              {{invitations[0].creatorName}} invited you to participate in a SeeSaw video call.  Click "Join" to join the call.
+              {{invitations[0].creatorName}} invited you to participate in a HeadsUp video call.  Click "Join" to join the call.
             </div>
           </div>
       </div>

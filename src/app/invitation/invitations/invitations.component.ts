@@ -10,6 +10,7 @@ export class InvitationsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+      // 
   }
 
 }

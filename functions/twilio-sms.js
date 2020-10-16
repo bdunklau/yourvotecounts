@@ -14,7 +14,7 @@ var db = admin.firestore();
 
 var getKeys = function() {
   return new Promise((resolve, reject) => {
-    return db.collection('config').doc('keys').get().then(doc => {
+    return db.collection('config').doc('twilio').get().then(doc => {
       var keys = doc.data();
       resolve(keys);
       return;
@@ -108,7 +108,7 @@ var validateKeys = function(auth_key) {
       resolve('no key');
     }
 
-    return db.collection('config').doc('keys').get().then(doc => {
+    return db.collection('config').doc('twilio').get().then(doc => {
       var keys = doc.data();
       keys.valid = doc.data().twilio_auth_key === auth_key;
       resolve(keys);
