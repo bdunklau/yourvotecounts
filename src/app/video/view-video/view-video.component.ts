@@ -142,12 +142,6 @@ export class ViewVideoComponent implements OnInit {
         if(!user) return false
         if(user.phoneNumber == this.room.hostPhone)
             return true
-        if(!this.room.guests || this.room.guests.length < 1)
-            return false
-        let foundMe = _.find(this.room.guests, guest => {
-            return guest.guestPhone == user.phoneNumber
-        }) 
-        if(foundMe) return true
         else return false
     }
 

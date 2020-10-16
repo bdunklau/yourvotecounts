@@ -1,6 +1,6 @@
 
-    <div class="row" style="margin-bottom:20px">
-        <div class="col" *ngIf="videoUrl" style="background-color:#000000">
+    <div class="row" style="margin-bottom:20px;margin-left:0px;margin-right:0px;padding:0 0 0 0">
+        <div class="col" *ngIf="videoUrl" style="background-color:#000000;margin-left:0px;margin-right:0px;padding:0 0 0 0">
             <video style="width:100vw;" controls playsinline preload="metadata">
                 <source src="{{videoUrl}}" type="{{videoType}}">
                 Your browser does not support the video tag.
@@ -71,7 +71,7 @@
     </div>
 
 
-    <div class="row" style="margin-top:10px" *ngIf="isHost || isGuest">
+    <div class="row" style="margin-top:10px" *ngIf="isHost">
         <div class="col">
             <button id="mybtn1" class="btn btn-primary col-12" (click)="openOfficialDialog()"> <i class="fas fa-user-plus"></i> Add Elected Official  </button>
         </div>
@@ -81,7 +81,7 @@
     <div class="row" style="margin-top:10px" *ngFor="let official of room.officials">
         <div class="col">
             <hr/>
-            <app-view-official [canDelete]="isHost || isGuest" [official]="official"></app-view-official>
+            <app-view-official [canDelete]="isHost" [official]="official"></app-view-official>
         </div>
     </div>
     </span>

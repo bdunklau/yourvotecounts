@@ -33,6 +33,25 @@ See   invitation-form.component.html
 
     <div class="row" style="margin-top:10px">
         <div class="col-4" style="margin-top:5px">
+            Test Path
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="cloud_host_test_path_field" [(ngModel)]="settings.cloud_host_test_path"  name="cloud_host_test_path" #cloud_host_test_path="ngModel" required>  
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col" style="margin-top:5px">
+            Test Cloud Host: 
+        </div>
+        <div class="col-8"> <a href="http://{{settings.cloud_host}}{{settings.cloud_host_test_path}}" target="testcloud">http://{{settings.cloud_host}}{{settings.cloud_host_test_path}}</a>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
             Firebase Functions Host
         </div>
         <div class="col-8">
