@@ -8,7 +8,7 @@ const twilio = require('twilio');
 var db = admin.firestore();
 
 
-// firebase deploy --only functions:sendSms
+// firebase deploy --only functions:sendSms,functions:notifyHeapWarning
 
 
 
@@ -89,6 +89,46 @@ exports.sendSms = functions.firestore.document('sms/{id}').onCreate(async (snap,
       "uri": "/2010-04-01/Accounts/ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/Messages/SMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.json"
     }
     ******************/
+
+})
+
+
+/**
+ * Called from yourvotecounts-vm:index.js:notifyHeapWarning()
+ * 
+ * The purpose of this function is to trigger an SMS message to me letting me know that the
+ * heap used by the node server has exceeded config/settings/heapThreshold
+ */
+exports.notifyHeapWarning = functions.https.onRequest(async (req, res) => {
+
+    /**
+     * passed in from index.js: notifyHeapWarning()
+     * 
+    
+        let formData = {
+          heapUsed: req.body.heapUsed,
+          heapThreshold: req.body.heapThreshold,
+          website_domain_name: req.body.website_domain_name
+        }
+     */
+    let twilioDoc = await db.collection('config').doc('twilio').get()
+    let twilioKeys = twilioDoc.data()
+
+    let settingsDoc = await db.collection('config').doc('settings').get()
+    let settings = settingsDoc.data()
+
+    var details = {};
+    details.to = addCountryCode(settings['admin_sms'])
+    details.from = addCountryCode(settings['from_sms'])
+    details.body = `VM heap use: ${req.body.heapUsed} GB has exceeded the threshold of ${req.body.heapThreshold} GB`
+
+    // require the Twilio module and create a REST client
+    const client = twilio(twilioKeys['twilio_account_sid'], twilioKeys['twilio_auth_key'])
+    return client.messages
+      .create(details)
+      .then((message) => {
+          return res.status(200).send(JSON.stringify({result: 'ok'}))
+      });
 
 })
 
