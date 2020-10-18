@@ -31,6 +31,7 @@ exports.setUser = user.setUser
 
 const twilio_sms = require('./twilio-sms');
 exports.sendSms = twilio_sms.sendSms;
+exports.notifyHeapWarning = twilio_sms.notifyHeapWarning
 
 const twilio_video = require('./twilio-video');
 exports.generateTwilioToken = twilio_video.generateTwilioToken;
