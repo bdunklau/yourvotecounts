@@ -23,6 +23,16 @@ See   invitation-form.component.html
 <form (ngSubmit)="onSubmit()" #settingsForm="ngForm" novalidate>
     <div class="row" style="margin-top:10px">
         <div class="col-4" style="margin-top:5px">
+            Admin SMS
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="admin_sms_field" [(ngModel)]="settings.admin_sms"  name="admin_sms" #admin_sms="ngModel" required>  
+        </div>
+    </div>
+
+    
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
             Cloud Host
         </div>
         <div class="col-8">
@@ -72,6 +82,16 @@ See   invitation-form.component.html
                 <span class="slider round"></span>
             </label>
 
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Heap Threshold
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="heapThreshold_field" [(ngModel)]="settings.heapThreshold"  name="heapThreshold" #heapThreshold="ngModel" required> 
         </div>
     </div>
 
