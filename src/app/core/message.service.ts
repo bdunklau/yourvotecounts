@@ -11,6 +11,7 @@ export class MessageService {
 
   // private myMessage = new Subject<string>();
   private userListener = new Subject<FirebaseUserModel>();
+  private recordingStatusListener = new Subject<string>();
   // private team_members = new Subject<TeamMember[]>();
   // private updated_member = new Subject<TeamMember>();
   // private removed_member = new Subject<TeamMember>();
@@ -71,12 +72,23 @@ export class MessageService {
   //   this.team_members.next(team_members);
   // }
 
-  updateUser(user: FirebaseUserModel) {
-    this.userListener.next(user);
+
+  // see  recording-indicator.component.ts
+  listenForRecordingStatus() {
+      return this.recordingStatusListener
+  }
+
+  // see  video-call.component.ts
+  updateRecordingStatus(status: string) {
+      this.recordingStatusListener.next(status)
   }
 
   listenForUser() {
     return this.userListener;
+  }
+
+  updateUser(user: FirebaseUserModel) {
+    this.userListener.next(user);
   }
 
 }

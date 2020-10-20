@@ -64,6 +64,7 @@ import { VideoProducingComponent } from './video/video-producing/video-producing
 import { PromoCodeComponent } from './promo-code/promo-code.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TwilioSettingsComponent } from './settings/twilio-settings/twilio-settings.component';
+import { RecordingIndicatorComponent } from './video/recording-indicator/recording-indicator.component';
 
 
 
@@ -154,6 +155,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     PromoCodeComponent,
     SettingsComponent,
     TwilioSettingsComponent,
+    RecordingIndicatorComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

@@ -26,6 +26,7 @@ import { SettingsService } from '../../settings/settings.service';
 import { Settings } from '../../settings/settings.model';
 import * as moment from 'moment';
 import { isPlatformBrowser } from '@angular/common';
+import { MessageService } from 'src/app/core/message.service';
 
 
 @Component({
@@ -86,6 +87,7 @@ export class VideoCallComponent implements OnInit {
               private userService: UserService,
               private roomService: RoomService,
               @Inject(PLATFORM_ID) private platformId,
+              private messageService: MessageService,
               private settingsService: SettingsService) { }
 
 
@@ -251,6 +253,7 @@ export class VideoCallComponent implements OnInit {
         
         this.disconnect_all_when_host_leaves(this.roomObj)
         this.recording_state = this.roomObj['recording_state']
+        this.messageService.updateRecordingStatus(this.recording_state)
         //this.callEnded = this.roomObj['call_ended_ms'] ? true : false
 
       }
@@ -615,6 +618,7 @@ s
 
   start_recording() {
     this.roomObj['recording_state'] = "recording"
+    this.messageService.updateRecordingStatus("recording")
     this.roomObj['mark_time'] = []
     let now = new Date().getTime()
     let diff = this.getTimeDiff({first: this.roomObj.host_joined_ms, second: now })
@@ -624,6 +628,7 @@ s
 
   stop_recording() {
     this.roomObj['recording_state'] = ""
+    this.messageService.updateRecordingStatus("stopped")
     if(!this.roomObj['mark_time']) {// leave_call() calls stop_recording().  There could be a non-existent or empty 'mark_time' object
         console.log("there is no mark_time element")
         return
@@ -643,6 +648,7 @@ s
 
   pause_recording() {
     this.roomObj['recording_state'] = "paused"
+    this.messageService.updateRecordingStatus("paused")
     let lastIdx = this.roomObj['mark_time'].length - 1
     let lastTimePair = this.roomObj['mark_time'][lastIdx]
     if(!lastTimePair["duration"]) {
@@ -654,6 +660,7 @@ s
 
   resume_recording() {
     this.roomObj['recording_state'] = "recording"
+    this.messageService.updateRecordingStatus("recording")
     let now = new Date().getTime()
     let diff = this.getTimeDiff({first: this.roomObj.host_joined_ms, second: now})
     this.roomObj['mark_time'].push({"start_recording_ms": now, "start_recording": diff})
