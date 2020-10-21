@@ -23,6 +23,16 @@ See   invitation-form.component.html
 <form (ngSubmit)="onSubmit()" #settingsForm="ngForm" novalidate>
     <div class="row" style="margin-top:10px">
         <div class="col-4" style="margin-top:5px">
+            Max Call Time (secs)
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="max_call_time_field" [(ngModel)]="settings.max_call_time"  name="max_call_time" #max_call_time="ngModel" required>  
+        </div>
+    </div>
+
+    
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
             Admin SMS
         </div>
         <div class="col-8">

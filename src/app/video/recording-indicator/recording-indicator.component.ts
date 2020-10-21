@@ -38,7 +38,7 @@ export class RecordingIndicatorComponent implements OnInit {
           },
           complete: function() {
           }
-      })
+        })
     }
 
 }

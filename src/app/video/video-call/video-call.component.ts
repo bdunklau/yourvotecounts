@@ -27,6 +27,8 @@ import { Settings } from '../../settings/settings.model';
 import * as moment from 'moment';
 import { isPlatformBrowser } from '@angular/common';
 import { MessageService } from 'src/app/core/message.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbdModalConfirmComponent } from '../../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 
 
 @Component({
@@ -77,6 +79,7 @@ export class VideoCallComponent implements OnInit {
   //trackMap: Map<RemoteTrack, ElementRef> = new Map<RemoteTrack, ElementRef>()
   showTestPattern = true
   dimension: {type:string, value:string} = {type:'width', value:'48vw'}
+  timeOnCall = 0
 
 
   constructor(private route: ActivatedRoute,
@@ -88,6 +91,7 @@ export class VideoCallComponent implements OnInit {
               private roomService: RoomService,
               @Inject(PLATFORM_ID) private platformId,
               private messageService: MessageService,
+              private _modalService: NgbModal,
               private settingsService: SettingsService) { }
 
 
@@ -101,11 +105,14 @@ export class VideoCallComponent implements OnInit {
           console.log('VideoCallComponent:  this.invitations = ', this.invitations)
           this.settingsDoc = await this.settingsService.getSettingsDoc()
           console.log('this.settingsService.getSettingsDoc()... GOT IT -> ', this.settingsDoc)
-          this.routeSubscription = this.route.params.subscribe(async params => {
-              this.phoneNumber = params['phoneNumber'];
-              console.log('VideoCallComponent:  this.phoneNumber = ', this.phoneNumber)
-              this.isHost = this.invitations[0].creatorPhone == this.phoneNumber
-          })
+          this.phoneNumber = this.route.snapshot.params.phoneNumber
+          this.isHost = this.invitations[0].creatorPhone == this.phoneNumber
+
+          // this.routeSubscription = this.route.params.subscribe(async params => {
+          //     this.phoneNumber = params['phoneNumber'];
+          //     console.log('VideoCallComponent:  this.phoneNumber = ', this.phoneNumber)
+          //     this.isHost = this.invitations[0].creatorPhone == this.phoneNumber
+          // })
 
           // this.setVideoWidthHeight(this.invitations.length)
           
@@ -121,6 +128,7 @@ export class VideoCallComponent implements OnInit {
           }
           console.log('ngOnInit():  dimension = ', this.dimension)
 
+          // this.listenForTimerEvents()
 
           _.each(this.invitations, invitation => {
               this.monitorInvitation(invitation)
@@ -132,6 +140,31 @@ export class VideoCallComponent implements OnInit {
   ngAfterViewInit() {
     
   }
+
+
+  /**
+   * timer.component.ts - TODO but logic in timer.component.ts should probably be in a service
+   * Notifications shouldn't have to come from a GUI component 
+   */
+  // handleTimerEvent(event: string) {
+  //     if(event === 'warning time reached') {
+  //         // display modal - probably to host only - warning of time
+  //     }
+  //     else if(event === "max time reached") {
+  //         // forcibly end the call
+  //     }
+  // }
+
+
+  // private listenForTimerEvents() {
+  //     this.messageService.listenForTimerEvents().subscribe({
+  //       next: this.handleTimerEvent,
+  //       error: function(value) {
+  //       },
+  //       complete: function() {
+  //       }
+  //     })
+  // }
 
 
   setVideoWidthHeight(numberOfInvitations: number) {
@@ -181,27 +214,80 @@ export class VideoCallComponent implements OnInit {
     };
 
     this.http.get(`https://${this.settingsDoc.firebase_functions_host}/generateTwilioToken?room_name=${roomName}&name=${this.phoneNumber}`, httpOptions)
-      .subscribe(async (data: any) => {
-        
-        this.activeRoom = await connect(
-                data.token, {
-                  logLevel: 'debug',
-                  name: roomName,
-                  preferredAudioCodecs: ['isac'],
-                  preferredVideoCodecs: ['H264'],
-                  tracks: this.localTracks,
-                  // dominantSpeaker: true,
-                  // automaticSubscription: true
-              } as ConnectOptions);
-        console.log('this.activeRoom = ', this.activeRoom);
-        this.joined = true
-        await this.roomService.saveOnJoin(this.activeRoom, this.invitations, this.phoneNumber)
-        this.monitorRoom(this.activeRoom.sid)
-        this.initialize(this.activeRoom.participants)  
-        this.registerRoomEvents()
-        this.connecting = false // the process of connecting is done so connecting=false.  We are now connected
-      });
+        .subscribe(async (data: any) => {
+          
+            this.activeRoom = await connect(
+                    data.token, {
+                      logLevel: 'debug',
+                      name: roomName,
+                      preferredAudioCodecs: ['isac'],
+                      preferredVideoCodecs: ['H264'],
+                      tracks: this.localTracks,
+                      // dominantSpeaker: true,
+                      // automaticSubscription: true
+                  } as ConnectOptions);
+            console.log('this.activeRoom = ', this.activeRoom);
+            this.joined = true
+            await this.roomService.saveOnJoin(this.activeRoom, this.invitations, this.phoneNumber)
+            this.monitorRoom(this.activeRoom.sid)
+            this.initialize(this.activeRoom.participants)  
+            this.registerRoomEvents()
+            this.connecting = false // the process of connecting is done so connecting=false.  We are now connected
+            if(this.isHost) {
+                this.startClock() // to keep time, and notify other listeners
+            }
+        });
 
+  }
+
+
+  private startClock() {
+      let maxMinutes = this.settingsDoc.max_call_time / 60
+      let warnAt = maxMinutes - 1
+      var maxTimeWatcher = function() {
+          ++this.timeOnCall
+          // give a single warning at 1 minute before
+          if(this.timeOnCall == warnAt) {
+              this.warningTimeReached()
+          }
+          else if(this.timeOnCall == maxMinutes) {
+              // forcibly end the call
+              this.leave_call()
+          }
+      }.bind(this)
+      
+      setInterval(() => maxTimeWatcher(), 60000)
+  }
+
+
+  warningTimeReached() {      
+      var modalRef = this.showOkDialog(() => {/*noop*/});
+      modalRef.componentInstance.title = `One Minute Remaining`;
+      modalRef.componentInstance.question = 'There is only one minute remaining on your call.  This call will automatically end in one minute.';
+      modalRef.componentInstance.thing = '';
+      modalRef.componentInstance.warning_you = '';
+      modalRef.componentInstance.really_warning_you = '';
+  }
+
+  
+
+  showOkDialog(callback) {
+    const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
+    modalRef.result.then(async (result) => {
+      // the ok/delete case
+      // this.closeResult = `Closed with: ${result}`;
+
+      // so that we get updated memberCount and leaderCount
+      // this.team = await this.teamService.deleteTeamMember(team_member);
+      callback();
+    }, (reason) => {
+      // the cancel/dismiss case
+      // this.closeResult = `Dismissed ${reason}`;
+    });
+    
+    modalRef.componentInstance.showCancelButton = false // hides the Cancel button
+    modalRef.componentInstance.danger = false // makes the OK button gray instead of red
+    return modalRef;
   }
 
 
