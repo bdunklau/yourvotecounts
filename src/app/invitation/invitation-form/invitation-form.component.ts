@@ -59,22 +59,24 @@ export class InvitationFormComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     
-    if (isPlatformServer(this.platformId)) {
-        this.host = this.request.headers['x-forwarded-host'] // this is just the name of the server/host
-        console.log('InvitationFormComponent: x-forwarded-host:  ', this.request.headers['x-forwarded-host'])
-    }
+    // if (isPlatformServer(this.platformId)) {
+    //     this.host = this.request.headers['x-forwarded-host'] // this is just the name of the server/host
+    //     console.log('InvitationFormComponent: x-forwarded-host:  ', this.request.headers['x-forwarded-host'])
+    // }
+
 
     // we don't want this - we want config/settings/website_domain_name
     if (isPlatformBrowser(this.platformId)) {
         this.host = window.location.host //this.settingsService.settings.website_domain_name
         console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
+
+        this.names = []
+        this.addSomeone()
+    
+        this.user = await this.userService.getCurrentUser();
     }
 
 
-    this.names = []
-    this.addSomeone()
-
-    this.user = await this.userService.getCurrentUser();
   }
 
   //  https://medium.com/aubergine-solutions/add-push-and-remove-form-fields-dynamically-to-formarray-with-reactive-forms-in-angular-acf61b4a2afe
@@ -91,7 +93,7 @@ export class InvitationFormComponent implements OnInit {
       this.names.push({displayName: '', phoneNumber: ''});
       let group = this.fb.group({
             displayName: new FormControl('', [Validators.required]),
-            phoneNumber: new FormControl('', { validators: [Validators.required, this.ValidatePhone] /* DOES work   , updateOn: "blur" */ })
+            phoneNumber: new FormControl('', { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ })
           } 
           //, { updateOn: 'blur' }  // another option
       )
@@ -154,11 +156,20 @@ export class InvitationFormComponent implements OnInit {
   }
   
   ValidatePhone(control: AbstractControl): {[key: string]: any} | null  {
-    console.log("validating phone")
-    if (control.value && (control.value.length != 10 || isNaN(control.value)) ) {
-      return { 'phoneNumberInvalid': true };
-    }
-    return null;
+      console.log('ValidatePhone(): control.value = ', control.value)
+      console.log('ValidatePhone(): this = ', this)
+      if(!control || !control.value) return null
+      let myString = this.justNumbers(control.value)      
+      if (myString && (myString.length != 10) ) {
+        return { 'phoneNumberInvalid': true };
+      }
+      return null;
+  }
+
+  justNumbers(value: string) {
+      console.log('justNumbers(): value = ', value)
+      let replaced = value.replace(/\D/g,''); //  \D = all non-digits 
+      return replaced
   }
 
 
@@ -193,7 +204,7 @@ export class InvitationFormComponent implements OnInit {
           //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+invitation.invitationId+"/"+this.names[i].phoneNumber};
           //this.themessage = this.getInvitationMessage(this.user.displayName, url);
           
-          invitation.phoneNumber = "+1"+this.names[i].phoneNumber
+          invitation.phoneNumber = "+1" + this.justNumbers(this.names[i].phoneNumber)
           // TODO FIXME figure out host name
           let url = `https://${this.host}/video-call/${invitation.invitationId}/${invitation.phoneNumber}`
           let msg = `${invitation.creatorName} is inviting you to participate in a video call on HeadsUp.  Click the link below to see this invitation. \n\nDo not reply to this text message.  This number is not being monitored. \n\n${url}`
@@ -235,6 +246,21 @@ export class InvitationFormComponent implements OnInit {
       // revoke the invitation.
       //
       this.router.navigate(['/video-call', commonInvitationId, this.user.phoneNumber])
+  }
+  
+  validatePhoneNo(field) {
+      var phoneNumDigits = field.value.replace(/\D/g, '');
+    
+      // this.isValidFlg = (phoneNumDigits.length==0 || phoneNumDigits.length == 10);
+    
+      var formattedNumber = phoneNumDigits;
+      if (phoneNumDigits.length >= 6)
+        formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3, 6) + '-' + phoneNumDigits.substring(6);
+      else if (phoneNumDigits.length >= 3)
+        formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3);
+    
+      field.value = formattedNumber;
+      console.log('validatePhoneNo(): field.value = ', field.value)
   }
 
   cancel(/*form: NgForm*/) {
