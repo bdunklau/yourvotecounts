@@ -3,6 +3,8 @@ import { Subject, Observable } from 'rxjs';
 import { FirebaseUserModel } from '../user/user.model';
 import { TeamMember } from '../team/team-member.model';
 import { Team } from '../team/team.model';
+import { Invitation } from '../invitation/invitation.model'
+
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,7 @@ export class MessageService {
   // private removed_member = new Subject<TeamMember>();
   // private team_member = new Subject<TeamMember>();
   private team = new Subject<Team>();
+  private invitationListener = new Subject<Invitation[]>();
 
   constructor() { }
 
@@ -125,6 +128,18 @@ export class MessageService {
    */
   timerEvent(event: string) {
       this.timerEvents.next(event)
+  }
+
+
+  setCurrentInvitations(invitations: Invitation[]) {
+      this.invitationListener.next(invitations)
+  }
+
+  /**
+   * invitation-form.component.ts
+   */
+  listenForInvitations() {
+      return this.invitationListener
   }
 
 }
