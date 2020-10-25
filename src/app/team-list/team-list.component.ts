@@ -19,8 +19,10 @@ import { MessageService } from '../core/message.service';
 })
 export class TeamListComponent implements OnInit {
 
+  // see teams.component.html
   @Input() teamListUser: FirebaseUserModel;
   @Output() selectedTeam = new EventEmitter<Team>();
+
   phoneVal: string;
   // teams: Team[];
   teams: TeamMember[]; // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
