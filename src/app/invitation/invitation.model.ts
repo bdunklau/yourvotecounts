@@ -3,6 +3,7 @@ import { FirebaseUserModel } from '../user/user.model';
 
 
 // ng generate class invitation/invitation --type=model
+
 export class Invitation {
     docId?: string  // the actual doc id.  See InvitationService.getInvitations(invitationId: string) 
     
@@ -20,11 +21,12 @@ export class Invitation {
     creatorName: string;
     creatorPhone: string;
     message: string;
-    deleted_ms?: number
+    deleted_ms: number
     
     constructor() {
       this.created = new Date();
       this.created_ms = new Date().getTime();
+      this.deleted_ms = -1 // start off not deleted
     }
 
   
@@ -38,7 +40,9 @@ export class Invitation {
       creatorId: this.creatorId,
       creatorName: this.creatorName,
       creatorPhone: this.creatorPhone,
-      message: this.message,};
+      message: this.message,
+      deleted_ms: this.deleted_ms
+    };
   }
     
 

@@ -30,7 +30,7 @@ export class InvitationDeletedGuard implements CanActivate {
 
             let deleted = 0;
             _.each(this.invitationService.invitations, (inv:Invitation) => {
-                if(inv.deleted_ms) deleted++
+                if(inv.deleted_ms != -1) deleted++
             })
             if(deleted == this.invitationService.invitations.length) {
                 this.router.navigate(['/invitation-deleted'])
