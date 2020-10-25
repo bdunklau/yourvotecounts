@@ -1,6 +1,12 @@
-<div class="container">
-  <h5>Call Someone</h5>
-  Invite up to {{maxGuests}} people to participate in a video call with you.
+
+    <div class="row" style="margin-top:20px">          
+        <div class="col">
+            <span *ngIf="numberOfInvitationsRemaining == 1">Invite 1 additional person to participate in a video call</span>
+            <span *ngIf="numberOfInvitationsRemaining == maxGuests">Invite up to {{numberOfInvitationsRemaining}} people to participate in a video call</span>
+            <span *ngIf="numberOfInvitationsRemaining < maxGuests && numberOfInvitationsRemaining > 1">Invite up to {{numberOfInvitationsRemaining}} additional people to participate in a video call</span>
+        </div>
+    </div>
+    
         <!-- 
           for masking, see  https://www.npmjs.com/package/ngx-mask
         -->
@@ -14,7 +20,7 @@
             <div class="col">
                 <hr/>
                 <div class="row">
-                    <div class="col"><b>Guest #{{i+1}}</b> &nbsp;&nbsp;&nbsp; <button class="btn btn-default" (click)="removeItem(i)"><i class="fas fa-trash"></i></button></div>
+                    <div class="col"><b>Guest #{{i+1+maxGuests-numberOfInvitationsRemaining}}</b> &nbsp;&nbsp;&nbsp; <button class="btn btn-default" (click)="removeItem(i)"><i class="fas fa-trash"></i></button></div>
                 </div>
                 <div class="row">
                       <div class="col-12 col-sm-6" style="margin-bottom:10px">
@@ -60,11 +66,14 @@
           <div class="col">
             <!-- type="button" keeps the form from being submit, which is what we want in this case -->
             <button [hidden]="!canInvite" type="button" id="add_someone" (click)="addSomeone()" class="btn btn-primary col-sm-12"> 
-                <i class="fas fa-user-plus"></i> Add Someone Else
+                <i class="fas fa-user-plus"></i> Add Guest
             </button>
           </div>
       </div>
-      
+<!--       
+      names.length = {{names.length}}  maxGuests = {{maxGuests}} numberOfInvitationsRemaining = {{numberOfInvitationsRemaining}}
+      canInvite = {{canInvite}}
+       -->
       <!-- remove this
       <button id="doit" (click)="doit()" class="btn btn-primary col-sm-12"> Do it </button>
        -->
@@ -72,7 +81,7 @@
       
       <div class="row" style="margin-top:20px">
           <div class="col">
-              <button id="doit" [disabled]="!invitationForm.valid" (click)="doit()" class="btn btn-primary col-sm-12"> <i class="far fa-paper-plane"></i> Send Invite </button>
+              <button id="doit" [hidden]="!invitationForm.valid || (names && names.length == 0)" (click)="doit()" class="btn btn-primary col-sm-12"> <i class="far fa-paper-plane"></i> Send Invite </button>
           </div>
       </div>
 
@@ -144,7 +153,3 @@
     </form>
 -->
 
-
-
-  
-</div>

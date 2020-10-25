@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, Inject, PLATFORM_ID, Input, Output, EventEmitter } from '@angular/core';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { Invitation } from '../invitation.model';
@@ -16,7 +16,9 @@ import { UserService } from '../../user/user.service';
 import { SmsService } from '../../sms/sms.service';
 import { FirebaseUserModel } from 'src/app/user/user.model';
 import * as _ from 'lodash'
-//import { SettingsService } from 'src/app/settings/settings.service';
+import { SettingsService } from 'src/app/settings/settings.service';
+import { MessageService } from 'src/app/core/message.service';
+import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 
 
 
@@ -27,10 +29,19 @@ import * as _ from 'lodash'
 })
 export class InvitationFormComponent implements OnInit {
 
+  // see  video-call.component.html
+  // @Input() inputInviteId: string
+  // @Input() inputInvitationCount = 0
+  @Output() outputInvitations = new EventEmitter<Invitation>();
+  private currentInviteCount = 0
+  private invitationIdSub: Subscription
+  private currentInvitations: Invitation[]
 
   invitationForm: FormGroup;
-  maxGuests = 3; // for now
+  maxGuests: number
+  numberOfInvitationsRemaining: number
   canInvite = true
+  translated = false
 
 
   names: {
@@ -46,14 +57,16 @@ export class InvitationFormComponent implements OnInit {
 
   constructor(
     private smsService: SmsService,
-    //private settingsService: SettingsService,
+    private settingsService: SettingsService,
     private fb: FormBuilder,
     private invitationService: InvitationService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
-    @Optional() @Inject(REQUEST) private request: any,
+    private messageService: MessageService,
+    //@Optional() @Inject(REQUEST) private request: any,
     private userService: UserService) { 
 
+      // will be something if this is called from video-call.component.ts
       this.createForm();
   }
 
@@ -67,16 +80,41 @@ export class InvitationFormComponent implements OnInit {
 
     // we don't want this - we want config/settings/website_domain_name
     if (isPlatformBrowser(this.platformId)) {
+        this.maxGuests = this.settingsService.maxGuests
+        this.currentInviteCount = this.currentInvitations ? this.currentInvitations.length : 0
+        this.numberOfInvitationsRemaining = this.maxGuests - this.currentInviteCount
         this.host = window.location.host //this.settingsService.settings.website_domain_name
         console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
 
+        // this.canInvite = this.canInviteMore()
         this.names = []
         this.addSomeone()
     
         this.user = await this.userService.getCurrentUser();
+        this.listenForInvitations();
     }
 
 
+  }
+
+  ngOnDestroy() {
+      if(this.invitationIdSub) this.invitationIdSub.unsubscribe()
+  }
+
+  listenForInvitations() {
+      var iii = function(invitations: Invitation[]) { 
+          this.currentInvitations = invitations 
+          this.currentInviteCount = this.currentInvitations ? this.currentInvitations.length : 0
+          this.numberOfInvitationsRemaining = this.maxGuests - this.currentInviteCount
+          this.canInvite = this.canInviteMore()
+          console.log('listenForInvitations():  this.currentInvitations = ', this.currentInvitations)
+      }.bind(this)
+      // this.invitationIdSub = 
+      this.invitationIdSub = this.messageService.listenForInvitations().subscribe({
+          next: iii, 
+          error: () => {}, 
+          complete: () => {}
+      })
   }
 
   //  https://medium.com/aubergine-solutions/add-push-and-remove-form-fields-dynamically-to-formarray-with-reactive-forms-in-angular-acf61b4a2afe
@@ -99,14 +137,18 @@ export class InvitationFormComponent implements OnInit {
       )
       this.nameArray.push(group);
       console.log('this.nameArray: ', this.nameArray)
-      this.canInvite = this.names.length < this.maxGuests
+      this.canInvite = this.canInviteMore()
   }
   
   
   removeItem(i) {
       this.names.splice(i, 1)
       this.nameArray.removeAt(i);
-      this.canInvite = this.names.length < this.maxGuests
+      this.canInvite = this.canInviteMore()
+  }
+
+  canInviteMore() {
+      return this.names.length < /*this.maxGuests - */this.numberOfInvitationsRemaining /* + 1 */
   }
 
   createForm() {
@@ -189,7 +231,7 @@ export class InvitationFormComponent implements OnInit {
   async onSubmit(/*form: NgForm*/) {      
 
       // multiple invitation documents will all have this invitationId field
-      let commonInvitationId = this.invitationService.createId();
+      let commonInvitationId = this.currentInvitations && this.currentInvitations.length > 0 ? this.currentInvitations[0].invitationId : this.invitationService.createId();
 
       for(var i=0; i < this.nameArray.length; i++) {
           //console.log('this.nameArray.at(i).value: ', this.nameArray.at(i).value)
@@ -213,6 +255,8 @@ export class InvitationFormComponent implements OnInit {
 
           // don't think we have to await this before we send the sms
           this.invitationService.create(invitation);
+
+          this.outputInvitations.emit(invitation)
 
           //console.log('SMS COMMENTED OUT *****************')
           this.smsService.sendSms({from: "+12673314843", to: invitation.phoneNumber, mediaUrl: "", message: invitation.message});
@@ -266,6 +310,12 @@ export class InvitationFormComponent implements OnInit {
   cancel(/*form: NgForm*/) {
     // this.editing.emit(false);
     this.invitationForm.reset();
+  }
+
+
+  
+  openAddSomeoneDialog() {
+      this.translated = true
   }
 
 

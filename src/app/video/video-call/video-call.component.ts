@@ -80,6 +80,10 @@ export class VideoCallComponent implements OnInit {
   showTestPattern = true
   dimension: {type:string, value:string} = {type:'width', value:'48vw'}
   timeOnCall = 0
+  translated = false
+  collapsed = false
+  // canAddPeople = false
+  maxGuests: number
 
 
   constructor(private route: ActivatedRoute,
@@ -105,6 +109,7 @@ export class VideoCallComponent implements OnInit {
           console.log('VideoCallComponent:  this.invitations = ', this.invitations)
           this.settingsDoc = await this.settingsService.getSettingsDoc()
           console.log('this.settingsService.getSettingsDoc()... GOT IT -> ', this.settingsDoc)
+          this.maxGuests = this.settingsService.maxGuests
           this.phoneNumber = this.route.snapshot.params.phoneNumber
           this.isHost = this.invitations[0].creatorPhone == this.phoneNumber
 
@@ -357,7 +362,7 @@ export class VideoCallComponent implements OnInit {
       this.invitationWatcher = xxxx.subscribe( res => {
           console.log('monitorInvitation():  res: ', res)
           let inv = res.payload.data() as Invitation
-          if(inv.deleted_ms) {
+          if(inv.deleted_ms != -1) {
               // remove the deleted guest
               _.remove(this.invitations, (invitation:Invitation) => {
                   return invitation.phoneNumber === inv.phoneNumber
@@ -372,12 +377,13 @@ export class VideoCallComponent implements OnInit {
   }
 
 
-  delete_guest(invitation) {
+  async delete_guest(invitation) {
       let callCancelled = false
       if(this.invitations.length == 1) {
           callCancelled = true
       }
-      this.invitationService.deleteInvitation(invitation.docId)
+      await this.invitationService.deleteInvitation(invitation.docId)
+      // deleting from this.invitation happens in monitorInvitations()
       if(callCancelled)
           this.router.navigate(['/invitation-deleted'])
   }
@@ -775,6 +781,24 @@ s
       else this.audioTrack.enable()
   }
 
+
+  addSomeone() {
+      this.messageService.setCurrentInvitations(this.invitations)
+      this.translated = true
+  }
+
+
+  /**
+   * teams.component.ts : onTeamSelected() 
+   */
+  onInvitationsSent(invitation: Invitation) {
+      console.log('onInvitationsSent(): invitation = ', invitation)
+      this.invitations.push(invitation)
+      this.messageService.setCurrentInvitations(this.invitations)
+      this.monitorInvitation(invitation)
+      this.translated = false // moves the form back down, out of sight
+  }
+  
 
   /**
     remoteParticipant.on('trackDisabled', track => {
