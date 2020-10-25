@@ -1,4 +1,4 @@
-import { Component, OnInit, Optional, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, Inject, PLATFORM_ID, Input, Output, EventEmitter } from '@angular/core';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { Invitation } from '../invitation.model';
@@ -16,7 +16,9 @@ import { UserService } from '../../user/user.service';
 import { SmsService } from '../../sms/sms.service';
 import { FirebaseUserModel } from 'src/app/user/user.model';
 import * as _ from 'lodash'
-//import { SettingsService } from 'src/app/settings/settings.service';
+import { SettingsService } from 'src/app/settings/settings.service';
+import { MessageService } from 'src/app/core/message.service';
+import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 
 
 
@@ -27,10 +29,19 @@ import * as _ from 'lodash'
 })
 export class InvitationFormComponent implements OnInit {
 
+  // see  video-call.component.html
+  // @Input() inputInviteId: string
+  // @Input() inputInvitationCount = 0
+  @Output() outputInvitations = new EventEmitter<Invitation>();
+  private currentInviteCount = 0
+  private invitationIdSub: Subscription
+  private currentInvitations: Invitation[]
 
   invitationForm: FormGroup;
-  maxGuests = 3; // for now
+  maxGuests: number
+  numberOfInvitationsRemaining: number
   canInvite = true
+  translated = false
 
 
   names: {
@@ -46,35 +57,64 @@ export class InvitationFormComponent implements OnInit {
 
   constructor(
     private smsService: SmsService,
-    //private settingsService: SettingsService,
+    private settingsService: SettingsService,
     private fb: FormBuilder,
     private invitationService: InvitationService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object,
-    @Optional() @Inject(REQUEST) private request: any,
+    private messageService: MessageService,
+    //@Optional() @Inject(REQUEST) private request: any,
     private userService: UserService) { 
 
+      // will be something if this is called from video-call.component.ts
       this.createForm();
   }
 
   async ngOnInit(): Promise<void> {
     
-    if (isPlatformServer(this.platformId)) {
-        this.host = this.request.headers['x-forwarded-host'] // this is just the name of the server/host
-        console.log('InvitationFormComponent: x-forwarded-host:  ', this.request.headers['x-forwarded-host'])
-    }
+    // if (isPlatformServer(this.platformId)) {
+    //     this.host = this.request.headers['x-forwarded-host'] // this is just the name of the server/host
+    //     console.log('InvitationFormComponent: x-forwarded-host:  ', this.request.headers['x-forwarded-host'])
+    // }
+
 
     // we don't want this - we want config/settings/website_domain_name
     if (isPlatformBrowser(this.platformId)) {
+        this.maxGuests = this.settingsService.maxGuests
+        this.currentInviteCount = this.currentInvitations ? this.currentInvitations.length : 0
+        this.numberOfInvitationsRemaining = this.maxGuests - this.currentInviteCount
         this.host = window.location.host //this.settingsService.settings.website_domain_name
         console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
+
+        // this.canInvite = this.canInviteMore()
+        this.names = []
+        this.addSomeone()
+    
+        this.user = await this.userService.getCurrentUser();
+        this.listenForInvitations();
     }
 
 
-    this.names = []
-    this.addSomeone()
+  }
 
-    this.user = await this.userService.getCurrentUser();
+  ngOnDestroy() {
+      if(this.invitationIdSub) this.invitationIdSub.unsubscribe()
+  }
+
+  listenForInvitations() {
+      var iii = function(invitations: Invitation[]) { 
+          this.currentInvitations = invitations 
+          this.currentInviteCount = this.currentInvitations ? this.currentInvitations.length : 0
+          this.numberOfInvitationsRemaining = this.maxGuests - this.currentInviteCount
+          this.canInvite = this.canInviteMore()
+          console.log('listenForInvitations():  this.currentInvitations = ', this.currentInvitations)
+      }.bind(this)
+      // this.invitationIdSub = 
+      this.invitationIdSub = this.messageService.listenForInvitations().subscribe({
+          next: iii, 
+          error: () => {}, 
+          complete: () => {}
+      })
   }
 
   //  https://medium.com/aubergine-solutions/add-push-and-remove-form-fields-dynamically-to-formarray-with-reactive-forms-in-angular-acf61b4a2afe
@@ -91,20 +131,24 @@ export class InvitationFormComponent implements OnInit {
       this.names.push({displayName: '', phoneNumber: ''});
       let group = this.fb.group({
             displayName: new FormControl('', [Validators.required]),
-            phoneNumber: new FormControl('', { validators: [Validators.required, this.ValidatePhone] /* DOES work   , updateOn: "blur" */ })
+            phoneNumber: new FormControl('', { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ })
           } 
           //, { updateOn: 'blur' }  // another option
       )
       this.nameArray.push(group);
       console.log('this.nameArray: ', this.nameArray)
-      this.canInvite = this.names.length < this.maxGuests
+      this.canInvite = this.canInviteMore()
   }
   
   
   removeItem(i) {
       this.names.splice(i, 1)
       this.nameArray.removeAt(i);
-      this.canInvite = this.names.length < this.maxGuests
+      this.canInvite = this.canInviteMore()
+  }
+
+  canInviteMore() {
+      return this.names.length < /*this.maxGuests - */this.numberOfInvitationsRemaining /* + 1 */
   }
 
   createForm() {
@@ -154,11 +198,20 @@ export class InvitationFormComponent implements OnInit {
   }
   
   ValidatePhone(control: AbstractControl): {[key: string]: any} | null  {
-    console.log("validating phone")
-    if (control.value && (control.value.length != 10 || isNaN(control.value)) ) {
-      return { 'phoneNumberInvalid': true };
-    }
-    return null;
+      console.log('ValidatePhone(): control.value = ', control.value)
+      console.log('ValidatePhone(): this = ', this)
+      if(!control || !control.value) return null
+      let myString = this.justNumbers(control.value)      
+      if (myString && (myString.length != 10) ) {
+        return { 'phoneNumberInvalid': true };
+      }
+      return null;
+  }
+
+  justNumbers(value: string) {
+      console.log('justNumbers(): value = ', value)
+      let replaced = value.replace(/\D/g,''); //  \D = all non-digits 
+      return replaced
   }
 
 
@@ -178,7 +231,7 @@ export class InvitationFormComponent implements OnInit {
   async onSubmit(/*form: NgForm*/) {      
 
       // multiple invitation documents will all have this invitationId field
-      let commonInvitationId = this.invitationService.createId();
+      let commonInvitationId = this.currentInvitations && this.currentInvitations.length > 0 ? this.currentInvitations[0].invitationId : this.invitationService.createId();
 
       for(var i=0; i < this.nameArray.length; i++) {
           //console.log('this.nameArray.at(i).value: ', this.nameArray.at(i).value)
@@ -193,7 +246,7 @@ export class InvitationFormComponent implements OnInit {
           //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+invitation.invitationId+"/"+this.names[i].phoneNumber};
           //this.themessage = this.getInvitationMessage(this.user.displayName, url);
           
-          invitation.phoneNumber = "+1"+this.names[i].phoneNumber
+          invitation.phoneNumber = "+1" + this.justNumbers(this.names[i].phoneNumber)
           // TODO FIXME figure out host name
           let url = `https://${this.host}/video-call/${invitation.invitationId}/${invitation.phoneNumber}`
           let msg = `${invitation.creatorName} is inviting you to participate in a video call on HeadsUp.  Click the link below to see this invitation. \n\nDo not reply to this text message.  This number is not being monitored. \n\n${url}`
@@ -202,6 +255,8 @@ export class InvitationFormComponent implements OnInit {
 
           // don't think we have to await this before we send the sms
           this.invitationService.create(invitation);
+
+          this.outputInvitations.emit(invitation)
 
           //console.log('SMS COMMENTED OUT *****************')
           this.smsService.sendSms({from: "+12673314843", to: invitation.phoneNumber, mediaUrl: "", message: invitation.message});
@@ -236,10 +291,31 @@ export class InvitationFormComponent implements OnInit {
       //
       this.router.navigate(['/video-call', commonInvitationId, this.user.phoneNumber])
   }
+  
+  validatePhoneNo(field) {
+      var phoneNumDigits = field.value.replace(/\D/g, '');
+    
+      // this.isValidFlg = (phoneNumDigits.length==0 || phoneNumDigits.length == 10);
+    
+      var formattedNumber = phoneNumDigits;
+      if (phoneNumDigits.length >= 6)
+        formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3, 6) + '-' + phoneNumDigits.substring(6);
+      else if (phoneNumDigits.length >= 3)
+        formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3);
+    
+      field.value = formattedNumber;
+      console.log('validatePhoneNo(): field.value = ', field.value)
+  }
 
   cancel(/*form: NgForm*/) {
     // this.editing.emit(false);
     this.invitationForm.reset();
+  }
+
+
+  
+  openAddSomeoneDialog() {
+      this.translated = true
   }
 
 

@@ -3,6 +3,8 @@ import { Subject, Observable } from 'rxjs';
 import { FirebaseUserModel } from '../user/user.model';
 import { TeamMember } from '../team/team-member.model';
 import { Team } from '../team/team.model';
+import { Invitation } from '../invitation/invitation.model'
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +13,15 @@ export class MessageService {
 
   // private myMessage = new Subject<string>();
   private userListener = new Subject<FirebaseUserModel>();
+  private recordingStatusListener = new Subject<string>();
+  private hostJoinedListener = new Subject<number>(); // number is timestamp
+  private timerEvents = new Subject<string>()
   // private team_members = new Subject<TeamMember[]>();
   // private updated_member = new Subject<TeamMember>();
   // private removed_member = new Subject<TeamMember>();
   // private team_member = new Subject<TeamMember>();
   private team = new Subject<Team>();
+  private invitationListener = new Subject<Invitation[]>();
 
   constructor() { }
 
@@ -71,12 +77,69 @@ export class MessageService {
   //   this.team_members.next(team_members);
   // }
 
+
+  /**
+   * Called from video-call.component.ts so we can keep track of elapsed time and warn the users
+   * when they get close to settings.max_call_time (secs)
+   * 
+   * DON'T NEED THIS BECAUSE EVERYTHING HAPPENS IN video-call.component.ts
+   */
+  // hostJoined(timestamp: number) {
+  //     this.hostJoinedListener.next(timestamp)
+  // }
+
+  // listenForHostJoining() {
+  //     return this.hostJoinedListener
+  // }
+
+
+
+  // see  recording-indicator.component.ts
+  listenForRecordingStatus() {
+      return this.recordingStatusListener
+  }
+
+  // see  video-call.component.ts
+  updateRecordingStatus(status: string) {
+      this.recordingStatusListener.next(status)
+  }
+
+
+
+  listenForUser() {
+    return this.userListener;
+  }
+
   updateUser(user: FirebaseUserModel) {
     this.userListener.next(user);
   }
 
-  listenForUser() {
-    return this.userListener;
+
+
+  /**
+   * video-call.component.ts
+   */
+  listenForTimerEvents() {
+      return this.timerEvents
+  }
+
+  /**
+   * timer.component.ts 
+   */
+  timerEvent(event: string) {
+      this.timerEvents.next(event)
+  }
+
+
+  setCurrentInvitations(invitations: Invitation[]) {
+      this.invitationListener.next(invitations)
+  }
+
+  /**
+   * invitation-form.component.ts
+   */
+  listenForInvitations() {
+      return this.invitationListener
   }
 
 }

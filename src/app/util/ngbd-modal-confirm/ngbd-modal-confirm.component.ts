@@ -15,6 +15,8 @@ export class NgbdModalConfirmComponent implements OnInit {
   thing: string;
   warning_you: string;
   really_warning_you: string;
+  showCancelButton = true
+  danger = true // drives color of OK button on ngbd-modal-confirm.component.html
 
   // constructor(public modal: NgbActiveModal) {}
   constructor(public modal: NgbActiveModal) {}

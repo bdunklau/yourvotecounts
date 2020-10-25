@@ -64,6 +64,9 @@ import { VideoProducingComponent } from './video/video-producing/video-producing
 import { PromoCodeComponent } from './promo-code/promo-code.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TwilioSettingsComponent } from './settings/twilio-settings/twilio-settings.component';
+import { RecordingIndicatorComponent } from './video/recording-indicator/recording-indicator.component';
+import { TimerComponent } from './video/timer/timer.component';
+import { ElapsedTimePipe } from './util/elapsed-time/elapsed-time.pipe';
 
 
 
@@ -154,6 +157,9 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     PromoCodeComponent,
     SettingsComponent,
     TwilioSettingsComponent,
+    RecordingIndicatorComponent,
+    TimerComponent,
+    ElapsedTimePipe,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

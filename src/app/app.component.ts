@@ -65,7 +65,7 @@ export class AppComponent {
       if(!value) this.setAdmin(false); // TODO not tested
     }.bind(this);
 
-    this.messageService.listenForUser().subscribe({
+    this.userSubscription = this.messageService.listenForUser().subscribe({
           next: nxt,
           error: function(value) {
           },

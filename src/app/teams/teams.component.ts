@@ -35,6 +35,9 @@ export class TeamsComponent implements OnInit {
   }
 
 
+  /**
+   * video-call.component.ts : onInvitationsSent() 
+   */
   onTeamSelected(team: Team) {
     // console.log('onSelectedTeam: team: ', team);
     this.team = team;

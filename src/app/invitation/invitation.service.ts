@@ -41,6 +41,7 @@ export class InvitationService {
       // make the doc key different from the invitation id so that the invitation id can be duplicated (so we can invite more than one guest)
       let docKey = this.afs.createId();
       var invitationRef = this.afs.collection('invitation').doc(docKey).ref;
+      invitation.docId = docKey
       batch.set(invitationRef, invitation.toObj());
       
       await batch.commit();
@@ -72,7 +73,8 @@ export class InvitationService {
 
 
   deleteInvitation(docId: string) {
-      this.afs.collection('invitation').doc(docId).update({deleted_ms: new Date().getTime()})
+      let promise = this.afs.collection('invitation').doc(docId).update({deleted_ms: new Date().getTime()})
+      return promise
   }
 
 
@@ -129,7 +131,7 @@ export class InvitationService {
 
 
     async getInvitations(invitationId: string) {
-      var observable = this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId)).snapshotChanges().pipe(take(1));
+      var observable = this.afs.collection('invitation', ref => ref.where("invitationId", "==", invitationId).where("deleted_ms", "==", -1)).snapshotChanges().pipe(take(1));
       let docChangeActions = await observable.toPromise()
       let invitations:Invitation[] = []
       if(docChangeActions && docChangeActions.length > 0) {

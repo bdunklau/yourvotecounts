@@ -6,6 +6,7 @@ export class Settings {
   firebase_functions_host: string
   from_sms: string;
   heapThreshold: number
+  max_call_time: number  // seconds
   to_sms: string;
   website_domain_name: string
   promo_codes: string[]
