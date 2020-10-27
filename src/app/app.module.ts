@@ -67,6 +67,7 @@ import { TwilioSettingsComponent } from './settings/twilio-settings/twilio-setti
 import { RecordingIndicatorComponent } from './video/recording-indicator/recording-indicator.component';
 import { TimerComponent } from './video/timer/timer.component';
 import { ElapsedTimePipe } from './util/elapsed-time/elapsed-time.pipe';
+import { BannerAdComponent } from './ad/banner-ad/banner-ad.component';
 
 
 
@@ -160,6 +161,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     RecordingIndicatorComponent,
     TimerComponent,
     ElapsedTimePipe,
+    BannerAdComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
