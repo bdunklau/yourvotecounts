@@ -84,7 +84,7 @@ const routes: Routes = [
   { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [VideoCallGuard] /*, resolve: {invitation: InvitationResolver}*/ },
   { path: 'video-call-complete/:RoomSid/:hostOrGuest/:phoneNumber', component: VideoCallCompleteComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] },
   { path: 'video/producing/:RoomSid', component: VideoProducingComponent, canActivate: [DisabledGuard, VideoProducingGuard] },
-  { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [/*DisabledGuard, SettingsGuard,*/ VideoReadyGuard] },
+  { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [/*DisabledGuard,*/ SettingsGuard, VideoReadyGuard] },
   { path: '**', component: HomeComponent },
 ];
 
