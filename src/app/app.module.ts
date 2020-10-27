@@ -187,4 +187,19 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+
+    constructor() {
+        if(window && window.console) {
+            if (environment.production) {
+                // console.log('production: turning off console.log()')
+                window.console.log = function() {}
+            }
+            else {
+                console.log('else not production: -----------------')                
+            }
+        }
+    }
+
+}
+
