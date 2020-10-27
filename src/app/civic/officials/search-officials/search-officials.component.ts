@@ -63,16 +63,6 @@ export class SearchOfficialsComponent implements OnInit {
         }
     }
 
-
-    // ngAfterViewInit(): void {
-    //     // Load google maps script after view init
-    //     const DSLScript = document.createElement('script');
-    //     DSLScript.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBdVvBbQRVIRGlQo_xxKEEmX6ndigE8iDM'; // replace by your API key
-    //     DSLScript.type = 'text/javascript';
-    //     document.body.appendChild(DSLScript);
-    //     document.body.removeChild(DSLScript);
-    //   }
-
   
   
     title = 'rou'; 
