@@ -38,6 +38,7 @@ export class ViewVideoComponent implements OnInit {
     isHost = false
     isGuest = false
     initialized = false
+    showAd = false
 
 
     constructor(private roomService: RoomService,
@@ -64,6 +65,11 @@ export class ViewVideoComponent implements OnInit {
         console.log('isPlatformBrowser(this.platformId) = ', isBrowser)
         
         if(isBrowser) {
+
+            // is there an 'ad' parameter?  If so, show the banner ad - doesn't matter what the value of the parameter is
+            if(this.route.snapshot.queryParams.ad) {
+                this.showAd = true
+            }
 
             let safari = function() {
                 // Detect Safari
