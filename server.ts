@@ -93,8 +93,10 @@ export function app(): express.Express {
                  (err, html) => {                   
                   // see    https://css-tricks.com/essential-meta-tags-social-media/
                   if(req['image']) html = html.replace(/\$OG_IMAGE/g, req['image']);
-                  if(req['title']) html = html.replace(/\$OG_TITLE/g, req['title']);
-                  if(req['description']) html = html.replace(/\$OG_DESCRIPTION/g, req['description']);
+                  let title = req['title'] ? req['title'] : 'Heads Up!'
+                  html = html.replace(/\$OG_TITLE/g, title);
+                  let description = req['description'] ? req['description'] : 'Recorded video chat made easy'
+                  html = html.replace(/\$OG_DESCRIPTION/g, description);
                   // console.log('server.get(*): html  = \n\n', html)
                   // console.log('server.get(\'*\'):  req[\'image\'] = ', req['image'])
                   res.send(html)
