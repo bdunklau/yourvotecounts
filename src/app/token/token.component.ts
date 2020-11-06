@@ -38,7 +38,7 @@ export class TokenComponent implements OnInit {
       var user = firebase_auth_user.user
       // this.log.i('login');
       // this.userService.setFirebaseUser(user);
-      this.userService.signIn(this.log, user);
+      this.userService.signIn(/*this.log,*/ user);  // circular dependency between logservice and userservice
     }
 
   }

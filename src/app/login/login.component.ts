@@ -30,7 +30,6 @@ export class LoginComponent implements OnInit {
         let firebaseui = await import('firebaseui')
         console.log('firebaseui = ', firebaseui)
 
-
         /**
          * GOOD REFERENCE:  https://github.com/firebase/firebaseui-web#starting-the-sign-in-flow
          */
@@ -39,9 +38,7 @@ export class LoginComponent implements OnInit {
         let onLoginSuccessful = function() {
           var user = firebase.auth().currentUser;
           if(user){
-            // this.log.i('login');
-            // this.userService.setFirebaseUser(user);
-            this.userService.signIn(this.log, user);
+            // user.service constructor is where we listen for onAuthStateChanged()
             this.router.navigate(['/home'])
           }
         }
