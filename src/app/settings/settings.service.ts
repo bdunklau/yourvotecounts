@@ -9,7 +9,6 @@ import { TwilioSettings } from './twilio-settings/twilio-settings.model';
 export class SettingsService {
 
     keys: Keys
-    continuePath: string  // see InvitationFormGuard for example of this being set
     maxGuests = 3  // don't anticipate needing to change this
 
     constructor(public afs: AngularFirestore,) { }
