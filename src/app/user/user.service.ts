@@ -23,7 +23,7 @@ import { environment } from '../../environments/environment';
 @Injectable()
 export class UserService {
 
-  private user: FirebaseUserModel;
+  user: FirebaseUserModel;
 
   constructor(
     private afs: AngularFirestore,
@@ -199,10 +199,7 @@ export class UserService {
     let user = new FirebaseUserModel();
     this.user.online = false;
     user.populate(this.user);
-    this.updateUser(user);
-    this.user = null
-    console.log('signOut(): this.user = ', this.user);
-    this.messageService.updateUser(this.user);
+    return this.updateUser(user);
   }
 
   subscribe(uid: string, fn: ((users:[FirebaseUserModel]) => void) ): Subscription {
