@@ -48,7 +48,6 @@ export class InvitationFormGuard implements CanActivate {
 
         let hasPromoCode = await this.promoCodeGuard.canActivate(next, state)
         if(!hasPromoCode) {
-            this.settingsService.continuePath = '/invitation-form'
             return false
         }
 

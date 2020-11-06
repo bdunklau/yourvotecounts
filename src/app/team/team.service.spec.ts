@@ -6,6 +6,8 @@ import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireStorage } from '@angular/fire/storage';
+import * as firebase from 'firebase'
+import { environment } from '../../../src/environments/environment';
 
 
 
@@ -29,6 +31,10 @@ describe('TeamService', () => {
                                 {id: '2', event: 'event2', date: {toDate: () => new Date()}}])
       }),
     };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(environment.firebase);
+    }
 
 
   beforeEach(() => TestBed.configureTestingModule({

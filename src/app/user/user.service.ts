@@ -15,7 +15,6 @@ import { MessageService } from '../core/message.service';
 import { Team } from '../team/team.model';
 import { map } from 'rxjs/operators';
 import { Subject, /*Observable,*/ Subscription } from 'rxjs';
-import { LogService } from '../log/log.service'; // injected in signIn() below
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
 import { environment } from '../../environments/environment';
 
@@ -23,7 +22,7 @@ import { environment } from '../../environments/environment';
 @Injectable()
 export class UserService {
 
-  private user: FirebaseUserModel;
+  user: FirebaseUserModel;
 
   constructor(
     private afs: AngularFirestore,
@@ -32,7 +31,20 @@ export class UserService {
     private messageService: MessageService,
     private afStorage: AngularFireStorage,
     // can't inject LogService because UserService is injected INTO LogService
-  ){ }
+  ) { 
+      
+      firebase.auth().onAuthStateChanged(user => {
+          console.log('ngOnInit: onAuthStateChanged(): user = ', user)
+          if(user) {
+              let online = user ? true : false
+              this.setFirebaseUser(user, online);
+              this.signIn(/*this.log,*/ user); // circular dependency - can't inject log service            
+          }
+          else {
+              // user logged out
+          }
+      })
+  }
 
   ngOnInit() {
     // isn't this just for components, not services?
@@ -171,6 +183,9 @@ export class UserService {
     let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
     this.user = new FirebaseUserModel();
     var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
+    // what if brand new user?
+
+    console.log('setFirebaseUser(): userDoc = ', userDoc);
     console.log('setFirebaseUser(): userDoc.data() = ', userDoc.data());
     this.user.populate(userDoc.data());
 
@@ -189,9 +204,9 @@ export class UserService {
   }
 
 
-  async signIn(log: LogService, firebase_auth_currentUser) {
+  async signIn(/*log: LogService,*/ firebase_auth_currentUser) {
     await this.setFirebaseUser(firebase_auth_currentUser, true);
-    log.i('login');
+    // this.log.i('login');
   }
 
 
@@ -199,10 +214,7 @@ export class UserService {
     let user = new FirebaseUserModel();
     this.user.online = false;
     user.populate(this.user);
-    this.updateUser(user);
-    this.user = null
-    console.log('signOut(): this.user = ', this.user);
-    this.messageService.updateUser(this.user);
+    return this.updateUser(user);
   }
 
   subscribe(uid: string, fn: ((users:[FirebaseUserModel]) => void) ): Subscription {
