@@ -35,9 +35,7 @@ export class PromoCodeComponent implements OnInit {
             let user = await this.userService.getCurrentUser()
             user.promo_code = this.promo_code
             await this.userService.setPromoCode(user)
-            if(this.settingsService.continuePath) {
-                this.router.navigate([this.settingsService.continuePath])
-            }
+            this.router.navigate(['/invitations'])
         }
         else this.invalidPromoCode = true
     }
