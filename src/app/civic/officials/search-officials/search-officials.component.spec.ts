@@ -12,7 +12,7 @@ import { SettingsService } from 'src/app/settings/settings.service';
 
 
 // TODO FIXME test
-fdescribe('SearchOfficialsComponent', () => {
+describe('SearchOfficialsComponent', () => {
   let component: SearchOfficialsComponent;
   let fixture: ComponentFixture<SearchOfficialsComponent>;
 
