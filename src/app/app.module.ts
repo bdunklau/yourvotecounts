@@ -68,6 +68,7 @@ import { RecordingIndicatorComponent } from './video/recording-indicator/recordi
 import { TimerComponent } from './video/timer/timer.component';
 import { ElapsedTimePipe } from './util/elapsed-time/elapsed-time.pipe';
 import { BannerAdComponent } from './ad/banner-ad/banner-ad.component';
+import { MyVideosComponent } from './video/my-videos/my-videos.component';
 
 
 
@@ -162,6 +163,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     TimerComponent,
     ElapsedTimePipe,
     BannerAdComponent,
+    MyVideosComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

@@ -1,0 +1,53 @@
+<div class="container" style="margin-top:20px">
+<h3>My Videos</h3>
+
+<div class="row" style="margin-top:40px">
+    <div class="col"><h5>As Host</h5></div>
+</div>
+
+<div class="row" *ngFor="let room of asHost" style="padding-top:10px">
+    <div class="col-12" style="padding-top:10px;padding-bottom:10px">
+        <div class="row">
+            <div class="col-6">
+                <a href="/view-video/{{room.CompositionSid}}"><img [attr.src]="room.screenshotUrl" style="width:100%"></a>
+            </div>
+            
+            <div class="col-6">
+                {{room.video_title}}
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+
+
+<div class="row" style="margin-top:40px">
+    <div class="col"><h5>As Guest</h5></div>
+</div>
+
+
+<div class="row" *ngFor="let room of asHost" style="padding-top:10px">
+    <div class="col-12" style="padding-top:10px;padding-bottom:10px">
+        <div class="row">
+            <div class="col-6">
+                <a href="/view-video/{{room.CompositionSid}}"><img [attr.src]="room.screenshotUrl" style="width:100%"></a>
+            </div>
+            
+            <div class="col-6">
+                {{room.video_title}}
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+</div>

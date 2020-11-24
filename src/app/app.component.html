@@ -25,6 +25,7 @@
    </div>
    <a href="javascript:void(0)" class="closebtn" id="closeNav" (click)="closeNav()"><i class="fa fa-close" style="color:#ffffff"></i></a>
    <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/invitations']"><i class="fa fa-video"></i> Video Call</a>
+   <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/my-videos']"><i class="fas fa-list"></i> My Videos</a>
    
    
    <!-- works but displays "Select" buttons that don't make sense in standalone context
