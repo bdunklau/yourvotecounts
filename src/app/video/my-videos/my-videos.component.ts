@@ -4,6 +4,7 @@ import { UserService } from 'src/app/user/user.service';
 import { FirebaseUserModel } from 'src/app/user/user.model';
 import { RoomObj } from '../../room/room-obj.model'
 import { isPlatformBrowser } from '@angular/common';
+import { timeStamp } from 'console';
 
 
 /**
@@ -20,6 +21,10 @@ export class MyVideosComponent implements OnInit {
     asGuest: RoomObj[]
     asHost: RoomObj[]
     videoType: string 
+    translated = false
+    collapsed = false
+    selectedRoom: RoomObj
+    confirmingDelete = false
 
 
     constructor(private roomService: RoomService,
@@ -41,6 +46,24 @@ export class MyVideosComponent implements OnInit {
             this.asHost = await this.roomService.getRoomsWithHost({uid: this.me.uid})
         }
 
+    }
+
+    openVideoControlMenu(room: RoomObj) {
+        this.translated = true
+        this.selectedRoom = room
+    }
+
+
+    async deleteVideo() {
+        if(this.confirmingDelete) {
+            console.log('deleteVideo()')
+            await this.roomService.deleteRoom(this.selectedRoom)
+            this.confirmingDelete = false
+            this.translated = false
+        }
+        else {
+            this.confirmingDelete = true
+        }
     }
 
 }

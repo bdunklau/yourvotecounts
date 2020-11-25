@@ -21,6 +21,8 @@ import * as _ from 'lodash';
 import { Subject } from 'rxjs';
 import { Official } from '../civic/officials/view-official/view-official.component'
 import { Observable } from 'rxjs'
+import { AngularFireStorage } from '@angular/fire/storage';
+import { SettingsService } from '../settings/settings.service';
 
 
 @Injectable({
@@ -36,7 +38,9 @@ export class RoomService {
   official_deleted = new Subject<Official>()
 
   constructor(
-    private afs: AngularFirestore,) { 
+    private settingsService: SettingsService,
+    private afs: AngularFirestore,
+    private afStorage: AngularFireStorage,) { 
   }
 
 
@@ -293,6 +297,30 @@ export class RoomService {
           })
       }
       return rooms
+  }
+
+
+  /**
+   *  delete the room doc and the folder in storage having the name [CompositionSid]
+   */
+  async deleteRoom(room: RoomObj) {
+
+      let settings = await this.settingsService.getSettingsDoc()
+
+      let folderPath = `gs://${settings.projectId}.appspot.com/${room.CompositionSid}`
+
+      /**
+       * folder is deleted whenn all of its contents are deleted
+       */
+      this.afStorage.storage.refFromURL(folderPath).listAll().then(data => {
+          data.items.forEach(item => {
+            this.afStorage.storage.ref(item['location']['path']).delete()
+            console.log('CHECK: item[\'location\'][\'path\'] = ', item['location']['path'])
+          });
+      })
+      .then(() => {
+          return this.afs.collection('room').doc(room.RoomSid).delete()
+      })
   }
 
 
