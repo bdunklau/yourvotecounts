@@ -69,6 +69,8 @@ import { TimerComponent } from './video/timer/timer.component';
 import { ElapsedTimePipe } from './util/elapsed-time/elapsed-time.pipe';
 import { BannerAdComponent } from './ad/banner-ad/banner-ad.component';
 import { MyVideosComponent } from './video/my-videos/my-videos.component';
+import { ReviewSmsComponent } from './sms/review-sms/review-sms.component';
+import { SmsMainComponent } from './sms/sms-main/sms-main.component';
 
 
 
@@ -164,6 +166,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     ElapsedTimePipe,
     BannerAdComponent,
     MyVideosComponent,
+    ReviewSmsComponent,
+    SmsMainComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

@@ -1,0 +1,11 @@
+
+<div class="row" *ngFor="let sms of smsMessages" style="border-top:1px solid #ababab">
+    <div class="col">
+        {{sms.date_ms | date:'long' }}
+        <br/>To: {{sms.to }}
+        <br/>From: {{sms.from }}
+        <br/>Message SID: {{sms.twilio_message_sid }}
+        <br/>{{sms.message }}
+    </div>
+</div>
+
