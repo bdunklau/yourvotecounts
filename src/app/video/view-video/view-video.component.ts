@@ -82,7 +82,7 @@ export class ViewVideoComponent implements OnInit {
                 else return true
             }
 
-            this.browser = window.navigator.userAgent
+            // this.browser = window.navigator.userAgent
             if(safari()) {
                 this.videoUrl = this.room.videoUrl
                 this.videoType = "application/x-mpegURL"

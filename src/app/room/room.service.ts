@@ -21,6 +21,8 @@ import * as _ from 'lodash';
 import { Subject } from 'rxjs';
 import { Official } from '../civic/officials/view-official/view-official.component'
 import { Observable } from 'rxjs'
+import { AngularFireStorage } from '@angular/fire/storage';
+import { SettingsService } from '../settings/settings.service';
 
 
 @Injectable({
@@ -36,7 +38,9 @@ export class RoomService {
   official_deleted = new Subject<Official>()
 
   constructor(
-    private afs: AngularFirestore,) { 
+    private settingsService: SettingsService,
+    private afs: AngularFirestore,
+    private afStorage: AngularFireStorage,) { 
   }
 
 
@@ -249,6 +253,74 @@ export class RoomService {
 
   officialDeleted(official: Official) {
       this.official_deleted.next(official)
+  }
+
+
+  // async copyRoom(roomSid: string) {
+  //     let roomDoc = await this.afs.collection('room').doc(roomSid).ref.get()
+  //     let tempId = 'RM'+(new Date().getTime())
+  //     await this.afs.collection('room').doc(tempId).set(roomDoc.data())
+  // }
+
+
+  async getRoomsWithGuest(name: {guestName: string, guestPhone: string}) {      
+
+      let observable = this.afs.collection('room', ref => ref.where('guests', 'array-contains', {guestName: name.guestName, guestPhone: name.guestPhone} )).snapshotChanges().pipe(take(1));
+      
+      let docChangeActions = await observable.toPromise()
+      var rooms: RoomObj[] = []
+      if(docChangeActions && docChangeActions.length > 0) {
+          _.each(docChangeActions, obj => {
+              let data = obj.payload.doc.data()
+              let docId = obj.payload.doc.id
+              rooms.push(data as RoomObj)
+              console.log('getRoomsWithGuest(): ',docId, ':  ', data)
+          })
+      }
+      return rooms
+
+  }
+
+
+  async getRoomsWithHost(person: {uid: string}) {
+      
+      let observable = this.afs.collection('room', ref => ref.where('hostId', '==', person.uid )).snapshotChanges().pipe(take(1));
+        
+      let docChangeActions = await observable.toPromise()
+      var rooms: RoomObj[] = []
+      if(docChangeActions && docChangeActions.length > 0) {
+          _.each(docChangeActions, obj => {
+              let data = obj.payload.doc.data()
+              let docId = obj.payload.doc.id
+              rooms.push(data as RoomObj)
+              console.log('getRoomsWithHost(): ',docId, ':  ', data)
+          })
+      }
+      return rooms
+  }
+
+
+  /**
+   *  delete the room doc and the folder in storage having the name [CompositionSid]
+   */
+  async deleteRoom(room: RoomObj) {
+
+      let settings = await this.settingsService.getSettingsDoc()
+
+      let folderPath = `gs://${settings.projectId}.appspot.com/${room.CompositionSid}`
+
+      /**
+       * folder is deleted whenn all of its contents are deleted
+       */
+      this.afStorage.storage.refFromURL(folderPath).listAll().then(data => {
+          data.items.forEach(item => {
+            this.afStorage.storage.ref(item['location']['path']).delete()
+            console.log('CHECK: item[\'location\'][\'path\'] = ', item['location']['path'])
+          });
+      })
+      .then(() => {
+          return this.afs.collection('room').doc(room.RoomSid).delete()
+      })
   }
 
 
