@@ -69,6 +69,20 @@ See   invitation-form.component.html
         </div>
     </div>
 
+    
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Console Logging
+        </div>
+        <div class="col-8">
+            <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
+            <label class="switch" id="console_logging_switch">
+                <input id="console_logging_checkbox" type="checkbox" class="success" [checked]="settings.console_logging" (click)="consoleLoggingChecked($event)">
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+
 
     <div class="row" style="margin-top:10px">
         <div class="col-4" style="margin-top:5px">
@@ -88,7 +102,7 @@ See   invitation-form.component.html
 
             <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
             <label class="switch" id="disabled_switch">
-                <input id="disabled_checkbox" type="checkbox" class="success" [checked]="settings.disabled" (click)="checked($event)">
+                <input id="disabled_checkbox" type="checkbox" class="success" [checked]="settings.disabled" (click)="disabledChecked($event)">
                 <span class="slider round"></span>
             </label>
 

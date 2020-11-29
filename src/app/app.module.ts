@@ -1,5 +1,5 @@
 import { BrowserModule, Title, TransferState } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, PLATFORM_ID, Inject } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire';
@@ -71,6 +71,8 @@ import { BannerAdComponent } from './ad/banner-ad/banner-ad.component';
 import { MyVideosComponent } from './video/my-videos/my-videos.component';
 import { ReviewSmsComponent } from './sms/review-sms/review-sms.component';
 import { SmsMainComponent } from './sms/sms-main/sms-main.component';
+import { SettingsService } from './settings/settings.service';
+import { isPlatformBrowser } from '@angular/common';
 
 
 
@@ -197,16 +199,27 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
 })
 export class AppModule { 
 
-    constructor() {
-        // if(window && window.console) {
-        //     if (environment.production) {
-        //         // console.log('production: turning off console.log()')
-        //         window.console.log = function() {}
-        //     }
-        //     else {
-        //         console.log('else not production: -----------------')                
-        //     }
-        // }
+    constructor(private settingsService: SettingsService,
+        @Inject(PLATFORM_ID) private platformId,) {
+
+          
+        if(isPlatformBrowser(this.platformId)) {
+            console.log('AppModule(): this.settingsService = ', this.settingsService)
+            this.settingsService.getSettingsDoc().then(settings => {
+                console.log('AppModule(): settings = ', settings)
+                if(window && window.console) {
+                    if(!settings.console_logging) {
+                        console.log('SET CONSOLE LOGGING: OFF')  
+                        window.console.log = function() {}
+                    } else {
+                        console.log('SET CONSOLE LOGGING: ON')                   
+                    }
+                }
+            })
+        }
+
+
+
     }
 
 }
