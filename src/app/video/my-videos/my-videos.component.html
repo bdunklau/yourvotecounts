@@ -11,12 +11,14 @@
             
             <div class="col-5">
                 <a href="/view-video/{{room.CompositionSid}}"><img [attr.src]="room.screenshotUrl" style="width:100%"></a>
+                <!-- <br/>screenshot: {{room.screenshotUrl}} -->
             </div>
             
             <div class="col-5">
                 {{room.video_title}}
-                <!-- <BR/>{{room.RoomSid}}
-                <BR/>{{room.CompositionSid}} -->
+                <BR/>{{room.created_ms | date: 'short'}}
+                <!-- <BR/>{{room.RoomSid}} -->
+                <!-- <BR/>{{room.CompositionSid}} -->
             </div>
             
             <div class="col-1">
