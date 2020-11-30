@@ -1,11 +1,5 @@
 runtime: nodejs10
 
-handlers:
-- url: /
-  script: auto
-  secure: always
-  redirect_http_response_code: 301
-
 # NO env NEEDS TO BE SPECIFIED FOR THE STANDARD ENVIRONMENT - ONLY FOR THE FLEXIBLE ENV
 # FOR A COMPARISON OF THE STANDARD ENV vs THE FLEXIBLE ENV, SEE:
 #     https://cloud.google.com/appengine/docs/the-appengine-environments
