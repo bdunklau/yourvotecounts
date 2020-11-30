@@ -45,6 +45,7 @@ export function app(): express.Express {
     bootstrap: AppServerModule,
   }));
 
+  server.enable('trust proxy')
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
@@ -75,7 +76,7 @@ export function app(): express.Express {
 
 
   async function enforceHttps(req, res, next) {
-      if(!req.secure /*&& !req.get('host').startsWith('localhost')*/) {
+      if(!req.secure && !req.get('host').startsWith('localhost') ) {
           res.redirect(301, "https://" + req.headers.host + req.originalUrl);
       }
       next()
