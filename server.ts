@@ -74,15 +74,15 @@ export function app(): express.Express {
   }
 
 
-  async function enforceHttps(req, res, next) {
-      if(!req.secure && !req.get('host').startsWith('localhost')) {
-        return res.redirect(`https://${req.get('host')}${req.originalUrl}`);
-      }
-      next()
-  }
+  // async function enforceHttps(req, res, next) {
+  //     if(!req.secure && !req.get('host').startsWith('localhost')) {
+  //       return res.redirect(`https://${req.get('host')}${req.originalUrl}`);
+  //     }
+  //     next()
+  // }
 
 
-  server.use('*', enforceHttps)
+  // server.use('*', enforceHttps)
 
 
   // Only this route will call generateMetaTags()
