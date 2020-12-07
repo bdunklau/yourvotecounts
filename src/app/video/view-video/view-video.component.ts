@@ -8,6 +8,7 @@ import { FirebaseUserModel } from 'src/app/user/user.model';
 import * as _ from 'lodash'
 import { Official } from '../../civic/officials/view-official/view-official.component'
 import { isPlatformBrowser } from '@angular/common';
+import { MessageService } from 'src/app/core/message.service';
 
 
 @Component({
@@ -39,13 +40,35 @@ export class ViewVideoComponent implements OnInit {
     isGuest = false
     initialized = false
     showAd = false
+    private userSubscription: Subscription;
 
 
     constructor(private roomService: RoomService,
                 private userService: UserService,
+                private messageService: MessageService,
                 @Inject(PLATFORM_ID) private platformId,
                 //private _modalService: NgbModal,
-                private route: ActivatedRoute) { }
+                private route: ActivatedRoute) {
+                    
+
+            var nxt = function(user /* FirebaseUserModel */) {     
+                let allowed = this.allowedToEdit(user)
+                if(allowed) {
+                    this.editing_allowed = true
+                }
+                this.listenForOfficials()
+                this.isHost = this.room.isHost(user)
+                this.isGuest = this.room.isGuest(user)
+            }.bind(this);
+
+            this.userSubscription = this.messageService.listenForUser().subscribe({
+                next: nxt,
+                error: function(value) {
+                },
+                complete: function() {
+                }
+            })
+    }
 
 
     async ngOnInit() {
@@ -93,15 +116,6 @@ export class ViewVideoComponent implements OnInit {
             }
             if(this.room.video_title) this.video_title = this.room.video_title
             if(this.room.video_description) this.video_description = this.room.video_description
-            let user = await this.userService.getCurrentUser()
-            let allowed = this.allowedToEdit(user)
-            console.log('this.room: ', this.room)
-            if(allowed) {
-                this.editing_allowed = true
-            }
-            this.listenForOfficials()
-            this.isHost = this.room.isHost(user)
-            this.isGuest = this.room.isGuest(user)
             this.initialized = true
         }
         console.log('ngOnInit():  done')
@@ -124,6 +138,7 @@ export class ViewVideoComponent implements OnInit {
     ngOnDestroy() {
         if(this.official_selected_sub) this.official_selected_sub.unsubscribe();
         if(this.official_deleted_sub) this.official_deleted_sub.unsubscribe();
+        if(this.userSubscription) this.userSubscription.unsubscribe();
     }
     
     async ngAfterViewInit() {
@@ -144,11 +159,13 @@ export class ViewVideoComponent implements OnInit {
 
 
     allowedToEdit(user: FirebaseUserModel): boolean {
-        console.log('user: ', user, "  this.room: ", this.room)
         if(!user) return false
-        if(user.phoneNumber == this.room.hostPhone)
+        if(user['phoneNumber'] === this.room.hostPhone) {
             return true
-        else return false
+        }
+        else {
+            return false
+        }
     }
 
 
