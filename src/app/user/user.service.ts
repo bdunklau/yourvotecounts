@@ -33,12 +33,12 @@ export class UserService {
     // can't inject LogService because UserService is injected INTO LogService
   ) { 
       
-      firebase.auth().onAuthStateChanged(user => {
-          console.log('ngOnInit: onAuthStateChanged(): user = ', user)
+      firebase.auth().onAuthStateChanged(async user => {
+          console.log('watch: ngOnInit: onAuthStateChanged(): user = ', user)
           if(user) {
-              let online = user ? true : false
-              this.setFirebaseUser(user, online);
-              this.signIn(/*this.log,*/ user); // circular dependency - can't inject log service            
+              let online = true
+              // this.setFirebaseUser(user, online);
+              await this.signIn(/*this.log,*/ user); // circular dependency - can't inject log service            
           }
           else {
               // user logged out
@@ -112,16 +112,11 @@ export class UserService {
   // we'll see...   10.1.20
   async getCurrentUser() : Promise<FirebaseUserModel> {
     if(this.user) {
-      console.log('getCurrentUser():  get cached user: ', this.user);
       return this.user
     }
     var user = await this.createFirebaseUserModel()
-    .catch(function(error) {
-      console.log('getCurrentUser():  error: ', error);
-    })
 
     if(!user) {
-      console.log('getCurrentUser() user = undefined so return early');
       return null;
     }
 
@@ -131,12 +126,11 @@ export class UserService {
         this.user.populate(userDoc.data());
         
         if(this.user.photoFileName) {
-            console.log('this.user.photoFileName:  '+this.user.photoFileName)
+            console.log('watch: this.user.photoFileName:  '+this.user.photoFileName)
             let photoURL = await this.afStorage.storage.refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName).getDownloadURL()
             this.user.photoURL = photoURL
         }
 
-        console.log('getCurrentUser(): DATABASE HIT this.user = ', this.user);
         this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
         resolve(this.user);
     });
