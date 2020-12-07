@@ -73,6 +73,7 @@ import { ReviewSmsComponent } from './sms/review-sms/review-sms.component';
 import { SmsMainComponent } from './sms/sms-main/sms-main.component';
 import { SettingsService } from './settings/settings.service';
 import { isPlatformBrowser } from '@angular/common';
+import { VideoListComponent } from './admin/video/video-list/video-list.component';
 
 
 
@@ -170,6 +171,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     MyVideosComponent,
     ReviewSmsComponent,
     SmsMainComponent,
+    VideoListComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

@@ -36,12 +36,19 @@ exports.notifyHeapWarning = twilio_sms.notifyHeapWarning
 const twilio_video = require('./twilio-video');
 exports.generateTwilioToken = twilio_video.generateTwilioToken;
 exports.compose = twilio_video.compose
+exports.getCompositionSid = twilio_video.getCompositionSid
+exports.downloadComposition = twilio_video.downloadComposition
 exports.twilioCallback = twilio_video.twilioCallback
 exports.downloadComplete = twilio_video.downloadComplete
+exports.cutVideo = twilio_video.cutVideo
 exports.cutVideoComplete = twilio_video.cutVideoComplete
+exports.createHls = twilio_video.createHls
 exports.createHlsComplete = twilio_video.createHlsComplete
+exports.uploadToFirebaseStorage = twilio_video.uploadToFirebaseStorage
 exports.uploadToFirebaseStorageComplete = twilio_video.uploadToFirebaseStorageComplete
+exports.uploadScreenshotToStorage = twilio_video.uploadScreenshotToStorage
 exports.uploadScreenshotToStorageComplete = twilio_video.uploadScreenshotToStorageComplete
+exports.deleteVideo = twilio_video.deleteVideo
 exports.deleteVideoComplete = twilio_video.deleteVideoComplete
 
 

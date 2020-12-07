@@ -1,0 +1,139 @@
+
+<div style="margin-top:20px;overflow-x:hidden;padding-left:20px;">
+    <h3>Videos</h3>
+    
+    <div class="row no-gutters" *ngFor="let room of rooms" style="margin-bottom:10px">
+        <div class="col-12">
+            <hr style="border: 5px solid green;"/>
+            <div class="row">
+                
+                <div class="col-6">
+                    RoomSid: 
+                    <br/><b>{{room.RoomSid}}</b>
+
+                    <BR/>CompositionSid: 
+                    <span *ngIf="room.CompositionSid">
+                    <BR/><b>{{room.CompositionSid}}</b> &nbsp;&nbsp; <a (click)="deleteCompositionSid(room)"><u>delete</u></a> 
+                    </span>
+                    <span *ngIf="!room.CompositionSid">
+                    <BR/><button class="btn btn-success" (click)="getCompositionSid(room)">/getCompositionSid</button>
+                    </span>
+
+                    <BR/>call_ended_ms: {{room.call_ended_ms | date: 'short'}}
+                    <BR/>created_ms: {{room.created_ms | date: 'short'}}
+                    
+                    <BR/>compositionFile:
+                    <span *ngIf="room.compositionFile">
+                    <BR/><b>{{room.compositionFile}}</b> &nbsp;&nbsp; <a (click)="deleteCompositionFile(room)"><u>delete</u></a> 
+                    </span>
+                    <span *ngIf="!room.compositionFile">
+                    <BR/>  <button class="btn btn-success" (click)="downloadComposition(room)" title="downloadComposition"><i class="fas fa-download"></i></button>
+                    </span>
+
+
+
+                    <BR/>tempEditFolder:
+                    <BR/>{{room.tempEditFolder}}
+                    
+                    <BR/>outputFile:
+                    <span *ngIf="room.outputFile">
+                    <BR/><b>{{room.outputFile}}</b> &nbsp;&nbsp; <a (click)="deleteOutputFile(room)"><u>delete</u></a> 
+                    </span>
+                    <span *ngIf="!room.outputFile">
+                    <BR/><button class="btn btn-success" title="create output file" (click)="cutVideo(room)"><i class="fas fa-file-video"></i></button>
+                    </span>
+
+
+                    <BR/>&nbsp;
+                    <BR/>uploadFiles <span *ngIf="!room.uploadFiles"><button class="btn btn-success" (click)="createHls(room)"><i class="fas fa-file-video"></i></button></span>
+                                     <span *ngIf="room.uploadFiles"><a (click)="deleteHlsFiles(room)"><u>delete</u></a></span>
+
+                    <ul>
+                    <span *ngFor="let uploadFile of room.uploadFiles">
+                        <li>{{uploadFile.path}}</li>  <!-- there's also uploadFile.name  which is just the file name with no dir/path -->
+                    </span>
+                    </ul>
+
+                    <BR/>storageItems  <span *ngIf="room.storageItems"> &nbsp;&nbsp; <a (click)="deleteStorageItems(room)"><u>delete</u></a> </span>
+                    <span *ngIf="!room.storageItems"><BR/><button class="btn btn-success" title="upload items to cloud storage" (click)="uploadToFirebaseStorage(room)"><i class="fas fa-upload"></i></button></span>
+                    <span *ngIf="room.storageItems">
+                    <BR/><a href="https://console.cloud.google.com/storage/browser/{{settingsDoc.projectId}}.appspot.com/{{room.CompositionSid}}?project={{settingsDoc.projectId}}" target="cloudfiles">View in Google Cloud</a>    
+                    <ul>
+                    <span *ngFor="let storageItem of room.storageItems">
+                        <li>bucket: {{storageItem.bucketName}} folder: {{storageItem.folder}} filename: {{storageItem.filename}}</li>  <!-- there's also uploadFile.name  which is just the file name with no dir/path -->
+                    </span>
+                    </ul>
+                    </span>
+
+                    
+                    <BR/>screenshotUrl: 
+                    <span *ngIf="!room.screenshotUrl"><button class="btn btn-success" title="upload screenshot" (click)="uploadScreenshotToStorage(room)"><i class="fas fa-upload"></i></button></span>
+                    <span *ngIf="room.screenshotUrl"><br/> {{room.screenshotUrl}} &nbsp;&nbsp; <a (click)="deleteScreenshotUrl(room)"><u>delete</u></a> </span>
+                   
+                    <span *ngIf="room.compositionFile && room.outputFile && room.uploadFiles && room.storageItems && room.screenshotUrl">
+                    <BR/>&nbsp;
+                    <BR/><button class="btn btn-success" title="delete files on vm" (click)="deleteVideo(room)"><i class="fas fa-trash"></i>&nbsp; Delete VM Files</button>
+                    </span>
+
+
+                    <BR/>&nbsp;
+                    <BR/>Guests
+                    <span *ngFor="let guest of room.guests">
+                        <hr/>
+                        &nbsp;&nbsp;guestName: {{guest.guestName}}
+                        <BR/>&nbsp;&nbsp;guestPhone: {{guest.guestPhone | phone}}
+                        <BR/>&nbsp;&nbsp;left_ms: {{guest.left_ms | date: 'short'}}
+                    </span>
+                    <hr/>
+                    <BR/>hostId: {{room.hostId}}
+                    <BR/>hostName: {{room.hostName}}
+                    <BR/>hostPhone: {{room.hostPhone | phone}}
+                    <!-- xxxxxxxx -->
+                    <BR/>host_joined_ms: {{room.host_joined_ms | date: 'short'}}
+                    <BR/>host_left_ms: {{room.host_left_ms | date: 'short'}}
+                    <BR/>invitationId: {{room.invitationId}}
+                    <BR/>mark_time:  todo
+                    <BR/>recording_state: {{room.recording_state}}
+                    <BR/>videoUrl: {{room.videoUrl}}
+                    <BR/>videoUrlAlt: {{room.videoUrlAlt}}
+                    <BR/>video_description:
+                    <BR/>{{room.video_description}}
+                    <BR/>video_title:
+                    <BR/>{{room.video_title}}
+                    {{room.video_title}}
+                    <!-- <BR/>{{room.RoomSid}} -->
+                    <!-- <BR/>{{room.CompositionSid}} -->
+                </div>
+                
+                <div class="col-6">
+                    <a href="/view-video/{{room.CompositionSid}}"><img [attr.src]="room.screenshotUrl" style="width:100%"></a>
+
+                    
+                    <div class="row">
+                        <div class="col"><B>Response:</B></div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">{{response}}</div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col"><B>Composition Progress:</B></div>
+                    </div>
+                    
+                    <div class="row" *ngFor="let progress of room.compositionProgress">
+                        <div class="col">{{progress}}</div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+    
+    
+    
+</div>
+    
+    

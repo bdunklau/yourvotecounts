@@ -48,10 +48,12 @@ import { SettingsComponent } from './settings/settings.component';
 import { TwilioSettingsComponent } from './settings/twilio-settings/twilio-settings.component';
 import { MyVideosComponent } from './video/my-videos/my-videos.component'
 import { SmsMainComponent } from './sms/sms-main/sms-main.component';
+import { VideoListComponent } from './admin/video/video-list/video-list.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'admin/videos', component: VideoListComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'disabled', component: DisabledComponent },
   { path: 'error-page', component: ErrorPageComponent },
   { path: 'home', component: HomeComponent },
