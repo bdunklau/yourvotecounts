@@ -508,9 +508,13 @@ exports.cutVideo = functions.https.onRequest((req, res) => {
                     return res.status(500).send(JSON.stringify({"error": err, "vm url": vmUrl}));
                 }
                 **********/
-                console.log(err, body);
-                await admin.firestore().collection('room').doc(req.query.RoomSid).update({outputFile: body.outputFile})
-                return res.status(200).send(JSON.stringify({"finished": "cutVideo", "body": body}));
+                if(err) {
+                    console.log(err);
+                    return res.status(200).send(JSON.stringify({"finished": "cutVideo", "err": err}));
+                } else {
+                    await admin.firestore().collection('room').doc(req.query.RoomSid).update({outputFile: body.outputFile})
+                    return res.status(200).send(JSON.stringify({"finished": "cutVideo", "body": body}));
+                }
             }
         );
     })
@@ -928,7 +932,7 @@ exports.uploadScreenshotToStorage = functions.firestore.document('upload_screens
         firebase_functions_host: settings.firebase_functions_host,
         //callbackUrl: `https://${settings.firebase_functions_host}/deleteVideoComplete`, // just below this function
         callbackUrl: `https://${settings.firebase_functions_host}/uploadScreenshotToStorageComplete`, // just below this function
-        compositionProgress: room.compositionProgress,
+        compositionProgress: compositionProgress,
         website_domain_name: settings.website_domain_name,
         projectId: settings.projectId,
         storage_keyfile: settings.storage_keyfile
@@ -953,6 +957,7 @@ exports.uploadScreenshotToStorage = functions.firestore.document('upload_screens
 
             // Not doing anything with this - but have to handle err to get the script to compile
             if(err) {
+                console.log('uploadScreenshotToStorage():  err = ', err)
                 await admin.firestore().collection('room').doc(room.RoomSid).update({upload_error: err})                        
             }
             let batch = db.batch();
