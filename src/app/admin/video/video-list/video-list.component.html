@@ -112,6 +112,10 @@
 
 
 
+                    <!-- if videoUrlAlt exists, we can feel good that these files got uploaded to the cloud -->
+                    <span *ngIf="room.videoUrlAlt">
+                    <BR/><a href="https://console.cloud.google.com/storage/browser/{{settingsDoc.projectId}}.appspot.com/{{room.CompositionSid}}?project={{settingsDoc.projectId}}" target="cloudfiles">View in Google Cloud</a>    
+                    </span>
 
 
 
