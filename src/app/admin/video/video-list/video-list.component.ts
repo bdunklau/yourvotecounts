@@ -152,7 +152,10 @@ export class VideoListComponent implements OnInit {
     }
 
 
-    async downloadComposition(room) {
+    /**
+     * stop: true/false - do we stop (true) after just the download, or do we keep going (false) all the way through to the completion of the video's production/upload
+     */
+    async downloadComposition(room, stop) {
               
         const downloadOptions = {
             headers: new HttpHeaders({
@@ -161,6 +164,7 @@ export class VideoListComponent implements OnInit {
               'Access-Control-Allow-Origin': '*'
             }),
             params: new HttpParams().set('cloud_host', this.settingsDoc.cloud_host)
+                                    .set('stop', stop)
                                     .set('RoomSid', room.RoomSid)
                                     .set('MediaUri', `/v1/Compositions/${room.CompositionSid}/Media`)
                                     .set('CompositionSid', room.CompositionSid)
@@ -175,7 +179,7 @@ export class VideoListComponent implements OnInit {
         this.http.get(downloadCompositionUrl, downloadOptions).toPromise()
         // from yourvotecounts: index.js: /downloadComposition
         .then(data => this.response = `success - data = ${JSON.stringify(data)}`)
-        .catch(error => this.response = `Error: ${error}`)
+        .catch(error => this.response = `Error: ${JSON.stringify(error)}`)
         // console.log('getCompositionSid():  data2 = ', data2)
         
     }
@@ -204,7 +208,7 @@ export class VideoListComponent implements OnInit {
         this.http.get(url, options).toPromise()
         // from yourvotecounts: index.js: /cutVideo
         .then(data => this.response = `success - data = ${JSON.stringify(data)}`)
-        .catch(error => this.response = `Error: ${error}`)
+        .catch(error => this.response = `Error: ${JSON.stringify(error)}`)
 
     }
 
@@ -236,7 +240,7 @@ export class VideoListComponent implements OnInit {
         let url = `http://${this.settingsDoc.firebase_functions_host}/createHls`
         this.http.get(url, options).toPromise()
         .then(data => this.response = `success - data = ${JSON.stringify(data)}`)
-        .catch(error => this.response = `Error: ${error}`)
+        .catch(error => this.response = `Error: ${JSON.stringify(error)}`)
     }
  
 
@@ -282,6 +286,11 @@ export class VideoListComponent implements OnInit {
 
     async deleteScreenshotUrl(room) {
         this.roomService.deleteScreenshotUrl(room)
+    }
+
+    async recreateVideo(room) {
+        await this.roomService.deleteVideoResults(room)
+        await this.roomService.triggerRecreateVideo(room)     
     }
 
 

@@ -19,14 +19,18 @@
                     <BR/><button class="btn btn-success" (click)="getCompositionSid(room)">/getCompositionSid</button>
                     </span>
 
-                    <BR/>call_ended_ms: {{room.call_ended_ms | date: 'short'}}
-                    <BR/>created_ms: {{room.created_ms | date: 'short'}}
                     
+                    <!-- the big kahuna -->
+                    <BR/>  <button class="btn btn-success" (click)="recreateVideo(room, 'false')" title="recreate the whole thing"><i class="fas fa-upload"></i> Recreate Video</button>
+                   
+
+                    <BR/>call_ended_ms: {{room.call_ended_ms | date: 'short'}}
+                    <BR/>created_ms: {{room.created_ms | date: 'short'}}                    
 
 
 
-                    <span *ngIf="!room.compositionFile">
-                    <BR/>  <button class="btn btn-success" (click)="downloadComposition(room)" title="downloadComposition"><i class="fas fa-download"></i> download compositionFile</button>
+                    <span *ngIf="!room.compositionFile && !room.videoUrl">
+                    <BR/>  <button class="btn btn-success" (click)="downloadComposition(room, 'true')" title="downloadComposition"><i class="fas fa-download"></i> download compositionFile</button>
                     </span>
 
                     <span *ngIf="room.compositionFile">

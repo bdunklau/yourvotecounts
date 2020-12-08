@@ -14,7 +14,7 @@ const VideoGrant = AccessToken.VideoGrant;
 //admin.initializeApp(functions.config().firebase);
 
 
-// firebase deploy --only functions:downloadComplete,functions:generateTwilioToken,functions:compose,functions:getCompositionSid,functions:downloadComposition,functions:cutVideo,functions:twilioCallback,functions:cutVideoComplete,functions:uploadToFirebaseStorageComplete,functions:deleteVideoComplete,functions:createHls,functions:createHlsComplete,functions:uploadToFirebaseStorage,functions:uploadToFirebaseStorageComplete,functions:uploadScreenshotToStorage,functions:uploadScreenshotToStorageComplete,functions:deleteVideo,functions:deleteVideoComplete
+// firebase deploy --only functions:downloadComplete,functions:generateTwilioToken,functions:compose,functions:getCompositionSid,functions:downloadComposition,functions:cutVideo,functions:twilioCallback,functions:cutVideoComplete,functions:uploadToFirebaseStorageComplete,functions:deleteVideoComplete,functions:createHls,functions:createHlsComplete,functions:uploadToFirebaseStorage,functions:uploadToFirebaseStorageComplete,functions:uploadScreenshotToStorage,functions:uploadScreenshotToStorageComplete,functions:deleteVideo,functions:deleteVideoComplete,functions:triggerRecreateVideo
 
 
 
@@ -188,7 +188,7 @@ exports.downloadComposition = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
 
         let args = {cloud_host: req.query.cloud_host,
-            stop: true,
+            stop: req.query.stop,
             RoomSid: req.query.RoomSid,
             MediaUri: req.query.MediaUri,
             CompositionSid: req.query.CompositionSid,
@@ -209,7 +209,6 @@ exports.downloadComposition = functions.https.onRequest((req, res) => {
         const twilioAuthToken = keys.data().twilio_auth_key;   
 
         var formData = {
-            stop: args.stop,
             RoomSid: args.RoomSid,
             twilio_account_sid: twilioAccountSid,
             twilio_auth_token: twilioAuthToken,
@@ -221,6 +220,9 @@ exports.downloadComposition = functions.https.onRequest((req, res) => {
             firebase_function: '/downloadComplete',
             website_domain_name: args.website_domain_name
         };
+        if(req.query.stop === 'true') {
+            formData['stop'] = true
+        }
 
 
         request.post(
@@ -390,7 +392,7 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
         await db.collection('room').doc(req.body.RoomSid).update({compositionProgress: compositionProgress})
         
 
-        if(req.body.stop) {
+        if(req.body.stop && (req.body.stop === true || req.body.stop === 'true')) {
             // let's us stop early when testing
             return res.status(200).send(JSON.stringify({"result": "ok", "stopped early": "true"}));
         }
@@ -554,7 +556,7 @@ exports.cutVideoComplete = functions.https.onRequest((req, res) => {
         })
 
 
-    if(req.body.stop) {
+    if(req.body.stop && (req.body.stop === true || req.body.stop === 'true')) {
         // let's us stop early when testing
         return res.status(200).send(JSON.stringify({"result": "ok", "stopped early": "true"}));
     }
@@ -685,7 +687,7 @@ exports.createHlsComplete = functions.https.onRequest(async (req, res) => {
         })
     
 
-    if(req.body.stop) {
+    if(req.body.stop && (req.body.stop === true || req.body.stop === 'true')) {
         // let's us stop early when testing
         return res.status(200).send(JSON.stringify({"result": "ok", "stopped early": "true", "video files": req.body.uploadFiles}));
     }
@@ -847,7 +849,7 @@ exports.uploadToFirebaseStorageComplete = functions.https.onRequest(async (req, 
                 videoUrlAlt: videoUrlAlt
             })
 
-    if(req.body.stop) {
+    if(req.body.stop && (req.body.stop === true || req.body.stop === 'true')) {
         // let's us stop early when testing
         return res.status(200).send(JSON.stringify({"result": "ok", "stopped early": "true", "uploaded files": req.body.uploadFiles}));
     }
@@ -1007,7 +1009,7 @@ exports.uploadScreenshotToStorageComplete = functions.https.onRequest(async (req
     await db.collection('room').doc(req.body.RoomSid)
             .update({ compositionProgress: compositionProgress, screenshotUrl: screenshotUrl })
      
-    if(req.body.stop) {
+    if(req.body.stop && (req.body.stop === true || req.body.stop === 'true')) {
         // let's us stop early when testing
         return res.status(200).send(JSON.stringify({"result": "ok", "stopped early": "true", "screenshot file": req.body.screenshot}));
     }
@@ -1159,6 +1161,45 @@ exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
     let filesDeleted = _.join(req.body.filesDeleted, ',')
     let message = `Deleted these video files: ${filesDeleted}`
     return res.status(200).send(JSON.stringify({"result": message}));
+})
+
+
+
+/**
+ * triggered from room.service:triggerRecreateVideo()
+ */
+exports.triggerRecreateVideo = functions.firestore.document('recreate_video_requests/{RoomSid}').onCreate(async (snap, context) => {
+
+    var db = admin.firestore();
+
+    let room = snap.data()
+    let settingsDoc = await db.collection('config').doc('settings').get()
+    let settings = settingsDoc.data()
+    
+    let formData = {
+        RoomSid: room.RoomSid,
+        StatusCallbackEvent: 'composition-available',
+        MediaUri: `/v1/Compositions/${room.CompositionSid}/Media`,
+        CompositionSid:  room.CompositionSid
+    }
+
+	request.post(
+		{
+			url: `http://${settings.firebase_functions_host}/twilioCallback?cloud_host=${settings.cloud_host}&firebase_functions_host=${settings.firebase_functions_host}&website_domain_name=${settings.website_domain_name}`, 
+			json: formData // 'json' attr name is KEY HERE, don't use 'form'
+		},
+		function (err, httpResponse, body) {
+            /**** TODO FIXME can't send 500's back to twilio - only 200's
+             * Figure something else out
+             * see:   https://www.twilio.com/console/debugger/NO92750e021280500fc4e1bfd304feac53
+			if(err) {
+				return res.status(500).send(JSON.stringify({"error": err, "vm url": `http://${req.body.cloud_host}/deleteVideo`}));
+            }
+            *********/
+			console.log(err, body);
+			return res.status(200).send(JSON.stringify({"result": "ok"}));
+		}
+	);
 })
 
 

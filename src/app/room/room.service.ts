@@ -392,4 +392,24 @@ export class RoomService {
       await this.afs.collection('room').doc(room.RoomSid).update({screenshotUrl: firebase.firestore.FieldValue.delete()})
   }
 
+  async deleteVideoResults(room) {
+      await this.afs.collection('room').doc(room.RoomSid)
+                      .update({
+                          compositionFile: firebase.firestore.FieldValue.delete(),
+                          compositionProgress: firebase.firestore.FieldValue.delete(),
+                          outputFile: firebase.firestore.FieldValue.delete(),
+                          uploadFiles: firebase.firestore.FieldValue.delete(),
+                          storageItems: firebase.firestore.FieldValue.delete(),
+                          screenshotUrl: firebase.firestore.FieldValue.delete(),
+                          tempEditFolder: firebase.firestore.FieldValue.delete(),
+                          videoUrl: firebase.firestore.FieldValue.delete(),
+                          videoUrlAlt: firebase.firestore.FieldValue.delete()
+                      })
+  }
+
+  async triggerRecreateVideo(room) {    
+      await this.afs.collection('recreate_video_requests').doc(room.RoomSid).delete()
+      await this.afs.collection('recreate_video_requests').doc(room.RoomSid).set(room)
+  }
+
 }

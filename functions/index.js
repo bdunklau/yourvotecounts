@@ -50,6 +50,8 @@ exports.uploadScreenshotToStorage = twilio_video.uploadScreenshotToStorage
 exports.uploadScreenshotToStorageComplete = twilio_video.uploadScreenshotToStorageComplete
 exports.deleteVideo = twilio_video.deleteVideo
 exports.deleteVideoComplete = twilio_video.deleteVideoComplete
+exports.triggerRecreateVideo = twilio_video.triggerRecreateVideo
+
 
 
 const video = require('./video');
