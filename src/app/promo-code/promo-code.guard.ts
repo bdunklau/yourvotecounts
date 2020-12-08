@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable,PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { SettingsService } from '../settings/settings.service'
 import { UserService } from '../user/user.service';
@@ -12,6 +13,7 @@ export class PromoCodeGuard implements CanActivate {
     constructor(
         private settingsService: SettingsService,
         private userService: UserService,
+        @Inject(PLATFORM_ID) private platformId,
         private router: Router,
     ) {}
 
@@ -22,15 +24,18 @@ export class PromoCodeGuard implements CanActivate {
     async canActivate(
         next: ActivatedRouteSnapshot,
         state: RouterStateSnapshot): Promise<boolean> {
-          console.log('PromoCodeGuard')
-          let user = await this.userService.getCurrentUser();
-          if(!user || !user.promo_code) {
-              this.router.navigate(['/promo-code'])
-              return false
+          if(isPlatformBrowser(this.platformId)) {
+
+              console.log('PromoCodeGuard')
+              let user = await this.userService.getCurrentUser();
+              if(!user || !user.promo_code) {
+                  this.router.navigate(['/promo-code'])
+                  return false
+              }
+
+
+              return true;
           }
-
-
-        return true;
     }
   
 }

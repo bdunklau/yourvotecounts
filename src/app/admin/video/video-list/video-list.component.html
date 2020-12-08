@@ -22,58 +22,93 @@
                     <BR/>call_ended_ms: {{room.call_ended_ms | date: 'short'}}
                     <BR/>created_ms: {{room.created_ms | date: 'short'}}
                     
-                    <BR/>compositionFile:
-                    <span *ngIf="room.compositionFile">
-                    <BR/><b>{{room.compositionFile}}</b> &nbsp;&nbsp; <a (click)="deleteCompositionFile(room)"><u>delete</u></a> 
-                    </span>
+
+
+
                     <span *ngIf="!room.compositionFile">
-                    <BR/>  <button class="btn btn-success" (click)="downloadComposition(room)" title="downloadComposition"><i class="fas fa-download"></i></button>
+                    <BR/>  <button class="btn btn-success" (click)="downloadComposition(room)" title="downloadComposition"><i class="fas fa-download"></i> download compositionFile</button>
                     </span>
 
-
-
+                    <span *ngIf="room.compositionFile">
+                    <BR/>compositionFile:
+                    <BR/><b>{{room.compositionFile}}</b> &nbsp;&nbsp; <a (click)="deleteCompositionFile(room)"><u>delete</u></a> 
                     <BR/>tempEditFolder:
                     <BR/>{{room.tempEditFolder}}
-                    
-                    <BR/>outputFile:
-                    <span *ngIf="room.outputFile">
-                    <BR/><b>{{room.outputFile}}</b> &nbsp;&nbsp; <a (click)="deleteOutputFile(room)"><u>delete</u></a> 
-                    </span>
+
+
+
+
                     <span *ngIf="!room.outputFile">
-                    <BR/><button class="btn btn-success" title="create output file" (click)="cutVideo(room)"><i class="fas fa-file-video"></i></button>
+                    <BR/><button class="btn btn-success" title="create output file" (click)="cutVideo(room)"><i class="fas fa-file-video"></i> extract recorded part</button>
                     </span>
 
+                    <span *ngIf="room.outputFile">
+                    <BR/>outputFile (aka the recorded part):
+                    <BR/><b>{{room.outputFile}}</b> &nbsp;&nbsp; <a (click)="deleteOutputFile(room)"><u>delete</u></a> 
 
+
+
+
+                    <span *ngIf="!room.uploadFiles">
+                    <br/><button class="btn btn-success" (click)="createHls(room)"><i class="fas fa-file-video"></i> create files to upload</button>
+                    </span>
+                    
+                    <span *ngIf="room.uploadFiles">
                     <BR/>&nbsp;
-                    <BR/>uploadFiles <span *ngIf="!room.uploadFiles"><button class="btn btn-success" (click)="createHls(room)"><i class="fas fa-file-video"></i></button></span>
-                                     <span *ngIf="room.uploadFiles"><a (click)="deleteHlsFiles(room)"><u>delete</u></a></span>
-
+                    <BR/>uploadFiles &nbsp;&nbsp; <a (click)="deleteHlsFiles(room)"><u>delete</u></a>
                     <ul>
                     <span *ngFor="let uploadFile of room.uploadFiles">
                         <li>{{uploadFile.path}}</li>  <!-- there's also uploadFile.name  which is just the file name with no dir/path -->
                     </span>
                     </ul>
 
-                    <BR/>storageItems  <span *ngIf="room.storageItems"> &nbsp;&nbsp; <a (click)="deleteStorageItems(room)"><u>delete</u></a> </span>
-                    <span *ngIf="!room.storageItems"><BR/><button class="btn btn-success" title="upload items to cloud storage" (click)="uploadToFirebaseStorage(room)"><i class="fas fa-upload"></i></button></span>
+
+
+
+                    <span *ngIf="!room.storageItems">
+                    <BR/><button class="btn btn-success" title="upload items to cloud storage" (click)="uploadToFirebaseStorage(room)"><i class="fas fa-upload"></i> Upload to Firebase Storage</button>
+                    </span>
+
                     <span *ngIf="room.storageItems">
+                    <BR/>storageItems  &nbsp;&nbsp; <a (click)="deleteStorageItems(room)"><u>delete</u></a> 
                     <BR/><a href="https://console.cloud.google.com/storage/browser/{{settingsDoc.projectId}}.appspot.com/{{room.CompositionSid}}?project={{settingsDoc.projectId}}" target="cloudfiles">View in Google Cloud</a>    
                     <ul>
                     <span *ngFor="let storageItem of room.storageItems">
                         <li>bucket: {{storageItem.bucketName}} folder: {{storageItem.folder}} filename: {{storageItem.filename}}</li>  <!-- there's also uploadFile.name  which is just the file name with no dir/path -->
                     </span>
                     </ul>
-                    </span>
+
 
                     
-                    <BR/>screenshotUrl: 
-                    <span *ngIf="!room.screenshotUrl"><button class="btn btn-success" title="upload screenshot" (click)="uploadScreenshotToStorage(room)"><i class="fas fa-upload"></i></button></span>
-                    <span *ngIf="room.screenshotUrl"><br/> {{room.screenshotUrl}} &nbsp;&nbsp; <a (click)="deleteScreenshotUrl(room)"><u>delete</u></a> </span>
-                   
+                    <span *ngIf="!room.screenshotUrl">
+                    <BR/><button class="btn btn-success" title="upload screenshot" (click)="uploadScreenshotToStorage(room)"><i class="fas fa-upload"></i>Upload Screenshot to Storage</button>
+                    </span>
+
+                    <span *ngIf="room.screenshotUrl">
+                    <BR/>screenshotUrl:  &nbsp;&nbsp; <a (click)="deleteScreenshotUrl(room)"><u>delete</u></a> 
+                    <br/> {{room.screenshotUrl}}
+
+
                     <span *ngIf="room.compositionFile && room.outputFile && room.uploadFiles && room.storageItems && room.screenshotUrl">
                     <BR/>&nbsp;
                     <BR/><button class="btn btn-success" title="delete files on vm" (click)="deleteVideo(room)"><i class="fas fa-trash"></i>&nbsp; Delete VM Files</button>
                     </span>
+
+
+
+                    </span>  <!-- span *ngIf="room.screenshotUrl" -->
+                   
+                    </span>  <!-- span *ngIf="room.storageItems" -->
+
+                    </span>  <!-- span *ngIf="room.uploadFiles" -->
+
+                    </span>  <!-- span *ngIf="room.outputFile" -->
+
+                    </span>  <!-- span *ngIf="room.compositionFile" -->
+
+
+
+
 
 
                     <BR/>&nbsp;

@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { UserService } from '../user/user.service';
 import { FirebaseUserModel } from '../user/user.model';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
@@ -34,45 +35,47 @@ export class MyAccountComponent implements OnInit {
 
     constructor(private userService: UserService,
                 private afStorage: AngularFireStorage,
+                @Inject(PLATFORM_ID) private platformId,
                 private messageService: MessageService,
               ) { }
 
     async ngOnInit() {
-      this.user = await this.userService.getCurrentUser();
+      if(isPlatformBrowser(this.platformId)) {
+          this.user = await this.userService.getCurrentUser();
 
-      this.userSubscription = this.userService.subscribe(this.user.uid, async (users:[FirebaseUserModel]) => {
-        console.log('ngOnInit: entered');
-        if(users && users.length > 0) {
-          this.user = users[0];
-          this.nameValue = this.user.displayName;
-          this.phoneNumber = this.user.phoneNumber;
-          //this.photoURL = this.user.photoURL;  // 8/11/20 not using this.user.photoURL
-          this.photoFileName = this.user.photoFileName;
-          if(this.oldPhotoFileName && this.oldPhotoFileName != this.user.photoFileName) {
-            // delete the old profile-pic and thumb_profile-pic in storage
-            this.afStorage.ref(this.oldPhotoFileName).delete();
-            let pic = this.oldPhotoFileName.substring("thumb_".length)
-            this.afStorage.ref(pic).delete();
-          }
-          this.oldPhotoFileName = this.user.photoFileName;
-          
-          // Create a reference from a Google Cloud Storage URI
-          console.log('environment.firebase.storageBucket:  ', environment.firebase.storageBucket)
-          if(this.user.photoFileName) {
-              console.log('this.user.photoFileName:  '+this.user.photoFileName)
-              await this.afStorage.storage
-                 .refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName)
-                 .getDownloadURL().then(url => {
-                     console.log("this.photoURL = ", url)
-                     this.photoURL = url;
-                     this.isUploading = false;
-                  })
-          }
-          
-          console.log('ngOnInit: photoURL = ', this.photoURL);
-        }
-      })
-
+          this.userSubscription = this.userService.subscribe(this.user.uid, async (users:[FirebaseUserModel]) => {
+            console.log('ngOnInit: entered');
+            if(users && users.length > 0) {
+              this.user = users[0];
+              this.nameValue = this.user.displayName;
+              this.phoneNumber = this.user.phoneNumber;
+              //this.photoURL = this.user.photoURL;  // 8/11/20 not using this.user.photoURL
+              this.photoFileName = this.user.photoFileName;
+              if(this.oldPhotoFileName && this.oldPhotoFileName != this.user.photoFileName) {
+                // delete the old profile-pic and thumb_profile-pic in storage
+                this.afStorage.ref(this.oldPhotoFileName).delete();
+                let pic = this.oldPhotoFileName.substring("thumb_".length)
+                this.afStorage.ref(pic).delete();
+              }
+              this.oldPhotoFileName = this.user.photoFileName;
+              
+              // Create a reference from a Google Cloud Storage URI
+              console.log('environment.firebase.storageBucket:  ', environment.firebase.storageBucket)
+              if(this.user.photoFileName) {
+                  console.log('this.user.photoFileName:  '+this.user.photoFileName)
+                  await this.afStorage.storage
+                    .refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName)
+                    .getDownloadURL().then(url => {
+                        console.log("this.photoURL = ", url)
+                        this.photoURL = url;
+                        this.isUploading = false;
+                      })
+              }
+              
+              console.log('ngOnInit: photoURL = ', this.photoURL);
+            }
+          })
+      }
     }
 
     ngOnDestroy() {
