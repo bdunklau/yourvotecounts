@@ -198,8 +198,6 @@ export class InvitationFormComponent implements OnInit {
   }
   
   ValidatePhone(control: AbstractControl): {[key: string]: any} | null  {
-      console.log('ValidatePhone(): control.value = ', control.value)
-      console.log('ValidatePhone(): this = ', this)
       if(!control || !control.value) return null
       let myString = this.justNumbers(control.value)      
       if (myString && (myString.length != 10) ) {
