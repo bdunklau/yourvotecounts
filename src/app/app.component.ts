@@ -83,7 +83,7 @@ export class AppComponent {
   // always unsubscribe
   ngOnDestroy() {
     if(this.userSubscription) this.userSubscription.unsubscribe();
-    console.log('ngOnDestroy:  this.userSubscription.unsubscribe()')
+    // console.log('ngOnDestroy:  this.userSubscription.unsubscribe()')
   }
 
   // https://www.w3schools.com/howto/howto_js_sidenav.asp

@@ -34,7 +34,7 @@ export class UserService {
   ) { 
       
       firebase.auth().onAuthStateChanged(async user => {
-          console.log('watch: ngOnInit: onAuthStateChanged(): user = ', user)
+          // console.log('watch: ngOnInit: onAuthStateChanged(): user = ', user)
           if(user) {
               let online = true
               // this.setFirebaseUser(user, online);

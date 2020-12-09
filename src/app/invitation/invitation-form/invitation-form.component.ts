@@ -84,7 +84,7 @@ export class InvitationFormComponent implements OnInit {
         this.currentInviteCount = this.currentInvitations ? this.currentInvitations.length : 0
         this.numberOfInvitationsRemaining = this.maxGuests - this.currentInviteCount
         this.host = window.location.host //this.settingsService.settings.website_domain_name
-        console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
+        // console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
 
         // this.canInvite = this.canInviteMore()
         this.names = []
