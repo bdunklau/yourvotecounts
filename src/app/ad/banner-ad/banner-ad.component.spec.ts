@@ -24,6 +24,8 @@ describe('BannerAdComponent', () => {
   });
 
   it('should create', () => {
+    console.log('BannerAdComponent: begin')
     expect(component).toBeTruthy();
+    console.log('BannerAdComponent: end')
   });
 });

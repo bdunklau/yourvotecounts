@@ -56,6 +56,8 @@ describe('DisabledComponent', () => {
   });
 
   it('should create', () => {
+    console.log('DisabledComponent: begin')
     expect(component).toBeTruthy();
+    console.log('DisabledComponent: end')
   });
 });

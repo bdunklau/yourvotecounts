@@ -60,6 +60,8 @@ describe('InvitationDeletedGuard', () => {
   });
 
   it('should be created', () => {
+    console.log('InvitationDeletedGuard: begin')
     expect(guard).toBeTruthy();
+    console.log('InvitationDeletedGuard: end')
   });
 });

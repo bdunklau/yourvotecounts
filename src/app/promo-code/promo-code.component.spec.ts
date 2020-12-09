@@ -21,6 +21,8 @@ xdescribe('PromoCodeComponent', () => {
   });
 
   it('should create', () => {
+    console.log('PromoCodeComponent: begin')
     expect(component).toBeTruthy();
+    console.log('PromoCodeComponent: end')
   });
 });

@@ -47,6 +47,8 @@ describe('InvitationService', () => {
   });
 
   it('should be created', () => {
+    console.log('InvitationService: begin')
     expect(service).toBeTruthy();
+    console.log('InvitationService: end')
   });
 });

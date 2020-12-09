@@ -51,6 +51,8 @@ describe('TermsOfServiceComponent', () => {
   });
 
   it('should create', () => {
+    console.log('TermsOfServiceComponent: begin')
     expect(component).toBeTruthy();
+    console.log('TermsOfServiceComponent: end')
   });
 });

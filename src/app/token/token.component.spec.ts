@@ -56,6 +56,8 @@ describe('TokenComponent', () => {
   });
 
   it('should create', () => {
+    console.log('TokenComponent: begin')
     expect(component).toBeTruthy();
+    console.log('TokenComponent: end')
   });
 });

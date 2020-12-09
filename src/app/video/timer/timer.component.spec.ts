@@ -22,6 +22,8 @@ xdescribe('TimerComponent', () => {
   });
 
   it('should create', () => {
+    console.log('TimerComponent: begin')
     expect(component).toBeTruthy();
+    console.log('TimerComponent: end')
   });
 });

@@ -43,7 +43,9 @@ describe('TermsOfServiceService', () => {
 
 
   it('should be created', () => {
+    console.log('TermsOfServiceService: begin')
     const service: TermsOfServiceService = TestBed.get(TermsOfServiceService);
     expect(service).toBeTruthy();
+    console.log('TermsOfServiceService: end')
   });
 });

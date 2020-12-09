@@ -20,6 +20,8 @@ describe('HomeComponent', () => {
   });
 
   it('should create', () => {
+    console.log('HomeComponent: begin')
     expect(component).toBeTruthy();
+    console.log('HomeComponent: end')
   });
 });

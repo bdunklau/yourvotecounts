@@ -68,6 +68,7 @@ describe('AuthGuard', () => {
     );
 
     it('should allow route to be accessed for a logged in user', async () => {
+      console.log('AuthGuard: 1: begin')
       spyOn(userService, 'getCurrentUser').and.returnValue({displayName: "Bob Meader", phoneNumber: "469-555-0000"});
       router = new MockRouter();
       authGuard = new AuthGuard(userService, 'browser', router);
@@ -75,11 +76,13 @@ describe('AuthGuard', () => {
       let canAct = await authGuard.canActivate()
       expect(canAct).toBeTruthy();
       expect(router.navigate.calls.count()).toEqual(0)
+      console.log('AuthGuard: 1: end')
     });
 
 
     // failed
     it('should return false for a logged out user', async () => {
+      console.log('AuthGuard: 2: begin')
       router = new MockRouter();
       spyOn(userService, 'getCurrentUser').and.returnValue(null);
       authGuard = new AuthGuard(userService, 'browser', router);
@@ -90,6 +93,7 @@ describe('AuthGuard', () => {
       expect(router.navigate.calls).toBeTruthy();
       expect(router.navigate.calls.count()).toEqual(1)
       expect(router.navigate).toHaveBeenCalledWith(['/login']);
+      console.log('AuthGuard: 2: end')
     });
 
 

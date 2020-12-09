@@ -46,6 +46,8 @@ describe('DisabledGuard', () => {
   });
 
   it('should ...', inject([DisabledGuard], (guard: DisabledGuard) => {
+    console.log('DisabledGuard: begin')
     expect(guard).toBeTruthy();
+    console.log('DisabledGuard: end')
   }));
 });

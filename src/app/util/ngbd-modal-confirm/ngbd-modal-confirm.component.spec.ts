@@ -46,6 +46,8 @@ describe('NgbdModalConfirmComponent', () => {
   });
 
   it('should create', () => {
+    console.log('NgbdModalConfirmComponent: begin')
     expect(component).toBeTruthy();
+    console.log('NgbdModalConfirmComponent: end')
   });
 });

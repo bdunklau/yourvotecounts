@@ -43,7 +43,9 @@ describe('PrivacyPolicyService', () => {
 
 
   it('should be created', () => {
+    console.log('PrivacyPolicyService: begin')
     const service: PrivacyPolicyService = TestBed.get(PrivacyPolicyService);
     expect(service).toBeTruthy();
+    console.log('PrivacyPolicyService: end')
   });
 });

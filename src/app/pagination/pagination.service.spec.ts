@@ -49,7 +49,9 @@ const AngularFirestoreStub = {
 
 
   it('should be created', () => {
+    console.log('PaginationService: begin')
     const service: PaginationService = TestBed.get(PaginationService);
     expect(service).toBeTruthy();
+    console.log('PaginationService: end')
   });
 });

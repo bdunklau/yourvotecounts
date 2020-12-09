@@ -20,6 +20,8 @@ describe('TeamComponent', () => {
   });
 
   it('should create', () => {
+    console.log('TeamComponent: begin')
     expect(component).toBeTruthy();
+    console.log('TeamComponent: end')
   });
 });

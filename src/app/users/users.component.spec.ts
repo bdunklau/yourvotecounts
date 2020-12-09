@@ -60,6 +60,8 @@ describe('UsersComponent', () => {
   });
 
   it('should create', () => {
+    console.log('UsersComponent: begin')
     expect(component).toBeTruthy();
+    console.log('UsersComponent: end')
   });
 });

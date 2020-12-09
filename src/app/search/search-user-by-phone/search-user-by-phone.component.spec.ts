@@ -57,6 +57,8 @@ describe('SearchUserByPhoneComponent', () => {
   });
 
   it('should create', () => {
+    console.log('SearchUserByPhoneComponent: begin')
     expect(component).toBeTruthy();
+    console.log('SearchUserByPhoneComponent: end')
   });
 });

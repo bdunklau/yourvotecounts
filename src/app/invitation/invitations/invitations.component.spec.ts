@@ -57,6 +57,8 @@ describe('InvitationsComponent', () => {
   });
 
   it('should create', () => {
+    console.log('InvitationsComponent: begin')
     expect(component).toBeTruthy();
+    console.log('InvitationsComponent: end')
   });
 });

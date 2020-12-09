@@ -63,6 +63,8 @@ describe('InvitationFormComponent', () => {
   });
 
   it('should create', () => {
+    console.log('InvitationFormComponent: begin')
     expect(component).toBeTruthy();
+    console.log('InvitationFormComponent: end')
   });
 });

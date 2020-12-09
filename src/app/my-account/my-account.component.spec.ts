@@ -58,6 +58,8 @@ xdescribe('MyAccountComponent', () => {
   });
 
   it('should create', () => {
+    console.log('MyAccountComponent: begin')
     expect(component).toBeTruthy();
+    console.log('MyAccountComponent: end')
   });
 });
