@@ -21,15 +21,21 @@ export class RoleGuard implements CanActivate {
     state: RouterStateSnapshot): Promise<boolean> {
 
       if(isPlatformBrowser(this.platformId)) {
-        var user = await this.userService.getCurrentUser()
+          var user = await this.userService.getCurrentUser()
 
-        if (user && user.hasRole(next.data.role)) {
-          return true;
-        }
+          if (user && user.hasRole(next.data.role)) {
+              return true;
+          }
+          else {
+              // navigate to home page
+              this.router.navigate(['/home']);
+              return false;
+          }
+      }
+      else {
+          this.router.navigate(['/home']);
+          return false;
       }
 
-    // navigate to home page
-    this.router.navigate(['/']);
-    return false;
   }
 }
