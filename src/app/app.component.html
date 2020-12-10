@@ -4,7 +4,7 @@
 
  <!-- https://www.w3schools.com/howto/howto_js_sidenav.asp -->
  <div id="mySidenav" class="sidenav">
-   <div class="nav-heading" (click)="closeNav()" [routerLink]="['/myaccount']">
+   <div id="myaccount_link" class="nav-heading" (click)="closeNav()" [routerLink]="['/myaccount']">
        
        <div class="row" [hidden]="!isLoggedIn" style="padding-top:20px;padding-bottom:20px">
            <div class="col-2">
