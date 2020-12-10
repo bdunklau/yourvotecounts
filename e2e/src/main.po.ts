@@ -1,5 +1,4 @@
 import { browser, by, element } from 'protractor';
-import * as protractor from 'protractor';
 import { BasePage } from './base.po';
 import { TestSupport } from './test-support.po';
 
@@ -55,9 +54,8 @@ export class MainPage extends BasePage {
     return this.getElement(by.id('users_link'));
   }
 
-  gotoTestSupport() {
-    return browser.get(browser.baseUrl+'token') as Promise<any>;
-    browser.sleep(100);
+  async gotoTestSupport() {
+    return await browser.get(browser.baseUrl+'token') // need this?...   as Promise<any>;
   }
 
   getUrl() {
