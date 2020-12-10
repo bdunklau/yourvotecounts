@@ -1189,15 +1189,9 @@ exports.triggerRecreateVideo = functions.firestore.document('recreate_video_requ
 			json: formData // 'json' attr name is KEY HERE, don't use 'form'
 		},
 		function (err, httpResponse, body) {
-            /**** TODO FIXME can't send 500's back to twilio - only 200's
-             * Figure something else out
-             * see:   https://www.twilio.com/console/debugger/NO92750e021280500fc4e1bfd304feac53
-			if(err) {
-				return res.status(500).send(JSON.stringify({"error": err, "vm url": `http://${req.body.cloud_host}/deleteVideo`}));
-            }
-            *********/
+            // TODO probably should do something if error
 			console.log(err, body);
-			return res.status(200).send(JSON.stringify({"result": "ok"}));
+			return true
 		}
 	);
 })
