@@ -713,7 +713,9 @@ s
     this.messageService.updateRecordingStatus("recording")
     this.roomObj['mark_time'] = []
     let now = new Date().getTime()
-    let diff = this.getTimeDiff({first: this.roomObj.host_joined_ms, second: now })
+    // You want created_ms NOT host_joined_ms - if host isn't the first to join, then mark_time.start_recording will be off
+    // You will end up capturing footage PRIOR to the segment you actually wanted to record.
+    let diff = this.getTimeDiff({first: this.roomObj.created_ms, second: now })
     this.roomObj['mark_time'].push({"start_recording_ms": now, "start_recording": diff})
     this.setRecordingState()
   } 

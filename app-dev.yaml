@@ -1,4 +1,4 @@
-runtime: nodejs
+runtime: nodejs10
 service: dev
 
 # NO env NEEDS TO BE SPECIFIED FOR THE STANDARD ENVIRONMENT - ONLY FOR THE FLEXIBLE ENV
