@@ -18,9 +18,10 @@ xdescribe('Anonymous users', () => {
   });
 
   // passed 8/7
-  it('should see Login link', () => {
+  it('should see Login link', async () => {
     page.goto('');
-    var login_link = page.getLoginLink();
+    let slp = 1
+    var login_link = await page.getLoginLink(slp);
     expect(login_link.isDisplayed()).toBeTruthy();
   });
 
