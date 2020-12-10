@@ -114,7 +114,12 @@ export class UserService {
     if(this.user) {
       return this.user
     }
-    var user = await this.createFirebaseUserModel()
+    var user
+    try {
+        user = await this.createFirebaseUserModel()
+    } catch(e) {
+        console.log('probably user not logged in?... error: ', e)
+    }
 
     if(!user) {
       return null;
