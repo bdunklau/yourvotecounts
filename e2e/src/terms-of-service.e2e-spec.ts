@@ -28,6 +28,7 @@ describe('Terms of Service page', () => {
     // navigate away or refresh the page
     // verify new TOS
     // set the TOS back to what it was
+    let slp = 1
 
     page.loginAdmin();
     page.clickTerms();
@@ -49,7 +50,7 @@ describe('Terms of Service page', () => {
     let tos3 = await apiTermsOfService.getTermsOfService();
     expect(origTerms).toEqual(tos3['text']);
 
-    page.clickLogout();
+    await page.clickLogout(slp);
   });
 
 

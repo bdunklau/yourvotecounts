@@ -51,6 +51,8 @@ describe('PrivacyPolicyComponent', () => {
   });
 
   it('should create', () => {
+    console.log('PrivacyPolicyComponent: begin')
     expect(component).toBeTruthy();
+    console.log('PrivacyPolicyComponent: end')
   });
 });

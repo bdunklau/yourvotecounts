@@ -42,7 +42,9 @@ const AngularFirestoreStub = {
 
 
   it('should be created', () => {
+    console.log('SettingsService: begin')
     const service: SettingsService = TestBed.get(SettingsService);
     expect(service).toBeTruthy();
+    console.log('SettingsService: end')
   });
 });

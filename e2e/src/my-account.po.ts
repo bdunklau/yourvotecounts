@@ -10,19 +10,21 @@ export class MyAccountPage extends BasePage {
   constructor(testSupport: TestSupport) { super(testSupport); }
 
 
-  clickEdit() {
+  async clickEdit(ms) {
     // FAIL?  If this fails, you probably don't have a displayName set for the user, just a phone number
-    this.getElement(by.id('edit_my_account')).click();
+    console.log("about to edit My Account...")
+    await browser.sleep(ms);
+    await this.getElement(by.id('edit_my_account')).click();
   }
 
-  clickSubmit() {
-    this.getElement(by.id("submit_personal_info")).click();
+  async clickSubmit() {
+    await this.getElement(by.id("submit_personal_info")).click();
   }
 
   async enterName(name) {
     var fld = this.getNameField();
     await fld.clear();
-    fld.sendKeys(name);
+    await fld.sendKeys(name);
   }
 
   getNameField() {

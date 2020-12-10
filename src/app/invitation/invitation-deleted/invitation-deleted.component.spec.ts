@@ -21,6 +21,8 @@ xdescribe('InvitationDeletedComponent', () => {
   });
 
   it('should create', () => {
+    console.log('InvitationDeletedComponent: begin')
     expect(component).toBeTruthy();
+    console.log('InvitationDeletedComponent: end')
   });
 });

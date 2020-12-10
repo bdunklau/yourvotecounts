@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy,PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Team } from '../team/team.model';
 import { TeamMember } from '../team/team-member.model';
 import { TeamService } from '../team/team.service';
@@ -31,42 +32,46 @@ export class TeamMemberEditorComponent implements OnInit {
 
   constructor(private teamService: TeamService,
               private userService: UserService,
+              @Inject(PLATFORM_ID) private platformId,
               private _modalService: NgbModal,
               private messageService: MessageService) { }
 
   async ngOnInit() {
-    this.user = await this.userService.getCurrentUser();
+      if(isPlatformBrowser(this.platformId)) {
 
-    if (this.team && this.team.id) {
-      console.log("TeamMemberEditorComponent:  team: ", this.team)
-      //this.createForm(this.user.name);
-      this.teamMemberSubscription2 = this.teamService.getMembersByTeamId(this.team.id).pipe(
-        // take(1),  // this is how you keep the page from updating.  sometimes you want to do this, but not here
-        map(actions => {
-          return actions.map(a => {
-            const data = a.payload.doc.data() as TeamMember;
-            const id = a.payload.doc.id;
-            var returnThis = { id, ...data };
-            // console.log('returnThis = ', returnThis);
-            return returnThis;
-          });
-        })
-      )
-        .subscribe(objs => {
-          // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
-          this.team_members = _.map(objs, obj => {
-            let tm = obj as unknown;
-            return tm as TeamMember;
-          });
+          this.user = await this.userService.getCurrentUser();
 
-          // FIXME I'm querying for ALL team members just to see if I am a leader on that team
-          // ALSO HAVE 2 DATABASE READS GOING ON IN THE SAME PAGE - ONE IN THIS COMPONENT AND THE OTHER
-          // IN team-editor.component.ts THAT'S NOT GOOD
-          this.setEditMemberPermissions(this.user, this.team, this.team_members);
+          if (this.team && this.team.id) {
+            console.log("TeamMemberEditorComponent:  team: ", this.team)
+            //this.createForm(this.user.name);
+            this.teamMemberSubscription2 = this.teamService.getMembersByTeamId(this.team.id).pipe(
+              // take(1),  // this is how you keep the page from updating.  sometimes you want to do this, but not here
+              map(actions => {
+                return actions.map(a => {
+                  const data = a.payload.doc.data() as TeamMember;
+                  const id = a.payload.doc.id;
+                  var returnThis = { id, ...data };
+                  // console.log('returnThis = ', returnThis);
+                  return returnThis;
+                });
+              })
+            )
+              .subscribe(objs => {
+                // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
+                this.team_members = _.map(objs, obj => {
+                  let tm = obj as unknown;
+                  return tm as TeamMember;
+                });
 
-          console.log('TeamMemberEditorComponent: team_members: ', this.team_members);
-        });
-    }
+                // FIXME I'm querying for ALL team members just to see if I am a leader on that team
+                // ALSO HAVE 2 DATABASE READS GOING ON IN THE SAME PAGE - ONE IN THIS COMPONENT AND THE OTHER
+                // IN team-editor.component.ts THAT'S NOT GOOD
+                this.setEditMemberPermissions(this.user, this.team, this.team_members);
+
+                console.log('TeamMemberEditorComponent: team_members: ', this.team_members);
+              });
+          }
+      }
   }
 
   ngOnDestroy() {

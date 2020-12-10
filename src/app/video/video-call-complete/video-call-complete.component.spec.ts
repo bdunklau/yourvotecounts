@@ -21,6 +21,8 @@ xdescribe('VideoCallCompleteComponent', () => {
   });
 
   it('should create', () => {
+    console.log('VideoCallCompleteComponent: begin')
     expect(component).toBeTruthy();
+    console.log('VideoCallCompleteComponent: end')
   });
 });

@@ -51,6 +51,8 @@ describe('RoleGuard', () => {
   });
 
   it('should ...', inject([RoleGuard], (guard: RoleGuard) => {
+    console.log('RoleGuard: begin')
     expect(guard).toBeTruthy();
+    console.log('RoleGuard: end')
   }));
 });

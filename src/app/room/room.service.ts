@@ -23,6 +23,7 @@ import { Official } from '../civic/officials/view-official/view-official.compone
 import { Observable } from 'rxjs'
 import { AngularFireStorage } from '@angular/fire/storage';
 import { SettingsService } from '../settings/settings.service';
+import * as firebase from 'firebase/app';
 
 
 @Injectable({
@@ -301,6 +302,28 @@ export class RoomService {
 
 
   /**
+   * For admins to review rooms/videos  (admin/video/video-list)
+   */
+  getRooms() {
+      let observable = this.afs.collection('room', ref => ref.orderBy('created_ms', 'desc').limit(5)).snapshotChanges()//.pipe(take(1));
+      return observable
+      
+      // let docChangeActions = await observable.toPromise()
+      // var rooms: RoomObj[] = []
+      // if(docChangeActions && docChangeActions.length > 0) {
+      //     _.each(docChangeActions, obj => {
+      //         let data = obj.payload.doc.data()
+      //         let docId = obj.payload.doc.id
+      //         rooms.push(data as RoomObj)
+      //         // console.log('getRooms(): ',docId, ':  ', data)
+      //     })
+      // }
+      // console.log('getRooms(): rooms = ', rooms)
+      // return rooms      
+  }
+
+
+  /**
    *  delete the room doc and the folder in storage having the name [CompositionSid]
    */
   async deleteRoom(room: RoomObj) {
@@ -323,5 +346,70 @@ export class RoomService {
       })
   }
 
+
+  /**
+   * for admins
+   * video-list.component.ts
+   */
+  async uploadToFirebaseStorage(room) {
+      await this.afs.collection('upload_requests').doc(room.RoomSid).delete()
+      await this.afs.collection('upload_requests').doc(room.RoomSid).set(room)
+  }
+
+
+  async uploadScreenshotToStorage(room) {
+      await this.afs.collection('upload_screenshot_requests').doc(room.RoomSid).delete()
+      await this.afs.collection('upload_screenshot_requests').doc(room.RoomSid).set(room)
+  }
+
+
+  async deleteVideo(room) {
+      await this.afs.collection('delete_video_requests').doc(room.RoomSid).delete()
+      await this.afs.collection('delete_video_requests').doc(room.RoomSid).set(room)
+  }
+
+  async deleteCompositionSid(room) {
+      await this.afs.collection('room').doc(room.RoomSid).update({CompositionSid: firebase.firestore.FieldValue.delete()})
+  }
+
+  async deleteCompositionFile(room) {
+      await this.afs.collection('room').doc(room.RoomSid).update({compositionFile: firebase.firestore.FieldValue.delete()})
+  }
+
+  async deleteOutputFile(room) {
+      await this.afs.collection('room').doc(room.RoomSid).update({outputFile: firebase.firestore.FieldValue.delete()})
+  }
+
+  async deleteHlsFiles(room) {
+      await this.afs.collection('room').doc(room.RoomSid).update({uploadFiles: firebase.firestore.FieldValue.delete()})
+  }
+
+  async deleteStorageItems(room) {
+      await this.afs.collection('room').doc(room.RoomSid).update({storageItems: firebase.firestore.FieldValue.delete()})
+  }
+
+  async deleteScreenshotUrl(room) {
+      await this.afs.collection('room').doc(room.RoomSid).update({screenshotUrl: firebase.firestore.FieldValue.delete()})
+  }
+
+  async deleteVideoResults(room) {
+      await this.afs.collection('room').doc(room.RoomSid)
+                      .update({
+                          compositionFile: firebase.firestore.FieldValue.delete(),
+                          compositionProgress: firebase.firestore.FieldValue.delete(),
+                          outputFile: firebase.firestore.FieldValue.delete(),
+                          uploadFiles: firebase.firestore.FieldValue.delete(),
+                          storageItems: firebase.firestore.FieldValue.delete(),
+                          screenshotUrl: firebase.firestore.FieldValue.delete(),
+                          tempEditFolder: firebase.firestore.FieldValue.delete(),
+                          videoUrl: firebase.firestore.FieldValue.delete(),
+                          videoUrlAlt: firebase.firestore.FieldValue.delete()
+                      })
+  }
+
+  async triggerRecreateVideo(room) {    
+      await this.afs.collection('recreate_video_requests').doc(room.RoomSid).delete()
+      await this.afs.collection('recreate_video_requests').doc(room.RoomSid).set(room)
+  }
 
 }

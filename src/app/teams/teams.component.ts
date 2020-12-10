@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FirebaseUserModel } from '../user/user.model';
 import { UserService } from '../user/user.service';
 import * as _ from 'lodash';
@@ -18,12 +19,16 @@ export class TeamsComponent implements OnInit {
   team: Team;
 
   constructor(private userService: UserService,
+              @Inject(PLATFORM_ID) private platformId,
               private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.userService.getCurrentUser().then(user => {
-      this.user = user;
-    });
+      
+      if(isPlatformBrowser(this.platformId)) {
+          this.userService.getCurrentUser().then(user => {
+            this.user = user;
+          });
+      }
   }
 
   ngOnDestroy() {

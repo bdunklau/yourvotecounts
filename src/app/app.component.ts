@@ -1,4 +1,5 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Location } from '@angular/common';
 import { AuthService } from './core/auth.service';
@@ -33,52 +34,56 @@ export class AppComponent {
   constructor(private authService: AuthService,
               private router: Router,
               private userService: UserService,
+              @Inject(PLATFORM_ID) private platformId,
               private messageService: MessageService) {}
 
 
   async ngOnInit() {
-    this.me = await this.userService.getCurrentUser();
-    console.log('AppComponent:  user = ', this.me);
-    if(this.me) {
-        this.setAdmin(this.me.isAdmin())
-        this.isLoggedIn = true;
-        if(this.me.phoneNumber) this.name_or_phone = this.me.phoneNumber; // TODO not tested
-        if(this.me.displayName) this.name_or_phone = this.me.displayName; // TODO not tested
-        if(this.me.photoURL) this.photoURL = this.me.photoURL             // TODO not tested
-    }
-    else {
-        this.isLoggedIn = false
-        this.name_or_phone = ""; // TODO not tested
-        this.setAdmin(false); // TODO not tested   
-    }
+    if(isPlatformBrowser(this.platformId)) {
 
-    var nxt = function(value /* FirebaseUserModel */) {
-      console.log('AppComponent: next(): value = ', value);
-      console.log('AppComponent: next(): this = ', this);
-      if(value) this.setAdmin(value.isAdmin())
-      if(value) this.isLoggedIn = true;
-      if(value && value.phoneNumber) this.name_or_phone = value.phoneNumber; // TODO not tested
-      if(value && value.displayName) this.name_or_phone = value.displayName; // TODO not tested
-      if(value && value.photoURL) this.photoURL = value.photoURL             // TODO not tested
-      if(!value) this.isLoggedIn = false;
-      if(!value) this.name_or_phone = ""; // TODO not tested
-      if(!value) this.setAdmin(false); // TODO not tested
-    }.bind(this);
+        this.me = await this.userService.getCurrentUser();
+        console.log('AppComponent:  user = ', this.me);
+        if(this.me) {
+            this.setAdmin(this.me.isAdmin())
+            this.isLoggedIn = true;
+            if(this.me.phoneNumber) this.name_or_phone = this.me.phoneNumber; // TODO not tested
+            if(this.me.displayName) this.name_or_phone = this.me.displayName; // TODO not tested
+            if(this.me.photoURL) this.photoURL = this.me.photoURL             // TODO not tested
+        }
+        else {
+            this.isLoggedIn = false
+            this.name_or_phone = ""; // TODO not tested
+            this.setAdmin(false); // TODO not tested   
+        }
 
-    this.userSubscription = this.messageService.listenForUser().subscribe({
-          next: nxt,
-          error: function(value) {
-          },
-          complete: function() {
-          }
-      })
+        var nxt = function(value /* FirebaseUserModel */) {
+          console.log('AppComponent: next(): value = ', value);
+          console.log('AppComponent: next(): this = ', this);
+          if(value) this.setAdmin(value.isAdmin())
+          if(value) this.isLoggedIn = true;
+          if(value && value.phoneNumber) this.name_or_phone = value.phoneNumber; // TODO not tested
+          if(value && value.displayName) this.name_or_phone = value.displayName; // TODO not tested
+          if(value && value.photoURL) this.photoURL = value.photoURL             // TODO not tested
+          if(!value) this.isLoggedIn = false;
+          if(!value) this.name_or_phone = ""; // TODO not tested
+          if(!value) this.setAdmin(false); // TODO not tested
+        }.bind(this);
+
+        this.userSubscription = this.messageService.listenForUser().subscribe({
+              next: nxt,
+              error: function(value) {
+              },
+              complete: function() {
+              }
+          })
+    }
   }
 
 
   // always unsubscribe
   ngOnDestroy() {
     if(this.userSubscription) this.userSubscription.unsubscribe();
-    console.log('ngOnDestroy:  this.userSubscription.unsubscribe()')
+    // console.log('ngOnDestroy:  this.userSubscription.unsubscribe()')
   }
 
   // https://www.w3schools.com/howto/howto_js_sidenav.asp

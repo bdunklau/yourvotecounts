@@ -2,6 +2,7 @@ export class Settings {
   admin_sms: string
   cloud_host: string
   cloud_host_test_path: string
+  console_logging: boolean
   disabled: boolean;
   firebase_functions_host: string
   from_sms: string;

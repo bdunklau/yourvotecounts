@@ -23,6 +23,8 @@ describe('LoginComponent', () => {
   // MAYBE if the mock objects above were defined differently ???
   // leave this as /*not passed*/ xit()
   xit('should create', () => {
+    console.log('LoginComponent: begin')
     expect(component).toBeTruthy();
+    console.log('LoginComponent: end')
   });
 });

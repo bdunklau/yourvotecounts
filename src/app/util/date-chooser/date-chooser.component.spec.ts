@@ -22,6 +22,8 @@ describe('DateChooserComponent', () => {
   });
 
   it('should create', () => {
+    console.log('DateChooserComponent: begin')
     expect(component).toBeTruthy();
+    console.log('DateChooserComponent: end')
   });
 });

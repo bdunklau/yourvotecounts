@@ -29,7 +29,9 @@ describe('ScrollableDirective', () => {
 
 
   it('should create an instance', () => {
+    console.log('ScrollableDirective: begin')
     const directive = new ScrollableDirective(TestBed.get(ElementRef));
     expect(directive).toBeTruthy();
+    console.log('ScrollableDirective: end')
   });
 });

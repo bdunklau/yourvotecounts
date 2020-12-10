@@ -35,8 +35,15 @@ export class SettingsComponent implements OnInit {
     }
 
 
-    checked($event) {
+    disabledChecked($event) {
         this.settings.disabled = $event.srcElement.checked;
+
+
+    }
+
+
+    consoleLoggingChecked($event) {
+        this.settings.console_logging = $event.srcElement.checked;
 
 
     }

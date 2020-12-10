@@ -11,6 +11,8 @@ describe('ErrorPageService', () => {
   });
 
   it('should be created', () => {
+    console.log('ErrorPageService: begin')
     expect(service).toBeTruthy();
+    console.log('ErrorPageService: end')
   });
 });

@@ -50,6 +50,8 @@ describe('SmsComponent', () => {
   });
 
   it('should create', () => {
+    console.log('SmsComponent: begin')
     expect(component).toBeTruthy();
+    console.log('SmsComponent: end')
   });
 });

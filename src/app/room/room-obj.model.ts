@@ -14,7 +14,9 @@ export class RoomObj {
  */
 
     CompositionSid?: string
+    compositionFile?: string // /home/bdxxxxxxxxxx/videos/CJxxxxxxxxxxxxxx.mp4
     RoomSid: string
+    call_ended_ms?: number
     created_ms: number
     guests?: {guestName: string, guestPhone: string, joined_ms?: number}[]
     hostId: string
@@ -23,7 +25,7 @@ export class RoomObj {
     host_joined_ms?: number
     host_left_ms?: number
     invitationId: string
-    call_ended_ms?: number
+    outputFile?: string     // /home/bdxxxxxxxxxx/videos/CJxxxxxxxxxxxxxx-output.mp4
     videoUrl?: string
     videoUrlAlt?: string
     video_title?: string
@@ -31,6 +33,9 @@ export class RoomObj {
     //mark_time: {"start_recording_ms": number, "start_recording": string, "duration": string}[]
     officials?: Official[]
     screenshotUrl?: string
+    storageItems?: {bucketName: string, folder: string, filename: string}[]
+    tempEditFolder?: string
+    uploadFiles?: string[]
 
     constructor() {
 

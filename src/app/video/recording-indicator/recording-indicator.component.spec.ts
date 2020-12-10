@@ -20,6 +20,8 @@ describe('RecordingIndicatorComponent', () => {
   });
 
   it('should create', () => {
+    console.log('RecordingIndicatorComponent: begin')
     expect(component).toBeTruthy();
+    console.log('RecordingIndicatorComponent: end')
   });
 });

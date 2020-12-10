@@ -22,6 +22,8 @@ xdescribe('TwilioSettingsComponent', () => {
   });
 
   it('should create', () => {
+    console.log('TwilioSettingsComponent: begin')
     expect(component).toBeTruthy();
+    console.log('TwilioSettingsComponent: end')
   });
 });

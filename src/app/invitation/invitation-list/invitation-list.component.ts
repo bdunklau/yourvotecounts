@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, /* Output, EventEmitter */ } from '@angular/core';
+import { Component, OnInit, Input, /* Output, EventEmitter */ PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Invitation } from '../invitation.model';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmComponent } from '../../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
@@ -26,30 +27,34 @@ export class InvitationListComponent implements OnInit {
   constructor(
     private userService: UserService,
     private invitationService: InvitationService,
+    @Inject(PLATFORM_ID) private platformId,
     private _modalService: NgbModal,
     private router: Router,) { }
 
   async ngOnInit(): Promise<void> {
     this.invitations = [];
-    this.me = await this.userService.getCurrentUser();
-    this.subscription = this.invitationService.getInvitationsForUser(this.me.uid).pipe(
-      map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data() as Invitation;
-          const id = a.payload.doc.id;
-          var returnThis = { id, ...data };
-          // console.log('returnThis = ', returnThis);
-          return returnThis;
-        });
-      })
-    )
-      .subscribe(objs => {
-        // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
-        this.invitations = _.map(objs, obj => {
-          let invitation = obj as unknown;
-          return invitation as Invitation;
-        })
-      });
+    if(isPlatformBrowser(this.platformId)) {
+
+        this.me = await this.userService.getCurrentUser();
+        this.subscription = this.invitationService.getInvitationsForUser(this.me.uid).pipe(
+          map(actions => {
+            return actions.map(a => {
+              const data = a.payload.doc.data() as Invitation;
+              const id = a.payload.doc.id;
+              var returnThis = { id, ...data };
+              // console.log('returnThis = ', returnThis);
+              return returnThis;
+            });
+          })
+        )
+          .subscribe(objs => {
+            // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
+            this.invitations = _.map(objs, obj => {
+              let invitation = obj as unknown;
+              return invitation as Invitation;
+            })
+          });
+    }
   }
 
 

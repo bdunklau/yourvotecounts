@@ -84,7 +84,7 @@ export class InvitationFormComponent implements OnInit {
         this.currentInviteCount = this.currentInvitations ? this.currentInvitations.length : 0
         this.numberOfInvitationsRemaining = this.maxGuests - this.currentInviteCount
         this.host = window.location.host //this.settingsService.settings.website_domain_name
-        console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
+        // console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
 
         // this.canInvite = this.canInviteMore()
         this.names = []
@@ -136,7 +136,7 @@ export class InvitationFormComponent implements OnInit {
           //, { updateOn: 'blur' }  // another option
       )
       this.nameArray.push(group);
-      console.log('this.nameArray: ', this.nameArray)
+      // console.log('this.nameArray: ', this.nameArray)
       this.canInvite = this.canInviteMore()
   }
   
@@ -173,8 +173,8 @@ export class InvitationFormComponent implements OnInit {
           this.names[i] = this.nameArray.at(i).value
       }
         
-      console.log('this.nameArray: ', this.nameArray)
-      console.log('this.names: ', this.names)
+      // console.log('this.nameArray: ', this.nameArray)
+      // console.log('this.names: ', this.names)
   }
 
 
@@ -198,8 +198,6 @@ export class InvitationFormComponent implements OnInit {
   }
   
   ValidatePhone(control: AbstractControl): {[key: string]: any} | null  {
-      console.log('ValidatePhone(): control.value = ', control.value)
-      console.log('ValidatePhone(): this = ', this)
       if(!control || !control.value) return null
       let myString = this.justNumbers(control.value)      
       if (myString && (myString.length != 10) ) {

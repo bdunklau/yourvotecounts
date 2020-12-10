@@ -1,5 +1,4 @@
 import { browser, by, element } from 'protractor';
-import * as protractor from 'protractor';
 import { BasePage } from './base.po';
 import { TestSupport } from './test-support.po';
 
@@ -55,9 +54,8 @@ export class MainPage extends BasePage {
     return this.getElement(by.id('users_link'));
   }
 
-  gotoTestSupport() {
-    return browser.get(browser.baseUrl+'token') as Promise<any>;
-    browser.sleep(100);
+  async gotoTestSupport() {
+    return await browser.get(browser.baseUrl+'token') // need this?...   as Promise<any>;
   }
 
   getUrl() {
@@ -68,15 +66,16 @@ export class MainPage extends BasePage {
     expect(this.getElement(by.id('disabled_page')).isDisplayed()).toBeTruthy('The disabled page should have been displayed instead of the '+pageName+' page');
   }
 
-  verifyMyAccountDisabled() {
-    this.clickMyAccount();
+  async verifyMyAccountDisabled() {
+    let slp = 1
+    await this.clickMyAccount(slp);
     this.verifyDisabledPage('My Account');
   }
 
-  verifyPagesDisabled(sleep: number) {
+  async verifyPagesDisabled(sleep: number) {
     browser.sleep(sleep);
-    this.verifyMyAccountDisabled();
-      browser.sleep(sleep);
+    await this.verifyMyAccountDisabled();
+    await  browser.sleep(sleep);
     this.verifyTeamsDisabled();
     // add more as more pages are added
   }

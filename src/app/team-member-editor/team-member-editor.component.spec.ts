@@ -55,6 +55,8 @@ describe('TeamMemberEditorComponent', () => {
   });
 
   it('should create', () => {
+    console.log('TeamMemberEditorComponent: begin')
     expect(component).toBeTruthy();
+    console.log('TeamMemberEditorComponent: end')
   });
 });

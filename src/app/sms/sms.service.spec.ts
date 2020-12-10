@@ -45,7 +45,9 @@ describe('SmsService', () => {
 
 
   it('should be created', () => {
+    console.log('SmsService: begin')
     const service: SmsService = TestBed.get(SmsService);
     expect(service).toBeTruthy();
+    console.log('SmsService: end')
   });
 });

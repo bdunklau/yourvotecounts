@@ -47,7 +47,9 @@ describe('TeamService', () => {
   }));
 
   it('should be created', () => {
+    console.log('TeamService: begin')
     const service: TeamService = TestBed.get(TeamService);
     expect(service).toBeTruthy();
+    console.log('TeamService: end')
   });
 });

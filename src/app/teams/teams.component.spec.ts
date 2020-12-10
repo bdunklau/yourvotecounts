@@ -65,6 +65,8 @@ describe('TeamsComponent', () => {
   });
 
   it('should create', () => {
+    console.log('TeamsComponent: begin')
     expect(component).toBeTruthy();
+    console.log('TeamsComponent: end')
   });
 });

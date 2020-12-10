@@ -45,6 +45,7 @@ export function app(): express.Express {
     bootstrap: AppServerModule,
   }));
 
+  server.enable('trust proxy')
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
@@ -72,6 +73,17 @@ export function app(): express.Express {
       console.log('generateMetaTags():  req[\'image\'] = ', req['image'])
       next()
   }
+
+
+  async function enforceHttps(req, res, next) {
+      if(!req.secure && !req.get('host').startsWith('localhost') ) {
+          res.redirect(301, "https://" + req.headers.host + req.originalUrl);
+      }
+      next()
+  }
+
+
+  server.use('*', enforceHttps)
 
 
   // Only this route will call generateMetaTags()
