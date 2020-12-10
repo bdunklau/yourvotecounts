@@ -28,6 +28,7 @@ describe('Privacy Policy page', () => {
     // navigate away or refresh the page
     // verify new PP
     // set the PP back to what it was
+    let slp = 1
 
     page.loginAdmin();
     page.clickPrivacyPolicy();
@@ -49,7 +50,7 @@ describe('Privacy Policy page', () => {
     let pp3 = await apiPrivacyPolicy.getPrivacyPolicy();
     expect(origPolicy).toEqual(pp3['text']);
 
-    page.clickLogout();
+    await page.clickLogout(slp);
   });
 
 

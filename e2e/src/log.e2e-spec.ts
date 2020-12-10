@@ -23,17 +23,19 @@ xdescribe('Log page', () => {
   });
 
   // passed 8/7
-  it('should be accessible by hyperlink', () => {
+  it('should be accessible by hyperlink', async () => {
+    let slp = 1
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.pullDownMyMenu();
     page.clickLog();
     browser.sleep(200);
     expect(page.getTitleText()).toEqual('Log');
-    page.clickLogout();
+    await page.clickLogout(slp);
   });
 
   // passed 8/7
   it('should have a click-able calendar', async () => {
+      let slp = 1
       testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
       page.pullDownMyMenu();
       page.clickLog();
@@ -41,7 +43,7 @@ xdescribe('Log page', () => {
       // <input> field.  Inspect it via Chrome and you'll see
       logPage.clickCalendarIcon();
       expect(logPage.getCalendar().isPresent()).toBeTruthy('was not able to get the calendar widget to pop up');
-      page.clickLogout();
+      await page.clickLogout(slp);
   });
 
 
@@ -59,6 +61,7 @@ xdescribe('Log page', () => {
 
   // passed 8/7
   it('should allow date range to be clicked', async () => {
+    let slp = 1
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.pullDownMyMenu();
     page.clickLog();
@@ -71,15 +74,16 @@ xdescribe('Log page', () => {
     logPage.pickSecondDate(d1, d2);
     browser.sleep(500);
     var exp = d1_short+' to '+d2_short;
-    logPage.getDateRangeField().then(actualValue => {
+    logPage.getDateRangeField().then(async actualValue => {
       expect(actualValue == exp).toBeTruthy('expected the date range field to be '+exp+' but it was actually '+actualValue);
-      page.clickLogout();
+      await page.clickLogout(slp);
     })
   })
 
 
 
   it('should allow query by user name', async () => {
+    let slp = 1
     logPage.setupQueryByNameTest();
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.pullDownMyMenu();
@@ -98,11 +102,12 @@ xdescribe('Log page', () => {
       })
     })
 
-    page.clickLogout();
+    await page.clickLogout(slp);
   })
 
 
   it('should allow query by user phone', async () => {
+    let slp = 1
     logPage.setupQueryByNameTest();
     testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
     page.pullDownMyMenu();
@@ -121,7 +126,7 @@ xdescribe('Log page', () => {
       })
     })
 
-    page.clickLogout();
+    await page.clickLogout(slp);
   })
 
 
@@ -205,7 +210,8 @@ xdescribe('Log page', () => {
 
 
   // passed 8/7
-  it('should display correct list of users in dropdown', () => {
+  it('should display correct list of users in dropdown', async () => {
+    let slp = 1
 
     logPage.setupQueryByNameTest();
     // testSupport.login(process.env.YOURVOTECOUNTS_ADMIN_PHONE_NUMBER);
@@ -287,7 +293,7 @@ xdescribe('Log page', () => {
     // test case-insensitive name search
     func(run3, 3);
 
-    page.clickLogout();
+    await page.clickLogout(slp);
 
     // clean up
     _.forEach(['dbg event', 'nfo event', 'err event'], (event) => {
