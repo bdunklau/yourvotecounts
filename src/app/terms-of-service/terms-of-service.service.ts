@@ -12,7 +12,7 @@ export class TermsOfServiceService {
 
   async getTerms() {
     var termsDoc = await this.afs.collection('config').doc('terms_of_service').ref.get();
-    return termsDoc.data().text;
+    return termsDoc.data()['text'];
   }
 
   updateTerms(terms: string) {

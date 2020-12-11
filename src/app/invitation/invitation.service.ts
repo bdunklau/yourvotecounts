@@ -85,7 +85,7 @@ export class InvitationService {
       if(docChangeActions && docChangeActions.length > 0) {
           _.each(docChangeActions, obj => {
               let inv = obj.payload.doc.data() as Invitation
-              let docId = obj.payload.doc.id
+              let docId = obj.payload.doc['id']
               let ref = this.afs.collection('invitation').doc(docId).ref
               batch.update(ref, {deleted_ms: new Date().getTime()})
           })
@@ -112,7 +112,7 @@ export class InvitationService {
   //           if(docChangeActions && docChangeActions.length > 0) {
   //               _.each(docChangeActions, obj => {
   //                   let inv = obj.payload.doc.data() as Invitation
-  //                   inv.docId = obj.payload.doc.id
+  //                   inv.docId = obj.payload.doc['id']
   //                   console.log('getInvitations():  invitation: ', inv)
   //                   invitations.push(inv)
   //                   this.invitations.push(inv)
@@ -137,7 +137,7 @@ export class InvitationService {
       if(docChangeActions && docChangeActions.length > 0) {
         _.each(docChangeActions, obj => {
           let inv = obj.payload.doc.data() as Invitation
-          inv.docId = obj.payload.doc.id
+          inv.docId = obj.payload.doc['id']
           console.log('invitation: ', inv)
           invitations.push(inv)
           this.invitations.push(inv)

@@ -226,7 +226,7 @@ export class UserService {
                 let u = new FirebaseUserModel();
                 u.populate(data);
                 return u;
-                // const id = a.payload.doc.id;  // valid but not needed here
+                // const id = a.payload.doc['id'];  // valid but not needed here
               });
             })
           )

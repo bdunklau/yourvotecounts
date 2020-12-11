@@ -24,7 +24,7 @@ import { RoomObj } from '../../room/room-obj.model';
 import * as _ from 'lodash';
 import { SettingsService } from '../../settings/settings.service';
 import { Settings } from '../../settings/settings.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { isPlatformBrowser } from '@angular/common';
 import { MessageService } from 'src/app/core/message.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import * as moment from 'moment'
+import moment from 'moment'
 import { LogService } from '../log.service';
 import { NgForm, /*FormControl, FormGroup*/ } from '@angular/forms';
 import * as _ from 'lodash';

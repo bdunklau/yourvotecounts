@@ -40,7 +40,7 @@ export class ValidInvitationGuard implements CanActivate {
   //             if(docChangeActions && docChangeActions.length > 0) {
   //                 _.each(docChangeActions, obj => {
   //                     let inv = obj.payload.doc.data() as Invitation
-  //                     inv.docId = obj.payload.doc.id
+  //                     inv.docId = obj.payload.doc['id']
   //                     console.log('canActivate():  invitation: ', inv)
   //                     this.invitationService.invitations.push(inv)
   //                     invitations.push(inv)

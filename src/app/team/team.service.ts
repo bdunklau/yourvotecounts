@@ -85,7 +85,7 @@ export class TeamService {
     var ref = this.afs.collection('team_member', rf => rf.where("teamDocId", "==", team.id)).snapshotChanges().pipe(take(1));
     ref.subscribe(data  => {
       data.forEach(function(dt) {
-        batch.delete(dt.payload.doc.ref);
+        batch.delete(dt.payload.doc['ref']);
       });
       batch.commit().then(() => {
         this.log.i('deleted team '+team.debug());
@@ -113,14 +113,14 @@ export class TeamService {
   async getTeamData(teamDocId: string) {
     var teamDoc = await this.afs.collection('team').doc(teamDocId).ref.get();
     const team = new Team();
-    team.id = teamDoc.data().id;
-    team.name = teamDoc.data().name;
-    team.created = teamDoc.data().created;
-    team.creatorId = teamDoc.data().creatorId;
-    team.creatorName = teamDoc.data().creatorName;
-    team.creatorPhone = teamDoc.data().creatorPhone;
-    team.leaderCount = teamDoc.data().leaderCount; // e2e testing caught this omission :)
-    team.memberCount = teamDoc.data().memberCount; // e2e testing caught this omission :)
+    team.id = teamDoc.data()['id'];
+    team.name = teamDoc.data()['name'];
+    team.created = teamDoc.data()['created'];
+    team.creatorId = teamDoc.data()['creatorId'];
+    team.creatorName = teamDoc.data()['creatorName'];
+    team.creatorPhone = teamDoc.data()['creatorPhone'];
+    team.leaderCount = teamDoc.data()['leaderCount']; // e2e testing caught this omission :)
+    team.memberCount = teamDoc.data()['memberCount']; // e2e testing caught this omission :)
     console.log('teamDoc.data() = ', teamDoc.data());
     return team;
   }
@@ -154,7 +154,7 @@ export class TeamService {
     var ref = this.afs.collection('team_member', rf => rf.where("teamDocId", "==", teamId)).snapshotChanges().pipe(take(1));
     ref.subscribe(data  => {
       data.forEach(function(dt) {
-        batch.update(dt.payload.doc.ref, {team_name: teamName});
+        batch.update(dt.payload.doc['ref'], {team_name: teamName});
       });
       batch.commit().then(() => {
         this.log.i('updated team '+team.debug());
