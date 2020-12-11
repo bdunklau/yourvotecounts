@@ -39,7 +39,13 @@
         </span>
         
         <span *ngFor="let channel of official.channels">
+            <span *ngIf="channel.type == 'YouTube'">
             <p><a href="{{channel.url}}" target="socmedia" class="btn btn-primary {{channel.color_class}} col-12"> <i [class]="channel.icon"></i> </a></p>
+            </span>
+            
+            <span *ngIf="channel.type != 'YouTube'">
+            <p><a (click)="popSocialMedia(channel)" class="btn btn-primary {{channel.color_class}} col-12" style="color:#ffffff"> <i [class]="channel.icon"></i> </a></p>
+            </span>
         </span>
     </div>
 </div>

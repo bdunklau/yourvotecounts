@@ -12,11 +12,12 @@
 </div>
 <div class="modal-footer">
   <button [hidden]="!showCancelButton" id="modal_cancel" type="button" ngbAutofocus class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+  
   <button id="modal_ok" type="button" 
           [ngClass]="{'btn': true,
           'btn-danger': danger, 
           'btn-secondary': !danger}" 
-          (click)="modal.close('Ok click')">
-      Ok
+          (click)="copyContent();modal.close('Ok click')">
+      {{confirmText}}
   </button>
 </div>
