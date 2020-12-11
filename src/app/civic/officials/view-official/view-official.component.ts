@@ -1,6 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import * as _ from 'lodash'
 import { RoomService } from '../../../room/room.service'
+import { AngularFireStorage } from '@angular/fire/storage';
+import { environment } from '../../../../environments/environment';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbdModalConfirmComponent } from '../../../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
+import { Router } from '@angular/router';
 
 
 
@@ -16,10 +22,34 @@ export class ViewOfficialComponent implements OnInit {
   toastHack = false
   @Input() canSelect = false // button enablement
   @Input() canDelete = false // button enablement
+  currentUrl: string
 
-  constructor(private roomService: RoomService) { }
+  constructor(private roomService: RoomService, 
+              @Inject(PLATFORM_ID) private platformId,
+              private _modalService: NgbModal,
+              private router: Router,
+              private afStorage: AngularFireStorage) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+      if(isPlatformBrowser(this.platformId)) {
+          this.currentUrl = window.location.href
+
+          
+          if(this.official && !this.official.photoUrl) {
+              let url = await this.afStorage.storage
+                          .refFromURL('gs://'+environment.firebase.storageBucket+'/thumb_profile-pic-default.png')
+                          .getDownloadURL()
+                          // .then(url => {
+                          //     console.log("this.photoURL = ", url)
+                          //     this.photoURL = url;
+                          //     this.isUploading = false;
+                          //   })
+              this.official.photoUrl = url
+          }
+        
+
+
+      }
   }
 
 
@@ -62,6 +92,66 @@ export class ViewOfficialComponent implements OnInit {
 
   deleteOfficial() {
       this.roomService.officialDeleted(this.official)
+  }
+  
+
+  /**
+   * pop up modal with content that can be copied and posted to social media
+   * 
+   * channel.type = YouTube, Facebook, Twitter
+   */
+  // popSocialMedia(channel,/*callback*/) {
+  //     const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
+  //     modalRef.result.then(async (result) => {
+  //       // the ok/delete case
+  //       // this.closeResult = `Closed with: ${result}`;
+
+  //       // so that we get updated memberCount and leaderCount
+  //       // this.team = await this.teamService.deleteTeamMember(team_member);
+  //       // callback();
+  //     }, (reason) => {
+  //       // the cancel/dismiss case
+  //       // this.closeResult = `Dismissed ${reason}`;
+  //     });
+  //     return modalRef;
+  // }
+  
+
+
+  //  ngbd-modal-confirm.component.ts
+  //  ngbd-modal-confirm.component.html
+  popSocialMedia(channel) {      
+      var modalRef = this.showOkDialog(() => {/*noop*/});
+      modalRef.componentInstance.title = '@'+channel.id;
+      modalRef.componentInstance.question = '';
+      modalRef.componentInstance.thing = this.currentUrl;
+      modalRef.componentInstance.warning_you = '';
+      modalRef.componentInstance.really_warning_you = '';
+      modalRef.componentInstance.confirmText = 'Copy';
+  }
+
+
+
+  showOkDialog(callback) {
+      //  ngbd-modal-confirm.component.ts
+      //  ngbd-modal-confirm.component.html
+      const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
+
+      modalRef.result.then(async (result) => {
+        // the ok/delete case
+        // this.closeResult = `Closed with: ${result}`;
+
+        // so that we get updated memberCount and leaderCount
+        // this.team = await this.teamService.deleteTeamMember(team_member);
+        callback();
+      }, (reason) => {
+        // the cancel/dismiss case
+        // this.closeResult = `Dismissed ${reason}`;
+      });
+      
+      modalRef.componentInstance.showCancelButton = false // hides the Cancel button
+      modalRef.componentInstance.danger = false // makes the OK button gray instead of red
+      return modalRef;
   }
 
 
