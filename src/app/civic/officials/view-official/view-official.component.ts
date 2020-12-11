@@ -1,6 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import * as _ from 'lodash'
 import { RoomService } from '../../../room/room.service'
+import { Router } from '@angular/router';
 
 
 
@@ -16,10 +18,16 @@ export class ViewOfficialComponent implements OnInit {
   toastHack = false
   @Input() canSelect = false // button enablement
   @Input() canDelete = false // button enablement
+  currentUrl: string
 
-  constructor(private roomService: RoomService) { }
+  constructor(private roomService: RoomService, 
+              @Inject(PLATFORM_ID) private platformId,
+              private router: Router) { }
 
   ngOnInit(): void {
+      if(isPlatformBrowser(this.platformId)) {
+          this.currentUrl = window.location.href
+      }
   }
 
 
