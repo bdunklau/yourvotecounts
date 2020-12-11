@@ -118,6 +118,8 @@ export class ViewOfficialComponent implements OnInit {
   
 
 
+  //  ngbd-modal-confirm.component.ts
+  //  ngbd-modal-confirm.component.html
   popSocialMedia(channel) {      
       var modalRef = this.showOkDialog(() => {/*noop*/});
       modalRef.componentInstance.title = '@'+channel.id;
@@ -131,6 +133,7 @@ export class ViewOfficialComponent implements OnInit {
 
 
   showOkDialog(callback) {
+      //  ngbd-modal-confirm.component.ts
       //  ngbd-modal-confirm.component.html
       const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
 

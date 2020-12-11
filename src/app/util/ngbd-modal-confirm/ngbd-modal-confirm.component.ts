@@ -34,6 +34,7 @@ export class NgbdModalConfirmComponent implements OnInit {
      * they've copied random info to their clipboard
      */
     copyContent() {
+        // https://material.angular.io/cdk/clipboard/overview#click-an-element-to-copy
         this.clipboard.copy(this.title+'\n\n'+this.thing)
     }
 
