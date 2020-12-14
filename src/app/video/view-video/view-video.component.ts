@@ -192,13 +192,6 @@ export class ViewVideoComponent implements OnInit {
 
     
     private listenForOfficials() {
-
-        let alreadyListening = this.official_selected_sub && !this.official_selected_sub.closed
-        if(alreadyListening) {
-            return
-        }
-
-
         let self = this;
   
         let isBrowser = isPlatformBrowser(this.platformId)
