@@ -128,7 +128,6 @@
             "main": "server.ts",
             "tsConfig": "src/tsconfig.server.json",
             "externalDependencies": [
-              "@firebase/firestore",
               "tiny-json-http"
             ]
           },
