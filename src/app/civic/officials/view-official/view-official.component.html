@@ -31,7 +31,7 @@
         </span>
         
         <span *ngFor="let email of official.emails">
-            <p><a href="mailto:{{email}}" class="btn btn-primary col-12"><i class="fas fa-envelope"></i> </a></p>
+            <p><a href='mailto:{{email}}?subject=Video Message from one of your voters&body={{official.name}}%0D%0A%0D%0A{{currentUrl}}%0D%0A%0D%0A' class="btn btn-primary col-12"><i class="fas fa-envelope"></i> </a></p>
         </span>
 
         <span *ngFor="let url of official.urls">
