@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as _ from 'lodash'
 import { RoomService } from '../../../room/room.service'
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbdModalConfirmComponent } from '../../../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 import { Router } from '@angular/router';
 
 
@@ -23,7 +25,8 @@ export class ViewOfficialComponent implements OnInit {
 
   constructor(private roomService: RoomService, 
               @Inject(PLATFORM_ID) private platformId,
-              private router: Router) { }
+              private _modalService: NgbModal,
+              private router: Router,) { }
 
 
   async ngOnInit() {
@@ -100,39 +103,39 @@ export class ViewOfficialComponent implements OnInit {
 
   //  ngbd-modal-confirm.component.ts
   //  ngbd-modal-confirm.component.html
-  // popSocialMedia(channel) {      
-  //     var modalRef = this.showOkDialog(() => {/*noop*/});
-  //     modalRef.componentInstance.title = '@'+channel.id;
-  //     modalRef.componentInstance.question = '';
-  //     modalRef.componentInstance.thing = this.currentUrl;
-  //     modalRef.componentInstance.warning_you = '';
-  //     modalRef.componentInstance.really_warning_you = '';
-  //     modalRef.componentInstance.confirmText = 'Copy';
-  // }
+  popSocialMedia(channel) {      
+      var modalRef = this.showOkDialog(() => {/*noop*/});
+      modalRef.componentInstance.title = '@'+channel.id;
+      modalRef.componentInstance.question = '';
+      modalRef.componentInstance.thing = this.currentUrl;
+      modalRef.componentInstance.warning_you = '';
+      modalRef.componentInstance.really_warning_you = '';
+      modalRef.componentInstance.confirmText = 'Copy';
+  }
 
 
 
-  // showOkDialog(callback) {
-  //     //  ngbd-modal-confirm.component.ts
-  //     //  ngbd-modal-confirm.component.html
-  //     const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
+  showOkDialog(callback) {
+      //  ngbd-modal-confirm.component.ts
+      //  ngbd-modal-confirm.component.html
+      const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
 
-  //     modalRef.result.then(async (result) => {
-  //       // the ok/delete case
-  //       // this.closeResult = `Closed with: ${result}`;
+      modalRef.result.then(async (result) => {
+        // the ok/delete case
+        // this.closeResult = `Closed with: ${result}`;
 
-  //       // so that we get updated memberCount and leaderCount
-  //       // this.team = await this.teamService.deleteTeamMember(team_member);
-  //       callback();
-  //     }, (reason) => {
-  //       // the cancel/dismiss case
-  //       // this.closeResult = `Dismissed ${reason}`;
-  //     });
+        // so that we get updated memberCount and leaderCount
+        // this.team = await this.teamService.deleteTeamMember(team_member);
+        callback();
+      }, (reason) => {
+        // the cancel/dismiss case
+        // this.closeResult = `Dismissed ${reason}`;
+      });
       
-  //     modalRef.componentInstance.showCancelButton = false // hides the Cancel button
-  //     modalRef.componentInstance.danger = false // makes the OK button gray instead of red
-  //     return modalRef;
-  // }
+      modalRef.componentInstance.showCancelButton = false // hides the Cancel button
+      modalRef.componentInstance.danger = false // makes the OK button gray instead of red
+      return modalRef;
+  }
 
 
   /***************
