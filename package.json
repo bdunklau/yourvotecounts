@@ -29,7 +29,7 @@
     "@angular/compiler": "~10.1.1",
     "@angular/compiler-cli": "^10.0.8",
     "@angular/core": "~10.0.8",
-    "@angular/fire": "^6.0.3",
+    "@angular/fire": "^6.0.5",
     "@angular/forms": "~10.0.8",
     "@angular/http": "7.0.2",
     "@angular/localize": "^10.0.8",
