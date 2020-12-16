@@ -54,6 +54,7 @@
     "firebase-functions": "^3.9.1",
     "firebaseui": "^3.6.1",
     "firebaseui-angular": "^3.4.2",
+    "globalthis": "^1.0.1",
     "hammerjs": "^2.0.8",
     "localstorage-polyfill": "^1.0.1",
     "lodash": "^4.17.19",
