@@ -75,7 +75,7 @@ import { SettingsService } from './settings/settings.service';
 import { isPlatformBrowser } from '@angular/common';
 import { VideoListComponent } from './admin/video/video-list/video-list.component';
 
-var shimmedGlobal = require('globalthis').shim();
+var shimmedGlobal = require('globalThis').shim();
 
 
 const ORIGINAL_NOT_USED_firebaseUiAuthConfig: firebaseui.auth.Config = {
