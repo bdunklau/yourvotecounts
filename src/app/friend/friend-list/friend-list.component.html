@@ -1,0 +1,25 @@
+
+<h5 style="margin-top:20px">Friend List</h5>
+
+<div class="row" *ngFor="let friend of friends" style="border-top:1px solid #ababab">
+    <!-- <div class="col">{{friend.displayName1}}</div> -->
+    <!-- <div class="col">{{friend.phoneNumber1}}</div> -->
+    <div class="col-7" style="margin-top:5px">
+        {{friend.displayName2}} &nbsp;&nbsp;
+        <button class="btn btn-default" (click)="friend.inviting = true"> <i class="fa fa-video" style="color:green"></i>  </button>
+    </div>
+
+    <div class="col-5" style="margin-top:5px">
+        <button *ngIf="!friend.deleting" class="btn btn-default pull-right" (click)="friend.deleting = true"><i class="fas fa-trash"></i> </button>
+        <button *ngIf="friend.deleting" class="btn btn-default pull-right" (click)="friend.deleting = false">cancel</button>
+        <button *ngIf="friend.deleting" class="btn btn-default pull-right" (click)="deleteFriend(friend)" style="color:red"><i class="fas fa-trash"></i> confirm</button>
+    </div>
+
+    <div class="col-12">       
+        <a href="tel:{{friend.phoneNumber2}}" class="btn btn-default col-12 text-left"> <i class="fas fa-phone-alt"></i> &nbsp;&nbsp; {{friend.phoneNumber2 | phone}} </a>
+    </div>
+    <!-- <div class="col">{{friend.date_ms | date:'short'}}</div> -->
+    <!-- <div class="col-12">{{friend.payload.doc.data() | json}}</div> -->
+
+
+</div>

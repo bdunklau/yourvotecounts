@@ -1,0 +1,14 @@
+
+/**
+ *  ng generate class friend/friend --type=model
+ */
+export class Friend {
+    date_ms: number
+    displayName1: string
+    displayName2: string
+    friendId1: string
+    friendId2: string
+    phoneNumber1: string
+    phoneNumber2: string
+}
+
