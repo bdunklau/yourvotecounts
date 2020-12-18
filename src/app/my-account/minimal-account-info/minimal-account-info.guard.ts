@@ -36,7 +36,7 @@ export class MinimalAccountInfoGuard implements CanActivate {
             }
             else return true;
         }
-        else return true; // should the default be false on the server?
+        else return true;  // false will hang the server server-side
     }
 
     async hasMinimalInfo():Promise<boolean> {
