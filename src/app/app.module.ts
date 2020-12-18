@@ -74,7 +74,9 @@ import { SmsMainComponent } from './sms/sms-main/sms-main.component';
 import { SettingsService } from './settings/settings.service';
 import { isPlatformBrowser } from '@angular/common';
 import { VideoListComponent } from './admin/video/video-list/video-list.component';
-
+import { FriendsComponent } from './friend/friends/friends.component';
+import { FriendFormComponent } from './friend/friend-form/friend-form.component';
+import { FriendListComponent } from './friend/friend-list/friend-list.component';
 
 
 const ORIGINAL_NOT_USED_firebaseUiAuthConfig: firebaseui.auth.Config = {
@@ -172,6 +174,9 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     ReviewSmsComponent,
     SmsMainComponent,
     VideoListComponent,
+    FriendsComponent,
+    FriendFormComponent,
+    FriendListComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

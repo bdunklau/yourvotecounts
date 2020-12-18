@@ -73,14 +73,18 @@ export class ViewVideoComponent implements OnInit {
 
     async ngOnInit() {
 
-        // console.log('ngOnInit():  this.room = this.route.snapshot.data[\'room\']...')
-        // this.room = this.route.snapshot.data['room']
-        // console.log('ngOnInit():  this.room = this.route.snapshot.data[\'room\']:  done')
-
-
-        this.room = this.roomService.roomObj
-        this.videoUrl = this.room.videoUrl
-        console.log("check this room:  ", this.room)
+        try {
+            this.room = this.roomService.roomObj
+            this.videoUrl = this.room.videoUrl
+        } catch(err) { 
+            /**
+             * server console was spitting out a mile of stack crap because the room object wasn't available right here.
+             * I tried moving the 2 lines above down inside the if(isBrowser) block - for some reason that caused the video
+             * to not be play-able.  So I moved this code back up here but wrapped in a try/catch because the giant error was just
+             * annoying and served no purpose
+             */
+            console.log('better error? :)') 
+        }
 
 
         console.log('isPlatformBrowser(this.platformId)...')
@@ -192,13 +196,6 @@ export class ViewVideoComponent implements OnInit {
 
     
     private listenForOfficials() {
-
-        let alreadyListening = this.official_selected_sub && !this.official_selected_sub.closed
-        if(alreadyListening) {
-            return
-        }
-
-
         let self = this;
   
         let isBrowser = isPlatformBrowser(this.platformId)

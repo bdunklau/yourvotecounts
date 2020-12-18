@@ -146,7 +146,7 @@ function deleteQueryBatch(db, query, resolve, reject) {
       // Delete documents in a batch
       let batch = db.batch();
       snapshot.docs.forEach((doc) => {
-        batch.delete(doc.ref);
+        batch.delete(doc['ref']);
       });
 
       return batch.commit().then(() => {

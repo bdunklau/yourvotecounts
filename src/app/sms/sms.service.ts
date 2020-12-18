@@ -30,9 +30,9 @@ export class SmsService {
         let smsPromise = await observable.toPromise()
         let smsMessages = []
         _.each(smsPromise, smsThing => {
-            // let id = smsThing.payl//payload.doc.id
-            // smsMessages.push({ smsThing.payload.doc.id, ...smsThing.payload.doc.data() });
-            let id = smsThing.payload.doc.id
+            // let id = smsThing.payl//payload.doc['id']
+            // smsMessages.push({ smsThing.payload.doc['id'], ...smsThing.payload.doc.data() });
+            let id = smsThing.payload.doc['id']
             smsMessages.push({id, ...smsThing.payload.doc.data()});
         })
         

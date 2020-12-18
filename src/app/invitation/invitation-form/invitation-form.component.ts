@@ -61,7 +61,7 @@ export class InvitationFormComponent implements OnInit {
     private fb: FormBuilder,
     private invitationService: InvitationService,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId,
     private messageService: MessageService,
     //@Optional() @Inject(REQUEST) private request: any,
     private userService: UserService) { 

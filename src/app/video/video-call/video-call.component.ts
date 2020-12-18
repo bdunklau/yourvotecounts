@@ -24,7 +24,7 @@ import { RoomObj } from '../../room/room-obj.model';
 import * as _ from 'lodash';
 import { SettingsService } from '../../settings/settings.service';
 import { Settings } from '../../settings/settings.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { isPlatformBrowser } from '@angular/common';
 import { MessageService } from 'src/app/core/message.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -713,9 +713,7 @@ s
     this.messageService.updateRecordingStatus("recording")
     this.roomObj['mark_time'] = []
     let now = new Date().getTime()
-    // You want created_ms NOT host_joined_ms - if host isn't the first to join, then mark_time.start_recording will be off
-    // You will end up capturing footage PRIOR to the segment you actually wanted to record.
-    let diff = this.getTimeDiff({first: this.roomObj.created_ms, second: now })
+    let diff = this.getTimeDiff({first: this.roomObj.host_joined_ms, second: now })
     this.roomObj['mark_time'].push({"start_recording_ms": now, "start_recording": diff})
     this.setRecordingState()
   } 

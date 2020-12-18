@@ -76,6 +76,7 @@ export class DisabledGuard implements CanActivate {
                 }
                 else return true;
             } catch(e) {
+              this.router.navigate(['/home']);
                 return false;
             }
         }

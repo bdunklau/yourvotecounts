@@ -44,7 +44,7 @@ export class VideoListComponent implements OnInit {
                 map(actions => {
                     return actions.map(a => {
                       const data = a.payload.doc.data() as RoomObj;
-                      const id = a.payload.doc.id;
+                      const id = a.payload.doc['id']
                       var returnThis = { id, ...data };
                       // console.log('returnThis = ', returnThis);
                       return returnThis;

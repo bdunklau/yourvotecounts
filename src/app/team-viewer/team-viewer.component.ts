@@ -48,7 +48,7 @@ export class TeamViewerComponent implements OnInit {
           map(actions => {
             return actions.map(a => {
               const data = a.payload.doc.data() as TeamMember;
-              const id = a.payload.doc.id;
+              const id = a.payload.doc['id'];
               var returnThis = { id, ...data };
               // console.log('returnThis = ', returnThis);
               return returnThis;

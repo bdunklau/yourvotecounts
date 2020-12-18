@@ -26,10 +26,12 @@ export class AuthGuard implements CanActivate {
               }
               else return true;
             } catch(e) {
+              this.router.navigate(['/home']);
               return false;
             }
         }
-        else return true; // should the default be false on the server?
+
+        else return true; // false will hang the server server-side
 
     }
 

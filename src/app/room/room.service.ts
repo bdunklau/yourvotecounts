@@ -273,7 +273,7 @@ export class RoomService {
       if(docChangeActions && docChangeActions.length > 0) {
           _.each(docChangeActions, obj => {
               let data = obj.payload.doc.data()
-              let docId = obj.payload.doc.id
+              let docId = obj.payload.doc['id']
               rooms.push(data as RoomObj)
               console.log('getRoomsWithGuest(): ',docId, ':  ', data)
           })
@@ -292,7 +292,7 @@ export class RoomService {
       if(docChangeActions && docChangeActions.length > 0) {
           _.each(docChangeActions, obj => {
               let data = obj.payload.doc.data()
-              let docId = obj.payload.doc.id
+              let docId = obj.payload.doc['id']
               rooms.push(data as RoomObj)
               console.log('getRoomsWithHost(): ',docId, ':  ', data)
           })
@@ -313,7 +313,7 @@ export class RoomService {
       // if(docChangeActions && docChangeActions.length > 0) {
       //     _.each(docChangeActions, obj => {
       //         let data = obj.payload.doc.data()
-      //         let docId = obj.payload.doc.id
+      //         let docId = obj.payload.doc['id']
       //         rooms.push(data as RoomObj)
       //         // console.log('getRooms(): ',docId, ':  ', data)
       //     })

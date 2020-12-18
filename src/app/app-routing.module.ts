@@ -49,6 +49,8 @@ import { TwilioSettingsComponent } from './settings/twilio-settings/twilio-setti
 import { MyVideosComponent } from './video/my-videos/my-videos.component'
 import { SmsMainComponent } from './sms/sms-main/sms-main.component';
 import { VideoListComponent } from './admin/video/video-list/video-list.component';
+import { FriendsComponent } from './friend/friends/friends.component';
+import { FriendGuard } from './friend/friend.guard';
 
 
 const routes: Routes = [
@@ -56,6 +58,7 @@ const routes: Routes = [
   { path: 'admin/videos', component: VideoListComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'disabled', component: DisabledComponent },
   { path: 'error-page', component: ErrorPageComponent },
+  { path: 'friends', component: FriendsComponent, canActivate: [FriendGuard] },
   { path: 'home', component: HomeComponent },
   
   { path: 'invitations', component: InvitationsComponent, canActivate: [InvitationFormGuard], resolve: { user: UserResolver} },

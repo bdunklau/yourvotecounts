@@ -17,6 +17,7 @@ import { map } from 'rxjs/operators';
 import { Subject, /*Observable,*/ Subscription } from 'rxjs';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
 import { environment } from '../../environments/environment';
+import { Friend } from '../friend/friend.model';
 
 
 @Injectable()
@@ -226,7 +227,7 @@ export class UserService {
                 let u = new FirebaseUserModel();
                 u.populate(data);
                 return u;
-                // const id = a.payload.doc.id;  // valid but not needed here
+                // const id = a.payload.doc['id'];  // valid but not needed here
               });
             })
           )
@@ -298,5 +299,57 @@ export class UserService {
     async setPromoCode(user: FirebaseUserModel) {
         await this.afs.collection('user').doc(user.uid).update({promo_code: user.promo_code})
     }
+
+    async addFriend(args: {person1: FirebaseUserModel, person2: any}) {
+        let now = new Date().getTime()
+        let id1 = this.afs.createId()
+        let id2 = this.afs.createId()
+        let batch = this.afs.firestore.batch()
+        let ref1 = this.afs.collection('friend').doc(id1).ref
+        let ref2 = this.afs.collection('friend').doc(id2).ref
+        // TODO defaults to US if no country code
+        let phone1 = args.person1.phoneNumber.startsWith('+') ? args.person1.phoneNumber : '+1'+args.person1.phoneNumber
+        let phone2 = args.person2.phoneNumber.startsWith('+') ? args.person2.phoneNumber : '+1'+args.person2.phoneNumber
+        batch.set(ref1, {friendId1: id1,
+                         displayName1: args.person1.displayName, 
+                         phoneNumber1: phone1, 
+                         friendId2: id2,
+                         displayName2: args.person2.displayName,
+                         phoneNumber2: phone2,
+                         date_ms: now })
+        batch.set(ref2, {friendId1: id2,
+                        displayName1: args.person2.displayName, 
+                        phoneNumber1: phone2,
+                        friendId2: id1, 
+                        displayName2: args.person1.displayName,
+                        phoneNumber2: phone1,
+                        date_ms: now })
+        await batch.commit()
+    }
+
+
+    async deleteFriend(friend: Friend) {
+        
+        let batch = this.afs.firestore.batch()
+        let ref1 = this.afs.collection('friend').doc(friend.friendId1).ref
+        let ref2 = this.afs.collection('friend').doc(friend.friendId2).ref
+        batch.delete(ref1)
+        batch.delete(ref2)
+        await batch.commit()
+    }
+
+
+    getFriends(user: FirebaseUserModel) {
+        return this.afs.collection('friend', ref => ref.where('phoneNumber1', '==', user.phoneNumber).limit(3)).snapshotChanges()
+    }
+
+    
+
+    // getMembersByTeamId(id: string) {
+    //   // Observable< DocumentChangeAction <unknown> []>
+    //   var retThis = this.afs.collection('team_member', ref => ref.where("teamDocId", "==", id)).snapshotChanges();
+    //   return retThis;
+    // }
+
 
 }

@@ -1,6 +1,6 @@
 import { browser, by, element, Key } from 'protractor';
 import * as protractor from 'protractor';
-import * as request from 'request'; // https://stackoverflow.com/questions/45182309/making-an-api-call-while-running-protractor-tests
+import request from 'request'; // https://stackoverflow.com/questions/45182309/making-an-api-call-while-running-protractor-tests
 
 
 export class ApiUser {

@@ -2,7 +2,7 @@ import { browser, by, element } from 'protractor';
 import * as _ from 'lodash';
 import { MyAccountPage } from './my-account.po';
 import { MainPage } from './main.po';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Api } from './api.po';
 
 export class TestSupport {

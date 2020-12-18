@@ -6,7 +6,7 @@ import { Subject, Observable, Subscription } from 'rxjs';
 import * as firebase from 'firebase/app';
 import { LogService } from '../log/log.service';
 import { switchMap } from 'rxjs/operators';
-import * as moment from 'moment';
+import moment from 'moment';
 import { FirebaseUserModel } from '../user/user.model';
 import { PaginationService } from '../pagination/pagination.service';
 
