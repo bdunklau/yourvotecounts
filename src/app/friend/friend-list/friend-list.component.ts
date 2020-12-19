@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { UserService } from 'src/app/user/user.service';
+import { UserService } from '../../user/user.service';
 import { Subscription } from 'rxjs';
 import { map/*, take*/ } from 'rxjs/operators';
 import * as _ from 'lodash'
 import { Friend } from '../friend.model';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -18,7 +19,8 @@ export class FriendListComponent implements OnInit {
     raw: any[]
     private friendSubscription: Subscription;
 
-    constructor(private userService: UserService,     
+    constructor(private userService: UserService, 
+                private router: Router,    
                @Inject(PLATFORM_ID) private platformId,) { this.raw = [] }
 
     async ngOnInit() {
@@ -66,6 +68,11 @@ export class FriendListComponent implements OnInit {
 
     async deleteFriend(friend: Friend) {
         this.userService.deleteFriend(friend)
+    }
+
+
+    invite(friend: Friend) {
+        this.router.navigate(['/invitations'], {state: {friend: friend}})
     }
 
 

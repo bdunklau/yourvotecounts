@@ -39,7 +39,7 @@
 
                       <div class="col-12 col-sm-6">
                           <input class="col-12 form-control" formControlName="phoneNumber" placeholder="Phone" 
-                                (input)="validatePhoneNo($event.target)" placeholder="(   ) ___-____"
+                                (input)="formatPhone($event)" placeholder="(   ) ___-____"
                                 [ngStyle]="{'border':   nameArray.controls[i].get('phoneNumber') && nameArray.controls[i].get('phoneNumber').invalid && (nameArray.controls[i].get('phoneNumber').dirty || nameArray.controls[i].get('phoneNumber').touched)    ? '1px solid red' : ''}">
                                 
                           <!-- validate: phone - works but I like the simple border highlighing better
@@ -70,16 +70,9 @@
             </button>
           </div>
       </div>
-<!--       
-      names.length = {{names.length}}  maxGuests = {{maxGuests}} numberOfInvitationsRemaining = {{numberOfInvitationsRemaining}}
-      canInvite = {{canInvite}}
-       -->
-      <!-- remove this
-      <button id="doit" (click)="doit()" class="btn btn-primary col-sm-12"> Do it </button>
-       -->
 
       
-      <div class="row" style="margin-top:20px">
+      <div class="row" style="margin-top:40px">
           <div class="col">
               <button id="doit" [hidden]="!invitationForm.valid || (names && names.length == 0)" (click)="doit()" class="btn btn-primary col-sm-12"> <i class="far fa-paper-plane"></i> Send Invite </button>
           </div>
@@ -87,69 +80,4 @@
 
     </form>
 
-
-
-
-
-<!--
-    <form *ngIf="invitationForm" [formGroup]="invitationForm" (ngSubmit)="onSubmit()" novalidate ngNoForm>
-      <div class="field" style="margin-bottom:20px">
-        <div class="control">
-          <input  (ngModelChange)='updateMessage()'
-            class="form-control"
-            type="phone"
-            id="phone"
-            formControlName="phone"
-            placeholder="Phone"
-          />
-          <div *ngIf="phone.invalid && (phone.dirty || phone.touched)">
-            <p class="alert alert-danger" *ngIf="phone.errors.required">
-              Phone is required
-            </p>
-            <p class="alert alert-danger" *ngIf="phone.errors.phoneNumberInvalid">
-              Phone is not valid
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="field" style="margin-bottom:20px">
-        <div class="control">
-          <input
-            class="form-control"
-            type="text"
-            id="name"
-            formControlName="name"
-            placeholder="Name"
-          />
-          <div *ngIf="name.invalid && (name.dirty || name.touched)">
-            <p class="alert alert-danger" *ngIf="name.errors.required">
-              Name is required
-            </p>
-          </div>
-        </div>
-      </div>
-
-      
-      <div class="field" style="margin-bottom:20px">
-        <span class="text-muted">Text Message</span>
-        <br/>
-        <textarea class="form-control"
-                  id="message" 
-                  formControlName="message"
-                  placeholder="Text message"
-                  rows="10">
-                {{message}}
-        </textarea>
-      </div>
-
-
-      <button id="submit_invitation" type="submit" class="btn btn-success col-sm-12" [disabled]="!invitationForm.valid">Send Invitation  <i class="fa fa-sms"></i> </button>
-      <P>&nbsp;</P>
-      <button id="cancel_invitation" type="button" (click)="cancel()" class="btn btn-secondary col-sm-12">Cancel</button>
-      <P>&nbsp;</P>
-      <button id="view_invitations_button" type="button" [routerLink]="['/invitation-list']" class="btn btn-primary col-sm-12">View Invitations</button>
-
-    </form>
--->
 

@@ -14,11 +14,12 @@ import {
 } from "@angular/forms";
 import { UserService } from '../../user/user.service';
 import { SmsService } from '../../sms/sms.service';
-import { FirebaseUserModel } from 'src/app/user/user.model';
+import { FirebaseUserModel } from '../../user/user.model';
 import * as _ from 'lodash'
-import { SettingsService } from 'src/app/settings/settings.service';
-import { MessageService } from 'src/app/core/message.service';
+import { SettingsService } from '../../settings/settings.service';
+import { MessageService } from '../../core/message.service';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
+import { Friend } from '../../friend/friend.model';
 
 
 
@@ -54,6 +55,7 @@ export class InvitationFormComponent implements OnInit {
   themessage: string;
   user: FirebaseUserModel;
   host: string;  //also includes port
+  friend?: Friend
 
   constructor(
     private smsService: SmsService,
@@ -66,29 +68,41 @@ export class InvitationFormComponent implements OnInit {
     //@Optional() @Inject(REQUEST) private request: any,
     private userService: UserService) { 
 
-      // will be something if this is called from video-call.component.ts
+      // this class can also be called from video-call.component.ts
+      
+      this.names = []
+
       this.createForm();
+
+      // friend-list.component.html
+      if(this.router.getCurrentNavigation().extras.state) {
+          this.friend = this.router.getCurrentNavigation().extras.state.friend as Friend
+          console.log('this.friend.displayName2 = ', this.friend.displayName2)
+          console.log('this.friend.phoneNumber2 = ', this.friend.phoneNumber2)
+          this.addSomeone3(this.friend.displayName2, this.friend.phoneNumber2)
+      } 
   }
 
   async ngOnInit(): Promise<void> {
-    
-    // if (isPlatformServer(this.platformId)) {
-    //     this.host = this.request.headers['x-forwarded-host'] // this is just the name of the server/host
-    //     console.log('InvitationFormComponent: x-forwarded-host:  ', this.request.headers['x-forwarded-host'])
-    // }
-
 
     // we don't want this - we want config/settings/website_domain_name
     if (isPlatformBrowser(this.platformId)) {
+        // console.log(this.router.getCurrentNavigation().state.friend.phoneNumber);
+
         this.maxGuests = this.settingsService.maxGuests
         this.currentInviteCount = this.currentInvitations ? this.currentInvitations.length : 0
         this.numberOfInvitationsRemaining = this.maxGuests - this.currentInviteCount
         this.host = window.location.host //this.settingsService.settings.website_domain_name
         // console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
 
-        // this.canInvite = this.canInviteMore()
-        this.names = []
-        this.addSomeone()
+        this.canInvite = this.canInviteMore()      
+
+        /**
+         * if friend passed in from friend-list.component.html, then we already added that person in the constructor
+         * In that case, make the user press "Add Guest" before someone else can be added
+         */
+        if(!this.friend)
+            this.addSomeone()
     
         this.user = await this.userService.getCurrentUser();
         this.listenForInvitations();
@@ -128,10 +142,36 @@ export class InvitationFormComponent implements OnInit {
   //}
   //  https://medium.com/aubergine-solutions/add-push-and-remove-form-fields-dynamically-to-formarray-with-reactive-forms-in-angular-acf61b4a2afe
   addSomeone() {
-      this.names.push({displayName: '', phoneNumber: ''});
+      // this.names.push({displayName: '', phoneNumber: ''});
+      // let group = this.fb.group({
+      //       displayName: new FormControl('', [Validators.required]),
+      //       phoneNumber: new FormControl('', { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ })
+      //     } 
+      //     //, { updateOn: 'blur' }  // another option
+      // )
+      // this.nameArray.push(group);
+      // // console.log('this.nameArray: ', this.nameArray)
+      // this.canInvite = this.canInviteMore()      
+      this.addSomeone3('', '')
+  }
+
+
+  addSomeone2() {
+      let displayName = ''
+      let phoneNumber = ''
+      if(this.friend) {
+          displayName = this.friend.displayName2
+          phoneNumber = this.friend.phoneNumber2
+      }
+      this.addSomeone3(displayName, phoneNumber)
+  }
+
+
+  addSomeone3(displayName: string, phoneNumber: string) {
+      this.names.push({displayName: displayName, phoneNumber: phoneNumber});
       let group = this.fb.group({
-            displayName: new FormControl('', [Validators.required]),
-            phoneNumber: new FormControl('', { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ })
+            displayName: new FormControl(displayName, [Validators.required]),
+            phoneNumber: new FormControl(this.formatPhone2(phoneNumber), { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ })
           } 
           //, { updateOn: 'blur' }  // another option
       )
@@ -199,9 +239,10 @@ export class InvitationFormComponent implements OnInit {
   
   ValidatePhone(control: AbstractControl): {[key: string]: any} | null  {
       if(!control || !control.value) return null
-      let myString = this.justNumbers(control.value)      
-      if (myString && (myString.length != 10) ) {
-        return { 'phoneNumberInvalid': true };
+      let myString = this.justNumbers(control.value)  
+      if(!myString)  return { 'phoneNumberInvalid': true };
+      if(myString.length < 10) { // 10 or higher to allow all country codes
+          return { 'phoneNumberInvalid': true };
       }
       return null;
   }
@@ -290,19 +331,67 @@ export class InvitationFormComponent implements OnInit {
       this.router.navigate(['/video-call', commonInvitationId, this.user.phoneNumber])
   }
   
-  validatePhoneNo(field) {
-      var phoneNumDigits = field.value.replace(/\D/g, '');
+
+  /**
+   * duplicated in friend-form.component.ts
+   */
+  formatPhone(event) {
+      let field = event.target
+      // var phoneNumDigits = field.value.replace(/\D/g, '');
     
-      // this.isValidFlg = (phoneNumDigits.length==0 || phoneNumDigits.length == 10);
+      // // this.isValidFlg = (phoneNumDigits.length==0 || phoneNumDigits.length == 10);
+    
+      // var formattedNumber = phoneNumDigits;
+      // if(phoneNumDigits.length > 12) {
+      //   formattedNumber = '+'+phoneNumDigits.substring(0, 3)+' (' + phoneNumDigits.substring(3, 6) + ') ' + phoneNumDigits.substring(6, 9) + '-' + phoneNumDigits.substring(9);
+      // }
+      // else if(phoneNumDigits.length > 11) {
+      //   formattedNumber = '+'+phoneNumDigits.substring(0, 2)+' (' + phoneNumDigits.substring(2, 5) + ') ' + phoneNumDigits.substring(5, 8) + '-' + phoneNumDigits.substring(8);
+      // }
+      // else if(phoneNumDigits.length > 10/*US*/) {
+      //   formattedNumber = '+'+phoneNumDigits.substring(0, 1)+' (' + phoneNumDigits.substring(1, 4) + ') ' + phoneNumDigits.substring(4, 7) + '-' + phoneNumDigits.substring(7);
+      // }
+      // else if (phoneNumDigits.length >= 6)
+      //   formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3, 6) + '-' + phoneNumDigits.substring(6);
+      // else if (phoneNumDigits.length >= 3)
+      //   formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3);
+    
+      // field.value = formattedNumber;
+      field.value = this.formatPhone2(field.value)
+
+      /**
+       * backspacing over a - or ) or space needs special handling...
+       */
+      let lastChar = field.value.substring(field.value.length-1)
+      console.log('validatePhoneNo(): lastChar = ', lastChar)
+      if(event.inputType === 'deleteContentBackward') { 
+          if(lastChar === ' ') field.value = field.value.substring(0, field.value.length-2)
+          else if(lastChar === '-') field.value = field.value.substring(0, field.value.length-1)
+          else if(lastChar === ')') field.value = field.value.substring(0, field.value.length-1)
+      } 
+
+      console.log('validatePhoneNo(): field.value = ', field.value)
+  }
+
+  private formatPhone2(value) {    
+      var phoneNumDigits = value.replace(/\D/g, '');
     
       var formattedNumber = phoneNumDigits;
-      if (phoneNumDigits.length >= 6)
+      if(phoneNumDigits.length > 12) {
+        formattedNumber = '+'+phoneNumDigits.substring(0, 3)+' (' + phoneNumDigits.substring(3, 6) + ') ' + phoneNumDigits.substring(6, 9) + '-' + phoneNumDigits.substring(9);
+      }
+      else if(phoneNumDigits.length > 11) {
+        formattedNumber = '+'+phoneNumDigits.substring(0, 2)+' (' + phoneNumDigits.substring(2, 5) + ') ' + phoneNumDigits.substring(5, 8) + '-' + phoneNumDigits.substring(8);
+      }
+      else if(phoneNumDigits.length > 10/*US*/) {
+        formattedNumber = '+'+phoneNumDigits.substring(0, 1)+' (' + phoneNumDigits.substring(1, 4) + ') ' + phoneNumDigits.substring(4, 7) + '-' + phoneNumDigits.substring(7);
+      }
+      else if (phoneNumDigits.length >= 6)
         formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3, 6) + '-' + phoneNumDigits.substring(6);
       else if (phoneNumDigits.length >= 3)
         formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3);
     
-      field.value = formattedNumber;
-      console.log('validatePhoneNo(): field.value = ', field.value)
+      return formattedNumber;
   }
 
   cancel(/*form: NgForm*/) {
@@ -315,39 +404,5 @@ export class InvitationFormComponent implements OnInit {
   openAddSomeoneDialog() {
       this.translated = true
   }
-
-
-  
-  /***********
-  updateMessage() {
-      console.log("updateMessage()")    
-      let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.invitationId+"/"+this.invitation.phoneNumber};
-      this.themessage = this.getInvitationMessage(this.user.displayName, url);
-      this.invitationForm.get("message").setValue(this.themessage);
-  }
-
-
-  getInvitationMessage(displayName: string, parm: {protocol: string, host: string, pathname: string}) {
-    let baseMsg = 'name  is inviting you to participate in a video call on HeadsUp.  Click the link below to see this invitation. \n\n url \n\n Do not reply to this text message.  This number is not being monitored.'
-    //var res = await this.afs.collection('config').doc('invitation_template').ref.get();
-    let msg = baseMsg.replace(/name/, displayName);
-    //let host = parm.host.indexOf("localhost") == -1 ? parm.host : this.ngrok
-    //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.invitationId+"/"+this.invitation.phoneNumber};
-    
-    this.invitation.phoneNumber = this.getPhoneNumber();
-    let url = `${parm.protocol}//${parm.host}/video-call/${this.invitation.invitationId}/${this.invitation.phoneNumber}`
-
-    //this.themessage = await this.invitationService.getInvitationMessage(this.user.displayName, url);
-    //let url = parm.protocol+"//"+parm.host+parm.pathname
-    msg = msg.replace(/url/, url);
-    msg = msg.replace(/\\n/g, "\n");
-    return msg;
-  }
-
-
-  getUrl(protocol: string, host: string, pathname: string) {
-    return `${protocol}//${host}`
-  }
-  *******/
 
 }
