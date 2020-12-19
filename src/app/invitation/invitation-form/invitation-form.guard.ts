@@ -5,7 +5,7 @@ import { DisabledGuard } from '../../disabled/disabled.guard';
 import { AuthGuard } from '../../core/auth.guard';
 import { MinimalAccountInfoGuard } from '../../my-account/minimal-account-info/minimal-account-info.guard';
 import { PromoCodeGuard } from '../../promo-code/promo-code.guard';
-import { SettingsService } from 'src/app/settings/settings.service';
+import { SettingsService } from '../../settings/settings.service';
 
 
 @Injectable({

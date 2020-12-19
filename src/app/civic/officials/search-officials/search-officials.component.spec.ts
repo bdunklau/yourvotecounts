@@ -7,7 +7,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../../../../../src/environments/environment';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SettingsService } from 'src/app/settings/settings.service';
+import { SettingsService } from '../../../settings/settings.service';
 
 
 

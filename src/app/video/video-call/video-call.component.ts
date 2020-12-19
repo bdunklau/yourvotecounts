@@ -26,7 +26,7 @@ import { SettingsService } from '../../settings/settings.service';
 import { Settings } from '../../settings/settings.model';
 import moment from 'moment';
 import { isPlatformBrowser } from '@angular/common';
-import { MessageService } from 'src/app/core/message.service';
+import { MessageService } from '../../core/message.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmComponent } from '../../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 
