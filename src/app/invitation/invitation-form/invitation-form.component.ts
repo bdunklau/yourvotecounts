@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, OnChanges, Inject, PLATFORM_ID, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, Inject, PLATFORM_ID, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { Invitation } from '../invitation.model';
@@ -31,8 +31,6 @@ import { Friend } from '../../friend/friend.model';
 export class InvitationFormComponent implements OnInit {
 
   // see  video-call.component.html
-  // @Input() inputInviteId: string
-  // @Input() inputInvitationCount = 0
   @Output() outputInvitations = new EventEmitter<Invitation>();
   private currentInviteCount = 0
   private invitationIdSub: Subscription
@@ -65,7 +63,6 @@ export class InvitationFormComponent implements OnInit {
     private router: Router,
     @Inject(PLATFORM_ID) private platformId,
     private messageService: MessageService,
-    //@Optional() @Inject(REQUEST) private request: any,
     private userService: UserService) { 
 
       // this class can also be called from video-call.component.ts
@@ -81,6 +78,8 @@ export class InvitationFormComponent implements OnInit {
           console.log('this.friend.phoneNumber2 = ', this.friend.phoneNumber2)
           this.addSomeone3(this.friend.displayName2, this.friend.phoneNumber2)
       } 
+
+      // console.log('this.invitationForm = ', this.invitationForm)
   }
 
   async ngOnInit(): Promise<void> {
@@ -403,6 +402,13 @@ export class InvitationFormComponent implements OnInit {
   
   openAddSomeoneDialog() {
       this.translated = true
+  }
+  
+
+  onFriendSelected(friend: Friend, loopIdx: number) {
+      console.log('onFriendSelected() loopIdx = ', loopIdx)
+      console.log('onFriendSelected() this.nameArray.at('+loopIdx+') = ', this.nameArray.at(loopIdx))
+      this.nameArray.at(loopIdx).setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2) })
   }
 
 }

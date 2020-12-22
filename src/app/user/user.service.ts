@@ -169,6 +169,16 @@ export class UserService {
       .valueChanges();
   }
 
+  searchFriends(nameVal, limit) {
+    if(!nameVal || nameVal === '') return [];
+    return this.afs.collection('friend', ref => ref
+      .orderBy("displayName2_lowerCase")
+      .startAt(nameVal.toLowerCase())
+      .endAt(nameVal.toLowerCase()+"\uf8ff")
+      .limit(limit))
+      .valueChanges();
+  }
+
   searchByPhone(phoneVal, limit) {
     return this.afs.collection('user', ref => ref
       .orderBy("phoneNumber")
@@ -315,6 +325,7 @@ export class UserService {
                          phoneNumber1: phone1, 
                          friendId2: id2,
                          displayName2: args.person2.displayName,
+                         displayName2_lowerCase: args.person2.displayName.toLowerCase(),
                          phoneNumber2: phone2,
                          date_ms: now })
         batch.set(ref2, {friendId1: id2,
@@ -322,6 +333,7 @@ export class UserService {
                         phoneNumber1: phone2,
                         friendId2: id1, 
                         displayName2: args.person1.displayName,
+                        displayName2_lowerCase: args.person1.displayName.toLowerCase(),
                         phoneNumber2: phone1,
                         date_ms: now })
         await batch.commit()

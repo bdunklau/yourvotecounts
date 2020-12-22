@@ -24,7 +24,16 @@
                 </div>
                 <div class="row">
                       <div class="col-12 col-sm-6" style="margin-bottom:10px">
-                          <input class="col-12 form-control" formControlName="displayName" placeholder="Name"  [ngStyle]="{'border':   nameArray.controls[i].get('displayName') && nameArray.controls[i].get('displayName').invalid && (nameArray.controls[i].get('displayName').dirty || nameArray.controls[i].get('displayName').touched)    ? '1px solid red' : ''}">
+
+                           <!-- log.component.html also -->
+                          <app-search-user-by-name (selectedFriend)="onFriendSelected($event, i)" [friendsOnly]="true" 
+                                [formGroup_AAA]="invitationForm"
+                                [formArray_AAA]="nameArray"
+                                [arrayName_AAA]="'nameArray'"
+                                [groupIdx_AAA]="i"
+                                [controllName_AAA]="'displayName'">
+                          </app-search-user-by-name>
+
 
                           <!-- validate: name - works but I like the simple border highlighing better
                           <div *ngIf="nameArray.controls[i].get('displayName') && nameArray.controls[i].get('displayName').invalid && (nameArray.controls[i].get('displayName').dirty || nameArray.controls[i].get('displayName').touched)">
