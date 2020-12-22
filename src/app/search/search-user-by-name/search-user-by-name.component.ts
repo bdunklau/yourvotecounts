@@ -53,8 +53,8 @@ export class SearchUserByNameComponent implements OnInit {
           return text$.pipe(
               debounceTime(200),
               distinctUntilChanged(),
-              switchMap( searchText => {
-                return searchText.length < 1 ? [] : this.userService.searchFriends(searchText, 10);
+              switchMap( /*async*/ searchText => {
+                return searchText.length < 1 ? [] : this.userService.searchFriends(/*currUser,*/ searchText, 10);
               } )
               // catchError(new ErrorInfo().parseObservableResponseError)
           );

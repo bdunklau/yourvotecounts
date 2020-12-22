@@ -11,5 +11,7 @@ export class Friend {
     friendId2: string
     phoneNumber1: string
     phoneNumber2: string
+    uid1: string
+    uid2?: string
 }
 
