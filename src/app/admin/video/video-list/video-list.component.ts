@@ -5,7 +5,7 @@ import { RoomObj } from '../../../room/room-obj.model';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Settings } from '../../../settings/settings.model';
-import { SettingsService } from 'src/app/settings/settings.service';
+import { SettingsService } from '../../../settings/settings.service';
 import { Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import * as _ from 'lodash'

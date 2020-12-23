@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, OnChanges, Inject, PLATFORM_ID, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, Inject, PLATFORM_ID, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { Invitation } from '../invitation.model';
@@ -14,11 +14,12 @@ import {
 } from "@angular/forms";
 import { UserService } from '../../user/user.service';
 import { SmsService } from '../../sms/sms.service';
-import { FirebaseUserModel } from 'src/app/user/user.model';
+import { FirebaseUserModel } from '../../user/user.model';
 import * as _ from 'lodash'
-import { SettingsService } from 'src/app/settings/settings.service';
-import { MessageService } from 'src/app/core/message.service';
+import { SettingsService } from '../../settings/settings.service';
+import { MessageService } from '../../core/message.service';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
+import { Friend } from '../../friend/friend.model';
 
 
 
@@ -30,8 +31,6 @@ import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 export class InvitationFormComponent implements OnInit {
 
   // see  video-call.component.html
-  // @Input() inputInviteId: string
-  // @Input() inputInvitationCount = 0
   @Output() outputInvitations = new EventEmitter<Invitation>();
   private currentInviteCount = 0
   private invitationIdSub: Subscription
@@ -54,6 +53,7 @@ export class InvitationFormComponent implements OnInit {
   themessage: string;
   user: FirebaseUserModel;
   host: string;  //also includes port
+  friend?: Friend
 
   constructor(
     private smsService: SmsService,
@@ -63,32 +63,45 @@ export class InvitationFormComponent implements OnInit {
     private router: Router,
     @Inject(PLATFORM_ID) private platformId,
     private messageService: MessageService,
-    //@Optional() @Inject(REQUEST) private request: any,
     private userService: UserService) { 
 
-      // will be something if this is called from video-call.component.ts
+      // this class can also be called from video-call.component.ts
+      
+      this.names = []
+
       this.createForm();
+
+      // friend-list.component.html
+      if(this.router.getCurrentNavigation().extras && this.router.getCurrentNavigation().extras.state) {
+          this.friend = this.router.getCurrentNavigation().extras.state.friend as Friend
+          console.log('this.friend.displayName2 = ', this.friend.displayName2)
+          console.log('this.friend.phoneNumber2 = ', this.friend.phoneNumber2)
+          this.addSomeone3(this.friend.displayName2, this.friend.phoneNumber2)
+      } 
+
+      // console.log('this.invitationForm = ', this.invitationForm)
   }
 
   async ngOnInit(): Promise<void> {
-    
-    // if (isPlatformServer(this.platformId)) {
-    //     this.host = this.request.headers['x-forwarded-host'] // this is just the name of the server/host
-    //     console.log('InvitationFormComponent: x-forwarded-host:  ', this.request.headers['x-forwarded-host'])
-    // }
-
 
     // we don't want this - we want config/settings/website_domain_name
     if (isPlatformBrowser(this.platformId)) {
+        // console.log(this.router.getCurrentNavigation().state.friend.phoneNumber);
+
         this.maxGuests = this.settingsService.maxGuests
         this.currentInviteCount = this.currentInvitations ? this.currentInvitations.length : 0
         this.numberOfInvitationsRemaining = this.maxGuests - this.currentInviteCount
         this.host = window.location.host //this.settingsService.settings.website_domain_name
         // console.log('InvitationFormComponent: isPlatformBrowser: true: window.location.host = ', window.location.host)
 
-        // this.canInvite = this.canInviteMore()
-        this.names = []
-        this.addSomeone()
+        this.canInvite = this.canInviteMore()      
+
+        /**
+         * if friend passed in from friend-list.component.html, then we already added that person in the constructor
+         * In that case, make the user press "Add Guest" before someone else can be added
+         */
+        if(!this.friend)
+            this.addSomeone()
     
         this.user = await this.userService.getCurrentUser();
         this.listenForInvitations();
@@ -128,10 +141,36 @@ export class InvitationFormComponent implements OnInit {
   //}
   //  https://medium.com/aubergine-solutions/add-push-and-remove-form-fields-dynamically-to-formarray-with-reactive-forms-in-angular-acf61b4a2afe
   addSomeone() {
-      this.names.push({displayName: '', phoneNumber: ''});
+      // this.names.push({displayName: '', phoneNumber: ''});
+      // let group = this.fb.group({
+      //       displayName: new FormControl('', [Validators.required]),
+      //       phoneNumber: new FormControl('', { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ })
+      //     } 
+      //     //, { updateOn: 'blur' }  // another option
+      // )
+      // this.nameArray.push(group);
+      // // console.log('this.nameArray: ', this.nameArray)
+      // this.canInvite = this.canInviteMore()      
+      this.addSomeone3('', '')
+  }
+
+
+  addSomeone2() {
+      let displayName = ''
+      let phoneNumber = ''
+      if(this.friend) {
+          displayName = this.friend.displayName2
+          phoneNumber = this.friend.phoneNumber2
+      }
+      this.addSomeone3(displayName, phoneNumber)
+  }
+
+
+  addSomeone3(displayName: string, phoneNumber: string) {
+      this.names.push({displayName: displayName, phoneNumber: phoneNumber});
       let group = this.fb.group({
-            displayName: new FormControl('', [Validators.required]),
-            phoneNumber: new FormControl('', { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ })
+            displayName: new FormControl(displayName, [Validators.required]),
+            phoneNumber: new FormControl(this.formatPhone2(phoneNumber), { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ })
           } 
           //, { updateOn: 'blur' }  // another option
       )
@@ -165,23 +204,21 @@ export class InvitationFormComponent implements OnInit {
     );
   }
 
+
+  /**
+   * happens before onSubmit()
+   */
   doit() {
 
 
       for(var i=0; i < this.nameArray.length; i++) {
-          console.log('this.nameArray.at(i).value: ', this.nameArray.at(i).value)
+          console.log('doit(): this.nameArray.at('+i+').value: ', this.nameArray.at(i).value)
           this.names[i] = this.nameArray.at(i).value
       }
         
       // console.log('this.nameArray: ', this.nameArray)
       // console.log('this.names: ', this.names)
   }
-
-
-
-
-
-
 
 
   
@@ -199,9 +236,10 @@ export class InvitationFormComponent implements OnInit {
   
   ValidatePhone(control: AbstractControl): {[key: string]: any} | null  {
       if(!control || !control.value) return null
-      let myString = this.justNumbers(control.value)      
-      if (myString && (myString.length != 10) ) {
-        return { 'phoneNumberInvalid': true };
+      let myString = this.justNumbers(control.value)  
+      if(!myString)  return { 'phoneNumberInvalid': true };
+      if(myString.length < 10) { // 10 or higher to allow all country codes
+          return { 'phoneNumberInvalid': true };
       }
       return null;
   }
@@ -211,19 +249,6 @@ export class InvitationFormComponent implements OnInit {
       let replaced = value.replace(/\D/g,''); //  \D = all non-digits 
       return replaced
   }
-
-
-  /*********
-  getPhoneNumber(): string {
-    if(!this.invitationForm.get("phone") || !this.invitationForm.get("phone").value)
-        return // prevents weird error on submit "Cannot read property 'trim' of null"
-
-    let ph = this.invitationForm.get("phone").value.trim();
-    if(!ph.startsWith('+1'))
-      ph = '+1'+ph;
-    return ph;
-  }
-  ***********/
   
 
   async onSubmit(/*form: NgForm*/) {      
@@ -235,16 +260,39 @@ export class InvitationFormComponent implements OnInit {
           //console.log('this.nameArray.at(i).value: ', this.nameArray.at(i).value)
           this.names[i] = this.nameArray.at(i).value
 
+          /**
+           * search-user-by-name.component.ts and  .html
+           * User picks a value from this dropdown control.  Value is the entire friend object, not just the displayName2
+           * So we extract just the displayName2 value
+           * 
+           * But if the user types a name that isn't a known friend, then the value stored in the 'displayName' control is just the
+           * string in the <input>.  So the 'if' block below won't get executed.  We can just take the value entered by the user
+           */
+          if(this.nameArray.at(i).value.displayName.displayName2) {
+              this.names[i] = {displayName: this.nameArray.at(i).value.displayName.displayName2, phoneNumber: this.nameArray.at(i).value.phoneNumber}
+          } 
+
           // create the invitation
           let invitation = new Invitation();
           invitation.invitationId = commonInvitationId;
           invitation.setCreator(this.user);
           invitation.displayName = this.names[i].displayName
+          // console.log('onSubmit(): this.names['+i+'] = ', this.names[i])
+          // console.log('onSubmit(): this.names['+i+'].displayName = ', this.names[i].displayName)
          
           //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+invitation.invitationId+"/"+this.names[i].phoneNumber};
           //this.themessage = this.getInvitationMessage(this.user.displayName, url);
-          
-          invitation.phoneNumber = "+1" + this.justNumbers(this.names[i].phoneNumber)
+
+          console.log('onSubmit(): this.names['+i+'].phoneNumber = ', this.names[i].phoneNumber)
+          let tempPh = this.justNumbers(this.names[i].phoneNumber)
+          let noCountryCode = tempPh.length < 11
+          console.log('onSubmit(): tempPh = ', tempPh)
+          let US_COUNTRY_CODE = '1'
+          if(noCountryCode) tempPh = US_COUNTRY_CODE + tempPh
+          console.log('onSubmit(): tempPh = ', tempPh)
+          invitation.phoneNumber = '+'+tempPh
+          console.log('onSubmit(): tempPh = ', tempPh)
+
           // TODO FIXME figure out host name
           let url = `https://${this.host}/video-call/${invitation.invitationId}/${invitation.phoneNumber}`
           let msg = `${invitation.creatorName} is inviting you to participate in a video call on HeadsUp.  Click the link below to see this invitation. \n\nDo not reply to this text message.  This number is not being monitored. \n\n${url}`
@@ -262,17 +310,7 @@ export class InvitationFormComponent implements OnInit {
 
 
 
-
-      //this.invitation.displayName = this.invitationForm.get("name").value.trim();
-      //this.invitation.message = this.invitationForm.get("message").value.trim();
-      //this.invitation.phoneNumber = this.getPhoneNumber();
-        
-      //this.invitationService.create(this.invitation);
-
-      //this.smsService.sendSms({from: "+12673314843", to: this.invitation.phoneNumber, mediaUrl: "", message: this.invitation.message});
-
       /***** don't update invitations - just cancel and reissue  *****/
-      //this.router.navigate(['/teams', teamId]);
       this.invitationForm.reset();
 
       // WAIT - not this exactly.  Instead what we want to do is send the host a text message also
@@ -290,19 +328,47 @@ export class InvitationFormComponent implements OnInit {
       this.router.navigate(['/video-call', commonInvitationId, this.user.phoneNumber])
   }
   
-  validatePhoneNo(field) {
-      var phoneNumDigits = field.value.replace(/\D/g, '');
-    
-      // this.isValidFlg = (phoneNumDigits.length==0 || phoneNumDigits.length == 10);
+
+  /**
+   * duplicated in friend-form.component.ts
+   */
+  formatPhone(event) {
+      let field = event.target
+      field.value = this.formatPhone2(field.value)
+
+      /**
+       * backspacing over a - or ) or space needs special handling...
+       */
+      let lastChar = field.value.substring(field.value.length-1)
+      console.log('validatePhoneNo(): lastChar = ', lastChar)
+      if(event.inputType === 'deleteContentBackward') { 
+          if(lastChar === ' ') field.value = field.value.substring(0, field.value.length-2)
+          else if(lastChar === '-') field.value = field.value.substring(0, field.value.length-1)
+          else if(lastChar === ')') field.value = field.value.substring(0, field.value.length-1)
+      } 
+
+      console.log('validatePhoneNo(): field.value = ', field.value)
+  }
+
+  private formatPhone2(value) {    
+      var phoneNumDigits = value.replace(/\D/g, '');
     
       var formattedNumber = phoneNumDigits;
-      if (phoneNumDigits.length >= 6)
+      if(phoneNumDigits.length > 12) {
+        formattedNumber = '+'+phoneNumDigits.substring(0, 3)+' (' + phoneNumDigits.substring(3, 6) + ') ' + phoneNumDigits.substring(6, 9) + '-' + phoneNumDigits.substring(9);
+      }
+      else if(phoneNumDigits.length > 11) {
+        formattedNumber = '+'+phoneNumDigits.substring(0, 2)+' (' + phoneNumDigits.substring(2, 5) + ') ' + phoneNumDigits.substring(5, 8) + '-' + phoneNumDigits.substring(8);
+      }
+      else if(phoneNumDigits.length > 10/*US*/) {
+        formattedNumber = '+'+phoneNumDigits.substring(0, 1)+' (' + phoneNumDigits.substring(1, 4) + ') ' + phoneNumDigits.substring(4, 7) + '-' + phoneNumDigits.substring(7);
+      }
+      else if (phoneNumDigits.length >= 6)
         formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3, 6) + '-' + phoneNumDigits.substring(6);
       else if (phoneNumDigits.length >= 3)
         formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3);
     
-      field.value = formattedNumber;
-      console.log('validatePhoneNo(): field.value = ', field.value)
+      return formattedNumber;
   }
 
   cancel(/*form: NgForm*/) {
@@ -315,39 +381,15 @@ export class InvitationFormComponent implements OnInit {
   openAddSomeoneDialog() {
       this.translated = true
   }
-
-
   
-  /***********
-  updateMessage() {
-      console.log("updateMessage()")    
-      let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.invitationId+"/"+this.invitation.phoneNumber};
-      this.themessage = this.getInvitationMessage(this.user.displayName, url);
-      this.invitationForm.get("message").setValue(this.themessage);
+
+  onFriendSelected(friend: Friend, loopIdx: number) {
+      this.nameArray.controls[loopIdx].setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2) })
+      console.log('onFriendSelected(): this.nameArray.at('+loopIdx+').value: ', this.nameArray.at(loopIdx).value)
+      // console.log('onFriendSelected() loopIdx = ', loopIdx)
+      // console.log('onFriendSelected() this.nameArray.at('+loopIdx+') = ', this.nameArray.at(loopIdx))
+      // console.log('onFriendSelected() this.nameArray.at('+loopIdx+') = ',  )
+      // this.nameArray.at(loopIdx).setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2) })
   }
-
-
-  getInvitationMessage(displayName: string, parm: {protocol: string, host: string, pathname: string}) {
-    let baseMsg = 'name  is inviting you to participate in a video call on HeadsUp.  Click the link below to see this invitation. \n\n url \n\n Do not reply to this text message.  This number is not being monitored.'
-    //var res = await this.afs.collection('config').doc('invitation_template').ref.get();
-    let msg = baseMsg.replace(/name/, displayName);
-    //let host = parm.host.indexOf("localhost") == -1 ? parm.host : this.ngrok
-    //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+this.invitation.invitationId+"/"+this.invitation.phoneNumber};
-    
-    this.invitation.phoneNumber = this.getPhoneNumber();
-    let url = `${parm.protocol}//${parm.host}/video-call/${this.invitation.invitationId}/${this.invitation.phoneNumber}`
-
-    //this.themessage = await this.invitationService.getInvitationMessage(this.user.displayName, url);
-    //let url = parm.protocol+"//"+parm.host+parm.pathname
-    msg = msg.replace(/url/, url);
-    msg = msg.replace(/\\n/g, "\n");
-    return msg;
-  }
-
-
-  getUrl(protocol: string, host: string, pathname: string) {
-    return `${protocol}//${host}`
-  }
-  *******/
 
 }

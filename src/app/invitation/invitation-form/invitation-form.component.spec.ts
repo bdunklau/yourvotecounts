@@ -15,6 +15,23 @@ import {
   FormBuilder,
   Validators
 } from "@angular/forms";
+import { Router } from '@angular/router';
+
+
+
+
+// from:   https://atom-morgan.github.io/how-to-test-angular-canactivate-guards/
+class MockRouter {
+  navigate(path) {
+    console.log("MockRouter: path = ", path)
+  }
+
+  getCurrentNavigation() {
+      return {}
+  }
+}
+
+
 
 describe('InvitationFormComponent', () => {
   let component: InvitationFormComponent;
@@ -51,6 +68,7 @@ describe('InvitationFormComponent', () => {
                   { provide: HttpClient, useValue: {} },
                   { provide: AngularFireAuth, useValue: {} },
                   { provide: AngularFireStorage, useValue: {} },
+                  { provide: Router, useClass: MockRouter },
                   { provide: AngularFirestore, useValue: AngularFirestoreStub }, ]
     })
     .compileComponents();

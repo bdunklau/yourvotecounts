@@ -1,13 +1,51 @@
 
-  <input id="nameSearchField" type="text"
-         name="nameSearchField"
-         placeholder="search by name"
-         class="form-control"
-         (blur)="checkEmpty($event)"
-         (selectItem)="itemSelected($event)"
-         [(ngModel)]="nameVal"
-         [ngbTypeahead]="searchName"
-         [resultFormatter]="resultFormatNameListValue"
-         [inputFormatter]="inputFormatNameListValue"
-         #instance="ngbTypeahead"
+<!-- 
+Value in either input isn't just the displayed value.
+It's the actual object returned by the query
+See  invitation-form.component.ts:onSubmit()
+ -->
+
+<div *ngIf="formGroup_AAA" [formGroup]="formGroup_AAA">
+<div formArrayName="{{arrayName_AAA}}">
+<div formGroupName="{{groupIdx_AAA}}">
+    <input id="nameSearchField" type="text"
+        name="nameSearchField"
+        [ngStyle]="{'border':   isInvalid()  ? '1px solid red' : ''}"
+        formControlName="{{controllName_AAA}}"
+        placeholder="search by name"
+        class="form-control"
+        (selectItem)="itemSelected($event)"
+        [ngbTypeahead]="searchName"
+        [resultFormatter]="resultFormatNameListValue"
+        [inputFormatter]="inputFormatNameListValue"
+        #instance="ngbTypeahead"
     />
+</div>
+</div>
+</div>
+
+<!-- ============================================================
+
+            EITHER -----^  OR ---------v
+
+============================================================== -->
+
+<!-- use ngModel instead of formControlName when we're not part of a form group -->
+<div *ngIf="!formGroup_AAA">
+    <input id="nameSearchField" type="text"
+        name="nameSearchField"
+        [ngStyle]="{'border':   isInvalid()  ? '1px solid red' : ''}"
+        [(ngModel)]="nameVal"
+        (blur)="checkEmpty($event)"
+        placeholder="search by name"
+        class="form-control"
+        (selectItem)="itemSelected($event)"
+        [ngbTypeahead]="searchName"
+        [resultFormatter]="resultFormatNameListValue"
+        [inputFormatter]="inputFormatNameListValue"
+        #instance="ngbTypeahead"
+    />
+</div>
+
+
+

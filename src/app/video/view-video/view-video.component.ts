@@ -4,11 +4,11 @@ import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { RoomObj } from '../../room/room-obj.model'
 import { RoomService } from '../../room/room.service';
 import { UserService } from '../../user/user.service';
-import { FirebaseUserModel } from 'src/app/user/user.model';
+import { FirebaseUserModel } from '../../user/user.model';
 import * as _ from 'lodash'
 import { Official } from '../../civic/officials/view-official/view-official.component'
 import { isPlatformBrowser } from '@angular/common';
-import { MessageService } from 'src/app/core/message.service';
+import { MessageService } from '../../core/message.service';
 
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
-import { RoomService } from 'src/app/room/room.service';
-import { UserService } from 'src/app/user/user.service';
-import { FirebaseUserModel } from 'src/app/user/user.model';
+import { RoomService } from '../../room/room.service';
+import { UserService } from '../../user/user.service';
+import { FirebaseUserModel } from '../../user/user.model';
 import { RoomObj } from '../../room/room-obj.model'
 import { isPlatformBrowser } from '@angular/common';
 

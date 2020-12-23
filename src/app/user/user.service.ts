@@ -18,6 +18,7 @@ import { Subject, /*Observable,*/ Subscription } from 'rxjs';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
 import { environment } from '../../environments/environment';
 import { Friend } from '../friend/friend.model';
+import { take } from 'rxjs/operators';
 
 
 @Injectable()
@@ -169,6 +170,19 @@ export class UserService {
       .valueChanges();
   }
 
+  searchFriends(/*currUser,*/ nameVal, limit) {
+    if(!nameVal || nameVal === '' || !this.user) {
+        return [];
+    }
+    return this.afs.collection('friend', ref => ref
+      .where("uid1", "==", this.user.uid)  // my friends only, duh
+      .orderBy("displayName2_lowerCase")
+      .startAt(nameVal.toLowerCase())
+      .endAt(nameVal.toLowerCase()+"\uf8ff")
+      .limit(limit))
+      .valueChanges();
+  }
+
   searchByPhone(phoneVal, limit) {
     return this.afs.collection('user', ref => ref
       .orderBy("phoneNumber")
@@ -301,6 +315,7 @@ export class UserService {
     }
 
     async addFriend(args: {person1: FirebaseUserModel, person2: any}) {
+
         let now = new Date().getTime()
         let id1 = this.afs.createId()
         let id2 = this.afs.createId()
@@ -310,20 +325,39 @@ export class UserService {
         // TODO defaults to US if no country code
         let phone1 = args.person1.phoneNumber.startsWith('+') ? args.person1.phoneNumber : '+1'+args.person1.phoneNumber
         let phone2 = args.person2.phoneNumber.startsWith('+') ? args.person2.phoneNumber : '+1'+args.person2.phoneNumber
-        batch.set(ref1, {friendId1: id1,
-                         displayName1: args.person1.displayName, 
-                         phoneNumber1: phone1, 
-                         friendId2: id2,
-                         displayName2: args.person2.displayName,
-                         phoneNumber2: phone2,
-                         date_ms: now })
-        batch.set(ref2, {friendId1: id2,
-                        displayName1: args.person2.displayName, 
-                        phoneNumber1: phone2,
-                        friendId2: id1, 
-                        displayName2: args.person1.displayName,
-                        phoneNumber2: phone1,
-                        date_ms: now })
+
+        let asUser = await this.getUserWithPhone(phone2)  
+
+        let friendEntry = {friendId1: id1,
+          displayName1: args.person1.displayName, 
+          phoneNumber1: phone1, 
+          uid1: args.person1.uid,
+          friendId2: id2,
+          displayName2: args.person2.displayName,
+          displayName2_lowerCase: args.person2.displayName.toLowerCase(),
+          phoneNumber2: phone2,
+          date_ms: now }
+
+        let reciprocalEntry = {friendId1: id2,
+          displayName1: args.person2.displayName, 
+          phoneNumber1: phone2,
+          friendId2: id1, 
+          displayName2: args.person1.displayName,
+          displayName2_lowerCase: args.person1.displayName.toLowerCase(),
+          phoneNumber2: phone1,
+          date_ms: now,
+          uid2: args.person1.uid }
+        
+        if(asUser) {
+            friendEntry['displayName2'] = asUser.displayName
+            friendEntry['displayName2_lowerCase'] = asUser.displayName.toLowerCase()
+            friendEntry['uid2'] = asUser.uid
+            reciprocalEntry['displayName1'] = asUser.displayName
+            reciprocalEntry['uid1'] = asUser.uid
+        }
+
+        batch.set(ref1, friendEntry)
+        batch.set(ref2, reciprocalEntry)
         await batch.commit()
     }
 
@@ -340,9 +374,20 @@ export class UserService {
 
 
     getFriends(user: FirebaseUserModel) {
-        return this.afs.collection('friend', ref => ref.where('phoneNumber1', '==', user.phoneNumber).limit(3)).snapshotChanges()
+        return this.afs.collection('friend', ref => ref.where('phoneNumber1', '==', user.phoneNumber).limit(25)).snapshotChanges()
     }
 
+
+    async getUserWithPhone(phoneNumber: string) {
+        console.log('getUserWithPhone(): phoneNumber: ', phoneNumber)
+        let userRef = this.afs.collection('user', ref => ref.where('phoneNumber', '==', phoneNumber).limit(1)).snapshotChanges().pipe(take(1))
+        let userPromise = await userRef.toPromise()    
+        if(!userPromise || userPromise.length == 0) return null   
+        let userObj = userPromise[0].payload.doc.data()
+        let theUser = new FirebaseUserModel()
+        theUser.populate(userObj);
+        return theUser
+    }
     
 
     // getMembersByTeamId(id: string) {

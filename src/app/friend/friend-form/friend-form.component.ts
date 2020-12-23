@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FirebaseUserModel } from 'src/app/user/user.model';
+import { FirebaseUserModel } from '../../user/user.model';
 import { NgForm, AbstractControl, FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { UserService } from 'src/app/user/user.service';
+import { UserService } from '../../user/user.service';
 
 
 @Component({
@@ -36,28 +36,54 @@ export class FriendFormComponent implements OnInit {
         await this.userService.addFriend({person1: this.me, person2: friend})
         this.friendForm.reset();
     }
-    
   
-    validatePhoneNo(field) {
+
+    /**
+     * duplicated in invitation-form.component.ts
+     */
+    formatPhone(event) {
+        let field = event.target
         var phoneNumDigits = field.value.replace(/\D/g, '');
       
+        // this.isValidFlg = (phoneNumDigits.length==0 || phoneNumDigits.length == 10);
+      
         var formattedNumber = phoneNumDigits;
-        if (phoneNumDigits.length >= 6)
+        if(phoneNumDigits.length > 12) {
+          formattedNumber = '+'+phoneNumDigits.substring(0, 3)+' (' + phoneNumDigits.substring(3, 6) + ') ' + phoneNumDigits.substring(6, 9) + '-' + phoneNumDigits.substring(9);
+        }
+        else if(phoneNumDigits.length > 11) {
+          formattedNumber = '+'+phoneNumDigits.substring(0, 2)+' (' + phoneNumDigits.substring(2, 5) + ') ' + phoneNumDigits.substring(5, 8) + '-' + phoneNumDigits.substring(8);
+        }
+        else if(phoneNumDigits.length > 10/*US*/) {
+          formattedNumber = '+'+phoneNumDigits.substring(0, 1)+' (' + phoneNumDigits.substring(1, 4) + ') ' + phoneNumDigits.substring(4, 7) + '-' + phoneNumDigits.substring(7);
+        }
+        else if (phoneNumDigits.length >= 6)
           formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3, 6) + '-' + phoneNumDigits.substring(6);
         else if (phoneNumDigits.length >= 3)
           formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3);
       
         field.value = formattedNumber;
+
+        /**
+         * backspacing over a - or ) or space needs special handling...
+         */
+        let lastChar = field.value.substring(field.value.length-1)
+        console.log('validatePhoneNo(): lastChar = ', lastChar)
+        if(event.inputType === 'deleteContentBackward') { 
+            if(lastChar === ' ') field.value = field.value.substring(0, field.value.length-2)
+            else if(lastChar === '-') field.value = field.value.substring(0, field.value.length-1)
+            else if(lastChar === ')') field.value = field.value.substring(0, field.value.length-1)
+        } 
+
         console.log('validatePhoneNo(): field.value = ', field.value)
     }
-
-    
   
     ValidatePhone(control: AbstractControl): {[key: string]: any} | null  {
         if(!control || !control.value) return null
-        let myString = this.justNumbers(control.value)      
-        if (myString && (myString.length != 10) ) {
-          return { 'phoneNumberInvalid': true };
+        let myString = this.justNumbers(control.value)  
+        if(!myString)  return { 'phoneNumberInvalid': true };
+        if(myString.length < 10) { // 10 or higher to allow all country codes
+            return { 'phoneNumberInvalid': true };
         }
         return null;
     }

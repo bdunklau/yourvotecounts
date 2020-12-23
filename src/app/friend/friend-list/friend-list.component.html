@@ -1,12 +1,12 @@
 
-<h5 style="margin-top:20px">Friend List</h5>
+<h5 style="margin-top:20px">Friend List (1 - 25)</h5>
 
 <div class="row" *ngFor="let friend of friends" style="border-top:1px solid #ababab">
     <!-- <div class="col">{{friend.displayName1}}</div> -->
     <!-- <div class="col">{{friend.phoneNumber1}}</div> -->
     <div class="col-7" style="margin-top:5px">
         {{friend.displayName2}} &nbsp;&nbsp;
-        <button class="btn btn-default" (click)="friend.inviting = true"> <i class="fa fa-video" style="color:green"></i>  </button>
+        <button class="btn btn-default" (click)="invite(friend)"> <i class="fa fa-video" style="color:green"></i>  </button>
     </div>
 
     <div class="col-5" style="margin-top:5px">
