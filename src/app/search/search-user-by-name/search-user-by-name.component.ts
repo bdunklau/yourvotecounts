@@ -5,6 +5,7 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError  } from 'rxjs
 import { FirebaseUserModel } from '../../user/user.model';
 import { Friend } from 'src/app/friend/friend.model';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { map, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-user-by-name',
@@ -80,9 +81,9 @@ export class SearchUserByNameComponent implements OnInit {
     // console.log('resultFormatNameListValue: value = ', value);
     if(value.displayName2)
         return value.displayName2
-    else {
+    else if(value.displayName) {
         return value.displayName;
-    }
+    } else return value
   }
 
   /**
@@ -91,10 +92,15 @@ export class SearchUserByNameComponent implements OnInit {
   inputFormatNameListValue(value: any)   {
       console.log('inputFormatNameListValue: value = ', value);
       if(value.displayName2) {
+          console.log('inputFormatNameListValue: return value.displayName2 = ', value.displayName2);
           return value.displayName2
       } else if(value.displayName) {
+          console.log('inputFormatNameListValue: return value.displayName = ', value.displayName);
           return value.displayName
-      } else return value
+      } else {
+          console.log('inputFormatNameListValue: return value = ', value);
+          return value
+      }
   }
 
   // NOTE this:  (selectItem)="itemSelected($event)"

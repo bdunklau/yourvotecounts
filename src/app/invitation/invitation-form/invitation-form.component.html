@@ -20,7 +20,12 @@
             <div class="col">
                 <hr/>
                 <div class="row">
-                    <div class="col"><b>Guest #{{i+1+maxGuests-numberOfInvitationsRemaining}}</b> &nbsp;&nbsp;&nbsp; <button class="btn btn-default" (click)="removeItem(i)"><i class="fas fa-trash"></i></button></div>
+                    <div class="col">
+                       
+                      <!-- <br/>nameArray.controls[i].get('displayName').value: {{nameArray.controls[i].get('displayName').value | json}} -->
+                      <!-- <br/>nameArray.controls[i].get('phoneNumber').value: {{nameArray.controls[i].get('phoneNumber').value}} -->
+                        <b>Guest #{{i+1+maxGuests-numberOfInvitationsRemaining}}</b> &nbsp;&nbsp;&nbsp; <button class="btn btn-default" (click)="removeItem(i)"><i class="fas fa-trash"></i></button>
+                    </div>
                 </div>
                 <div class="row">
                       <div class="col-12 col-sm-6" style="margin-bottom:10px">
@@ -89,4 +94,4 @@
 
     </form>
 
-
+    

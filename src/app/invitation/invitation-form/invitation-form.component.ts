@@ -204,23 +204,21 @@ export class InvitationFormComponent implements OnInit {
     );
   }
 
+
+  /**
+   * happens before onSubmit()
+   */
   doit() {
 
 
       for(var i=0; i < this.nameArray.length; i++) {
-          console.log('this.nameArray.at(i).value: ', this.nameArray.at(i).value)
+          console.log('doit(): this.nameArray.at('+i+').value: ', this.nameArray.at(i).value)
           this.names[i] = this.nameArray.at(i).value
       }
         
       // console.log('this.nameArray: ', this.nameArray)
       // console.log('this.names: ', this.names)
   }
-
-
-
-
-
-
 
 
   
@@ -251,19 +249,6 @@ export class InvitationFormComponent implements OnInit {
       let replaced = value.replace(/\D/g,''); //  \D = all non-digits 
       return replaced
   }
-
-
-  /*********
-  getPhoneNumber(): string {
-    if(!this.invitationForm.get("phone") || !this.invitationForm.get("phone").value)
-        return // prevents weird error on submit "Cannot read property 'trim' of null"
-
-    let ph = this.invitationForm.get("phone").value.trim();
-    if(!ph.startsWith('+1'))
-      ph = '+1'+ph;
-    return ph;
-  }
-  ***********/
   
 
   async onSubmit(/*form: NgForm*/) {      
@@ -275,16 +260,39 @@ export class InvitationFormComponent implements OnInit {
           //console.log('this.nameArray.at(i).value: ', this.nameArray.at(i).value)
           this.names[i] = this.nameArray.at(i).value
 
+          /**
+           * search-user-by-name.component.ts and  .html
+           * User picks a value from this dropdown control.  Value is the entire friend object, not just the displayName2
+           * So we extract just the displayName2 value
+           * 
+           * But if the user types a name that isn't a known friend, then the value stored in the 'displayName' control is just the
+           * string in the <input>.  So the 'if' block below won't get executed.  We can just take the value entered by the user
+           */
+          if(this.nameArray.at(i).value.displayName.displayName2) {
+              this.names[i] = {displayName: this.nameArray.at(i).value.displayName.displayName2, phoneNumber: this.nameArray.at(i).value.phoneNumber}
+          } 
+
           // create the invitation
           let invitation = new Invitation();
           invitation.invitationId = commonInvitationId;
           invitation.setCreator(this.user);
           invitation.displayName = this.names[i].displayName
+          // console.log('onSubmit(): this.names['+i+'] = ', this.names[i])
+          // console.log('onSubmit(): this.names['+i+'].displayName = ', this.names[i].displayName)
          
           //let url = {protocol: "https:", host: window.location.host, pathname: "/video-call/"+invitation.invitationId+"/"+this.names[i].phoneNumber};
           //this.themessage = this.getInvitationMessage(this.user.displayName, url);
-          
-          invitation.phoneNumber = "+1" + this.justNumbers(this.names[i].phoneNumber)
+
+          console.log('onSubmit(): this.names['+i+'].phoneNumber = ', this.names[i].phoneNumber)
+          let tempPh = this.justNumbers(this.names[i].phoneNumber)
+          let noCountryCode = tempPh.length < 11
+          console.log('onSubmit(): tempPh = ', tempPh)
+          let US_COUNTRY_CODE = '1'
+          if(noCountryCode) tempPh = US_COUNTRY_CODE + tempPh
+          console.log('onSubmit(): tempPh = ', tempPh)
+          invitation.phoneNumber = '+'+tempPh
+          console.log('onSubmit(): tempPh = ', tempPh)
+
           // TODO FIXME figure out host name
           let url = `https://${this.host}/video-call/${invitation.invitationId}/${invitation.phoneNumber}`
           let msg = `${invitation.creatorName} is inviting you to participate in a video call on HeadsUp.  Click the link below to see this invitation. \n\nDo not reply to this text message.  This number is not being monitored. \n\n${url}`
@@ -302,17 +310,7 @@ export class InvitationFormComponent implements OnInit {
 
 
 
-
-      //this.invitation.displayName = this.invitationForm.get("name").value.trim();
-      //this.invitation.message = this.invitationForm.get("message").value.trim();
-      //this.invitation.phoneNumber = this.getPhoneNumber();
-        
-      //this.invitationService.create(this.invitation);
-
-      //this.smsService.sendSms({from: "+12673314843", to: this.invitation.phoneNumber, mediaUrl: "", message: this.invitation.message});
-
       /***** don't update invitations - just cancel and reissue  *****/
-      //this.router.navigate(['/teams', teamId]);
       this.invitationForm.reset();
 
       // WAIT - not this exactly.  Instead what we want to do is send the host a text message also
@@ -336,26 +334,6 @@ export class InvitationFormComponent implements OnInit {
    */
   formatPhone(event) {
       let field = event.target
-      // var phoneNumDigits = field.value.replace(/\D/g, '');
-    
-      // // this.isValidFlg = (phoneNumDigits.length==0 || phoneNumDigits.length == 10);
-    
-      // var formattedNumber = phoneNumDigits;
-      // if(phoneNumDigits.length > 12) {
-      //   formattedNumber = '+'+phoneNumDigits.substring(0, 3)+' (' + phoneNumDigits.substring(3, 6) + ') ' + phoneNumDigits.substring(6, 9) + '-' + phoneNumDigits.substring(9);
-      // }
-      // else if(phoneNumDigits.length > 11) {
-      //   formattedNumber = '+'+phoneNumDigits.substring(0, 2)+' (' + phoneNumDigits.substring(2, 5) + ') ' + phoneNumDigits.substring(5, 8) + '-' + phoneNumDigits.substring(8);
-      // }
-      // else if(phoneNumDigits.length > 10/*US*/) {
-      //   formattedNumber = '+'+phoneNumDigits.substring(0, 1)+' (' + phoneNumDigits.substring(1, 4) + ') ' + phoneNumDigits.substring(4, 7) + '-' + phoneNumDigits.substring(7);
-      // }
-      // else if (phoneNumDigits.length >= 6)
-      //   formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3, 6) + '-' + phoneNumDigits.substring(6);
-      // else if (phoneNumDigits.length >= 3)
-      //   formattedNumber = '(' + phoneNumDigits.substring(0, 3) + ') ' + phoneNumDigits.substring(3);
-    
-      // field.value = formattedNumber;
       field.value = this.formatPhone2(field.value)
 
       /**
@@ -406,9 +384,12 @@ export class InvitationFormComponent implements OnInit {
   
 
   onFriendSelected(friend: Friend, loopIdx: number) {
-      console.log('onFriendSelected() loopIdx = ', loopIdx)
-      console.log('onFriendSelected() this.nameArray.at('+loopIdx+') = ', this.nameArray.at(loopIdx))
-      this.nameArray.at(loopIdx).setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2) })
+      this.nameArray.controls[loopIdx].setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2) })
+      console.log('onFriendSelected(): this.nameArray.at('+loopIdx+').value: ', this.nameArray.at(loopIdx).value)
+      // console.log('onFriendSelected() loopIdx = ', loopIdx)
+      // console.log('onFriendSelected() this.nameArray.at('+loopIdx+') = ', this.nameArray.at(loopIdx))
+      // console.log('onFriendSelected() this.nameArray.at('+loopIdx+') = ',  )
+      // this.nameArray.at(loopIdx).setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2) })
   }
 
 }
