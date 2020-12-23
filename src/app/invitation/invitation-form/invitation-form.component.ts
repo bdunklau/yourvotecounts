@@ -72,7 +72,7 @@ export class InvitationFormComponent implements OnInit {
       this.createForm();
 
       // friend-list.component.html
-      if(this.router.getCurrentNavigation().extras.state) {
+      if(this.router.getCurrentNavigation().extras && this.router.getCurrentNavigation().extras.state) {
           this.friend = this.router.getCurrentNavigation().extras.state.friend as Friend
           console.log('this.friend.displayName2 = ', this.friend.displayName2)
           console.log('this.friend.phoneNumber2 = ', this.friend.phoneNumber2)
