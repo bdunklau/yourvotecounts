@@ -424,8 +424,11 @@ export class VideoCallComponent implements OnInit {
     this.roomService.disconnect(this.roomObj, this.phoneNumber);
     this.joined = false 
     this.finalizePreview();
-    if(this.isHost)
+    if(this.isHost) {
+        delete this.invitationService.invitations
+        this.invitationService.invitations = []
         this.router.navigate(['/video-call-complete', this.roomObj.RoomSid, 'host', this.phoneNumber])
+    }
   }
 
 
