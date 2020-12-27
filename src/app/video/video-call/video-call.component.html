@@ -83,7 +83,29 @@
       <hr/>
     </div>
   </div>
-      
+  
+  
+  <!-- just for debugging -->
+  <!--   
+  <div class="row" *ngIf="roomObj" style="margin-top:10px;margin-bottom:40px">
+    <div class="col-sm-12">
+      <BR/>RoomSid
+      <BR/>{{roomObj.RoomSid}}
+      <span *ngIf="roomObj.mark_time">        
+        <div class="row">
+          <div class="col">start_recording_ms</div>
+          <div class="col">start_recording</div>
+          <div class="col">duration</div>
+        </div>
+        <div class="row" *ngFor="let theTime of roomObj.mark_time">
+          <div class="col">{{theTime.start_recording_ms | date:'MM/dd/yyyy h:mm:ss z'}}</div>
+          <div class="col">{{theTime.start_recording}}</div>
+          <div class="col">{{theTime.duration}}</div>
+        </div>
+      </span>
+    </div>
+  </div>
+  -->
 
   <!-- display true/false - it works but really just for diagnostics
   <div class="row">
@@ -175,8 +197,24 @@
     </div>
   </div>
   
-  
 
+  <!-- just for debugging -->
+  <!--   
+  <div class="row" *ngIf="roomObj" style="margin-top:10px;margin-bottom:40px">
+    <div class="col-sm-12">
+      <BR/><B>created_ms</B>
+      <BR/>{{roomObj.created_ms | date:'MM/dd/yyyy h:mm:ss z'}}
+      <BR/><B>call_ended_ms</B>
+      <BR/>{{roomObj.call_ended_ms | date:'MM/dd/yyyy h:mm:ss z'}}
+      <BR/><B>host_joined_ms</B>
+      <BR/>{{roomObj.host_joined_ms | date:'MM/dd/yyyy h:mm:ss z'}}
+      <BR/><B>host_left_ms</B>
+      <BR/>{{roomObj.host_left_ms | date:'MM/dd/yyyy h:mm:ss z'}}
+    </div>
+  </div>
+   -->
+
+   
   <!--
     testing the warning time dialog - works
   -->
