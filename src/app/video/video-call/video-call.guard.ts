@@ -43,7 +43,6 @@ export class VideoCallGuard implements CanActivate {
     ) {}
 
 
-    // CAN'T BE async WHEN RETURNING OBSERVABLE's
     async canActivate(
         next: ActivatedRouteSnapshot,
         state: RouterStateSnapshot): Promise<boolean> {
