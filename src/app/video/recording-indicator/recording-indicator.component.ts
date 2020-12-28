@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MessageService } from '../../core/message.service';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -23,6 +24,8 @@ export class RecordingIndicatorComponent implements OnInit {
                            * not 'stopped' 
                            */
 
+    recordingStatusSubscription: Subscription
+
     constructor(
       private messageService: MessageService) { }
 
@@ -32,13 +35,17 @@ export class RecordingIndicatorComponent implements OnInit {
         }.bind(this)
 
 
-        this.messageService.listenForRecordingStatus().subscribe({
+        this.recordingStatusSubscription = this.messageService.listenForRecordingStatus().subscribe({
           next: indication,
           error: function(value) {
           },
           complete: function() {
           }
         })
+    }
+
+    ngOnDestroy() {
+        if(this.recordingStatusSubscription) this.recordingStatusSubscription.unsubscribe()
     }
 
 }
