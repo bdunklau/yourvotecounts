@@ -27,7 +27,7 @@ export class VmService {
     /**
      * app.module.ts
      */
-    async monitorVm() {        
+    monitorVm() {        
 
         this.afs.collection('state').doc('vm_state').snapshotChanges().subscribe(obj => {
             // console.log('monitorVm():  obj = ', obj)
