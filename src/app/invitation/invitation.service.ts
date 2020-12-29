@@ -89,7 +89,9 @@ export class InvitationService {
               let ref = this.afs.collection('invitation').doc(docId).ref
               batch.update(ref, {deleted_ms: new Date().getTime()})
           })
-          batch.commit()
+          await batch.commit()
+          delete this.invitations
+          this.invitations = []
       }
   }
 

@@ -51,11 +51,14 @@ import { SmsMainComponent } from './sms/sms-main/sms-main.component';
 import { VideoListComponent } from './admin/video/video-list/video-list.component';
 import { FriendsComponent } from './friend/friends/friends.component';
 import { FriendGuard } from './friend/friend.guard';
+import { VmMainComponent } from './admin/vm/vm-main/vm-main.component';
+import { VmGuard } from './admin/vm/vm.guard';
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'admin/videos', component: VideoListComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
+  // { path: 'admin/vm', component: VmMainComponent, canActivate: [VmGuard], data: {role: 'admin'} },
   { path: 'disabled', component: DisabledComponent },
   { path: 'error-page', component: ErrorPageComponent },
   { path: 'friends', component: FriendsComponent, canActivate: [FriendGuard] },

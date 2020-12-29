@@ -1,0 +1,80 @@
+const functions = require('firebase-functions');
+const admin = require('firebase-admin')
+const log = require('./log')
+const request = require('request')
+const corsModule = require('cors')
+const cors = require('cors')({ origin: true});
+const fetch = require('node-fetch');
+
+
+// can only call this once globally and we already do that in index.js
+//admin.initializeApp(functions.config().firebase);
+var db = admin.firestore();
+
+
+// firebase deploy --only functions:pingVm,functions:onVmState
+
+
+/**
+ * ping the vm to make sure it's up
+ */
+exports.pingVm = functions.https.onRequest((req, res) => {
+
+    cors(req, res, async () => {
+        await blahblah()
+        return res.status(200).send('ok')
+
+    })
+
+
+})
+
+
+exports.onVmState = functions.firestore.document('state/vm_state').onWrite((snap, context) => {
+    let theData = snap.data ? snap.data() : snap.after.data()
+    let str = JSON.stringify(theData)
+    console.log('onVmState: theData = ', str)
+
+    if(!theData['up']) {
+        console.log('onVmState: return early because theData["up"] = ', theData['up'])
+        return true
+    }
+    
+    setTimeout(async () => {
+        await blahblah()
+        return true
+
+    }, 10000)
+})
+
+
+blahblah = async () => {
+    let settingsDoc = await db.collection('config').doc('settings').get()
+    let settings = settingsDoc.data()
+
+
+    // yourvotecounts-vm : nodejs/index.js
+    let cloudUrl = `http://${settings.cloud_host}/ping` // yourvotecounts-vm: nodejs/index.js: /ping
+    let up = true
+
+    try {
+        const dataBack = await fetch(cloudUrl)
+        const html = await dataBack.text();
+        let vmResponse = JSON.parse(html)
+        console.log('vmResponse: ', vmResponse)
+        
+        if(vmResponse['up'] === true)
+            up = true
+        else up = false
+    } catch(err) {
+        up = false
+    }
+
+    let record = {cloudUrl: cloudUrl, date: new Date(), date_ms: new Date().getTime(), up: up}
+    await db.collection('state').doc('vm_state').set(record)
+}
+
+
+
+
+
