@@ -22,6 +22,7 @@ export class MessageService {
   // private team_member = new Subject<TeamMember>();
   private team = new Subject<Team>();
   private invitationListener = new Subject<Invitation[]>();
+  private vmState = new Subject<boolean>();
 
   constructor() { }
 
@@ -92,6 +93,14 @@ export class MessageService {
   //     return this.hostJoinedListener
   // }
 
+
+  listenForVmState() {
+      return this.vmState
+  }
+
+  updateVmState(state: boolean) {
+      this.vmState.next(state)
+  }
 
 
   // see  recording-indicator.component.ts

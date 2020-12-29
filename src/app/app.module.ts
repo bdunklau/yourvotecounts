@@ -77,6 +77,9 @@ import { VideoListComponent } from './admin/video/video-list/video-list.componen
 import { FriendsComponent } from './friend/friends/friends.component';
 import { FriendFormComponent } from './friend/friend-form/friend-form.component';
 import { FriendListComponent } from './friend/friend-list/friend-list.component';
+import { VmMainComponent } from './admin/vm/vm-main/vm-main.component';
+import { VmHealthComponent } from './admin/vm/vm-health/vm-health.component';
+import { VmService } from './admin/vm/vm.service';
 
 
 const ORIGINAL_NOT_USED_firebaseUiAuthConfig: firebaseui.auth.Config = {
@@ -177,6 +180,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     FriendsComponent,
     FriendFormComponent,
     FriendListComponent,
+    VmMainComponent,
+    VmHealthComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
@@ -207,6 +212,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
 export class AppModule { 
 
     constructor(private settingsService: SettingsService,
+        private vmService: VmService,
         @Inject(PLATFORM_ID) private platformId,) {
 
           
@@ -223,6 +229,7 @@ export class AppModule {
                     }
                 }
             })
+            this.vmService.monitorVm()
         }
 
 

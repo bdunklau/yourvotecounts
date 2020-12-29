@@ -40,14 +40,17 @@
    <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
 
    <div [hidden]="!isAdmin"><hr/></div>
+   <h5 [hidden]="!isAdmin" class="nav-link">Admin</h5>
+   
    <a [hidden]="!isAdmin" id="users_link" class="nav-link" (click)="closeNav()" [routerLink]="['/users']"><i class="fa fa-users"></i> Users</a>
    <a [hidden]="!isAdmin" id="sms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/sms']"> <i class="fa fa-sms"></i> SMS</a>
    <a [hidden]="!isAdmin" id="log_link" class="nav-link" (click)="closeNav()" [routerLink]="['/log']"><i class="far fa-file"></i> Logs</a>
    <a [hidden]="!isAdmin" id="terms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/terms']"><i class="fas fa-file-contract"></i> Terms</a>
    <a [hidden]="!isAdmin" id="privacy_link" class="nav-link" (click)="closeNav()" [routerLink]="['/privacy']"><i class="fas fa-file-contract"></i> Privacy</a>
-   <a [hidden]="!isAdmin" id="admin_video_link" class="nav-link" (click)="closeNav()" [routerLink]="['/admin/videos']"><i class="fas fa-file-contract"></i> Videos</a>
+   <a [hidden]="!isAdmin" id="admin_video_link" class="nav-link" (click)="closeNav()" [routerLink]="['/admin/videos']"><i class="fas fa-video"></i> Videos</a>
+   <!-- <a [hidden]="!isAdmin" id="admin_vm_link" class="nav-link" (click)="closeNav()" [routerLink]="['/admin/vm']"><app-vm-health></app-vm-health> VM</a> -->
    <h5 [hidden]="!isAdmin" class="nav-link">Settings</h5>
-   <a [hidden]="!isAdmin" id="settings_link" class="nav-link" (click)="closeNav()" [routerLink]="['/settings/general']"><i class="fas fa-cog"></i> General</a>
+   <a [hidden]="!isAdmin" id="settings_link" class="nav-link" (click)="closeNav()" [routerLink]="['/settings/general']"><app-vm-health></app-vm-health> General</a>
    <a [hidden]="!isAdmin" id="settings_link" class="nav-link" (click)="closeNav()" [routerLink]="['/settings/twilio']"><i class="fas fa-cog"></i> Twilio</a>
  </div>
 

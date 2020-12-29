@@ -65,3 +65,7 @@ exports.getTermsOfService = terms_of_service.getTermsOfService;
 
 const my_account = require('./my-account');
 exports.generateThumbnail = my_account.generateThumbnail;
+
+const adminTasks = require('./admin');
+exports.pingVm = adminTasks.pingVm
+exports.onVmState = adminTasks.onVmState
