@@ -30,10 +30,33 @@ exports.pingVm = functions.https.onRequest((req, res) => {
 })
 
 
-exports.onVmState = functions.firestore.document('state/vm_state').onWrite((snap, context) => {
+exports.onVmState = functions.firestore.document('state/vm_state').onWrite(async (snap, context) => {
     let theData = snap.data ? snap.data() : snap.after.data()
-    let str = JSON.stringify(theData)
-    console.log('onVmState: theData = ', str)
+    // let str = JSON.stringify(theData)
+    // console.log('onVmState: theData = ', str)
+
+    if(snap.after.data && snap.before.data) {
+        let msg = ''
+        let justWentDown = snap.before.data()['up'] === true && snap.after.data()['up'] === false
+        let justCameUp = snap.before.data()['up'] === false && snap.after.data()['up'] === true
+        if(justWentDown) msg = 'The vm just went down'
+        if(justCameUp) msg = 'The vm just came back up'
+        let needToSendSms = justWentDown || justCameUp
+        if(needToSendSms) {
+            let settingsDoc = await db.collection('config').doc('settings').get()
+            let settings = settingsDoc.data()
+            
+            // twilio-sms.js : exports.sendSms()
+            db.collection('sms').add({
+                from: settings.from_sms, 
+                to: settings.admin_sms, 
+                message: msg,
+                date: new Date(),
+                date_ms: new Date().getTime(),
+            })
+        }
+
+    }
 
     if(!theData['up']) {
         console.log('onVmState: return early because theData["up"] = ', theData['up'])
