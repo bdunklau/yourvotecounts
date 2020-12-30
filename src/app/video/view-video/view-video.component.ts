@@ -201,12 +201,10 @@ export class ViewVideoComponent implements OnInit {
     
     private listenForOfficials() {
         
-        // put this in its own commit
-        // bug re-introduced when this commit was reverted: https://github.com/bdunklau/yourvotecounts/commit/74c3e08252988ede7273c39dad79b3ddd962736e
-        // let alreadyListening = this.official_selected_sub && !this.official_selected_sub.closed
-        // if(alreadyListening) {
-        //     return
-        // }
+        let alreadyListening = this.official_selected_sub && !this.official_selected_sub.closed
+        if(alreadyListening) {
+            return
+        }
 
         let self = this;
   
