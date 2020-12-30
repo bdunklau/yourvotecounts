@@ -96,12 +96,16 @@ banner ad
                 <h3>Officials</h3>
             </div>
             
+            <!-- no point in showing expand/collapse icon if there aren't any legislators -->
             <div class="col-8 text-right">
+            <span *ngIf="room && room.officials && room.officials.length > 0">
                 <a (click)="officialsCollapsed = !officialsCollapsed"> 
                     <span *ngIf="officialsCollapsed">Expand for contact info <i class="fas fa-chevron-down"></i></span> 
                     <span *ngIf="!officialsCollapsed">Collapse <i class="fas fa-chevron-up"></i></span>  
                 </a>
+            </span>
             </div>
+            
         </div>
 
 
