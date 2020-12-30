@@ -45,8 +45,7 @@
         </div>
 
         <span *ngFor="let official of civicResult.officials">
-            <hr/>
-            <app-view-official [canSelect]="true" [official]="official"></app-view-official>
+            <app-view-official [inputCollapsed]="officialsCollapsed" [canSelect]="true" [official]="official"></app-view-official>
         </span>
     </span>
 
