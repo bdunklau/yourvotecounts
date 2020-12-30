@@ -1,4 +1,32 @@
 
+
+<span *ngIf="inputCollapsed">
+    <div class="col" style="margin-bottom:20px">
+        <div class="row">
+            <div class="col-12">
+                <div class="myCenterBlock">
+                    <div class="circular--portrait">
+                        <img src="{{official.photoUrl}}" width="75">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">{{official.name}}</div>
+        </div>
+        <div class="row">
+            <div class="col-12 myCenterBlock">{{official.party}}</div>
+        </div>
+    </div>
+</span>
+
+
+
+
+<span *ngIf="!inputCollapsed">
+<div class="col-12">
+
+<hr/>
 <div class="row" style="margin-top:20px">
     <div class="col-3">
         <div class="circular--portrait">
@@ -49,3 +77,6 @@
         </span>
     </div>
 </div>
+
+</div>
+</span>

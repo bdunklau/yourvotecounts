@@ -20,6 +20,7 @@ export class ViewOfficialComponent implements OnInit {
   toastHack = false
   @Input() canSelect = false // button enablement
   @Input() canDelete = false // button enablement
+  @Input() inputCollapsed = true
   currentUrl: string
 
 
