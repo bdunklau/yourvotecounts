@@ -79,19 +79,58 @@ banner ad
     </div>
 
 
-    <div class="row" style="margin-top:10px" *ngIf="isHost">
-        <div class="col">
-            <button id="mybtn1" class="btn btn-primary col-12" (click)="openOfficialDialog()"> <i class="fas fa-user-plus"></i> Add Elected Official  </button>
+    <div class="row" style="margin-top:10px">
+        <div class="col-6">
+            <button class="btn btn-primary col-12" (click)="showElectedOfficials = true;showComments = false"> <i class="fa fa-users"></i> Officials  </button>
+        </div>
+        <div class="col-6">
+            <button class="btn btn-primary col-12" (click)="showElectedOfficials = false;showComments = true"> <i class="fas fa-comments"></i> Comments  </button>
         </div>
     </div>
 
-    <span *ngIf="room && room.officials">
-    <div class="row" style="margin-top:10px" *ngFor="let official of room.officials">
-        <div class="col">
-            <hr/>
-            <app-view-official [canDelete]="isHost" [official]="official"></app-view-official>
+
+    <span *ngIf="showElectedOfficials"> 
+
+        <div class="row" style="margin-top:30px;margin-bottom:10px">
+            <div class="col-4">
+                <h3>Officials</h3>
+            </div>
+            
+            <div class="col-8 text-right">
+                <a (click)="officialsCollapsed = !officialsCollapsed"> 
+                    <span *ngIf="officialsCollapsed">Expand for contact info <i class="fas fa-chevron-down"></i></span> 
+                    <span *ngIf="!officialsCollapsed">Collapse <i class="fas fa-chevron-up"></i></span>  
+                </a>
+            </div>
         </div>
-    </div>
+
+
+        <span *ngIf="room && room.officials">
+        <div class="row" style="margin-top:0px">
+                <span *ngFor="let official of room.officials" [ngClass]="{'col-12': !officialsCollapsed}">
+                    <app-view-official [inputCollapsed]="officialsCollapsed" [canDelete]="isHost" [official]="official"></app-view-official>
+                </span>
+        </div>
+        </span>
+
+        <div class="row" style="margin-top:10px" *ngIf="isHost">
+            <div class="col">
+                <button id="mybtn1" class="btn btn-primary col-12" (click)="openOfficialDialog()"> <i class="fas fa-user-plus"></i> Add Elected Official  </button>
+            </div>
+        </div>
+    </span>
+
+    <span *ngIf="showComments">        
+
+        <div class="row" style="margin-top:30px;margin-bottom:10px">
+            <div class="col-4">
+                <h3>Comments</h3>
+            </div>
+            
+            <div class="col-8 text-right">
+                Coming soon
+            </div>
+        </div>
     </span>
 
 
@@ -103,7 +142,7 @@ banner ad
 <div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': translated}">   
                 
     <a href="javascript:void(0)" class="pull-right" (click)="translated = !translated"><i class="fa fa-close"></i></a>   
-    <app-search-officials></app-search-officials>
+    <app-search-officials [inputCollapsed]="officialsCollapsed"></app-search-officials>
   
 </div> 
 

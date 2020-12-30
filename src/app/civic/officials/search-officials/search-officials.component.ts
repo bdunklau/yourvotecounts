@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Inject, PLATFORM_ID } from '@angular/core';
 import * as _ from 'lodash'
 import { Divisions, Office, Official, CivicResult } from '../view-official/view-official.component'
 import { RoomService } from '../../../room/room.service'
@@ -19,6 +19,7 @@ export class SearchOfficialsComponent implements OnInit {
     // @ViewChild("placesRef") placesRef : GooglePlaceDirective;
     officialType:string = "Federal" 
     civicResult: CivicResult
+    @Input() inputCollapsed = true
 
     
     parms = {
