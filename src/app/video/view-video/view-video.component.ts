@@ -193,9 +193,7 @@ export class ViewVideoComponent implements OnInit {
     // opens a modal to /search-officials
     openOfficialDialog() {
         // this.showOkCancel(function() {console.log('callback called')})
-        //this.collapsed = true
         this.translated = true
-        this.officialsCollapsed = false
     }
 
     
