@@ -1,9 +1,10 @@
 
 
-<div class="row" *ngFor="let comment of comments">
+<div class="row" *ngFor="let comment of comments" style="margin-bottom:30px">
     <div class="col">
         <small><B>{{comment.author}}</B></small>
         <BR/>{{comment.comment}}
+        <BR/><small class="text-muted">{{comment.date_ms | date:'short'}}</small>
     </div>
 </div>
 
