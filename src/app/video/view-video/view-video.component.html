@@ -110,7 +110,7 @@ banner ad
 
 
         <span *ngIf="room && room.officials">
-        <div class="row" style="margin-top:0px">
+        <div [ngClass]="{'row': true, 'justify-content-center': officialsCollapsed}"  style="margin-top:0px">
                 <span *ngFor="let official of room.officials" [ngClass]="{'col-12': !officialsCollapsed}">
                     <app-view-official [inputCollapsed]="officialsCollapsed" [canDelete]="isHost" [official]="official"></app-view-official>
                 </span>
@@ -145,8 +145,8 @@ banner ad
 
 <div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': translated}">   
                 
-    <a href="javascript:void(0)" class="pull-right" (click)="translated = !translated"><i class="fa fa-close"></i></a>   
-    <app-search-officials [inputCollapsed]="officialsCollapsed"></app-search-officials>
+    <a href="javascript:void(0)" class="pull-right" (click)="translated = !translated" style="margin-top:10px;margin-right:10px;color:black"><i class="fa fa-close fa-2x"></i></a>   
+    <app-search-officials [inputCollapsed]="false"></app-search-officials>
   
 </div> 
 
