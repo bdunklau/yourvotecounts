@@ -1,5 +1,5 @@
 
-
+<span  [hidden]="!isLoggedIn">
 <form (ngSubmit)="onSubmit()" [formGroup]="commentForm">
     <div class="form-group">
     
@@ -23,6 +23,6 @@
     </div>
     
 </form>
-            
+</span> 
             
            

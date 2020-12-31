@@ -20,6 +20,8 @@ export class CommentFormComponent implements OnInit {
 
     me: FirebaseUserModel
     @Input() inputRoomToCommentForm: RoomObj    
+    isLoggedIn: boolean
+
 
     commentForm = new FormGroup({
        comment: new FormControl('', [Validators.required]),
@@ -31,6 +33,8 @@ export class CommentFormComponent implements OnInit {
 
     async ngOnInit() {
         this.me = await this.userService.getCurrentUser()
+        if(this.me) this.isLoggedIn = true
+        else this.isLoggedIn = false
     }
 
 
