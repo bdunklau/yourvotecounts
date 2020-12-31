@@ -124,15 +124,11 @@ banner ad
         </div>
     </span>
 
-    <span *ngIf="showComments">        
+    <span *ngIf="showComments">               
 
-        <div class="row" style="margin-top:30px;margin-bottom:10px">
-            <div class="col-4">
-                <h3>Comments</h3>
-            </div>
-            
-            <div class="col-8 text-right">
-                Coming soon
+        <div class="row">
+            <div class="col">
+                <app-comments [inputRoomToComments]="room"></app-comments>
             </div>
         </div>
     </span>

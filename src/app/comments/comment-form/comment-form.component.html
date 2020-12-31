@@ -1,0 +1,28 @@
+
+
+<form (ngSubmit)="onSubmit()" [formGroup]="commentForm">
+    <div class="form-group">
+    
+        <div class="row">
+            <div class="col"  style="margin-top:10px">
+    
+                <input type="text" class="form-control" id="comment_field" placeholder="Write a comment..."  formControlName="comment">
+            </div>
+        </div>
+    
+    
+        <div class="row">
+            <div class="col"  style="margin-top:10px">
+    
+                <button id="save_comment" type="submit" class="btn btn-success" [hidden]="!commentForm.valid">Save</button>
+            </div>
+        </div>
+    
+    
+    
+    </div>
+    
+</form>
+            
+            
+           
