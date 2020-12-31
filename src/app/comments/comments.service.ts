@@ -15,10 +15,13 @@ export class CommentsService {
       private afs: AngularFirestore,) { }
 
     
-    subscribeComments(roomSid: string, limit: number) {
-        this.afs.collection('comment', ref => ref.where('RoomSid', '==', roomSid).orderBy('date_ms', 'asc').limit(limit))
+    getComments(args: any) {
+        let roomSid = args.room.RoomSid
+        let query = ref => ref.where('RoomSid', '==', roomSid).orderBy('date_ms', 'asc')
+        if(args.limit) query = ref => ref.where('RoomSid', '==', roomSid).orderBy('date_ms', 'asc').limit(args.limit)
+        return this.afs.collection('comment', query).snapshotChanges()
 
-        // ex:  ref = ref.orderBy('date_ms', this.reverse ? 'desc' : 'asc').startAt(this.dates.date2).endAt(this.dates.date1);
+        // ex from logs:  ref = ref.orderBy('date_ms', this.reverse ? 'desc' : 'asc').startAt(this.dates.date2).endAt(this.dates.date1);
     }
 
 
