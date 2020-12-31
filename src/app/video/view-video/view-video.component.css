@@ -11,7 +11,8 @@
     position: fixed; 
     top:100%;
     border:1px solid #cdcdcd;
-    overflow: scroll;
+    overflow-y: auto;
+    overflow-x: hidden
   }
   
 .target {
