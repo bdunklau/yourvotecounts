@@ -1,10 +1,11 @@
 
 
-<div class="row" *ngFor="let comment of comments" style="margin-bottom:30px">
-    <div class="col">
+<div class="row" *ngFor="let comment of comments" style="margin-bottom:20px">
+    <div class="col" (click)="selectComment(comment)">
         <small><B>{{comment.author}}</B></small>
         <BR/>{{comment.comment}}
         <BR/><small class="text-muted">{{comment.date_ms | date:'short'}}</small>
     </div>
 </div>
+
 

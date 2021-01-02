@@ -124,17 +124,18 @@ banner ad
         </div>
     </span>
 
-    <span *ngIf="showComments">               
-
-        <div class="row">
-            <div class="col">
-                <app-comments [inputRoomToComments]="room"></app-comments>
-            </div>
-        </div>
-    </span>
-
-
 </div>
+
+
+<!-- put comment section outside of "container" so that the slide-up comment edit form spans the whole width of the page  -->
+<span *ngIf="showComments">   
+    <div class="row">
+        <div class="col">
+            <app-comments [inputRoomToComments]="room"></app-comments>
+        </div>
+    </div>
+</span>
+
 
 
 

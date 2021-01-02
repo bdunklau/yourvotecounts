@@ -30,6 +30,12 @@ export class CommentsService {
     }
 
 
+    update(comment: Comment) {
+        console.log('update(): comment = ', comment)
+        this.afs.collection('comment').doc(comment.commentId).update(comment)
+    }
+
+
     createId() {
         return this.afs.createId()
     }

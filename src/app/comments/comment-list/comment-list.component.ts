@@ -1,11 +1,13 @@
-import { Component, OnInit, OnDestroy, Input, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Inject, PLATFORM_ID, Output, EventEmitter } from '@angular/core';
 import { CommentsService } from '../comments.service';
-import { RoomObj } from 'src/app/room/room-obj.model';
 import { Comment } from '../comment.model';
 import { Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 import * as _ from 'lodash'
+import { RoomObj } from '../../room/room-obj.model';
+import { UserService } from 'src/app/user/user.service';
+import { FirebaseUserModel } from 'src/app/user/user.model';
 
 
 /**
@@ -21,13 +23,17 @@ export class CommentListComponent implements OnInit {
     @Input() inputRoomToCommentList: RoomObj
     comments: Comment[]
     subscription: Subscription
+    @Output() outputSelectedComment = new EventEmitter<Comment>();
+    me: FirebaseUserModel
 
     constructor(private commentsService: CommentsService,
+      private userService: UserService,
       @Inject(PLATFORM_ID) private platformId,) { }
 
-    ngOnInit() {
+    async ngOnInit() {
 
         if(isPlatformBrowser(this.platformId)) {
+            this.me = await this.userService.getCurrentUser()
 
             this.comments = [];
             
@@ -37,10 +43,13 @@ export class CommentListComponent implements OnInit {
               map(actions => {
                 return actions.map(a => {
                   const data = a.payload.doc.data() as Comment;
-                  const id = a.payload.doc['id'];
-                  var returnThis = { id, ...data };
-                  // console.log('returnThis = ', returnThis);
-                  return returnThis;
+                  /**
+                   * You CAN do this to get the doc id, but we have the commentId attribute on the document already which 
+                   * equals the doc id
+                   */
+                  // const id = a.payload.doc['id'];
+                  // var returnThis = { id, ...data };
+                  return data //returnThis;
                 });
               })
             )
@@ -51,18 +60,19 @@ export class CommentListComponent implements OnInit {
                 })
               });
 
-
-
         }
 
     }
 
 
-
-
-
     ngOnDestroy() {
         if(this.subscription) this.subscription.unsubscribe()
+    }
+
+
+    selectComment(comment: Comment) {
+        if(this.me && this.me.uid === comment.authorId)
+            this.outputSelectedComment.emit(comment)
     }
 
 }
