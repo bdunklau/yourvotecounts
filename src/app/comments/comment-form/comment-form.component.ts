@@ -21,9 +21,11 @@ export class CommentFormComponent implements OnInit {
     me: FirebaseUserModel
     @Input() inputRoomToCommentForm: RoomObj      
     @Output()  outputSavedComment = new EventEmitter<Comment>();
+    @Output()  outputDeletedComment = new EventEmitter<Comment>();
     comment?: Comment  
     isLoggedIn: boolean
     commentForm: FormGroup
+    confirmDelete = false
 
 
 
@@ -74,6 +76,14 @@ export class CommentFormComponent implements OnInit {
     setComment(comment: Comment) {
         this.comment = comment
         this.commentForm.get('comment').setValue(comment.comment)
+    }
+
+
+    deleteComment(comment: Comment) {
+        this.outputDeletedComment.emit(comment)
+        this.commentsService.delete(comment)
+        this.commentForm.reset()
+        this.confirmDelete = false
     }
 
 }

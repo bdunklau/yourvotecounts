@@ -36,6 +36,11 @@ export class CommentsService {
     }
 
 
+    delete(comment: Comment) {
+        this.afs.collection('comment').doc(comment.commentId).delete()
+    }
+
+
     createId() {
         return this.afs.createId()
     }

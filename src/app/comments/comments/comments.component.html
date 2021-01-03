@@ -39,7 +39,8 @@
         <div class="col-12">
             <app-comment-form #editCommentFormDirective
                     [inputRoomToCommentForm]="inputRoomToComments"
-                    (outputSavedComment)="onSavedComment($event)">        
+                    (outputSavedComment)="onSavedComment($event)"
+                    (outputDeletedComment)="onDeletedComment($event)">        
             </app-comment-form>
         </div>
     </div>

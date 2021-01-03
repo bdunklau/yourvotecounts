@@ -37,4 +37,9 @@ export class CommentsComponent implements OnInit {
         this.editFormCollapsed = true
     }
 
+    onDeletedComment(comment: Comment) {
+        this.editFormTranslated = false
+        this.editFormCollapsed = true
+    }
+
 }
