@@ -12,28 +12,29 @@
     
     
         <div class="row">
-            <div class="col"  style="margin-top:10px">
+            <div class=" col-12 col-sm-4"  style="margin-top:10px">
     
-                <button type="submit" class="btn btn-success col-12 col-sm-2" [hidden]="!commentForm.valid">Save</button>
+                <button type="submit" class="btn btn-success col-12" [hidden]="!commentForm.valid">Save</button>
             </div>
-        </div>
-    
-    
-        <div class="row" *ngIf="comment && me && me.uid == comment.authorId">
-            <div class="col"  style="margin-top:10px">
-    
-                <span *ngIf="!confirmDelete">
-                <button class="btn btn-danger col-12 col-sm-2" (click)="confirmDelete = true">Delete</button>
+            <div class=" col-12 col-sm-4"  style="margin-top:10px">
+                <span *ngIf="!confirmDelete && comment && me && me.uid == comment.authorId">
+                <button class="btn btn-danger col-12" (click)="confirmDelete = true">Delete</button>
                 </span>
 
-                <span *ngIf="confirmDelete">
-                <button class="btn btn-default col-12 col-sm-2" (click)="confirmDelete = false" style="background-color:#ededed">Cancel</button>
-                <P>&nbsp;</P>
-                <button class="btn btn-danger col-12 col-sm-2" (click)="deleteComment(comment)">Confirm</button>
+                <span *ngIf="confirmDelete && comment && me && me.uid == comment.authorId">
+                <button class="btn btn-default col-12" (click)="confirmDelete = false" style="background-color:#ededed">Cancel</button>
+                </span>
+
+
+            </div>
+            <div class=" col-12 col-sm-4"  style="margin-top:10px">
+
+                <span *ngIf="confirmDelete && comment && me && me.uid == comment.authorId">
+                <button class="btn btn-danger col-12" (click)="deleteComment(comment)">Confirm</button>
                 </span>
             </div>
         </div>
-    
+        
     
     </div>
     
