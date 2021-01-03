@@ -71,7 +71,9 @@ export class CommentListComponent implements OnInit {
 
 
     selectComment(comment: Comment) {
-        if(this.me && this.me.uid === comment.authorId)
+        let imAuthor = this.me && this.me.uid === comment.authorId
+        let imAdmin = this.me && this.me.isAdmin()
+        if(imAuthor || imAdmin)
             this.outputSelectedComment.emit(comment)
     }
 

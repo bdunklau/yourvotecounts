@@ -26,7 +26,8 @@ export class CommentFormComponent implements OnInit {
     isLoggedIn: boolean
     commentForm: FormGroup
     confirmDelete = false
-
+    canEdit = true
+    canDelete = false
 
 
     constructor(private userService: UserService,
@@ -73,8 +74,11 @@ export class CommentFormComponent implements OnInit {
     }
 
 
-    setComment(comment: Comment) {
+    setComment(comment: Comment, canEdit: boolean, canDelete: boolean) {
         this.comment = comment
+        this.canDelete = canDelete
+        this.canEdit = canEdit
+        console.log('setComment(): canDelete = ', canDelete)
         this.commentForm.get('comment').setValue(comment.comment)
     }
 
