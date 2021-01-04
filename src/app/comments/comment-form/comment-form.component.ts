@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { UserService } from '../../user/user.service';
 import { CommentsService } from '../comments.service';
 import { FirebaseUserModel } from '../../user/user.model';
 import { RoomObj } from '../../room/room-obj.model';
 import { Comment } from '../comment.model';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 
 
 
@@ -29,6 +30,14 @@ export class CommentFormComponent implements OnInit {
     canEdit = true
     canDelete = false
 
+    
+
+    commentFC = new FormControl('', [Validators.required])  // https://headsupvideo.atlassian.net/browse/HEADSUP-34 
+
+    // https://headsupvideo.atlassian.net/browse/HEADSUP-34 
+    onCommentChange() {
+        console.log(this.commentForm['commentFC'].value);
+    }
 
     constructor(private userService: UserService,
                 private commentsService: CommentsService) { }
@@ -39,7 +48,8 @@ export class CommentFormComponent implements OnInit {
         if(this.me) this.isLoggedIn = true
         else this.isLoggedIn = false
         this.commentForm = new FormGroup({
-           comment: new FormControl('', [Validators.required]),
+           commentFC: this.commentFC,   // https://headsupvideo.atlassian.net/browse/HEADSUP-34 
+        //    comment: new FormControl('', [Validators.required]),
         });
     }
 
@@ -49,7 +59,7 @@ export class CommentFormComponent implements OnInit {
         let theComment
         if(this.comment) {
             theComment = this.comment
-            theComment.comment = this.commentForm.get('comment').value
+            theComment.comment = this.commentForm.get('commentFC').value
         }
         else {         
             inserting = true   
@@ -57,7 +67,7 @@ export class CommentFormComponent implements OnInit {
                 author: this.me.displayName,
                 authorId: this.me.uid,
                 commentId: this.commentsService.createId(), // the doc id
-                comment: this.commentForm.get('comment').value,
+                comment: this.commentForm.get('commentFC').value,
                 date: new Date(),
                 date_ms: new Date().getTime(),
                 RoomSid: this.inputRoomToCommentForm.RoomSid
@@ -79,7 +89,7 @@ export class CommentFormComponent implements OnInit {
         this.canDelete = canDelete
         this.canEdit = canEdit
         console.log('setComment(): canDelete = ', canDelete)
-        this.commentForm.get('comment').setValue(comment.comment)
+        this.commentForm.get('commentFC').setValue(comment.comment)
     }
 
 

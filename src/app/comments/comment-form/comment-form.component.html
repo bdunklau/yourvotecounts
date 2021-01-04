@@ -4,9 +4,20 @@
     <div class="form-group">
     
         <div class="row">
-            <div class="col-12"  style="margin-top:10px">
+            <div class="col-12">
     
-                <input type="text" class="form-control col-12" placeholder="Write a comment..."  formControlName="comment">
+                <!-- <input type="text" class="form-control col-12" placeholder="Write a comment..."  formControlName="comment"> -->
+
+                <!-- https://headsupvideo.atlassian.net/browse/HEADSUP-34 -->
+                    <textarea matInput 
+                       style="padding: 3px 3px;border:1px solid gray;margin:0 0 0 0"
+                       class="form-control col-12"
+                       cols="10"
+                       rows="4"
+                       placeholder="Write a comment..." 
+                       [formControl]="commentFC" 
+                       (change)="onCommentChange()"></textarea>
+
             </div>
         </div>
     
