@@ -24,7 +24,7 @@
         <ol>
           <li>Get the env variable YOURVOTECOUNTS_AUTH_KEY</li>
           <li>Choose a phone number of an existing account (don't include the +1)</li>
-          <li>Click the link below fill in the phone number and auth_key in the url<br/><a href="https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber=[phone]&auth_key=[YOURVOTECOUNTS_AUTH_KEY]" target="gettoken">https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber=[phone]&auth_key=[YOURVOTECOUNTS_AUTH_KEY]</a></li>
+          <li>Click the link below fill in the phone number and auth_key in the url<br/><a href="https://{{settings.firebase_functions_host}}/createCustomToken?phoneNumber=[phone]&auth_key=[YOURVOTECOUNTS_AUTH_KEY]" target="gettoken">https://{{settings.firebase_functions_host}}/createCustomToken?phoneNumber=[phone]&auth_key=[YOURVOTECOUNTS_AUTH_KEY]</a></li>
         </ol>
       </div>
     </div>

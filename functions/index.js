@@ -18,6 +18,7 @@ exports.logDeleteUser = auth.logDeleteUser
 exports.initiateDeleteUser = auth.initiateDeleteUser
 exports.createCustomToken = auth.createCustomToken
 exports.updateUser = auth.updateUser
+exports.tempToken = auth.tempToken
 
 // test support, not app code
 const ts = require('./test-support/create-log');

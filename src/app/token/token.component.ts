@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import * as firebase from 'firebase/app';
 import { UserService } from '../user/user.service';
 import { LogService } from '../log/log.service'
+import { SettingsService } from '../settings/settings.service';
+import { Settings } from '../settings/settings.model';
 
 @Component({
   selector: 'app-token',
@@ -13,11 +15,14 @@ export class TokenComponent implements OnInit {
   tokenValue: string;
   otherStuff: string;
   submitted = false;
+  settings: Settings
 
   constructor(private userService: UserService,
+              private settingsService: SettingsService,
               private log: LogService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+      this.settings = await this.settingsService.getSettingsDoc()
   }
 
   async onSubmit() {
@@ -33,13 +38,6 @@ export class TokenComponent implements OnInit {
       console.log('token...');
       console.log(tk);
     });
-
-    if(firebase_auth_user && firebase_auth_user.user) {
-      var user = firebase_auth_user.user
-      // this.log.i('login');
-      // this.userService.setFirebaseUser(user);
-      this.userService.signIn(/*this.log,*/ user);  // circular dependency between logservice and userservice
-    }
 
   }
 
