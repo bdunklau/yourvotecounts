@@ -61,6 +61,7 @@ export class AppComponent {
           console.log('AppComponent: next(): this = ', this);
           if(value) this.setAdmin(value.isAdmin())
           if(value) this.isLoggedIn = true;
+          else this.isLoggedIn = false
           if(value && value.phoneNumber) this.name_or_phone = value.phoneNumber; // TODO not tested
           if(value && value.displayName) this.name_or_phone = value.displayName; // TODO not tested
           if(value && value.photoURL) this.photoURL = value.photoURL             // TODO not tested

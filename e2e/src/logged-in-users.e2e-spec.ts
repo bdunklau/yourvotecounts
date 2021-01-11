@@ -21,14 +21,15 @@ fdescribe('Logged in users', () => {
   
   // passed on 12/9/20
   fit('should be able to logout', async () => {
-    let slp = 1
+    let slp = 300
     let person = await page.loginAsSomeone();
 
     await page.clickLogout(slp);
+    await browser.sleep(slp);
     
     var login_link = await page.getLoginLink(slp);
     console.log("do you see the login link?...")
-    await browser.sleep(5000);
+    await browser.sleep(slp);
     expect(login_link.isDisplayed()).toBeTruthy();
   });
 

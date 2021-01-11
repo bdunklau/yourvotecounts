@@ -46,6 +46,8 @@ export class UserService {
           else {
               // user logged out
               if(this.userSubscription) this.userSubscription.unsubscribe()
+              delete this.user
+              this.messageService.updateUser(null);
           }
       })
   }
@@ -63,15 +65,24 @@ export class UserService {
             .refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName)
             .getDownloadURL().then(url => {
                 console.log("this.photoURL = ", url)
-                this.user.photoURL = url
-                this.messageService.updateUser(this.user) // see app.component.ts:ngOnInit()
+                /**
+                 * prevents e2e test error on logout
+                 */
+                if(this.user) {
+                    this.user.photoURL = url
+                    this.messageService.updateUser(this.user) // see app.component.ts:ngOnInit()
+                }
             })
 
-            this.user.online = true;
-            
-            // this.updateUser(this.user); // saves the online state    // FIXME circular - don't update user inside userSubscription
-            console.log('onAuthStateChanged(): this.user = ', this.user);
-            this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
+            /**
+             * prevents e2e test error on logout
+             */
+            if(this.user) {
+                this.user.online = true;            
+                // this.updateUser(this.user); // saves the online state    // FIXME circular - don't update user inside userSubscription
+                console.log('onAuthStateChanged(): this.user = ', this.user);
+                this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
+            }
 
         }
       })
