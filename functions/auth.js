@@ -133,19 +133,6 @@ exports.createCustomToken = functions.https.onRequest(async (req, res) => {
 })
 
 
-exports.tempToken = functions.https.onRequest(async (req, res) => {
-    var uid = req.query.uid
-    admin.auth().createCustomToken(uid)
-    .then(function(customToken) {
-      // Send token back to client
-      return res.status(200).send('<h3>token</h3><br/><h4>'+customToken+'</h4><br/>Phone: '+req.query.phoneNumber+'<br/>uid: '+user.uid)
-    })
-    .catch(function(error) {
-      return res.status(401).send('<h3>error</h3><br/><h2>'+error+' uid:'+uid+' (code 5)</h2>')
-    });
-})
-
-
 exports.authKeyValidated = function(auth_key) {
 
   return new Promise((resolve, reject) => {
