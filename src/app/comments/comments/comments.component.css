@@ -1,7 +1,4 @@
 
-.text-style{
-    white-space: pre-wrap
-}
 
 .mydiv{  
     height:100%;
@@ -37,5 +34,5 @@
 }
 
 .translated {
-    transform:translate(0px,-100%);
+    transform:translate(0px,-50%);
 }

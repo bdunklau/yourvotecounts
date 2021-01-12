@@ -96,17 +96,21 @@ banner ad
                 <h3>Officials</h3>
             </div>
             
+            <!-- no point in showing expand/collapse icon if there aren't any legislators -->
             <div class="col-8 text-right">
+            <span *ngIf="room && room.officials && room.officials.length > 0">
                 <a (click)="officialsCollapsed = !officialsCollapsed"> 
                     <span *ngIf="officialsCollapsed">Expand for contact info <i class="fas fa-chevron-down"></i></span> 
                     <span *ngIf="!officialsCollapsed">Collapse <i class="fas fa-chevron-up"></i></span>  
                 </a>
+            </span>
             </div>
+            
         </div>
 
 
         <span *ngIf="room && room.officials">
-        <div class="row" style="margin-top:0px">
+        <div [ngClass]="{'row': true, 'justify-content-center': officialsCollapsed}"  style="margin-top:0px">
                 <span *ngFor="let official of room.officials" [ngClass]="{'col-12': !officialsCollapsed}">
                     <app-view-official [inputCollapsed]="officialsCollapsed" [canDelete]="isHost" [official]="official"></app-view-official>
                 </span>
@@ -120,29 +124,26 @@ banner ad
         </div>
     </span>
 
-    <span *ngIf="showComments">        
-
-        <div class="row" style="margin-top:30px;margin-bottom:10px">
-            <div class="col-4">
-                <h3>Comments</h3>
-            </div>
-            
-            <div class="col-8 text-right">
-                Coming soon
-            </div>
-        </div>
-    </span>
-
-
 </div>
+
+
+<!-- put comment section outside of "container" so that the slide-up comment edit form spans the whole width of the page  -->
+<span *ngIf="showComments">   
+    <div class="row">
+        <div class="col">
+            <app-comments [inputRoomToComments]="room"></app-comments>
+        </div>
+    </div>
+</span>
+
 
 
 
 
 <div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': translated}">   
                 
-    <a href="javascript:void(0)" class="pull-right" (click)="translated = !translated"><i class="fa fa-close"></i></a>   
-    <app-search-officials [inputCollapsed]="officialsCollapsed"></app-search-officials>
+    <a href="javascript:void(0)" class="pull-right" (click)="translated = !translated" style="margin-top:10px;margin-right:10px;color:black"><i class="fa fa-close fa-2x"></i></a>   
+    <app-search-officials [inputCollapsed]="false"></app-search-officials>
   
 </div> 
 

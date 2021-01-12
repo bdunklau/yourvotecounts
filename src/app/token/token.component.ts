@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import * as firebase from 'firebase/app';
 import { UserService } from '../user/user.service';
 import { LogService } from '../log/log.service'
+import { SettingsService } from '../settings/settings.service';
+import { Settings } from '../settings/settings.model';
 
 @Component({
   selector: 'app-token',
@@ -13,11 +16,23 @@ export class TokenComponent implements OnInit {
   tokenValue: string;
   otherStuff: string;
   submitted = false;
+  settings: Settings
+  firebase_functions_host = "us-central1-yourvotecounts-dev.cloudfunctions.net"
 
   constructor(private userService: UserService,
+              @Inject(PLATFORM_ID) private platformId,
+              private settingsService: SettingsService,
               private log: LogService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+
+      /**
+       * Have to wrap in this if block so we don't get the "Error enabling offline persistence" error in server console
+       */
+      if(isPlatformBrowser(this.platformId)) {
+          this.settings = await this.settingsService.getSettingsDoc()
+          this.firebase_functions_host = this.settings.firebase_functions_host
+      }
   }
 
   async onSubmit() {
@@ -33,13 +48,6 @@ export class TokenComponent implements OnInit {
       console.log('token...');
       console.log(tk);
     });
-
-    if(firebase_auth_user && firebase_auth_user.user) {
-      var user = firebase_auth_user.user
-      // this.log.i('login');
-      // this.userService.setFirebaseUser(user);
-      this.userService.signIn(/*this.log,*/ user);  // circular dependency between logservice and userservice
-    }
 
   }
 

@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+
 // import 'rxjs/add/operator/toPromise';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -12,7 +13,6 @@ import { Observable, throwError } from 'rxjs';
 import { FirebaseUserModel } from '../user/user.model';
 import 'rxjs/add/operator/map'
 import { MessageService } from '../core/message.service';
-import { Team } from '../team/team.model';
 import { map } from 'rxjs/operators';
 import { Subject, /*Observable,*/ Subscription } from 'rxjs';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
@@ -25,6 +25,7 @@ import { take } from 'rxjs/operators';
 export class UserService {
 
   user: FirebaseUserModel;
+  userSubscription: Subscription
 
   constructor(
     private afs: AngularFirestore,
@@ -38,23 +39,63 @@ export class UserService {
       firebase.auth().onAuthStateChanged(async user => {
           // console.log('watch: ngOnInit: onAuthStateChanged(): user = ', user)
           if(user) {
-              let online = true
-              // this.setFirebaseUser(user, online);
-              await this.signIn(/*this.log,*/ user); // circular dependency - can't inject log service            
+              this.listenForUser(user)
+
+              // await this.signIn(/*this.log,*/ user); // circular dependency - can't inject log service            
           }
           else {
               // user logged out
+              if(this.userSubscription) this.userSubscription.unsubscribe()
+              delete this.user
+              this.messageService.updateUser(null);
           }
       })
   }
 
-  ngOnInit() {
-    // isn't this just for components, not services?
+
+  private listenForUser(user /*firebaseUser*/) {
+      if(this.userSubscription) this.userSubscription.unsubscribe()
+
+      this.userSubscription = this.subscribe(user.uid, async (users:[FirebaseUserModel]) => {
+        if(users && users.length > 0) {          
+            this.user = users[0]
+
+            // duplicated/adapted from setFirebaseUser()
+            await this.afStorage.storage
+            .refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName)
+            .getDownloadURL().then(url => {
+                console.log("this.photoURL = ", url)
+                /**
+                 * prevents e2e test error on logout
+                 */
+                if(this.user) {
+                    this.user.photoURL = url
+                    this.messageService.updateUser(this.user) // see app.component.ts:ngOnInit()
+                }
+            })
+
+            /**
+             * prevents e2e test error on logout
+             */
+            if(this.user) {
+                this.user.online = true;            
+                // this.updateUser(this.user); // saves the online state    // FIXME circular - don't update user inside userSubscription
+                console.log('onAuthStateChanged(): this.user = ', this.user);
+                this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
+            }
+
+        }
+      })
+      
   }
 
-  ngOnDestroy() {
-    // isn't this just for components, not services?
-  }
+  // ngOnInit() {
+  //   // isn't this just for components, not services?
+  // }
+
+  // ngOnDestroy() {
+  //   // isn't this just for components, not services?
+  // }
 
 
   // create FirebaseUserModel from firebase.user
@@ -190,37 +231,6 @@ export class UserService {
       .endAt(phoneVal+"\uf8ff")
       .limit(limit))
       .valueChanges();
-  }
-
-
-  async setFirebaseUser(firebase_auth_currentUser, online: boolean) {
-    let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
-    this.user = new FirebaseUserModel();
-    var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
-    // what if brand new user?
-
-    console.log('setFirebaseUser(): userDoc = ', userDoc);
-    console.log('setFirebaseUser(): userDoc.data() = ', userDoc.data());
-    this.user.populate(userDoc.data());
-
-    await this.afStorage.storage
-    .refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName)
-    .getDownloadURL().then(url => {
-        console.log("this.photoURL = ", url)
-        this.user.photoURL = url
-        this.messageService.updateUser(this.user) // see app.component.ts:ngOnInit()
-     })
-
-    this.user.online = online;
-    this.updateUser(this.user); // saves the online state
-    console.log('setFirebaseUser(): this.user = ', this.user);
-    this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
-  }
-
-
-  async signIn(/*log: LogService,*/ firebase_auth_currentUser) {
-    await this.setFirebaseUser(firebase_auth_currentUser, true);
-    // this.log.i('login');
   }
 
 

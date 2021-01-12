@@ -2,6 +2,9 @@ import * as _ from 'lodash';
 import { Team } from '../team/team.model';
 import { TeamMember } from '../team/team-member.model';
 
+
+
+// ng generate class user/user --type=model
 export class FirebaseUserModel {
   uid: string; // the doc id
   image: string;

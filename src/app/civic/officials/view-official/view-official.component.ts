@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as _ from 'lodash'
 import { RoomService } from '../../../room/room.service'
+import { AngularFireStorage } from '@angular/fire/storage';
+import { environment } from '../../../../environments/environment';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmComponent } from '../../../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 import { Router } from '@angular/router';
@@ -23,19 +25,33 @@ export class ViewOfficialComponent implements OnInit {
   @Input() inputCollapsed = true
   currentUrl: string
 
-
   constructor(private roomService: RoomService, 
               @Inject(PLATFORM_ID) private platformId,
               private _modalService: NgbModal,
-              private router: Router,) { }
-
+              private router: Router,
+              private afStorage: AngularFireStorage) { }
 
   async ngOnInit() {
       if(isPlatformBrowser(this.platformId)) {
           this.currentUrl = window.location.href
+
+
+          if(this.official && !this.official.photoUrl) {
+              let url = await this.afStorage.storage
+                          .refFromURL('gs://'+environment.firebase.storageBucket+'/thumb_profile-pic-default.png')
+                          .getDownloadURL()
+                          // .then(url => {
+                          //     console.log("this.photoURL = ", url)
+                          //     this.photoURL = url;
+                          //     this.isUploading = false;
+                          //   })
+              this.official.photoUrl = url
+          }
+
+
+
       }
   }
-
 
   // when copying to clipboard
   getOfficialInfo() {

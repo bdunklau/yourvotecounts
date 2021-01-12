@@ -1,0 +1,50 @@
+<div class="container">    
+<div class="row">
+    <div class="col">
+        <h5>Comments</h5>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12">
+        <app-comment-form [inputRoomToCommentForm]="inputRoomToComments"></app-comment-form>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12">
+        <app-comment-list [inputRoomToCommentList]="inputRoomToComments" (outputSelectedComment)="onSelectedComment($event)"></app-comment-list>
+    </div>
+</div>
+</div>
+
+
+
+<div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : editFormCollapsed, 'translated': editFormTranslated}" style="padding-top:10px"> 
+<div class="container">
+    <div class="row">
+        <div class="col-9">
+            <h5>Edit Comments</h5>
+        </div>
+        <div class="col-3 pull-right">
+            <a href="javascript:void(0)" class="pull-right" (click)="editFormTranslated = !editFormTranslated" style="color:black"><i class="fa fa-close fa-2x"></i></a>  
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-12">
+            <app-comment-form #editCommentFormDirective
+                    [inputRoomToCommentForm]="inputRoomToComments"
+                    (outputSavedComment)="onSavedComment($event)"
+                    (outputDeletedComment)="onDeletedComment($event)">        
+            </app-comment-form>
+        </div>
+    </div>
+</div>
+</div> 
+
+

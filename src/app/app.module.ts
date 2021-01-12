@@ -80,6 +80,9 @@ import { FriendListComponent } from './friend/friend-list/friend-list.component'
 import { VmMainComponent } from './admin/vm/vm-main/vm-main.component';
 import { VmHealthComponent } from './admin/vm/vm-health/vm-health.component';
 import { VmService } from './admin/vm/vm.service';
+import { CommentsComponent } from './comments/comments/comments.component';
+import { CommentFormComponent } from './comments/comment-form/comment-form.component';
+import { CommentListComponent } from './comments/comment-list/comment-list.component';
 
 
 const ORIGINAL_NOT_USED_firebaseUiAuthConfig: firebaseui.auth.Config = {
@@ -182,6 +185,9 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     FriendListComponent,
     VmMainComponent,
     VmHealthComponent,
+    CommentsComponent,
+    CommentFormComponent,
+    CommentListComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
