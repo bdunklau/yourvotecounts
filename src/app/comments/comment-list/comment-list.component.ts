@@ -37,7 +37,6 @@ export class CommentListComponent implements OnInit {
 
             this.comments = [];
             
-            // query team_member where userId = user.uid
             let args = {room: this.inputRoomToCommentList /*, limit: limit */}
             this.subscription = this.commentsService.getComments(args).pipe(
               map(actions => {

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { RoomService } from '../../room/room.service';
 import { RoomObj } from '../../room/room-obj.model';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient  } from '@angular/common/http';
 
 
 @Injectable({
@@ -15,7 +16,8 @@ export class VideoReadyGuard implements CanActivate {
   constructor(
     public roomService: RoomService,
     @Inject(PLATFORM_ID) private platformId,
-    private router: Router
+    private router: Router,
+    private http:HttpClient
   ) {}
 
   async canActivate(
@@ -26,6 +28,13 @@ export class VideoReadyGuard implements CanActivate {
         
       let isBrowser = isPlatformBrowser(this.platformId)
       if(isBrowser) {
+            let resp:any = await this.http.get("http://api.ipify.org/?format=json").toPromise()
+            let ipAddress = resp.ip
+            // .subscribe((res:any)=>{
+            //     this.ipAddress = res.ip;
+            // });
+
+            this.roomService.updateViews(next.params.compositionSid, ipAddress)
 
             return this.roomService.getRoomData(next.params.compositionSid).toPromise()
             .then(obj => {
