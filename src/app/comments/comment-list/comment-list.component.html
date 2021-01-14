@@ -3,7 +3,9 @@
 <div class="row" *ngFor="let comment of comments" style="margin-bottom:20px">
     <div class="col" (click)="selectComment(comment)">
         <small><B>{{comment.author}}</B></small>
-        <BR/>{{comment.comment}}
+
+        <!-- util/linkify/linkify.pipe.ts -->
+        <BR/><span style="white-space: pre-wrap;" [innerHTML]="comment.comment | linkify"></span>
         <BR/><small class="text-muted">{{comment.date_ms | date:'short'}}</small>
     </div>
 </div>
