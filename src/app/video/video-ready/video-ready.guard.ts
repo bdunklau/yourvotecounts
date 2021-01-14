@@ -29,10 +29,6 @@ export class VideoReadyGuard implements CanActivate {
       let isBrowser = isPlatformBrowser(this.platformId)
       if(isBrowser) {
             let resp:any = await this.http.get("http://api.ipify.org/?format=json").toPromise()
-            let ipAddress = resp.ip
-            // .subscribe((res:any)=>{
-            //     this.ipAddress = res.ip;
-            // });
 
             this.roomService.updateViews(next.params.compositionSid, ipAddress)
 
