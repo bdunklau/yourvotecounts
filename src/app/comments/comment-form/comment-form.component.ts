@@ -5,7 +5,6 @@ import { CommentsService } from '../comments.service';
 import { FirebaseUserModel } from '../../user/user.model';
 import { RoomObj } from '../../room/room-obj.model';
 import { Comment } from '../comment.model';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 
 
 
@@ -36,7 +35,7 @@ export class CommentFormComponent implements OnInit {
 
     // https://headsupvideo.atlassian.net/browse/HEADSUP-34 
     onCommentChange() {
-        console.log(this.commentForm['commentFC'].value);
+        console.log(this.commentForm.get('commentFC').value);
     }
 
     constructor(private userService: UserService,
@@ -62,7 +61,7 @@ export class CommentFormComponent implements OnInit {
             theComment.comment = this.commentForm.get('commentFC').value
         }
         else {         
-            inserting = true   
+            inserting = true  
             theComment = {
                 author: this.me.displayName,
                 authorId: this.me.uid,
