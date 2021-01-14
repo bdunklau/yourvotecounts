@@ -57,7 +57,7 @@ banner ad
     <!-- ==================== VIDEO DESCRIPTION LABEL AND FIELD ========================= -->
     <div class="row" *ngIf="!editing_description" style="margin-top:10px">
         <div class="col text-style" (click)="beginEditDescription()">
-                <span *ngIf="video_description">{{video_description}}</span>
+                <span *ngIf="video_description" style="white-space: pre-wrap;" [innerHTML]="video_description | linkify"></span>
                 <span *ngIf="!video_description && initialized">(Add description)</span>
         </div>
     </div>
