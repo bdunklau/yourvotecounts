@@ -69,3 +69,4 @@ exports.generateThumbnail = my_account.generateThumbnail;
 const adminTasks = require('./admin');
 exports.pingVm = adminTasks.pingVm
 exports.onVmState = adminTasks.onVmState
+exports.getIp = adminTasks.getIp

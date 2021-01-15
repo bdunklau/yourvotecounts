@@ -24,6 +24,7 @@ import { Observable } from 'rxjs'
 import { AngularFireStorage } from '@angular/fire/storage';
 import { SettingsService } from '../settings/settings.service';
 import * as firebase from 'firebase/app';
+import { HttpClient } from '@angular/common/http';
 
 
 @Injectable({
@@ -41,6 +42,7 @@ export class RoomService {
   constructor(
     private settingsService: SettingsService,
     private afs: AngularFirestore,
+    private http:HttpClient,
     private afStorage: AngularFireStorage,) { 
   }
 
@@ -410,6 +412,20 @@ export class RoomService {
   async triggerRecreateVideo(room) {    
       await this.afs.collection('recreate_video_requests').doc(room.RoomSid).delete()
       await this.afs.collection('recreate_video_requests').doc(room.RoomSid).set(room)
+  }
+
+
+  // async viewed(room: RoomObj, ipAddress: string) {
+  //     let xxx = await this.afs.collection('room').doc(room.RoomSid).collection('views').doc(ipAddress).get()
+  //     console.log(`get ${ipAddress} -> `, xxx)
+  // }
+
+
+  async getIp() {
+    
+    this.http.get("https://us-central1-yourvotecounts-dev.cloudfunctions.net/getIp").subscribe(resp => {
+        console.log('resp = ', resp)
+    })
   }
 
 }

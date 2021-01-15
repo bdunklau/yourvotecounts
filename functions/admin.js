@@ -71,6 +71,13 @@ exports.onVmState = functions.firestore.document('state/vm_state').onWrite(async
 })
 
 
+exports.getIp = functions.https.onRequest((req, res) => {
+    cors(req, res, async () => {
+        return res.status(200).send({ip: req.ip})
+    })
+})
+
+
 blahblah = async () => {
     let settingsDoc = await db.collection('config').doc('settings').get()
     let settings = settingsDoc.data()
