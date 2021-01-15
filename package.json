@@ -56,6 +56,7 @@
     "firebaseui-angular": "^3.4.2",
     "globalthis": "^1.0.1",
     "hammerjs": "^2.0.8",
+    "linkifyjs": "^2.1.9",
     "localstorage-polyfill": "^1.0.1",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
