@@ -24,8 +24,9 @@
     
         <div class="row">
             <div class=" col-12 col-sm-4"  style="margin-top:10px">
-    
+                <span *ngIf="commentForm">
                 <button type="submit" class="btn btn-success col-12" [hidden]="!commentForm.valid || !canEdit">Save</button>
+                </span>
             </div>
             <div class=" col-12 col-sm-4"  style="margin-top:10px">
                 <span *ngIf="!confirmDelete && canDelete">
