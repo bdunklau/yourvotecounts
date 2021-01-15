@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
 import { RoomObj } from './room-obj.model';
 import { //connect,
@@ -25,6 +25,8 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { SettingsService } from '../settings/settings.service';
 import * as firebase from 'firebase/app';
 import { HttpClient } from '@angular/common/http';
+import { Settings } from '../settings/settings.model';
+import { isPlatformBrowser } from '@angular/common';
 
 
 @Injectable({
@@ -38,12 +40,19 @@ export class RoomService {
 
   official_selected = new Subject<Official>()
   official_deleted = new Subject<Official>()
+  settings: Settings
 
   constructor(
     private settingsService: SettingsService,
+    @Inject(PLATFORM_ID) private platformId,
     private afs: AngularFirestore,
     private http:HttpClient,
     private afStorage: AngularFireStorage,) { 
+        if(isPlatformBrowser(this.platformId)) {
+            this.settingsService.getSettingsDoc().then(settings => {
+                this.settings = settings
+            })
+        }
   }
 
 
@@ -415,17 +424,32 @@ export class RoomService {
   }
 
 
-  // async viewed(room: RoomObj, ipAddress: string) {
-  //     let xxx = await this.afs.collection('room').doc(room.RoomSid).collection('views').doc(ipAddress).get()
-  //     console.log(`get ${ipAddress} -> `, xxx)
-  // }
+  async viewed(room: RoomObj) {
+      // legacy check
+      console.log(`room.views -> `, room.views)
+      if(!room.views) {
+          await this.afs.collection('room').doc(room.RoomSid).update({views: 0})
+      }
+      let ipAddress = await this.getIp()
+      let xxx = await this.afs.collection('room').doc(room.RoomSid).collection('visits').doc(ipAddress).ref.get()
+      // data undefined if ip address not found
+      let data = xxx.data()
+      if(!data) {
+          let batch = this.afs.firestore.batch();
+          batch.update(this.afs.collection('room').doc(room.RoomSid).ref, {views: firebase.firestore.FieldValue.increment(1)});
+          batch.set(this.afs.collection('room').doc(room.RoomSid).collection('visits').doc(ipAddress).ref, {ipAddress: ipAddress})
+          await batch.commit();
+      }
+      console.log(`get ${ipAddress} -> `, data)
+  }
 
 
-  async getIp() {
-    
-    this.http.get("https://us-central1-yourvotecounts-dev.cloudfunctions.net/getIp").subscribe(resp => {
-        console.log('resp = ', resp)
-    })
+  private async getIp() {
+    if(!this.settings) {
+        this.settings = await this.settingsService.getSettingsDoc()
+    }
+    let resp:any = await this.http.get(`https://${this.settings.firebase_functions_host}/getIp`).toPromise()
+    return resp.ip
   }
 
 }

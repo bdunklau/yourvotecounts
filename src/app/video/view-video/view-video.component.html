@@ -55,7 +55,8 @@ banner ad
     
     <div class="row">
         <div class="col">
-            {{room.views}} viewsX {{room | json}}
+            <span *ngIf="room.views">{{room.views}} views</span>
+            <span *ngIf="!room.views">No views</span>
         </div>
     </div>
 
