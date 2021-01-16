@@ -70,3 +70,4 @@ const adminTasks = require('./admin');
 exports.pingVm = adminTasks.pingVm
 exports.onVmState = adminTasks.onVmState
 exports.getIp = adminTasks.getIp
+exports.linkPreview = adminTasks.linkPreview

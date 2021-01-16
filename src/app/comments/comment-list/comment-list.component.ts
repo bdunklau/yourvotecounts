@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Inject, PLATFORM_ID, Output, EventEmitter } from '@angular/core';
-import { CommentsService } from '../comments.service';
+import CommentsService from '../comments.service';
 import { Comment } from '../comment.model';
 import { Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import * as _ from 'lodash'
 import { RoomObj } from '../../room/room-obj.model';
 import { UserService } from 'src/app/user/user.service';
 import { FirebaseUserModel } from 'src/app/user/user.model';
+import { Router } from '@angular/router';
 
 
 /**
@@ -28,6 +29,7 @@ export class CommentListComponent implements OnInit {
 
     constructor(private commentsService: CommentsService,
       private userService: UserService,
+      private router: Router,
       @Inject(PLATFORM_ID) private platformId,) { }
 
     async ngOnInit() {
@@ -66,6 +68,13 @@ export class CommentListComponent implements OnInit {
 
     ngOnDestroy() {
         if(this.subscription) this.subscription.unsubscribe()
+    }
+
+
+    canEdit(comment: Comment) {
+        let imAuthor = this.me && this.me.uid === comment.authorId
+        let imAdmin = this.me && this.me.isAdmin()
+        return imAuthor || imAdmin
     }
 
 

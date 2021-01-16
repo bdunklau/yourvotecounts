@@ -5,6 +5,8 @@ const request = require('request')
 const corsModule = require('cors')
 const cors = require('cors')({ origin: true});
 const fetch = require('node-fetch');
+const cheerio = require('cheerio');
+const getUrls = require('get-urls');
 
 
 // can only call this once globally and we already do that in index.js
@@ -106,5 +108,40 @@ blahblah = async () => {
 
 
 
+exports.linkPreview = functions.https.onRequest((req, res) => {
+    cors(req, res, async () => {
+        let comment = req.body.comment
+        const urls = Array.from(getUrls(comment))
+        if(urls && urls.length > 0) {
+            let url = urls[0]
+
+            console.log('CHECK THIS URL: ', url)
+            const resp = await fetch(url)
+            const html = await resp.text()
+            const $ = cheerio.load(html)
+            const getMetatag = (name) => 
+                $(`meta[property="twitter:${name}"]`).attr('content') ||
+                $(`meta[name=${name}]`).attr('content') ||
+                $(`meta[property="og:${name}"]`).attr('content') 
+            let data = {
+                url,
+                host: getHost(url),
+                title: getMetatag('title'),
+                favicon: $('link[rel="shortcut icon"]').attr('href'),
+                description: getMetatag('description'),
+                image: getMetatag('image'),
+                author: getMetatag('author'),
+            }
+            return res.status(200).send(data)
+
+        }
+        else 
+            return res.status(200).send({data: 'none'})
+    })
+})
 
 
+getHost = (url) => {
+    var host = url.replace('http://','').replace('https://','').split(/[/?#]/)[0];
+    return host
+}

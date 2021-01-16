@@ -11,6 +11,7 @@ export class Comment {
     CompositionSid?: string
     date: Date
     date_ms: number
+    linkPreview?: {url?: string, title?: string, description?: string, image?: string, host?: string}
     RoomSid: string
     
 

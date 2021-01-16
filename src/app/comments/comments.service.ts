@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Comment } from './comment.model';
+import { SettingsService } from '../settings/settings.service';
+import { Settings } from '../settings/settings.model';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+
 
 
 /**
@@ -9,9 +13,13 @@ import { Comment } from './comment.model';
 @Injectable({
   providedIn: 'root'
 })
-export class CommentsService {
+export default class CommentsService {
+
+    settings: Settings
 
     constructor(
+      private settingsService: SettingsService,
+      private http: HttpClient,
       private afs: AngularFirestore,) { }
 
     
@@ -44,5 +52,47 @@ export class CommentsService {
 
     createId() {
         return this.afs.createId()
+    }
+
+
+    async getLinkPreview(comment: string) {        
+        if(!this.settings) {
+            this.settings = await this.settingsService.getSettingsDoc()
+        }
+
+        const options = {
+            headers: new HttpHeaders({
+              'Content-Type':  'application/json',
+              'Authorization': 'my-auth-token',
+              'Access-Control-Allow-Origin': '*'
+            })
+            // params: new HttpParams().set('compositionFile', `/home/bdunklau/videos/${room.CompositionSid}.mp4`)
+            //                         .set('CompositionSid', room.CompositionSid)
+            //                         .set('RoomSid', room.RoomSid)
+            //                         .set('tempEditFolder', `/home/bdunklau/videos/${room.CompositionSid}`)
+            //                         .set('website_domain_name', this.settingsDoc.website_domain_name)
+        };
+
+        let formData = {
+            comment: comment
+        }
+
+
+        let url = `https://${this.settings.firebase_functions_host}/linkPreview`
+        // this.http.post(url, formData, options).subscribe(
+        //     (resp) => console.log('POST success: ', resp),
+        //     (error) => console.log('POST ERROR: ', error)
+        // )
+
+        let resp = await this.http.post(url, formData, options).toPromise()
+        return resp
+
+
+
+
+        // if(urls && urls.length > 0) {
+        //     let linkPreviewJson:any = await this.http.get(`https://${this.settings.firebase_functions_host}/linkPreview?url${urls[0]}`).toPromise()
+        //     return linkPreviewJson
+        // }
     }
 }
