@@ -52,12 +52,19 @@ banner ad
             <button id="save_title" (click)="save_title()" class="btn btn-success col-12" ><i class="fas fa-check"></i>  </button>
         </div>
     </div>
+    
+    <div class="row">
+        <div class="col">
+            <span *ngIf="room.views">{{room.views}} views</span>
+            <span *ngIf="!room.views">No views</span>
+        </div>
+    </div>
 
 
     <!-- ==================== VIDEO DESCRIPTION LABEL AND FIELD ========================= -->
     <div class="row" *ngIf="!editing_description" style="margin-top:10px">
         <div class="col text-style" (click)="beginEditDescription()">
-                <span *ngIf="video_description">{{video_description}}</span>
+                <span *ngIf="video_description" style="white-space: pre-wrap;" [innerHTML]="video_description | linkify"></span>
                 <span *ngIf="!video_description && initialized">(Add description)</span>
         </div>
     </div>

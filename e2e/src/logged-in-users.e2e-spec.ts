@@ -19,7 +19,7 @@ fdescribe('Logged in users', () => {
   });
 
   
-  // passed on 12/9/20
+  // passed on 1/10/21
   fit('should be able to logout', async () => {
     let slp = 300
     let person = await page.loginAsSomeone();
@@ -34,7 +34,7 @@ fdescribe('Logged in users', () => {
   });
 
   // We DO want to make sure we can always point the browser to /token however
-  // passed on 12/9/20
+  // passed on 1/10/21
   fit('should be able to point browser to /token', async () => {
     await page.gotoTestSupport();
     expect(page.getUrl()).toEqual(browser.baseUrl+'token');
@@ -46,7 +46,7 @@ fdescribe('Logged in users', () => {
   })
 
   
-  // passed on 12/9/20
+  // passed on 1/10/21
   fit('should be able to edit name', async () => {
     let slp = 1
     let person = await page.loginAsSomeone();

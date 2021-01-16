@@ -103,7 +103,8 @@ export function app(): express.Express {
       // look at req.image, .description, .title - if they exist, do find/replace in the (err, html) callback below
       res.render(indexHtml, 
                { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] },
-                 (err, html) => {                   
+                 (err, html) => {                
+                  console.log('server.ts:  err = ', err)   
                   // see    https://css-tricks.com/essential-meta-tags-social-media/
                   if(req['image']) html = html.replace(/\$OG_IMAGE/g, req['image']);
                   let title = req['title'] ? req['title'] : 'Heads Up!'

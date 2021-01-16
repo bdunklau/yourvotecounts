@@ -36,6 +36,7 @@ export class RoomObj {
     storageItems?: {bucketName: string, folder: string, filename: string}[]
     tempEditFolder?: string
     uploadFiles?: string[]
+    views = 0
 
     constructor() {
 

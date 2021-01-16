@@ -1,11 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { UserService } from '../../user/user.service';
-import { CommentsService } from '../comments.service';
+import CommentsService from '../comments.service';
 import { FirebaseUserModel } from '../../user/user.model';
 import { RoomObj } from '../../room/room-obj.model';
 import { Comment } from '../comment.model';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 
 
 
@@ -36,7 +35,7 @@ export class CommentFormComponent implements OnInit {
 
     // https://headsupvideo.atlassian.net/browse/HEADSUP-34 
     onCommentChange() {
-        console.log(this.commentForm['commentFC'].value);
+        console.log(this.commentForm.get('commentFC').value);
     }
 
     constructor(private userService: UserService,
@@ -62,14 +61,18 @@ export class CommentFormComponent implements OnInit {
             theComment.comment = this.commentForm.get('commentFC').value
         }
         else {         
-            inserting = true   
+            inserting = true  
+            let commentText = this.commentForm.get('commentFC').value
+            let linkPreview = await this.commentsService.getLinkPreview(commentText)
+            console.log('LINK PREVIEW: ', linkPreview)
             theComment = {
                 author: this.me.displayName,
                 authorId: this.me.uid,
                 commentId: this.commentsService.createId(), // the doc id
-                comment: this.commentForm.get('commentFC').value,
+                comment: commentText,
                 date: new Date(),
                 date_ms: new Date().getTime(),
+                linkPreview: linkPreview,
                 RoomSid: this.inputRoomToCommentForm.RoomSid
             } as Comment
 
