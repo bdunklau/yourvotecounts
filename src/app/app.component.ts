@@ -43,6 +43,9 @@ export class AppComponent {
   async ngOnInit() {
     if(isPlatformBrowser(this.platformId)) {
 
+        this.testCamera()
+        this.testMic()
+
         this.me = await this.userService.getCurrentUser();
         console.log('AppComponent:  user = ', this.me);
         if(this.me) {
