@@ -29,6 +29,8 @@ export class AppComponent {
   photoURL?: string
   private userSubscription: Subscription;
   me: FirebaseUserModel
+  micAllowed = 0      // 1=allowed, -1=not allowed, 0=not decided yet
+  cameraAllowed = 0   // 1=allowed, -1=not allowed, 0=not decided yet
 
 
   constructor(private authService: AuthService,
@@ -128,23 +130,35 @@ export class AppComponent {
 
 
   testMic() {
+      let allow = function(allowed) {
+          this.micAllowed = allowed
+      }.bind(this)
+
       navigator.mediaDevices.getUserMedia({ audio: true })
       .then(function(stream) {
           console.log('You let me use your mic!')
+          allow(1)
       })
       .catch(function(err) {
           console.log('No mic for you!')
+          allow(-1)
       });
   }
 
 
-  testVideo() {
+  testCamera() {
+      let allow = function(allowed) {
+          this.cameraAllowed = allowed
+      }.bind(this)
+
       navigator.mediaDevices.getUserMedia({ video: true })
       .then(function(stream) {
           console.log('You let me use your camera!')
+          allow(1)
       })
       .catch(function(err) {
           console.log('No camera for you!')
+          allow(-1)
       });
   }
 }

@@ -24,6 +24,7 @@
 
    </div>
    <a href="javascript:void(0)" class="closebtn" id="closeNav" (click)="closeNav()"><i class="fa fa-close" style="color:#ffffff"></i></a>
+   <a id="home_link" class="nav-link" (click)="closeNav()" routerLink="/home"><i class="fa fa-home"></i> Home</a>
    <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/invitations']"><i class="fa fa-video"></i> Video Call</a>
    <a [hidden]="!isLoggedIn" id="invitations_link" class="nav-link" (click)="closeNav()" [routerLink]="['/my-videos']"><i class="fas fa-list"></i> My Videos</a>
    
@@ -35,9 +36,19 @@
    
    <a [hidden]="!isLoggedIn" id="teams_link" class="nav-link" (click)="closeNav()" [routerLink]="['/teams']"><i class="fa fa-users"></i> Teams</a>
    <a [hidden]="!isLoggedIn" id="teams_link" class="nav-link" (click)="closeNav()" [routerLink]="['/friends']"><i class="fa fa-users"></i> Friends</a>
-   <a id="home_link" class="nav-link" (click)="closeNav()" routerLink="/home"><i class="fa fa-home"></i> Home</a>
-   <a id="home_link" class="nav-link" (click)="testMic()" routerLink="/home"><i class="fas fa-microphone"></i> Mic test</a>
-   <a id="home_link" class="nav-link" (click)="testMic()" routerLink="/home"><i class="fa fa-video"></i> Camera test</a>
+   <a id="home_link" class="nav-link" (click)="testMic()" routerLink="/home">
+       <i class="fas fa-microphone"></i> Mic: 
+       <span *ngIf="micAllowed == 0"><u>enable</u></span>
+       <span *ngIf="micAllowed == 1"><i class="fas fa-check"></i> enabled</span>
+       <span *ngIf="micAllowed == -1"><i class="fas fa-times"></i> blocked</span>
+   </a>
+   
+   <a id="home_link" class="nav-link" (click)="testCamera()" routerLink="/home">
+       <i class="fa fa-video"></i> Camera:
+       <span *ngIf="cameraAllowed == 0"><u>enable</u></span>
+       <span *ngIf="cameraAllowed == 1"><i class="fas fa-check"></i> enabled</span>
+       <span *ngIf="cameraAllowed == -1"><i class="fas fa-times"></i> blocked</span>
+   </a>
    
    <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
 
