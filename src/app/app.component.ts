@@ -125,4 +125,26 @@ export class AppComponent {
       }
     );
   }
+
+
+  testMic() {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(function(stream) {
+          console.log('You let me use your mic!')
+      })
+      .catch(function(err) {
+          console.log('No mic for you!')
+      });
+  }
+
+
+  testVideo() {
+      navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function(stream) {
+          console.log('You let me use your camera!')
+      })
+      .catch(function(err) {
+          console.log('No camera for you!')
+      });
+  }
 }
