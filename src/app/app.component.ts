@@ -134,51 +134,84 @@ export class AppComponent {
 
 
   testMic() {
-      this.stuff.push("testMic(): begin")
+    let loc = 'testMic()'
+      this.stuff.push(`${loc}: begin`)
       let allow = function(allowed) {
           this.micAllowed = allowed
       }.bind(this)
 
       let success = function(stream) {
-          this.stuff.push("testMic(): allowed")
+          this.stuff.push(`${loc}: allowed`)
           console.log('You let me use your mic!')
           allow(1)
       }.bind(this)
 
       let err = function(err) {
-          this.stuff.push("testMic(): err")
+          this.stuff.push(`${loc}: err`)
           console.log('No mic for you!')
           allow(-1)
       }.bind(this)
 
-      navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(success)
-      .catch(err);
-      this.stuff.push("testMic(): end")
+      if(navigator) {
+          if(navigator.mediaDevices) {
+              if(navigator.mediaDevices.getUserMedia) {
+                  navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(success)
+                    .catch(err);
+                  this.stuff.push(`${loc}: end`)
+              }
+              else {
+                  this.stuff.push(`${loc}: no getUserMedia`)
+              }
+          }
+          else {
+              this.stuff.push(`${loc}: no mediaDevices`)
+          }
+      }
+      else {
+          this.stuff.push(`${loc}: no navigator`)
+      }
+
   }
 
 
   testCamera() {
-      this.stuff.push("testCamera(): begin")
+      let loc = 'testMic()'
+      this.stuff.push(`${loc}: begin`)
       let allow = function(allowed) {
           this.cameraAllowed = allowed
       }.bind(this)
 
       let success = function(stream) {
-          this.stuff.push("testCamera(): allowed")
+          this.stuff.push(`${loc}: allowed`)
           console.log('You let me use your camera!')
           allow(1)
       }.bind(this)
 
       let err = function(err) {
-          this.stuff.push("testCamera(): err")
+          this.stuff.push(`${loc}: err`)
           console.log('No camera for you!')
           allow(-1)
       }.bind(this)
 
-      navigator.mediaDevices.getUserMedia({ video: true })
-      .then(success)
-      .catch(err);
-      this.stuff.push("testCamera(): end")
+      if(navigator) {
+          if(navigator.mediaDevices) {
+              if(navigator.mediaDevices.getUserMedia) {
+                  navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(success)
+                    .catch(err);
+                  this.stuff.push(`${loc}: end`)
+              }
+              else {
+                  this.stuff.push(`${loc}: no getUserMedia`)
+              }
+          }
+          else {
+              this.stuff.push(`${loc}: no mediaDevices`)
+          }
+      }
+      else {
+          this.stuff.push(`${loc}: no navigator`)
+      }
   }
 }
