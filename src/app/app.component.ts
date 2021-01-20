@@ -31,6 +31,7 @@ export class AppComponent {
   me: FirebaseUserModel
   micAllowed = 0      // 1=allowed, -1=not allowed, 0=not decided yet
   cameraAllowed = 0   // 1=allowed, -1=not allowed, 0=not decided yet
+  stuff = []
 
 
   constructor(private authService: AuthService,
@@ -42,7 +43,7 @@ export class AppComponent {
 
   async ngOnInit() {
     if(isPlatformBrowser(this.platformId)) {
-
+        this.stuff.push("ngOnInit")
         this.testCamera()
         this.testMic()
 
@@ -133,35 +134,51 @@ export class AppComponent {
 
 
   testMic() {
+      this.stuff.push("testMic(): begin")
       let allow = function(allowed) {
           this.micAllowed = allowed
       }.bind(this)
 
-      navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(function(stream) {
+      let success = function(stream) {
+          this.stuff.push("testMic(): allowed")
           console.log('You let me use your mic!')
           allow(1)
-      })
-      .catch(function(err) {
+      }.bind(this)
+
+      let err = function(err) {
+          this.stuff.push("testMic(): err")
           console.log('No mic for you!')
           allow(-1)
-      });
+      }.bind(this)
+
+      navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(success)
+      .catch(err);
+      this.stuff.push("testMic(): end")
   }
 
 
   testCamera() {
+      this.stuff.push("testCamera(): begin")
       let allow = function(allowed) {
           this.cameraAllowed = allowed
       }.bind(this)
 
-      navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function(stream) {
+      let success = function(stream) {
+          this.stuff.push("testCamera(): allowed")
           console.log('You let me use your camera!')
           allow(1)
-      })
-      .catch(function(err) {
+      }.bind(this)
+
+      let err = function(err) {
+          this.stuff.push("testCamera(): err")
           console.log('No camera for you!')
           allow(-1)
-      });
+      }.bind(this)
+
+      navigator.mediaDevices.getUserMedia({ video: true })
+      .then(success)
+      .catch(err);
+      this.stuff.push("testCamera(): end")
   }
 }

@@ -49,6 +49,9 @@
        <span *ngIf="cameraAllowed == 1"><i class="fas fa-check"></i> enabled</span>
        <span *ngIf="cameraAllowed == -1"><i class="fas fa-times"></i> blocked</span>
    </a>
+
+   <div>stuff</div>
+   <div *ngFor="let st of stuff">{{st}}</div>
    
    <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
 
