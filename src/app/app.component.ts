@@ -44,8 +44,6 @@ export class AppComponent {
   async ngOnInit() {
     if(isPlatformBrowser(this.platformId)) {
         this.stuff.push("ngOnInit")
-        this.testCamera()
-        this.testMic()
 
         this.me = await this.userService.getCurrentUser();
         console.log('AppComponent:  user = ', this.me);
@@ -133,85 +131,4 @@ export class AppComponent {
   }
 
 
-  testMic() {
-    let loc = 'testMic()'
-      this.stuff.push(`${loc}: begin`)
-      let allow = function(allowed) {
-          this.micAllowed = allowed
-      }.bind(this)
-
-      let success = function(stream) {
-          this.stuff.push(`${loc}: allowed`)
-          console.log('You let me use your mic!')
-          allow(1)
-      }.bind(this)
-
-      let err = function(err) {
-          this.stuff.push(`${loc}: err`)
-          console.log('No mic for you!')
-          allow(-1)
-      }.bind(this)
-
-      if(navigator) {
-          if(navigator.mediaDevices) {
-              if(navigator.mediaDevices.getUserMedia) {
-                  navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then(success)
-                    .catch(err);
-                  this.stuff.push(`${loc}: end`)
-              }
-              else {
-                  this.stuff.push(`${loc}: no getUserMedia`)
-              }
-          }
-          else {
-              this.stuff.push(`${loc}: no mediaDevices`)
-          }
-      }
-      else {
-          this.stuff.push(`${loc}: no navigator`)
-      }
-
-  }
-
-
-  testCamera() {
-      let loc = 'testMic()'
-      this.stuff.push(`${loc}: begin`)
-      let allow = function(allowed) {
-          this.cameraAllowed = allowed
-      }.bind(this)
-
-      let success = function(stream) {
-          this.stuff.push(`${loc}: allowed`)
-          console.log('You let me use your camera!')
-          allow(1)
-      }.bind(this)
-
-      let err = function(err) {
-          this.stuff.push(`${loc}: err`)
-          console.log('No camera for you!')
-          allow(-1)
-      }.bind(this)
-
-      if(navigator) {
-          if(navigator.mediaDevices) {
-              if(navigator.mediaDevices.getUserMedia) {
-                  navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(success)
-                    .catch(err);
-                  this.stuff.push(`${loc}: end`)
-              }
-              else {
-                  this.stuff.push(`${loc}: no getUserMedia`)
-              }
-          }
-          else {
-              this.stuff.push(`${loc}: no mediaDevices`)
-          }
-      }
-      else {
-          this.stuff.push(`${loc}: no navigator`)
-      }
-  }
 }
