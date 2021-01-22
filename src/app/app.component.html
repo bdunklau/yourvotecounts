@@ -35,10 +35,10 @@
    
    <a [hidden]="!isLoggedIn" id="teams_link" class="nav-link" (click)="closeNav()" [routerLink]="['/teams']"><i class="fa fa-users"></i> Teams</a>
    <a [hidden]="!isLoggedIn" id="teams_link" class="nav-link" (click)="closeNav()" [routerLink]="['/friends']"><i class="fa fa-users"></i> Friends</a>
-
-   <div style="padding-left:10px;padding-right:10px"> <app-browser-check></app-browser-check> </div>
    
    <a [hidden]="!isLoggedIn" id="logout_link"class="nav-link" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+
+   <div style="padding-left:10px;padding-right:10px"> <app-browser-check></app-browser-check> </div>
 
    <div [hidden]="!isAdmin"><hr/></div>
    <h5 [hidden]="!isAdmin" class="nav-link">Admin</h5>
