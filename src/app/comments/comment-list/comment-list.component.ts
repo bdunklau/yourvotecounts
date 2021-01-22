@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Inject, PLATFORM_ID, Output, EventEmitter } from '@angular/core';
-import CommentsService from '../comments.service';
+import { CommentsService } from '../comments.service';
 import { Comment } from '../comment.model';
 import { Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
