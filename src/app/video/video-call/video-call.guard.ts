@@ -47,6 +47,7 @@ export class VideoCallGuard implements CanActivate {
         next: ActivatedRouteSnapshot,
         state: RouterStateSnapshot): Promise<boolean> {
 
+        console.log('canActivate():  begin')
             
         let isBrowser = isPlatformBrowser(this.platformId)
         if(isBrowser) {
@@ -55,7 +56,7 @@ export class VideoCallGuard implements CanActivate {
             let enabled = await this.disabledGuard.canActivate(next, state)
             if(!enabled)
                 return false
-        
+
 
             if(this.wrongBrowser()) {
                 this.errorPageService.errorMsg = "Switch to Safari.  Your Mac/iOS device will not allow this page to load using Chrome.  Don't blame us - blame Apple."
@@ -145,5 +146,7 @@ export class VideoCallGuard implements CanActivate {
         let wrongBrowser = mac && chrome
         return wrongBrowser
     }
+
+
   
 }

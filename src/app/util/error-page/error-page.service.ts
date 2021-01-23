@@ -11,6 +11,7 @@ import { Injectable } from '@angular/core';
 export class ErrorPageService {
 
   errorMsg: string
+  errorTitle: string
 
   constructor() { }
 }
