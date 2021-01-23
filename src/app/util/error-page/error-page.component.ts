@@ -9,6 +9,7 @@ import { ErrorPageService } from './error-page.service'
 export class ErrorPageComponent implements OnInit {
 
   errorMsg: string = 'Houston, we have a problem'
+  errorTitle: string = 'Error'
 
   constructor(
     private errorPageService: ErrorPageService) { }
@@ -16,6 +17,7 @@ export class ErrorPageComponent implements OnInit {
   ngOnInit(): void {
     if(this.errorPageService.errorMsg)
       this.errorMsg = this.errorPageService.errorMsg
+      this.errorTitle = this.errorPageService.errorTitle
   }
 
 }

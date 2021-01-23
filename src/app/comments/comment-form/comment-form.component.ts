@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { UserService } from '../../user/user.service';
-import CommentsService from '../comments.service';
+import { CommentsService } from '../comments.service';
 import { FirebaseUserModel } from '../../user/user.model';
 import { RoomObj } from '../../room/room-obj.model';
 import { Comment } from '../comment.model';

@@ -13,7 +13,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export default class CommentsService {
+export class CommentsService {
 
     settings: Settings
 

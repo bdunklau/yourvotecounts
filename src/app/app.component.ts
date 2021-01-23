@@ -29,6 +29,9 @@ export class AppComponent {
   photoURL?: string
   private userSubscription: Subscription;
   me: FirebaseUserModel
+  micAllowed = 0      // 1=allowed, -1=not allowed, 0=not decided yet
+  cameraAllowed = 0   // 1=allowed, -1=not allowed, 0=not decided yet
+  stuff = []
 
 
   constructor(private authService: AuthService,
@@ -40,6 +43,7 @@ export class AppComponent {
 
   async ngOnInit() {
     if(isPlatformBrowser(this.platformId)) {
+        this.stuff.push("ngOnInit")
 
         this.me = await this.userService.getCurrentUser();
         console.log('AppComponent:  user = ', this.me);
@@ -125,4 +129,6 @@ export class AppComponent {
       }
     );
   }
+
+
 }
