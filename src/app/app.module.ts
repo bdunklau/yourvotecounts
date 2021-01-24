@@ -85,6 +85,9 @@ import { CommentFormComponent } from './comments/comment-form/comment-form.compo
 import { CommentListComponent } from './comments/comment-list/comment-list.component';
 import { LinkifyPipe } from './util/linkify/linkify.pipe';
 import { BrowserCheckComponent } from './util/browser-check/browser-check.component';
+import { TagFormComponent } from './tag/tag-form/tag-form.component';
+import { TagListComponent } from './tag/tag-list/tag-list.component';
+import { TagsComponent } from './tag/tags/tags.component';
 
 
 const ORIGINAL_NOT_USED_firebaseUiAuthConfig: firebaseui.auth.Config = {
@@ -192,6 +195,9 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     CommentListComponent,
     LinkifyPipe,
     BrowserCheckComponent,
+    TagFormComponent,
+    TagListComponent,
+    TagsComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

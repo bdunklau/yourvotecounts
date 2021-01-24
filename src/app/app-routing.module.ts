@@ -53,10 +53,12 @@ import { FriendsComponent } from './friend/friends/friends.component';
 import { FriendGuard } from './friend/friend.guard';
 import { VmMainComponent } from './admin/vm/vm-main/vm-main.component';
 import { VmGuard } from './admin/vm/vm.guard';
+import { TagsComponent } from './tag/tags/tags.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'admin/tags', component: TagsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'admin/videos', component: VideoListComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   // { path: 'admin/vm', component: VmMainComponent, canActivate: [VmGuard], data: {role: 'admin'} },
   { path: 'disabled', component: DisabledComponent },
