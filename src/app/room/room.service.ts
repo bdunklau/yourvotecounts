@@ -454,4 +454,26 @@ export class RoomService {
     return resp.ip
   }
 
+
+  async addTag(room:RoomObj, tagName: string) {
+      let batch = this.afs.firestore.batch();
+      if(!room.tags) room.tags = []
+      room.tags.push(tagName)
+      batch.update(this.afs.collection('room').doc(room.RoomSid).ref, {tags: room.tags})
+      batch.update(this.afs.collection('tag').doc(tagName).ref, {count: firebase.firestore.FieldValue.increment(1)})
+      await batch.commit()
+  }
+
+
+  async removeTag(room:RoomObj, tagName: string) {
+      let batch = this.afs.firestore.batch();
+      let before = room.tags.length
+      _.remove(room.tags, aTagName => { return aTagName == tagName })
+      let after = room.tags.length
+      if(before == after) return
+      batch.update(this.afs.collection('room').doc(room.RoomSid).ref, {tags: room.tags})
+      batch.update(this.afs.collection('tag').doc(tagName).ref, {count: firebase.firestore.FieldValue.increment(-1)})
+      await batch.commit()
+  }
+
 }
