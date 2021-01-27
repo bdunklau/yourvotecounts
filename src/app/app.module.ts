@@ -94,6 +94,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { TagEditorComponent } from './tag/tag-editor/tag-editor.component';
+import { TrendingComponent } from './trending/trending.component';
+import { VideoSearchComponent } from './video/video-search/video-search.component';
 
 
 const ORIGINAL_NOT_USED_firebaseUiAuthConfig: firebaseui.auth.Config = {
@@ -205,6 +207,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     TagListComponent,
     TagsComponent,
     TagEditorComponent,
+    TrendingComponent,
+    VideoSearchComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

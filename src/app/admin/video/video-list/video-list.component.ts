@@ -9,6 +9,7 @@ import { SettingsService } from '../../../settings/settings.service';
 import { Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import * as _ from 'lodash'
+import { ActivatedRoute } from '@angular/router';
 
 
 
@@ -30,6 +31,7 @@ export class VideoListComponent implements OnInit {
 
     constructor(private roomService: RoomService,
                 private settingsService: SettingsService,
+                private route: ActivatedRoute,
                 @Inject(PLATFORM_ID) private platformId,
                 private http: HttpClient,
                 private userService: UserService) { }
@@ -39,7 +41,8 @@ export class VideoListComponent implements OnInit {
             // this.rooms = await this.roomService.getRooms()
             this.settingsDoc = await this.settingsService.getSettingsDoc()
 
-            this.roomSubscription = this.roomService.getRooms()
+            let parms = {limit: 25}   
+            this.roomSubscription = this.roomService.getRooms(parms)
             .pipe(
                 map(actions => {
                     return actions.map(a => {

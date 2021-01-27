@@ -25,7 +25,7 @@ export class TagService {
 
   
   getTags() {
-      return this.afs.collection('tag', ref => ref.orderBy('name_lowerCase')).snapshotChanges()
+      return this.afs.collection('tag', ref => ref.orderBy('name_lowerCase').limit(50)).snapshotChanges()
   }
 
 
@@ -47,6 +47,11 @@ export class TagService {
 
   createId() {
       return this.afs.createId()
+  }
+
+
+  getMostPopular() {
+      return this.afs.collection('tag', ref => ref.orderBy('count', 'desc').limit(10)).snapshotChanges()
   }
 
 

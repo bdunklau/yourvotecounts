@@ -317,8 +317,12 @@ export class RoomService {
   /**
    * For admins to review rooms/videos  (admin/video/video-list)
    */
-  getRooms() {
-      let observable = this.afs.collection('room', ref => ref.orderBy('created_ms', 'desc').limit(5)).snapshotChanges()//.pipe(take(1));
+  getRooms(parms: any) {
+      let limit = parms.limit ? parms.limit : 25
+      let query;
+      if(parms.tagName) query = ref => ref.where('tags', 'array-contains', parms.tagName ).orderBy('created_ms', 'desc').limit(limit)
+      else  query = ref => ref.orderBy('created_ms', 'desc').limit(limit)
+      let observable = this.afs.collection('room', query).snapshotChanges()//.pipe(take(1));
       return observable
       
       // let docChangeActions = await observable.toPromise()
