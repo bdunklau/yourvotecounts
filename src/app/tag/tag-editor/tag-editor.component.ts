@@ -10,6 +10,7 @@ import { Tag } from '../tag.model';
 import * as _ from 'lodash'
 import { RoomObj } from 'src/app/room/room-obj.model';
 import { RoomService } from 'src/app/room/room.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -40,6 +41,7 @@ export class TagEditorComponent implements OnInit {
     @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
     constructor(private tagService: TagService,
+                private router: Router,
                 private roomService: RoomService) {
       this.filteredTags = this.tagsCtrl.valueChanges.pipe(
           startWith(null),
@@ -144,6 +146,11 @@ export class TagEditorComponent implements OnInit {
     saveTags() {
         // tags are saved one at a time in selected()
         this.editingTagNames = false
+    }
+
+    
+    listTaggedVideos(tagName: string) {
+        this.router.navigate(['videos', tagName])
     }
 
 }

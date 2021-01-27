@@ -25,6 +25,7 @@
                         <mat-chip
                             *ngFor="let tagName of inputRoomToTagEditor.tags"
                             style="background-color:#e6ebff"
+                            (click)=listTaggedVideos(tagName)
                             [selectable]="selectable"
                             [removable]="removable"
                             (removed)="remove(tagName)">
