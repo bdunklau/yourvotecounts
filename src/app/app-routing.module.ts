@@ -53,10 +53,13 @@ import { FriendsComponent } from './friend/friends/friends.component';
 import { FriendGuard } from './friend/friend.guard';
 import { VmMainComponent } from './admin/vm/vm-main/vm-main.component';
 import { VmGuard } from './admin/vm/vm.guard';
+import { TagsComponent } from './tag/tags/tags.component';
+import { VideoSearchComponent } from './video/video-search/video-search.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'admin/tags', component: TagsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'admin/videos', component: VideoListComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   // { path: 'admin/vm', component: VmMainComponent, canActivate: [VmGuard], data: {role: 'admin'} },
   { path: 'disabled', component: DisabledComponent },
@@ -95,6 +98,7 @@ const routes: Routes = [
   { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [VideoCallGuard] /*, resolve: {invitation: InvitationResolver}*/ },
   { path: 'video-call-complete/:RoomSid/:hostOrGuest/:phoneNumber', component: VideoCallCompleteComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] },
   { path: 'video/producing/:RoomSid', component: VideoProducingComponent, canActivate: [DisabledGuard, VideoProducingGuard] },
+  { path: 'videos/:tagName', component: VideoSearchComponent, canActivate: [DisabledGuard] },
   { path: 'view-video/:compositionSid', component: ViewVideoComponent, canActivate: [/*DisabledGuard,*/ SettingsGuard, VideoReadyGuard] },
   { path: '**', component: HomeComponent },
 ];

@@ -85,6 +85,15 @@ banner ad
         </div>
     </div>
 
+    <!-- <h1>Tags</h1>
+    <div class="row" *ngFor="let atag of room.tags">
+        <div class="col">
+            tag: {{atag}}
+        </div>
+    </div> -->
+
+    <app-tag-editor [inputIsHost]="isHost" [inputRoomToTagEditor]="room"></app-tag-editor>
+
 
     <div class="row" style="margin-top:10px">
         <div class="col-6">

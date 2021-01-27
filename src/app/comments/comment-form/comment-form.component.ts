@@ -72,9 +72,12 @@ export class CommentFormComponent implements OnInit {
                 comment: commentText,
                 date: new Date(),
                 date_ms: new Date().getTime(),
-                linkPreview: linkPreview,
                 RoomSid: this.inputRoomToCommentForm.RoomSid
             } as Comment
+
+            if(linkPreview['url']) {
+                theComment.linkPreview = linkPreview
+            }
 
             if(this.inputRoomToCommentForm.CompositionSid) theComment.CompositionSid = this.inputRoomToCommentForm.CompositionSid
         }

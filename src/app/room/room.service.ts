@@ -317,8 +317,12 @@ export class RoomService {
   /**
    * For admins to review rooms/videos  (admin/video/video-list)
    */
-  getRooms() {
-      let observable = this.afs.collection('room', ref => ref.orderBy('created_ms', 'desc').limit(5)).snapshotChanges()//.pipe(take(1));
+  getRooms(parms: any) {
+      let limit = parms.limit ? parms.limit : 25
+      let query;
+      if(parms.tagName) query = ref => ref.where('tags', 'array-contains', parms.tagName ).orderBy('created_ms', 'desc').limit(limit)
+      else  query = ref => ref.orderBy('created_ms', 'desc').limit(limit)
+      let observable = this.afs.collection('room', query).snapshotChanges()//.pipe(take(1));
       return observable
       
       // let docChangeActions = await observable.toPromise()
@@ -452,6 +456,28 @@ export class RoomService {
     }
     let resp:any = await this.http.get(`https://${this.settings.firebase_functions_host}/getIp`).toPromise()
     return resp.ip
+  }
+
+
+  async addTag(room:RoomObj, tagName: string) {
+      let batch = this.afs.firestore.batch();
+      if(!room.tags) room.tags = []
+      room.tags.push(tagName)
+      batch.update(this.afs.collection('room').doc(room.RoomSid).ref, {tags: room.tags})
+      batch.update(this.afs.collection('tag').doc(tagName).ref, {count: firebase.firestore.FieldValue.increment(1)})
+      await batch.commit()
+  }
+
+
+  async removeTag(room:RoomObj, tagName: string) {
+      let batch = this.afs.firestore.batch();
+      let before = room.tags.length
+      _.remove(room.tags, aTagName => { return aTagName == tagName })
+      let after = room.tags.length
+      if(before == after) return
+      batch.update(this.afs.collection('room').doc(room.RoomSid).ref, {tags: room.tags})
+      batch.update(this.afs.collection('tag').doc(tagName).ref, {count: firebase.firestore.FieldValue.increment(-1)})
+      await batch.commit()
   }
 
 }

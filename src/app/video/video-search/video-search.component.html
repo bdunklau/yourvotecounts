@@ -1,0 +1,68 @@
+<div style="margin-top:20px;overflow-x:hidden;padding-left:20px;padding-right:20px;">
+    <!-- <h3>{{tagName}}</h3> -->
+    
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <app-trending></app-trending>
+                </div>
+            </div>
+
+
+            <div class="row" style="margin-top:20px;">
+                <div class="col">
+                    <h5>{{tagName}}</h5>
+                </div>
+            </div>
+            
+
+            <div class="row" *ngFor="let room of rooms" style="margin-bottom:10px;padding-top:10px;padding-bottom:10px">
+                <div class="col-12" style="border-top:1px solid #ababab;padding-top:10px">
+                    <a href="/view-video/{{room.CompositionSid}}"><img [attr.src]="room.screenshotUrl" style="width:100%"></a>
+                    <!-- <br/>screenshot: {{room.screenshotUrl}} -->
+                    <BR/><B>{{room.video_title}}</B>
+                    <BR/><span class="small text-muted">{{room.created_ms | date: 'short'}}</span>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+
+
+
+           
+    
+</div>
+    
+    
+    
+<!--     
+    delete/cancel slide-up menu
+    
+    <div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': translated}" style="margin-right:0px;margin-left:0px">   
+           
+        <div class="row" style="margin-top:20px;margin-right:-10px;margin-left:-10px" (click)="deleteVideo()">
+            <div class="offset-1 col-2" [ngStyle]="{'color': confirmingDelete ? 'red' : 'black'}">
+                <i class="fas fa-trash"></i>
+            </div>
+            <div class="col-9" [ngStyle]="{'color': confirmingDelete ? 'red' : 'black'}">
+                <span *ngIf="!confirmingDelete">Delete video</span>
+                <span *ngIf="confirmingDelete">Confirm Delete</span>
+            </div>
+        </div>
+    
+        <div class="row" style="margin-top:20px;margin-right:-10px;margin-left:-10px;border-top:1px solid #ababab;padding-top:20px" (click)="translated = !translated; confirmingDelete = false">
+            <div class="offset-1 col-2">
+                <i class="fa fa-close"></i>
+            </div>
+            <div class="col-9">
+                Cancel
+            </div>
+        </div>
+      
+    </div> 
+     -->
+

@@ -34,6 +34,7 @@ export class RoomObj {
     officials?: Official[]
     screenshotUrl?: string
     storageItems?: {bucketName: string, folder: string, filename: string}[]
+    tags?: string[] = []
     tempEditFolder?: string
     uploadFiles?: string[]
     views = 0

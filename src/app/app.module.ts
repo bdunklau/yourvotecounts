@@ -85,6 +85,17 @@ import { CommentFormComponent } from './comments/comment-form/comment-form.compo
 import { CommentListComponent } from './comments/comment-list/comment-list.component';
 import { LinkifyPipe } from './util/linkify/linkify.pipe';
 import { BrowserCheckComponent } from './util/browser-check/browser-check.component';
+import { TagFormComponent } from './tag/tag-form/tag-form.component';
+import { TagListComponent } from './tag/tag-list/tag-list.component';
+import { TagsComponent } from './tag/tags/tags.component';
+import { MatChipsModule } from '@angular/material/chips'
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { TagEditorComponent } from './tag/tag-editor/tag-editor.component';
+import { TrendingComponent } from './trending/trending.component';
+import { VideoSearchComponent } from './video/video-search/video-search.component';
 
 
 const ORIGINAL_NOT_USED_firebaseUiAuthConfig: firebaseui.auth.Config = {
@@ -192,6 +203,12 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     CommentListComponent,
     LinkifyPipe,
     BrowserCheckComponent,
+    TagFormComponent,
+    TagListComponent,
+    TagsComponent,
+    TagEditorComponent,
+    TrendingComponent,
+    VideoSearchComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
@@ -211,6 +228,11 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     GooglePlaceModule,
     MatButtonToggleModule,
     ClipboardModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatCardModule,
+    MatInputModule,
     FirebaseUIModule.forRoot(firebaseUiAuthConfig)
   ],
   providers: [
