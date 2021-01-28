@@ -600,9 +600,11 @@ s
 
             // the RemoteAUDIOTrack doesn't have the same parent as the video track, so only remove the parent
             // when the track is a RemoteVideoTrack.  The parent of the RemoteVideoTrack is the <div class="col"> that contains the remote <video> tag 
-            if(typeof track == RemoteVideoTrack) {
-                el.parentNode.remove()
-            }
+            
+            // LET'S SEE IF WE CAN JUST NOT
+            // if(typeof track == RemoteVideoTrack) {
+            //     el.parentNode.remove()
+            // }
             el.remove() // makes the video square literally go away
             //this.renderer.setStyle(el, 'background-color', '#000000');
         })
