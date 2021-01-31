@@ -50,6 +50,7 @@ export class SearchOfficialsComponent implements OnInit {
         
         if(isPlatformBrowser(this.platformId)) {
             this.settings = await this.settingsService.getSettingsDoc()
+            this.adjustAddressResultPlacement()
             gapi.load("client");
             //this.loadClient()
             
@@ -166,6 +167,19 @@ export class SearchOfficialsComponent implements OnInit {
                 })
             }) 
             
+        }
+    }
+
+
+    adjustAddressResultPlacement() {        
+        let userAgent = navigator.userAgent
+        let elems = document.getElementsByClassName("pac-container")
+        if(userAgent.toLowerCase().indexOf('mac os x') != -1) {
+            _.each(elems, elem => {
+                // console.log('IS THIS WORKING .............')
+                // elem.style.color = 'green'
+                elem.style.marginTop = `${this.settings.tempstyle}px`
+            })
         }
     }
 
