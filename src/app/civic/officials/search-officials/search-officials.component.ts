@@ -4,6 +4,7 @@ import { Divisions, Office, Official, CivicResult } from '../view-official/view-
 import { RoomService } from '../../../room/room.service'
 import { SettingsService } from '../../../settings/settings.service'
 import { isPlatformBrowser } from '@angular/common';
+import { Settings } from '../../../settings/settings.model';
 
 
 declare var gapi: any;
@@ -20,6 +21,8 @@ export class SearchOfficialsComponent implements OnInit {
     officialType:string = "Federal" 
     civicResult: CivicResult
     @Input() inputCollapsed = true
+    tempstyle = 'style0'
+    settings: Settings
 
     
     parms = {
@@ -43,9 +46,10 @@ export class SearchOfficialsComponent implements OnInit {
                 private settingsService: SettingsService) { }
 
 
-    ngOnInit(): void {
+    async ngOnInit() {
         
         if(isPlatformBrowser(this.platformId)) {
+            this.settings = await this.settingsService.getSettingsDoc()
             gapi.load("client");
             //this.loadClient()
             

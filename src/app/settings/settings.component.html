@@ -133,6 +133,16 @@ See   invitation-form.component.html
 
     <div class="row" style="margin-top:10px">
         <div class="col-4" style="margin-top:5px">
+            tempstyle
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="tempstyle_field" [(ngModel)]="settings.tempstyle"  name="tempstyle" #tempstyle="ngModel" required>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
             Website Domain Name
         </div>
         <div class="col-8">

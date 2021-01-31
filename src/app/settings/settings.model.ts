@@ -9,6 +9,7 @@ export class Settings {
   heapThreshold: number
   max_call_time: number  // seconds
   to_sms: string;
+  tempstyle?: string  //temp only for civic/search-officials
   website_domain_name: string
   promo_codes: string[]
   projectId: string
