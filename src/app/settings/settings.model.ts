@@ -1,4 +1,5 @@
 export class Settings {
+  address_choices_adjustment?: string  // https://headsupvideo.atlassian.net/browse/HEADSUP-46
   admin_sms: string
   cloud_host: string
   cloud_host_test_path: string
@@ -9,7 +10,6 @@ export class Settings {
   heapThreshold: number
   max_call_time: number  // seconds
   to_sms: string;
-  tempstyle?: string  //temp only for civic/search-officials
   website_domain_name: string
   promo_codes: string[]
   projectId: string

@@ -21,7 +21,7 @@ export class SearchOfficialsComponent implements OnInit {
     officialType:string = "Federal" 
     civicResult: CivicResult
     @Input() inputCollapsed = true
-    tempstyle = 'style0'
+    address_choices_adjustment = '-75' // also stored in config/settings/address_choices_adjustment
     settings: Settings
 
     
@@ -176,9 +176,7 @@ export class SearchOfficialsComponent implements OnInit {
         let elems = document.getElementsByClassName("pac-container")
         if(userAgent.toLowerCase().indexOf('mac os x') != -1) {
             _.each(elems, elem => {
-                // console.log('IS THIS WORKING .............')
-                // elem.style.color = 'green'
-                elem.style.marginTop = `${this.settings.tempstyle}px`
+                elem.style.marginTop = `${this.settings.address_choices_adjustment}px`
             })
         }
     }
