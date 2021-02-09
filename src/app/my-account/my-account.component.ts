@@ -118,7 +118,8 @@ export class MyAccountComponent implements OnInit {
       const task = this.ref.put(event.target.files[0]);
       this.uploadProgress = task.percentageChanges();
       this.uploadProgress.subscribe(obj => {
-        this.current = (obj * 100) / 100
+        let temp = (obj * 100) / 100
+        this.current = temp >= 99 ? 99 : temp 
         if(obj === 100) {
           // 100 = 100% complete - aka the upload is done
           // do stuff here if you want
