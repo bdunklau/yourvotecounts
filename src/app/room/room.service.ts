@@ -279,7 +279,7 @@ export class RoomService {
 
   async getRoomsWithGuest(name: {guestName: string, guestPhone: string}) {      
 
-      let observable = this.afs.collection('room', ref => ref.where('guests', 'array-contains', {guestName: name.guestName, guestPhone: name.guestPhone} )).snapshotChanges().pipe(take(1));
+      let observable = this.afs.collection('room', ref => ref.where('guests', 'array-contains', {guestName: name.guestName, guestPhone: name.guestPhone} ).where('CompositionSid', '!=', null)).snapshotChanges().pipe(take(1));
       
       let docChangeActions = await observable.toPromise()
       var rooms: RoomObj[] = []
@@ -298,7 +298,7 @@ export class RoomService {
 
   async getRoomsWithHost(person: {uid: string}) {
       
-      let observable = this.afs.collection('room', ref => ref.where('hostId', '==', person.uid )).snapshotChanges().pipe(take(1));
+      let observable = this.afs.collection('room', ref => ref.where('hostId', '==', person.uid ).where('CompositionSid', '!=', null)).snapshotChanges().pipe(take(1));
         
       let docChangeActions = await observable.toPromise()
       var rooms: RoomObj[] = []
