@@ -30,7 +30,7 @@ export class VideoCallCompleteComponent implements OnInit {
                 private http: HttpClient,) { }
 
     async ngOnInit() {
-        //  http://localhost:4200/video-call-complete/RM1606199766698/host/+15555555555
+        //  http://localhost:4200/video-call-complete/RM1606199766698/guest/+12146325613
 
         if(isPlatformBrowser(this.platformId)) {
             this.roomObj = this.roomService.roomObj
