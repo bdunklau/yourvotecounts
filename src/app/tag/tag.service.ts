@@ -51,7 +51,7 @@ export class TagService {
 
 
   getMostPopular() {
-      return this.afs.collection('tag', ref => ref.orderBy('count', 'desc').limit(10)).snapshotChanges()
+      return this.afs.collection('tag', ref => ref.where('count', '>', 0).orderBy('count', 'desc').limit(10)).snapshotChanges()
   }
 
 
