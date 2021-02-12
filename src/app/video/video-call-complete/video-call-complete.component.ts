@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { RoomService } from '../../room/room.service';
 import { RoomObj } from '../../room/room-obj.model';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';  // ref:   https://angular.io/guide/http
@@ -6,6 +6,7 @@ import { SettingsService } from '../../settings/settings.service';
 import { Settings } from '../../settings/settings.model';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 
 @Component({
@@ -24,13 +25,19 @@ export class VideoCallCompleteComponent implements OnInit {
 
     constructor(private roomService: RoomService,
                 private settingsService: SettingsService,
+                @Inject(PLATFORM_ID) private platformId,
                 private router: Router,
                 private http: HttpClient,) { }
 
     async ngOnInit() {
-        this.roomObj = this.roomService.roomObj
-        this.isHost = this.roomService.isHost
-        this.settingsDoc = await this.settingsService.getSettingsDoc()
+        //  http://localhost:4200/video-call-complete/RM1606199766698/host/+15555555555
+
+        if(isPlatformBrowser(this.platformId)) {
+            this.roomObj = this.roomService.roomObj
+            this.isHost = this.roomService.isHost
+            this.settingsDoc = await this.settingsService.getSettingsDoc()
+        }
+
     }
 
     ngOnDestry() {
