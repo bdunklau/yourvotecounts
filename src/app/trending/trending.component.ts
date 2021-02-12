@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, Input } from '@angular/core';
 import { TagService } from '../tag/tag.service';
 import { Tag } from '../tag/tag.model';
 import { Subscription } from 'rxjs';
@@ -23,15 +23,19 @@ export class TrendingComponent implements OnInit {
     mostPopular: Tag[]
     subscription: Subscription
     collapsed = true
+    @Input() inputExpanded: boolean
 
     constructor(private tagService: TagService,
       private router: Router,
-      @Inject(PLATFORM_ID) private platformId,) { }
+      @Inject(PLATFORM_ID) private platformId,) { 
+
+      }
 
 
 
     async ngOnInit() {
         if(isPlatformBrowser(this.platformId)) {
+          this.collapsed = !this.inputExpanded
           
           this.subscription = this.tagService.getMostPopular().pipe(
             map(actions => {
