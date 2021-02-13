@@ -37,10 +37,15 @@ export class LoginComponent implements OnInit {
         
         let onLoginSuccessful = function() {
           var user = firebase.auth().currentUser;
-          if(user){
-            // user.service constructor is where we listen for onAuthStateChanged()
-            this.router.navigate(['/home'])
-          }
+
+          /**
+           * Update 2/13/21 - we'll figure out where to go from onAuthStateChanged() in user.service constructor 
+           * https://headsupvideo.atlassian.net/browse/HEADSUP-59
+           */
+          // if(user){
+          //   // user.service constructor is where we listen for onAuthStateChanged()
+          //   this.router.navigate(['/home'])
+          // }
         }
 
 

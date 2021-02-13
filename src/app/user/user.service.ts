@@ -19,6 +19,7 @@ import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask 
 import { environment } from '../../environments/environment';
 import { Friend } from '../friend/friend.model';
 import { take } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 
 @Injectable()
@@ -30,6 +31,7 @@ export class UserService {
   constructor(
     private afs: AngularFirestore,
     private http: HttpClient,
+    private router: Router,
     public afAuth: AngularFireAuth,
     private messageService: MessageService,
     private afStorage: AngularFireStorage,
@@ -59,6 +61,14 @@ export class UserService {
       this.userSubscription = this.subscribe(user.uid, async (users:[FirebaseUserModel]) => {
         if(users && users.length > 0) {          
             this.user = users[0]
+
+            // https://headsupvideo.atlassian.net/browse/HEADSUP-59
+            if(!this.user.tosAccepted && !this.user.privacyPolicyRead) {
+                this.router.navigate(['/minimal-account-info'])
+            }
+            else {
+              this.router.navigate(['/home'])
+            }
 
             // duplicated/adapted from setFirebaseUser()
             await this.afStorage.storage
