@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { LogService } from '../log/log.service'
 import { UserService } from '../user/user.service'
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { FirebaseUserModel } from '../user/user.model';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { isPlatformBrowser } from '@angular/common';
 export class LoginComponent implements OnInit {
 
   //ui: firebaseui.auth.AuthUI
+  private userSubscription: Subscription
 
   constructor(private afAuth: AngularFireAuth,
               private log: LogService,
@@ -36,16 +38,23 @@ export class LoginComponent implements OnInit {
         let ui: firebaseui.auth.AuthUI
         
         let onLoginSuccessful = function() {
-          var user = firebase.auth().currentUser;
+            var user = firebase.auth().currentUser;       
 
-          /**
-           * Update 2/13/21 - we'll figure out where to go from onAuthStateChanged() in user.service constructor 
-           * https://headsupvideo.atlassian.net/browse/HEADSUP-59
-           */
-          // if(user){
-          //   // user.service constructor is where we listen for onAuthStateChanged()
-          //   this.router.navigate(['/home'])
-          // }
+            // https://headsupvideo.atlassian.net/browse/HEADSUP-59
+            this.userSubscription = this.userService.subscribe(user.uid, async (users:[FirebaseUserModel]) => {
+                if(users && users.length > 0) {          
+                    let auser = users[0]
+        
+                    if(!auser.tosAccepted && !auser.privacyPolicyRead) {
+                      this.router.navigate(['/minimal-account-info'])
+                    }
+                    else {
+                      console.log('LoginComponent: going to /home')
+                      this.router.navigate(['/home'])
+                    }
+        
+                }
+            })
         }
 
 
@@ -81,6 +90,11 @@ export class LoginComponent implements OnInit {
 
     }
 
+  }
+
+
+  ngOnDestroy() {
+      if(this.userSubscription) this.userSubscription.unsubscribe()
   }
 
 

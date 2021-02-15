@@ -62,14 +62,6 @@ export class UserService {
         if(users && users.length > 0) {          
             this.user = users[0]
 
-            // https://headsupvideo.atlassian.net/browse/HEADSUP-59
-            if(!this.user.tosAccepted && !this.user.privacyPolicyRead) {
-                this.router.navigate(['/minimal-account-info'])
-            }
-            else {
-              this.router.navigate(['/home'])
-            }
-
             // duplicated/adapted from setFirebaseUser()
             await this.afStorage.storage
             .refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName)
