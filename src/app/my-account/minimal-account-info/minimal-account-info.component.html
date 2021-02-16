@@ -1,10 +1,5 @@
 
 <div class="container">
-  <h3>Complete Your Profile</h3>
-
-  <div>We need just a bit more.  Please enter your name (you'll be able to change it later), accept
-    the Terms of Service and read our Privacy Policy.
-  </div>
 
   <form (ngSubmit)="onSubmit()" #minimalAccountInfoForm="ngForm">
       <!-- name field   -->
@@ -13,16 +8,8 @@
 
       <!-- privacy policy with checkbox  -->
     <div class="form-group">
-      <input type="text" class="form-control" id="minimal_account_info_name_field" placeholder="Name"
-              [(ngModel)]="nameValue" name="name" #name="ngModel" required>
-      <div [hidden]="name.valid || name.pristine"
-           class="alert alert-danger">
-        Name is required
-      </div>
 
-      <h3 style="margin-top:50px">Legal Mumbo Jumbo</h3>
-
-      <div style="margin-top:20px"><b>Terms of Service</b></div>
+      <div style="margin-top:20px"><h3>Terms of Service</h3></div>
       <div [innerHTML]="termsOfService"></div>
       <div>
         <!-- Default unchecked -->
@@ -35,7 +22,7 @@
 
 
 
-      <div style="margin-top:50px"><b>Privacy Policy</b></div>
+      <div style="margin-top:20px"><h3>Privacy Policy</h3></div>
       <div [innerHTML]="privacyPolicy"></div>
       <div>
         <!-- Default unchecked -->
@@ -45,9 +32,19 @@
             <label class="custom-control-label" for="ppCheckbox">I have read the privacy policy</label>
         </div>
       </div>
+
+      <div style="margin-top:20px"><h3>Signature</h3></div>
+      <div style="margin-top:10px">Entering your name below constitutes acceptance of the terms of service and agreement with our privacy policy</div>
+
+      <input type="text" class="form-control" id="minimal_account_info_name_field" placeholder="Name"
+              [(ngModel)]="nameValue" name="name" #name="ngModel" required>
+      <div [hidden]="name.valid || name.pristine"
+           class="alert alert-danger">
+        Name is required
+      </div>
     </div>
 
-    <button id="submit_personal_info" type="submit" class="btn btn-success"
+    <button id="submit_personal_info" type="submit" class="btn btn-success col-12 col-sm-6 col-md-4" style="margin-bottom:30px"
             [disabled]="!minimalAccountInfoForm.form.valid">Submit</button>
 
   </form>
