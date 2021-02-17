@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
 
   //ui: firebaseui.auth.AuthUI
   private userSubscription: Subscription
-  loggingIn = true
+  loggingIn = false
 
   constructor(private afAuth: AngularFireAuth,
               private log: LogService,
