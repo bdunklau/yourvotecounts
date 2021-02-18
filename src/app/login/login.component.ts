@@ -16,7 +16,6 @@ export class LoginComponent implements OnInit {
 
   //ui: firebaseui.auth.AuthUI
   private userSubscription: Subscription
-  loggingIn = false
 
   constructor(private afAuth: AngularFireAuth,
               private log: LogService,
@@ -39,8 +38,7 @@ export class LoginComponent implements OnInit {
         let ui: firebaseui.auth.AuthUI
         
         let onLoginSuccessful = function() {
-            this.loggingIn = true
-            var user = firebase.auth().currentUser;       
+            var user = firebase.auth().currentUser;  
 
             // https://headsupvideo.atlassian.net/browse/HEADSUP-59
             this.userSubscription = this.userService.subscribe(user.uid, async (users:[FirebaseUserModel]) => {
@@ -54,10 +52,8 @@ export class LoginComponent implements OnInit {
                       console.log('LoginComponent: going to /home')
                       this.router.navigate(['/home'])
                     }
-                    this.loggingIn = false
         
                 }
-                this.loggingIn = false
             })
         }
 
