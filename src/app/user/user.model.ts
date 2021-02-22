@@ -6,6 +6,7 @@ import { TeamMember } from '../team/team-member.model';
 
 // ng generate class user/user --type=model
 export class FirebaseUserModel {
+  access_expiration_ms?: number
   uid: string; // the doc id
   image: string;
   displayName: string;
@@ -48,6 +49,7 @@ export class FirebaseUserModel {
   }
 
   populate(obj) {
+    if(obj.access_expiration_ms) this.access_expiration_ms = obj.access_expiration_ms
     this.uid = obj.uid;
     this.image = obj.image;
     this.displayName = obj.displayName;
