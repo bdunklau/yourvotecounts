@@ -58,6 +58,8 @@ exports.initiateDeleteUser = functions.https.onRequest(async (req, res) => {
 exports.updateUser = functions.firestore.document('user/{id}').onUpdate((change, context) => {
   const newName = change.after.data().displayName;
   const oldName = change.before.data().displayName;
+  const newExpiry = change.after.data().access_expiration_ms;
+  const oldExpiry = change.before.data().access_expiration_ms;
   if(newName !== oldName) {
     var values = {};
     if(change.after.data().email) values.email = change.after.data().email;
