@@ -4,6 +4,7 @@ import { Team } from './team.model';
 export class TeamMember {
 
   teamMemberDocId: string;
+  creatorId: string // creator of the team
   // user: FirebaseUserModel;
   created: firebase.firestore.Timestamp;
   userId: string;
@@ -17,6 +18,7 @@ export class TeamMember {
   // }
 
   constructor(obj: {teamMemberDocId: string,
+                    creatorId: string, 
                     created: firebase.firestore.Timestamp,
                     teamDocId: string,
                     team_name: string,
@@ -24,6 +26,7 @@ export class TeamMember {
                     displayName: string,
                     leader: boolean}) {
     this.teamMemberDocId = obj.teamMemberDocId;
+    this.creatorId = obj.creatorId;
     this.created = obj.created;
     this.teamDocId = obj.teamDocId;
     this.team_name = obj.team_name;
@@ -34,6 +37,7 @@ export class TeamMember {
 
   toObj(): any {
     return {teamMemberDocId: this.teamMemberDocId,
+            creatorId: this.creatorId,
             teamDocId: this.teamDocId,
             created: this.created,
             team_name: this.team_name,
