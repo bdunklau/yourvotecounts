@@ -71,3 +71,7 @@ exports.pingVm = adminTasks.pingVm
 exports.onVmState = adminTasks.onVmState
 exports.getIp = adminTasks.getIp
 exports.linkPreview = adminTasks.linkPreview
+
+
+const teamTasks = require('./team');
+exports.updateTeamMemberExpiration = teamTasks.updateTeamMemberExpiration
