@@ -69,10 +69,6 @@ export class TeamViewerComponent implements OnInit {
           });
       }
 
-      // let user = routeData['user'];
-      // if(user) {
-      //   this.user = user;
-      // }
     })
   }
 
