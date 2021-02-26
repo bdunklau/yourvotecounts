@@ -47,6 +47,6 @@ export class DisabledGuard implements CanActivate {
                 return false;
             }
         }
-        else return true; // should the default be false on the server?
+        else return true; // false will cause server-side hang
     }
 }
