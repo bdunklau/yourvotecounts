@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, PLATFORM_ID, Inject } from '@angular/core';
 import { FirebaseUserModel } from '../user/user.model';
 import { ActivatedRoute/*, CanActivate, RouterStateSnapshot, Router*/ } from '@angular/router';
 import { TeamService } from '../team/team.service';
@@ -10,6 +10,7 @@ import { map, take } from 'rxjs/operators';
 import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 // import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from '../core/message.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-team-list',
@@ -32,33 +33,36 @@ export class TeamListComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private teamService: TeamService,
               private messageService: MessageService,
+              @Inject(PLATFORM_ID) private platformId,
               // private _modalService: NgbModal,
               teamListUser: FirebaseUserModel) {
     this.teamListUser = teamListUser;
   }
 
   ngOnInit() {
-    this.teams = [];
-    // query team_member where userId = user.uid
+      if(isPlatformBrowser(this.platformId)) {
+          this.teams = [];
+          // query team_member where userId = user.uid
 
-    this.subscription = this.teamService.getTeamsForUser(this.teamListUser.uid).pipe(
-      map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data() as TeamMember;
-          const id = a.payload.doc['id'];
-          var returnThis = { id, ...data };
-          // console.log('returnThis = ', returnThis);
-          return returnThis;
-        });
-      })
-    )
-      .subscribe(objs => {
-        // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
-        this.teams = _.map(objs, obj => {
-          let tm = obj as unknown;
-          return tm as TeamMember;
-        })
-      });
+          this.subscription = this.teamService.getTeamsForUser(this.teamListUser.uid).pipe(
+            map(actions => {
+              return actions.map(a => {
+                const data = a.payload.doc.data() as TeamMember;
+                const id = a.payload.doc['id'];
+                var returnThis = { id, ...data };
+                // console.log('returnThis = ', returnThis);
+                return returnThis;
+              });
+            })
+          )
+            .subscribe(objs => {
+              // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
+              this.teams = _.map(objs, obj => {
+                let tm = obj as unknown;
+                return tm as TeamMember;
+              })
+            });
+      }
   }
 
   // always unsubscribe
