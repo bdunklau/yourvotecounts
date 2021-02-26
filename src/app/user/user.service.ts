@@ -313,6 +313,9 @@ export class UserService {
     data['online'] = value.online === true ? true : false;
     data['tosAccepted'] = value.tosAccepted === true ? true : false;
     data['privacyPolicyRead'] = value.privacyPolicyRead === true ? true : false;
+    if(value.access_expiration_ms) {
+        data['access_expiration_ms'] = value.access_expiration_ms
+    }
     let updateRes = this.afs.collection('user').doc(value.uid).ref.update(data);
     console.log('updateUser: DATABASE UPDATE: ', data);
     return updateRes;

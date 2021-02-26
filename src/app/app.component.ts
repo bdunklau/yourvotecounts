@@ -8,7 +8,7 @@ import { Router } from "@angular/router";
 import { MessageService } from './core/message.service';
 import { Subscription } from 'rxjs';
 import { NgbDatepickerConfig, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser-formatter";
+// import { NgbDateFRParserFormatter } from "./util/date-chooser/ngb-date-fr-parser-formatter";
 import { FirebaseUserModel } from './user/user.model';
 import { UserService } from './user/user.service';
 //import Hammer from 'hammerjs'; // to capture touch events
@@ -19,7 +19,7 @@ import { UserService } from './user/user.service';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [{provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter}]
+  // providers: [{provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter}]
 })
 export class AppComponent {
   title = 'HeadsUp';

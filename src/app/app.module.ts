@@ -96,6 +96,9 @@ import { MatInputModule } from '@angular/material/input';
 import { TagEditorComponent } from './tag/tag-editor/tag-editor.component';
 import { TrendingComponent } from './trending/trending.component';
 import { VideoSearchComponent } from './video/video-search/video-search.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+
 
 
 const ORIGINAL_NOT_USED_firebaseUiAuthConfig: firebaseui.auth.Config = {
@@ -220,7 +223,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     AngularFirestoreModule.enablePersistence(),
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features
     FormsModule, ReactiveFormsModule,
-    NgbModule.forRoot(),
+    NgbModule, //.forRoot(),
     HttpClientModule,
     BrowserAnimationsModule,
     AngularFireStorageModule,
@@ -233,7 +236,9 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     MatButtonModule,
     MatCardModule,
     MatInputModule,
-    FirebaseUIModule.forRoot(firebaseUiAuthConfig)
+    FirebaseUIModule.forRoot(firebaseUiAuthConfig),
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     Title,

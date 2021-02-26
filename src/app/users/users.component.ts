@@ -5,6 +5,9 @@ import { SettingsService } from '../settings/settings.service';
 import { Settings } from '../settings/settings.model';
 import { Subscription } from 'rxjs';
 import { MessageService } from '../core/message.service';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+
+
 
 @Component({
   selector: 'app-users',
@@ -21,6 +24,7 @@ export class UsersComponent implements OnInit {
   settings: Settings;
   private subscription: Subscription;
   private userSubscription: Subscription;
+  access_expiration;
 
   constructor(public userService: UserService,
               private settingsService: SettingsService,
@@ -85,27 +89,31 @@ export class UsersComponent implements OnInit {
   private set(user: FirebaseUserModel) {
     console.log("set(): user = ", user);
     if(!user) return;
-    // this.user = user;
-    // this.seconds = user.date_ms;
-    // this.roles = user.roles;
-    // this.nameValue = user.displayName;
-    //   console.log("set(): this.user.hasRole('admin') = ", this.user.hasRole('admin'));
-
+    let self = this
     this.userSubscription = this.userService.subscribe(user.uid, (users:[FirebaseUserModel]) => {
       if(users && users.length > 0) {
         this.user = users[0];
         this.nameValue = this.user.displayName;
+        self.access_expiration = new Date(this.user.access_expiration_ms)
       }
     })
   }
 
   async onSubmit() {
     this.user.displayName = this.nameValue;
+    this.user.access_expiration_ms = this.access_expiration.getTime()
     this.userService.updateUser(this.user);
   }
 
   cancel() {
     this.set(this.user);
+  }
+
+
+  captureDate(type: string, event: MatDatepickerInputEvent<Date>) {
+    if(event.value.getTime()) {
+        this.access_expiration = new Date(event.value.getTime() + 24 * 60 * 60 * 1000 - 1000) // 11:59:59pm
+    }
   }
 
 }
