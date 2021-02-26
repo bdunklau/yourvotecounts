@@ -1,6 +1,6 @@
 
 <div id="team_member_editor" *ngIf="team && team.id">
-<h5 id="team_member_heading">Add Members</h5>
+<div>Add Members</div>
 
 <span *ngIf="canAddTeamMembers">
   <app-search-user-by-name2 (selectedUser)="onUserSelectedByName($event)"
