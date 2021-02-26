@@ -42,6 +42,7 @@ export class UserService {
           // console.log('watch: ngOnInit: onAuthStateChanged(): user = ', user)
           if(user) {
               this.listenForUser(user)
+              this.afs.collection('user').doc(user.uid).update({online: true});
 
               // await this.signIn(/*this.log,*/ user); // circular dependency - can't inject log service            
           }
