@@ -41,7 +41,7 @@
    <div [hidden]="!isAdmin"><hr/></div>
    <h5 [hidden]="!isAdmin" class="nav-link">Admin</h5>
    
-   <a [hidden]="!isAdmin" id="users_link" class="nav-link" (click)="closeNav()" [routerLink]="['/users']"><i class="fa fa-users"></i> Users</a>
+   <a [hidden]="!isAdmin" id="users_link" class="nav-link" (click)="closeNav()" [routerLink]="['/users']"><i class="fa fa-users"></i> Users Mgmt</a>
    <a [hidden]="!isAdmin" id="sms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/sms']"> <i class="fa fa-sms"></i> SMS</a>
    <a [hidden]="!isAdmin" id="log_link" class="nav-link" (click)="closeNav()" [routerLink]="['/log']"><i class="far fa-file"></i> Logs</a>
    <a [hidden]="!isAdmin" id="terms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/terms']"><i class="fas fa-file-contract"></i> Terms</a>
