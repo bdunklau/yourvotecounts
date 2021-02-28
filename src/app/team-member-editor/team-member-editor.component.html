@@ -1,8 +1,8 @@
 
 <div id="team_member_editor" *ngIf="team && team.id">
-<div>Add Members</div>
 
 <span *ngIf="canAddTeamMembers">
+  <div>Add Members</div>
   <app-search-user-by-name2 (selectedUser)="onUserSelectedByName($event)"
                             [placeholder]="'Add Someone'">
   </app-search-user-by-name2>
@@ -29,7 +29,7 @@
 
     <td>
       <span *ngIf="!canSetLeaders">
-         <span *ngIf="team_member.leader">leader</span>
+         <span *ngIf="team_member.leader">team lead</span>
       </span>
       <span *ngIf="canSetLeaders">
         <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
