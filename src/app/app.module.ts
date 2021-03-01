@@ -256,9 +256,9 @@ export class AppModule {
 
           
         if(isPlatformBrowser(this.platformId)) {
-            console.log('AppModule(): this.settingsService = ', this.settingsService)
+            //console.log('AppModule(): this.settingsService = ', this.settingsService)
             this.settingsService.getSettingsDoc().then(settings => {
-                console.log('AppModule(): settings = ', settings)
+                //console.log('AppModule(): settings = ', settings)
                 if(window && window.console) {
                     if(!settings.console_logging) {
                         console.log('SET CONSOLE LOGGING: OFF')  
