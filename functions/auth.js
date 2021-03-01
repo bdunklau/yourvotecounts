@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin')
 const log = require('./log');
+const moment = require('moment');
 
 // can only call this once globally and we already do that in index.js
 //admin.initializeApp(functions.config().firebase);
@@ -16,8 +17,11 @@ exports.logNewUser = functions.auth.user().onCreate((user) => {
 
 
 exports.recordNewUser = functions.auth.user().onCreate((user) => {
+  let daysOut = 60
+  var access_expiration_ms = moment().startOf('day').add(daysOut, 'days').add(1, 'days').subtract(1, 'second').toDate().getTime()
   return db.collection('user').doc(user.uid)
       .set({uid: user.uid,
+            access_expiration_ms: access_expiration_ms,
             phoneNumber: user.phoneNumber,
             date: admin.firestore.Timestamp.now(),
             date_ms: admin.firestore.Timestamp.now().toMillis()})
