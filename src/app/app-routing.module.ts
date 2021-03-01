@@ -55,6 +55,7 @@ import { VmMainComponent } from './admin/vm/vm-main/vm-main.component';
 import { VmGuard } from './admin/vm/vm.guard';
 import { TagsComponent } from './tag/tags/tags.component';
 import { VideoSearchComponent } from './video/video-search/video-search.component';
+import { VideoCallNotAllowedComponent } from './video/video-call-not-allowed/video-call-not-allowed.component';
 
 
 const routes: Routes = [
@@ -96,6 +97,7 @@ const routes: Routes = [
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, MinimalAccountInfoGuard], data: {role: 'admin'} },
   { path: 'video-call/:invitationId/:phoneNumber/:dimension', component: VideoCallComponent, canActivate: [VideoCallGuard] /*, resolve: {invitation: InvitationResolver}*/ },
   { path: 'video-call/:invitationId/:phoneNumber', component: VideoCallComponent, canActivate: [VideoCallGuard] /*, resolve: {invitation: InvitationResolver}*/ },
+  { path: 'video-call-not-allowed', component: VideoCallNotAllowedComponent },
   { path: 'video-call-complete/:RoomSid/:hostOrGuest/:phoneNumber', component: VideoCallCompleteComponent, canActivate: [DisabledGuard, VideoCallCompleteGuard] },
   { path: 'video/producing', component: VideoProducingComponent, canActivate: [DisabledGuard/*, VideoProducingGuard*/] },
   { path: 'videos/:tagName', component: VideoSearchComponent, canActivate: [DisabledGuard] },

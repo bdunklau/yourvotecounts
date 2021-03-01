@@ -98,6 +98,7 @@ import { TrendingComponent } from './trending/trending.component';
 import { VideoSearchComponent } from './video/video-search/video-search.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
+import { VideoCallNotAllowedComponent } from './video/video-call-not-allowed/video-call-not-allowed.component';
 
 
 
@@ -212,6 +213,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     TagEditorComponent,
     TrendingComponent,
     VideoSearchComponent,
+    VideoCallNotAllowedComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

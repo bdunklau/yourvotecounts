@@ -27,6 +27,8 @@ export class TeamService {
     var teamMemberDocId = this.afs.createId();
     var teamMemberRef = this.afs.collection('team_member').doc(teamMemberDocId).ref;
     var teamMember = {teamMemberDocId: teamMemberDocId,
+                      creatorId: team.creatorId,
+                      access_expiration_ms: team.access_expiration_ms,
                       teamDocId: team.id,
                       created: firebase.firestore.Timestamp.now(),
                       team_name: team.name,
@@ -60,9 +62,11 @@ export class TeamService {
 
     var teamMemberDocId = this.afs.createId();
     var teamMemberRef = this.afs.collection('team_member').doc(teamMemberDocId).ref;
-    var teamMember = {teamMemberDocId: teamMemberDocId,
+    var teamMember = { access_expiration_ms: user.access_expiration_ms,
+                     teamMemberDocId: teamMemberDocId,
                      teamDocId: teamDocId,
                      created: firebase.firestore.Timestamp.now(),
+                     creatorId: user.uid,
                      team_name: teamName,
                      userId: user.uid,
                      displayName: user.displayName,
@@ -114,6 +118,7 @@ export class TeamService {
     var teamDoc = await this.afs.collection('team').doc(teamDocId).ref.get();
     const team = new Team();
     team.id = teamDoc.data()['id'];
+    team.access_expiration_ms = teamDoc.data()['access_expiration_ms']
     team.name = teamDoc.data()['name'];
     team.created = teamDoc.data()['created'];
     team.creatorId = teamDoc.data()['creatorId'];
