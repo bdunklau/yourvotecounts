@@ -283,7 +283,9 @@ export class RoomService {
           _.each(docChangeActions, obj => {
               let data = obj.payload.doc.data()
               let docId = obj.payload.doc['id']
-              rooms.push(data as RoomObj)
+              let room = data as RoomObj
+              if(room.CompositionSid)
+                  rooms.push(room)
               // console.log('getVideos(): ',docId, ':  ', data)
           })
       }
