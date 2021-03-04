@@ -1,11 +1,8 @@
 <div style="margin-top:20px;overflow-x:hidden;padding-left:20px;">
 <h3>My Videos</h3>
 
-<div class="row" style="margin-top:40px">
-    <div class="col"><h5>As Host</h5></div>
-</div>
 
-<div class="row no-gutters" *ngFor="let room of asHost" style="margin-bottom:10px">
+<div class="row no-gutters" *ngFor="let room of videos" style="margin-bottom:10px">
     <div class="col-12">
         <div class="row">
             
@@ -15,10 +12,11 @@
             </div>
             
             <div class="col-5">
-                {{room.video_title}}
-                <BR/>{{room.created_ms | date: 'short'}}
-                <!-- <BR/>{{room.RoomSid}} -->
-                <!-- <BR/>{{room.CompositionSid}} -->
+                <B>{{room.video_title}}</B>
+                <BR/>Views {{room.views}}
+                <BR/><span class="text-muted small">{{room.created_ms | date: 'short'}}</span>
+                <!-- <BR/>{{room.RoomSid}}
+                <BR/>{{room.CompositionSid}} -->
             </div>
             
             <div class="col-1">
@@ -28,41 +26,6 @@
         
     </div>
 </div>
-
-
-
-
-
-<!-- IDENTICAL TO THE SECTION ABOVE EXCEPT THAT HERE, WE WORK WITH 'asGuest' -->
-
-<div class="row" style="margin-top:40px">
-    <div class="col"><h5>As Guest</h5></div>
-</div>
-
-<div class="row no-gutters" *ngFor="let room of asGuest" style="margin-bottom:10px">
-    <div class="col-12">
-        <div class="row">
-            
-            <div class="col-5">
-                <a href="/view-video/{{room.CompositionSid}}"><img [attr.src]="room.screenshotUrl" style="width:100%"></a>
-                <!-- <br/>screenshot: {{room.screenshotUrl}} -->
-            </div>
-            
-            <div class="col-5">
-                {{room.video_title}}
-                <BR/>{{room.created_ms | date: 'short'}}
-                <!-- <BR/>{{room.RoomSid}} -->
-                <!-- <BR/>{{room.CompositionSid}} -->
-            </div>
-            
-            <div class="col-1">
-                <button class="btn btn-default" (click)="openVideoControlMenu(room)"><i class="fas fa-ellipsis-v"></i></button>
-            </div>
-        </div>
-        
-    </div>
-</div>
-
 
 
 </div>

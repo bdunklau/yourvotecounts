@@ -84,9 +84,11 @@ export class RoomService {
         //  { guestName: invitation.displayName, guestPhone: invitation.phoneNumber }
         //],
         guests: _.map(invitations, invitation => {return {guestName: invitation.displayName, guestPhone: invitation.phoneNumber}}),
+        phones: _.map(invitations, invitation => {return invitation.phoneNumber}),
         recording_state: '',
         mark_time: [], // the start- and stop-recording times
     }
+    roomObj.phones.push(roomObj.hostPhone)
     let guest = _.find(roomObj['guests'], g => {
         return g['guestPhone'] === phoneNumber
     })
@@ -270,47 +272,23 @@ export class RoomService {
   }
 
 
-  // async copyRoom(roomSid: string) {
-  //     let roomDoc = await this.afs.collection('room').doc(roomSid).ref.get()
-  //     let tempId = 'RM'+(new Date().getTime())
-  //     await this.afs.collection('room').doc(tempId).set(roomDoc.data())
-  // }
+  async getVideos(phoneNumber: string) {      
 
-
-  async getRoomsWithGuest(name: {guestName: string, guestPhone: string}) {      
-
-      let observable = this.afs.collection('room', ref => ref.where('guests', 'array-contains', {guestName: name.guestName, guestPhone: name.guestPhone} ).where('CompositionSid', '!=', null)).snapshotChanges().pipe(take(1));
+      let observable = this.afs.collection('room', ref => ref.where('phones', 'array-contains', phoneNumber).orderBy('created_ms', 'desc')).snapshotChanges().pipe(take(1));
       
       let docChangeActions = await observable.toPromise()
+      console.log('getVideos: docChangeActions = ', docChangeActions)
       var rooms: RoomObj[] = []
       if(docChangeActions && docChangeActions.length > 0) {
           _.each(docChangeActions, obj => {
               let data = obj.payload.doc.data()
               let docId = obj.payload.doc['id']
               rooms.push(data as RoomObj)
-              console.log('getRoomsWithGuest(): ',docId, ':  ', data)
+              // console.log('getVideos(): ',docId, ':  ', data)
           })
       }
       return rooms
 
-  }
-
-
-  async getRoomsWithHost(person: {uid: string}) {
-      
-      let observable = this.afs.collection('room', ref => ref.where('hostId', '==', person.uid ).where('CompositionSid', '!=', null)).snapshotChanges().pipe(take(1));
-        
-      let docChangeActions = await observable.toPromise()
-      var rooms: RoomObj[] = []
-      if(docChangeActions && docChangeActions.length > 0) {
-          _.each(docChangeActions, obj => {
-              let data = obj.payload.doc.data()
-              let docId = obj.payload.doc['id']
-              rooms.push(data as RoomObj)
-              console.log('getRoomsWithHost(): ',docId, ':  ', data)
-          })
-      }
-      return rooms
   }
 
 

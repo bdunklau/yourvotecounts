@@ -17,8 +17,7 @@ import { isPlatformBrowser } from '@angular/common';
 export class MyVideosComponent implements OnInit {
 
     me: FirebaseUserModel
-    asGuest: RoomObj[]
-    asHost: RoomObj[]
+    videos: RoomObj[]
     videoType: string 
     translated = false
     collapsed = false
@@ -40,9 +39,7 @@ export class MyVideosComponent implements OnInit {
 
         if(isPlatformBrowser(this.platformId)) {
             this.me = await this.userService.getCurrentUser()
-            
-            this.asGuest = await this.roomService.getRoomsWithGuest({guestName: this.me.displayName, guestPhone: this.me.phoneNumber})
-            this.asHost = await this.roomService.getRoomsWithHost({uid: this.me.uid})
+            this.videos = await this.roomService.getVideos(this.me.phoneNumber)
         }
 
     }
