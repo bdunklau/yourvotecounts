@@ -6,6 +6,8 @@ import { Settings } from '../settings/settings.model';
 import { Subscription } from 'rxjs';
 import { MessageService } from '../core/message.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { map } from 'rxjs/operators';
+import * as _ from 'lodash'
 
 
 
@@ -16,6 +18,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 })
 export class UsersComponent implements OnInit {
 
+  users: FirebaseUserModel[]
   user = new FirebaseUserModel();
   me:FirebaseUserModel;
   seconds = 0;
@@ -24,6 +27,7 @@ export class UsersComponent implements OnInit {
   settings: Settings;
   private subscription: Subscription;
   private userSubscription: Subscription;
+  private usersSubscription: Subscription
   access_expiration;
 
   constructor(public userService: UserService,
@@ -34,16 +38,36 @@ export class UsersComponent implements OnInit {
     // console.log('user = ', this.user);
     // this.me = await this.userService.getCurrentUser();
 
-    this.subscription = this.settingsService.getSettings()
-      .subscribe(obj => {
-        this.settings = obj as Settings;
-        console.log('getSettings():  this.settings = ', this.settings);
+      this.subscription = this.settingsService.getSettings()
+        .subscribe(obj => {
+          this.settings = obj as Settings;
+          console.log('getSettings():  this.settings = ', this.settings);
+        });
+
+      
+      this.usersSubscription = this.userService.getUsersByDate().pipe(
+        map(actions => {
+          return actions.map(a => {
+            const data = a.payload.doc.data() as FirebaseUserModel 
+            // const id = a.payload.doc['id']; already have 'uid' on doc
+            // var returnThis = { id, ...data };
+            return data;
+          });
+        })
+      )
+      .subscribe(objs => {
+          // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
+          this.users = _.map(objs, obj => {
+            let tm = obj as unknown;
+            return tm as FirebaseUserModel
+          });
       });
   }
 
   ngOnDestroy() {
     if(this.subscription) this.subscription.unsubscribe();
     if(this.userSubscription) this.userSubscription.unsubscribe();
+    if(this.usersSubscription) this.usersSubscription.unsubscribe();
   }
 
 

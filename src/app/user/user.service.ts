@@ -404,6 +404,10 @@ export class UserService {
         theUser.populate(userObj);
         return theUser
     }
+
+    getUsersByDate() {
+      return this.afs.collection('user', ref => ref.orderBy('date_ms', 'desc').limit(25)).snapshotChanges()
+    }
     
 
     // getMembersByTeamId(id: string) {
