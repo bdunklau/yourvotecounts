@@ -175,10 +175,15 @@ export class SearchOfficialsComponent implements OnInit {
         let userAgent = navigator.userAgent
         let elems = document.getElementsByClassName("pac-container")
         if(userAgent.toLowerCase().indexOf('mac os x') != -1) {
+            console.log('userAgent: ', userAgent)
             _.each(elems, elem => {
                 elem.style.marginTop = `${this.settings.address_choices_adjustment}px`
             })
         }
+        
+        // _.each(elems, elem => {
+        //     elem.style.marginTop = `${this.settings.address_choices_adjustment}px`
+        // })
     }
 
 
