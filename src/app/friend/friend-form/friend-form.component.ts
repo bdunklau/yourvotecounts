@@ -101,6 +101,8 @@ export class FriendFormComponent implements OnInit {
         // trying to be little more general - re: country code
         if(stripped.startsWith('+'))
             return stripped
+        else if(stripped.length == 11)
+            return '+'+stripped // user may have copy-pasted a US phone number that contained the 1 but not the +
         else return '+1'+stripped
     }
 
