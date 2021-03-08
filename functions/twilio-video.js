@@ -67,6 +67,7 @@ exports.compose = functions.https.onRequest((req, res) => {
         const max_rows = participantCount < (maxOn1Row+1) ? 1 : parseInt(participantCount / maxOn1Row) + 1
 
         let aspectRatio = 9/16
+        if(participantCount === 2) aspectRatio = 1
         if(participantCount === 3) aspectRatio = 9/21
         let height = parseInt(1280 * aspectRatio)
         let resolution = `1280x${height}`  // 21:9 also 32:9  1280 is max width
