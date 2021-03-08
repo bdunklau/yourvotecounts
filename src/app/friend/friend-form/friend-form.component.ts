@@ -68,14 +68,14 @@ export class FriendFormComponent implements OnInit {
          * backspacing over a - or ) or space needs special handling...
          */
         let lastChar = field.value.substring(field.value.length-1)
-        console.log('validatePhoneNo(): lastChar = ', lastChar)
+        console.log('formatPhone(): lastChar = ', lastChar)
         if(event.inputType === 'deleteContentBackward') { 
             if(lastChar === ' ') field.value = field.value.substring(0, field.value.length-2)
             else if(lastChar === '-') field.value = field.value.substring(0, field.value.length-1)
             else if(lastChar === ')') field.value = field.value.substring(0, field.value.length-1)
         } 
 
-        console.log('validatePhoneNo(): field.value = ', field.value)
+        console.log('formatPhone(): field.value = ', field.value)
     }
   
     ValidatePhone(control: AbstractControl): {[key: string]: any} | null  {
@@ -89,8 +89,9 @@ export class FriendFormComponent implements OnInit {
     }
 
     justNumbers(value: string) {
-        console.log('justNumbers(): value = ', value)
+        console.log('justNumbers(): beginning value = ', value)
         let replaced = value.replace(/\D/g,''); //  \D = all non-digits 
+        console.log('justNumbers(): ending value = ', replaced)
         return replaced
     }
 
