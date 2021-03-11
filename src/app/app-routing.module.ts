@@ -56,6 +56,7 @@ import { VmGuard } from './admin/vm/vm.guard';
 import { TagsComponent } from './tag/tags/tags.component';
 import { VideoSearchComponent } from './video/video-search/video-search.component';
 import { VideoCallNotAllowedComponent } from './video/video-call-not-allowed/video-call-not-allowed.component';
+import { GetStartedComponent } from './get-started/get-started.component';
 
 
 const routes: Routes = [
@@ -66,6 +67,7 @@ const routes: Routes = [
   { path: 'disabled', component: DisabledComponent },
   { path: 'error-page', component: ErrorPageComponent },
   { path: 'friends', component: FriendsComponent, canActivate: [FriendGuard] },
+  { path: 'get-started', component: GetStartedComponent },
   { path: 'home', component: HomeComponent },
   
   { path: 'invitations', component: InvitationsComponent, canActivate: [InvitationFormGuard], resolve: { user: UserResolver} },
