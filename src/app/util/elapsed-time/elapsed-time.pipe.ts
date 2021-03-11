@@ -16,7 +16,14 @@ export class ElapsedTimePipe implements PipeTransform {
             let secMod = num % 60
             let secs = secMod < 10 ? '0'+secMod : secMod
             let mins = Math.floor(num / 60)
-            return `${mins}:${secs}`
+            if(mins > 1)
+                return `${mins} mins`                 
+            else if(mins > 0)
+                return `${mins} min`
+            else if(secs > 0) 
+                return `${secs} secs`
+            else return 'no time left' 
+            // return `${mins}:${secs}`
         }
 
         return formatTime(value);
