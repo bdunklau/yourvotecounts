@@ -66,11 +66,22 @@ exports.compose = functions.https.onRequest((req, res) => {
         const maxOn1Row = 4
         const max_rows = participantCount < (maxOn1Row+1) ? 1 : parseInt(participantCount / maxOn1Row) + 1
 
+        /**
+         * NOTE: 921,600 is the max number of pixels - you'll get an error if you try to go over
+         * 921,600 = 1280x720
+         * So you can't do 1:1 aspect ratio and have width = 1280.  That will give you a height of 1280 also
+         * which will produce more than 921,600 pixels.
+         * So if the aspect ratio is going to be 1:1, then the dims have to be 960x960
+         */
         let aspectRatio = 9/16
-        if(participantCount === 2) aspectRatio = 1
+        let width = 1280
+        if(participantCount === 2) {
+            aspectRatio = 1
+            width = 960
+        }
         if(participantCount === 3) aspectRatio = 9/21
-        let height = parseInt(1280 * aspectRatio)
-        let resolution = `1280x${height}`  // 21:9 also 32:9  1280 is max width
+        let height = parseInt(width * aspectRatio)
+        let resolution = `${width}x${height}`  // 21:9 also 32:9  1280 is max width
 
         return client.video.compositions.create({
             roomSid: req.query.RoomSid,
