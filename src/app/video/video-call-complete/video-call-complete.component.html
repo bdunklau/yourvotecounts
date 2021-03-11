@@ -6,6 +6,126 @@ so we don't have to code so defensively
 -->
 
 
+<!-- Message to guests: Call Ended.  Your host did not record this call -->
+<span *ngIf="!isHost && roomObj && roomObj['call_ended_ms'] && (!roomObj['mark_time'] || roomObj['mark_time'].length == 0)">
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            
+            <div class="row" style="margin-top:20px">
+                <div class="col">
+                    <h3> <i class="fas fa-phone-alt fa-rotate-135"></i> Call Ended</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                Video call has ended
+                </div>
+            </div>
+
+            <!---------------------------------------------------------------
+            Almost duplicated from video-producing.component.html 
+            ----------------------------------------------------------------->            
+            <h5 style="margin-top:20px">
+                <i class="fas fa-video-slash"></i>
+                Call Not Recorded
+            </h5>        
+        
+        
+            <div class="row">
+                <div class="col-12">
+                    The host did not record this call 
+                </div>
+            </div>
+        
+        
+            <h5 style="margin-top:20px">
+                <i class="fas fa-sign-out-alt"></i>
+                Close
+            </h5>
+        
+            <div class="row" style="margin-top:20px;margin-bottom:20px">
+                <div class="col-12">
+                    You may close this window now or you can browse trending videos...
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-12 col-sm-6"><app-trending [inputExpanded]="true"></app-trending></div>
+        <!---------------------------------------------------------------
+        Almost duplicated from video-producing.component.html 
+        ----------------------------------------------------------------->   
+
+    </div>
+
+</div>
+</span>
+
+
+
+
+
+<!-- Message to host: Call Ended.  You did not record this call -->
+<span *ngIf="isHost && roomObj && roomObj['call_ended_ms'] && (!roomObj['mark_time'] || roomObj['mark_time'].length == 0)">
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            
+            <div class="row" style="margin-top:20px">
+                <div class="col">
+                    <h3> <i class="fas fa-phone-alt fa-rotate-135"></i> Call Ended</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                Video call has ended
+                </div>
+            </div>
+
+            <!---------------------------------------------------------------
+            Almost duplicated from video-producing.component.html 
+            ----------------------------------------------------------------->            
+            <h5 style="margin-top:20px">
+                <i class="fas fa-video-slash"></i>
+                Call Not Recorded
+            </h5>        
+        
+        
+            <div class="row">
+                <div class="col-12">
+                    You did not record this call.  Did you mean to?  Just checking.  If you meant to record this call, you will need to re-invite your guests.
+                    Don't forget to hit "Start Recording" :)
+                </div>
+            </div>
+        
+        
+            <h5 style="margin-top:20px">
+                <i class="fas fa-sign-out-alt"></i>
+                Close
+            </h5>
+        
+            <div class="row" style="margin-top:20px;margin-bottom:20px">
+                <div class="col-12">
+                    You may close this window now or you can browse trending videos...
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-12 col-sm-6"><app-trending [inputExpanded]="true"></app-trending></div>
+        <!---------------------------------------------------------------
+        Almost duplicated from video-producing.component.html 
+        ----------------------------------------------------------------->   
+
+    </div>
+
+</div>
+</span>
+
+
+
+
     
 <!-- I just copied this from the block below and added a ! in front of isHost to make this block apply to the guests -->
 <span *ngIf="!isHost && roomObj && roomObj['call_ended_ms'] && roomObj['mark_time'] && roomObj['mark_time'].length > 0">
