@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, AfterViewInit, ElementRef, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, AfterViewInit, ElementRef, Renderer2, Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Invitation } from '../../invitation/invitation.model';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
@@ -79,11 +79,12 @@ export class VideoCallComponent implements OnInit {
   //trackMap: Map<RemoteTrack, ElementRef> = new Map<RemoteTrack, ElementRef>()
   showTestPattern = true
   dimension: {type:string, value:string} = {type:'width', value:'48vw'}
-  timeOnCall = 0
+  timeRemaining: number
   translated = false
   collapsed = false
   // canAddPeople = false
   maxGuests: number
+  countDownInterval
 
 
   constructor(private route: ActivatedRoute,
@@ -195,6 +196,7 @@ export class VideoCallComponent implements OnInit {
       if(this.roomSubscription) this.roomSubscription.unsubscribe()
       if(this.altRoomWatcher) this.altRoomWatcher.unsubscribe()
       if(this.invitationWatcher) this.invitationWatcher.unsubscribe()
+      if(this.countDownInterval) clearInterval(this.countDownInterval)
       console.log('ngOnDestroy()')
   }
 
@@ -247,21 +249,23 @@ export class VideoCallComponent implements OnInit {
 
 
   private startClock() {
-      let maxMinutes = this.settingsDoc.max_call_time / 60
-      let warnAt = maxMinutes - 1
+      let maxSeconds = this.settingsDoc.max_call_time
+      this.timeRemaining = maxSeconds
+      let warnAt = 60
       var maxTimeWatcher = function() {
-          ++this.timeOnCall
+          console.log('maxTimeWatcher --------')
+          --this.timeRemaining
           // give a single warning at 1 minute before
-          if(this.timeOnCall == warnAt) {
+          if(this.timeRemaining == warnAt) {
               this.warningTimeReached()
           }
-          else if(this.timeOnCall == maxMinutes) {
+          else if(this.timeRemaining == -15) { // 15 secs grace period after time runs out
               // forcibly end the call
               this.leave_call()
           }
       }.bind(this)
       
-      setInterval(() => maxTimeWatcher(), 60000)
+      this.countDownInterval = setInterval(() => maxTimeWatcher(), 1000)
   }
 
 

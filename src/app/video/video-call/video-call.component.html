@@ -21,6 +21,11 @@
 
 
 <div class="container">
+
+  <div class="row" style="margin-top:0px"> 
+    <div class="col-12 text-center" [hidden]="!timeRemaining && timeRemaining != 0">Time Remaining: {{timeRemaining | elapsedTime}}</div>
+  </div>
+
     
   <div class="row" style="margin-top:10px">
 
