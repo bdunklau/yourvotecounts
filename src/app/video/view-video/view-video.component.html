@@ -1,7 +1,15 @@
 
-<div class="row" style="margin-left:0px;margin-right:0px;padding:0 0 0 0">
-    <div class="col" *ngIf="videoUrl" style="background-color:#000000;margin-left:0px;margin-right:0px;padding:0 0 0 0">
-        <video style="width:100vw;" controls playsinline preload="metadata">
+<!-- ONE BIG ROW, ONE BIG COL - COL SPANS THE WHOLE WIDTH FOR SMALL SCREENS BUT ONLY SPANS 6 FOR MD AND HIGHER -->
+<div class="row">
+    <div class="col-12 col-md-6 offset-md-3">
+
+
+
+
+
+<div class="row">
+    <div class="col-12" *ngIf="videoUrl">
+        <video style="width:100%;" controls playsinline preload="metadata">
             <source src="{{videoUrl}}" type="{{videoType}}">
             Your browser does not support the video tag.
         </video>
@@ -25,7 +33,7 @@ banner ad
 -->
 <app-banner-ad *ngIf="showAd"></app-banner-ad>
 
-
+ <!-- container gives a little bit of edge padding on small screens -->
 <div class="container" [ngStyle]="{'margin-top': showAd ? '70px' : '20px', 'margin-bottom': '32px'}">
 
 
@@ -141,8 +149,20 @@ banner ad
     </span>
 
 </div>
+<!-- end:   <div class="container" [ngStyle]="{'margin-top': showAd ? '70px' : '20px', 'margin-bottom': '32px'}"> -->
 
 
+
+    </div>
+</div>
+<!-- ONE BIG ROW, ONE BIG COL - COL SPANS THE WHOLE WIDTH FOR SMALL SCREENS BUT ONLY SPANS 6 FOR MD AND HIGHER -->
+
+
+
+
+
+
+<!-- COMMENTS SECTION -->
 <!-- put comment section outside of "container" so that the slide-up comment edit form spans the whole width of the page  -->
 <span *ngIf="showComments">   
     <div class="row">
@@ -156,6 +176,9 @@ banner ad
 
 
 
+
+
+<!-- SEARCH OFFICIALS SLIDE-UP FORM -->
 <div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': translated}">   
                 
     <a href="javascript:void(0)" class="pull-right" (click)="translated = !translated" style="margin-top:10px;margin-right:10px;color:black"><i class="fa fa-close fa-2x"></i></a>   
