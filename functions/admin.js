@@ -14,7 +14,7 @@ const getUrls = require('get-urls');
 var db = admin.firestore();
 
 
-// firebase deploy --only functions:pingVm,functions:onVmState
+// firebase deploy --only functions:pingVm,functions:onVmState,functions:verifyCaptcha
 
 
 /**
@@ -139,6 +139,43 @@ exports.linkPreview = functions.https.onRequest((req, res) => {
             return res.status(200).send({data: 'none'})
     })
 })
+
+
+
+exports.verifyCaptcha = functions.https.onRequest((req, res) => {
+    cors(req, res, async () => {
+        await getCaptchaScore(req, res)
+    })
+
+})
+
+
+getCaptchaScore = async (req, res) => {
+    // get config/keys/recaptcha_v3_secret_key
+    let keysDoc = await db.collection('config').doc('keys').get()
+    let secretKey = keysDoc.data().recaptcha_v3_secret_key
+    let url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}`
+    request.post(
+        {
+            url: url,
+            // 'form' not 'json' because google requires form-encoded parms in this case
+            form: { response: req.query.recaptcha_v3_token } // 'recaptcha_v3_token' set in view-video.component.ts
+        },
+        async function (err, httpResponse, body) {
+            let json = JSON.parse(body)
+            let ret = {}
+            let score = json.score
+            if(score) ret['score'] = score
+            else if(err) ret['error'] = err
+            else ret['error'] = 'bad recaptcha code'
+            return res.status(200).send(ret);
+        }
+    );
+    
+    //  curl example
+    //curl -d "response=03AGdBq24HAZf50qXsMvS8udHV4GziH6tNel8PUWllzIdo2M6TCUb9tf8M1JGL9elv4F1LO8e43lj5LQnG2-qKDD6Szbfjvy_MyQzNbFOZxksozmThjOwdMpWNR6_Q2v-Ywh_HjZYgkUm2fDHmPTFTLwlkqG8B-RmT2bEvo8zkC1-cJ0JTnj728z3YIL1pL1DD3QVwyDTudv2ZbLVmnROgHQnauxKv3KO1YnpWwhvTnu7U0lsX1_Qv4gRdX5UM0WsRF8Aimn7rE_xWlg-oN9r6N_Ix6gXC2KVEoP7QXEmhi51JNbI7Ah0EvhHeyjzpEkzO67KqGkiNhIe7-EEJmVjf4iZOhfkNCB4BifVriLgSFvma41ILPuuGLfZ_uwkEE7_UxB53MdhsQ-Q2qgM90Msw9gAMXiSFKa95wqsiBx29UpO9ekm4syK92ZpvinzZbx6icAWD8jvOtIg8CMXvDz2r_mfa7I_VFaUiPA" -X POST https://www.google.com/recaptcha/api/siteverify?secret=xxxxxxxxxxxxx
+
+}
 
 
 getHost = (url) => {

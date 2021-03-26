@@ -9,6 +9,14 @@ import * as _ from 'lodash'
 import { Official } from '../../civic/officials/view-official/view-official.component'
 import { isPlatformBrowser } from '@angular/common';
 import { MessageService } from '../../core/message.service';
+import {
+    OnExecuteData,
+    OnExecuteErrorData,
+    ReCaptchaV3Service,
+  } from "ng-recaptcha";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { SettingsService } from 'src/app/settings/settings.service';
+import { Settings } from '../../settings/settings.model';
 
 
 @Component({
@@ -44,10 +52,18 @@ export class ViewVideoComponent implements OnInit {
     officialsCollapsed = true
     showElectedOfficials = false
     showComments = true
+    settingsDoc: Settings
+    confirmed_human = false
+    confirmed_robot = false
+    need_to_check = false
+    HUMAN_ROBOT_THRESHOLD = 0.41  // 0 < robot < 0.4 < human < 1.0
 
 
     constructor(private roomService: RoomService,
                 private userService: UserService,
+                private recaptchaV3Service: ReCaptchaV3Service,
+                private settingsService: SettingsService,
+                private http: HttpClient,
                 private messageService: MessageService,
                 @Inject(PLATFORM_ID) private platformId,
                 //private _modalService: NgbModal,
@@ -60,8 +76,8 @@ export class ViewVideoComponent implements OnInit {
                     this.editing_allowed = true
                 }
                 this.listenForOfficials()
-                this.isHost = this.room.isHost(user)
-                this.isGuest = this.room.isGuest(user)
+                this.isHost = this.room && this.room.isHost(user)
+                this.isGuest = this.room && this.room.isGuest(user)
             }.bind(this);
 
             this.userSubscription = this.messageService.listenForUser().subscribe({
@@ -124,28 +140,40 @@ export class ViewVideoComponent implements OnInit {
             if(this.room.video_title) this.video_title = this.room.video_title
             if(this.room.video_description) this.video_description = this.room.video_description
             this.initialized = true
+
+
+            ///////////////////////////////////////////////////////////////////////////////////////
+            // for reCAPTCHA v3  
+            let user = await this.userService.getCurrentUser()
+            if(user) {
+                this.confirmed_human = true
+            }
+            else {
+                this.confirmed_human = false
+                this.settingsDoc = await this.settingsService.getSettingsDoc();
+            }
+            this.need_to_check = !this.confirmed_human && !this.confirmed_robot
+            console.log('ngOnInit():  confirmed_human = ', this.confirmed_human)
+            ///////////////////////////////////////////////////////////////////////////////////////
+
+
+
         }
         console.log('ngOnInit():  done')
 
     }
 
 
-
-    // private safari():boolean {
-    //   // Detect Safari
-    //   let safariAgent = window.navigator.userAgent.indexOf("Safari") > -1
-    //   // Detect Chrome 
-    //   let chromeAgent = window.navigator.userAgent.indexOf("Chrome") > -1
-    //   if(!safariAgent) return false
-    //   // Discard Safari since it also matches Chrome 
-    //   if ((chromeAgent) && (safariAgent)) return false
-    //   else return true
-    // }
-
     ngOnDestroy() {
         if(this.official_selected_sub) this.official_selected_sub.unsubscribe();
         if(this.official_deleted_sub) this.official_deleted_sub.unsubscribe();
         if(this.userSubscription) this.userSubscription.unsubscribe();
+        ///////////////////////////////////////////////////////////////////////////////////////
+        // reCAPTCHA v3  
+        if (this.singleExecutionSubscription) {
+            this.singleExecutionSubscription.unsubscribe();
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
     }
     
     async ngAfterViewInit() {
@@ -241,5 +269,57 @@ export class ViewVideoComponent implements OnInit {
         }
     }
 
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // reCAPTCHA v3    
+    private singleExecutionSubscription: Subscription;
+    
+
+    public executeAction(action: string): void {
+        if (this.singleExecutionSubscription) {
+            this.singleExecutionSubscription.unsubscribe();
+        }
+        this.singleExecutionSubscription = this.recaptchaV3Service
+        .execute(action)
+        .subscribe(
+            async (token) => {
+                const options = {
+                    headers: new HttpHeaders({
+                      //'Content-Type':  'application/json',
+                      // 'Authorization': 'my-auth-token',
+                      // 'Access-Control-Allow-Origin': '*'
+                    })
+                };
+
+                let url = `https://${this.settingsDoc.firebase_functions_host}/verifyCaptcha?recaptcha_v3_token=${token}`
+                console.log('about to get')
+                let get = this.http.get(`https://${this.settingsDoc.firebase_functions_host}/verifyCaptcha?recaptcha_v3_token=${token}`, options)
+                console.log('get: done')
+                let resp:any = await get.toPromise()
+                console.log('xxxx resp = ', resp)
+
+                let score = parseFloat(resp.score)
+                console.log('xxxx score = ', score)
+                if(score >= this.HUMAN_ROBOT_THRESHOLD) {
+                    this.confirmed_human = true
+                    this.confirmed_robot = false
+                    this.need_to_check = false
+                }
+                else {
+                    this.confirmed_human = false
+                    this.confirmed_robot = true
+                    this.need_to_check = false
+                }
+
+            },
+            (error) => {
+                this.confirmed_human = false
+                this.confirmed_robot = false
+                this.need_to_check = true
+            }
+        );
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////
 
 }

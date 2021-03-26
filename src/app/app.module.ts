@@ -100,6 +100,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import { VideoCallNotAllowedComponent } from './video/video-call-not-allowed/video-call-not-allowed.component';
 import { GetStartedComponent } from './get-started/get-started.component';
+import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha';
 
 
 
@@ -246,7 +247,9 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
   ],
   providers: [
     Title,
-    TransferState
+    TransferState,
+    ReCaptchaV3Service
+    , {provide: RECAPTCHA_V3_SITE_KEY, useValue: '6LdddIUaAAAAAC7IlHEIRyhyoiUESJEOTvlOo5-5'}
   ],
   bootstrap: [AppComponent]
 })

@@ -1,9 +1,69 @@
 
+
+
+<!-- reCAPTCHA v3     https://dethariel.github.io/ng-recaptcha/v3        -->
+<span *ngIf="need_to_check" >
+    <div [ngStyle]="{'background': 'url('+room.screenshotUrl+')', 'width': '100%', 'height':'35%', 'opacity':'0.2', 'background-size': 'cover', 'background-position': 'center', 'background-repeat': 'no-repeat'}">
+    </div>
+
+    <div class="container"   [ngStyle]="{ 'margin-top': '20px'}">
+        <h3>Humans Only</h3>
+
+        <div class="row" style="margin-top:30px">
+            <div class="col-12">
+                You must be an actual human to view this video.  Click "I am not a robot" or Login.
+            </div>
+        </div>
+        <div class="row" style="margin-top:30px">
+            <div class="col-12">
+            <!-- add Login button -->
+
+            <button class="btn col-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4" style="background-color:#cdcdcd" (click)="executeAction('robot')"><i class="fas fa-robot"></i> &nbsp; I am not a robot</button>
+            </div>
+        </div>
+        <div class="row" style="margin-top:50px">
+            <div class="col-12">
+                <a class="btn btn-primary col-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4" style="color:#ffffff" routerLink="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+            </div>
+        </div>
+    </div>
+</span>
+<!-- reCAPTCHA v3 -->
+
+
+
+
+<!-- reCAPTCHA v3     https://dethariel.github.io/ng-recaptcha/v3        -->
+<span *ngIf="confirmed_robot">
+    <div [ngStyle]="{'background': 'url('+room.screenshotUrl+')', 'width': '100%', 'height':'35%', 'opacity':'0.2', 'background-size': 'cover', 'background-position': 'center', 'background-repeat': 'no-repeat'}">
+    </div>
+
+    <div class="container" style="margin-top:20px">
+        <h3>Are You a Robot?</h3>
+        <div class="row">
+            <div class="col-12">
+                You kinda look like a robot.  If you're actually a human, login using this button.
+                <P>&nbsp;</P>
+                <P>
+                    <a class="btn btn-primary col-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4" style="color:#ffffff" routerLink="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                </P>
+            </div>
+        </div>
+    </div>
+</span>
+<!-- reCAPTCHA v3 -->
+
+
+
+
+
+
+<span *ngIf="confirmed_human == true">
+
+
 <!-- ONE BIG ROW, ONE BIG COL - COL SPANS THE WHOLE WIDTH FOR SMALL SCREENS BUT ONLY SPANS 6 FOR MD AND HIGHER -->
 <div class="row">
     <div class="col-12 col-md-6 offset-md-3">
-
-
 
 
 
@@ -16,6 +76,9 @@
 
     </div>
 </div>
+
+
+
 
 <!-- sanity check...  
 <div class="row" style="margin-bottom:20px">
@@ -186,3 +249,6 @@ banner ad
   
 </div> 
 
+
+</span>
+<!-- <span *ngIf="confirmed_human == true"> -->

@@ -60,6 +60,7 @@
     "localstorage-polyfill": "^1.0.1",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
+    "ng-recaptcha": "^7.0.1",
     "ngx-clipboard": "^13.0.1",
     "ngx-google-places-autocomplete": "^2.0.4",
     "rxjs": "~6.6.2",
