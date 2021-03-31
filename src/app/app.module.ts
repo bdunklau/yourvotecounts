@@ -266,7 +266,7 @@ export class AppModule {
                 //console.log('AppModule(): settings = ', settings)
                 if(window && window.console) {
                     if(!settings.console_logging) {
-                        console.log('SET CONSOLE LOGGING: OFF')  
+                        // console.log('SET CONSOLE LOGGING: OFF')  // don't even echo this
                         window.console.log = function() {}
                     } else {
                         console.log('SET CONSOLE LOGGING: ON')                   
