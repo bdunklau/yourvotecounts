@@ -400,10 +400,36 @@ export class UserService {
         let userPromise = await userRef.toPromise()    
         if(!userPromise || userPromise.length == 0) return null   
         let userObj = userPromise[0].payload.doc.data()
+
+        // get photoURL from photoFileName
+        if(!userObj['photoFileName']) {
+            userObj['photoFileName'] = 'thumb_profile-pic-default.png'
+        }
+        
+        userObj['photoURL'] = await this.afStorage.storage
+            .refFromURL('gs://'+environment.firebase.storageBucket+'/'+userObj['photoFileName'])
+            .getDownloadURL()
+
         let theUser = new FirebaseUserModel()
         theUser.populate(userObj);
         return theUser
     }
+
+
+    async getProfilePicUrl(photoFileName: string) {
+      return await this.afStorage.storage
+          .refFromURL('gs://'+environment.firebase.storageBucket+'/'+photoFileName)
+          .getDownloadURL()
+    }
+
+
+    async getDefaultProfilePicUrl() {
+      return this.getProfilePicUrl('thumb_profile-pic-default.png')
+      // return await this.afStorage.storage
+      //     .refFromURL('gs://'+environment.firebase.storageBucket+'/thumb_profile-pic-default.png')
+      //     .getDownloadURL()
+    }
+
 
     getUsersByDate() {
       return this.afs.collection('user', ref => ref.orderBy('date_ms', 'desc').limit(25)).snapshotChanges()

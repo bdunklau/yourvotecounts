@@ -20,8 +20,10 @@ export class Invitation {
     creatorId: string;
     creatorName: string;
     creatorPhone: string;
+    creatorPhotoURL: string
     message: string;
     deleted_ms: number
+    photoURL?: string
     
     constructor() {
       this.created = new Date();
@@ -32,7 +34,7 @@ export class Invitation {
   
 
   toObj(): any {
-    return {invitationId: this.invitationId,
+    let asObj = {invitationId: this.invitationId,
       displayName: this.displayName,
       phoneNumber: this.phoneNumber,
       created: this.created,
@@ -40,9 +42,12 @@ export class Invitation {
       creatorId: this.creatorId,
       creatorName: this.creatorName,
       creatorPhone: this.creatorPhone,
+      creatorPhotoURL: this.creatorPhotoURL,
       message: this.message,
-      deleted_ms: this.deleted_ms
-    };
+      deleted_ms: this.deleted_ms,
+    }
+    if(this.photoURL) asObj['photoURL'] = this.photoURL
+    return asObj
   }
     
 
@@ -50,5 +55,6 @@ export class Invitation {
     this.creatorId = user.uid;
     this.creatorName = user.displayName;
     this.creatorPhone = user.phoneNumber;
+    this.creatorPhotoURL = user.photoURL
   }
 }

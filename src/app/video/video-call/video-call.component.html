@@ -33,34 +33,107 @@
       begin:  video invitation details - who invited who and when
     -->
     <div class="col-12" *ngIf="invitations">
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-6">
             <span class="text-muted">Host:</span> {{invitations[0].creatorName}}
           </div>
           <div class="col-6">
             <a href="tel:{{invitations[0].creatorPhone}}">{{invitations[0].creatorPhone | phone}}</a>
           </div>
-        </div>
+        </div> -->
 
-        <div class="row">
+
+        <mat-chip
+            style="background-color:#00498D;height:30px;border-radius:15px;color:white;font-size:16px;margin-bottom:8px">
+            
+            <div class="circular--portrait">
+              <img src="{{invitations[0].creatorPhotoURL}}" height="98%">
+            </div>
+
+            Host: {{invitations[0].creatorName}} &nbsp;&nbsp; {{invitations[0].creatorPhone | phone}}
+        </mat-chip>
+
+
+        <!-- <div class="row">
           <div class="col-12">
             <hr/>
             <span class="text-muted">Guests</span>
           </div>
-        </div>
+        </div> -->
 
-        <div class="row" *ngFor="let invitation of invitations">
+
+
+        
+        <!-- <mat-chip-list #viewChipList aria-label="guest selection">
+          <mat-chip
+              *ngFor="let invitation of peopleChips"
+              [ngStyle]="{'background-color':'#00498D', 'height':'30px', 'border-radius':'30px', 'color':'white', 'font-weight':'normal', 'font-size':'16px', 'padding-right': invitation.isHost ? '30px' : '10px'}"
+              (click)="guestClicked(invitation)"
+              [selectable]="selectable"
+              [removable]="removable"
+              (removed)="delete_guest(invitation)">
+              
+              <div class="circular--portrait">
+                <img src="{{invitation.photoURL}}" height="98%">
+              </div>
+
+              {{invitation.displayName}} &nbsp; {{invitation.host}}  {{invitation.phoneNumber | phone}} 
+              <mat-icon [hidden]="invitation.isHost" matChipRemove><i class="fas fa-times" style="color:#ffffff;margin-top:-6px" (click)="delete_guest(invitation)"></i></mat-icon>
+          </mat-chip>
+        </mat-chip-list> -->
+
+
+
+        <mat-chip-list #viewChipList aria-label="guest selection">
+          <mat-chip
+              *ngFor="let invitation of invitations"
+              style="background-color:#00498D;height:30px;border-radius:15px;color:white;font-size:16px;"
+              (click)="guestClicked(invitation)"
+              [selectable]="'false'"
+              [removable]="removable"
+              (removed)="delete_guest(invitation)">
+              
+              <div class="circular--portrait">
+                <img src="{{invitation.photoURL}}" height="98%">
+              </div>
+
+              {{invitation.displayName}} &nbsp;&nbsp; {{invitation.phoneNumber | phone}}
+              <mat-icon style="margin-bottom:5px" matChipRemove><i class="fas fa-times" style="color:#ffffff" (click)="delete_guest(invitation)"></i></mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+
+
+
+        <span *ngIf="!joined && !callEnded">
+        <mat-chip
+            [hidden]="invitations != null && invitations.length >= maxGuests"
+            style="background-color:#00498D;height:30px;border-radius:30px;color:white;font-size:14px;margin-top:8px"
+            (click)="addSomeone()">
+            &nbsp;&nbsp; <i class="fas fa-user-plus"></i> &nbsp;&nbsp;&nbsp;
+            Add Guest &nbsp;&nbsp;
+        </mat-chip>
+        </span>
+
+
+
+
+        <!--only host can delete guests-->
+        <!-- <div class="row" *ngFor="let invitation of invitations">
           <div class="col-4 col-sm-4 col-md-4">
             {{invitation.displayName}}
           </div>
           <div class="col-6 col-sm-4 col-md-4" nowrap>
             <a href="tel:{{invitation.phoneNumber}}">{{invitation.phoneNumber | phone}}</a>
           </div>
-          <div class="col-2" style="margin-top:-5px" *ngIf="isHost && canDelete"> <!--only host can delete guests-->
+          <div class="col-2" style="margin-top:-5px" *ngIf="isHost && canDelete">
             <button class="btn btn-default" (click)="delete_guest(invitation)"><i class="fas fa-trash"></i></button>
           </div>
-        </div>
+        </div> -->
 
+
+
+
+        
 
         
         <!-- works but don't need to display the invitation date
@@ -78,18 +151,21 @@
     -->
   </div>
   
+
   
-  <div class="row" *ngIf="!joined && !callEnded" style="margin-top:10px;margin-bottom:40px">
-    <div class="col-sm-12">
-      <!-- type="button" keeps the form from being submit, which is what we want in this case -->
+  <!-- Add Someone button replaced with Add Guest chip above -->
+  <!-- <div class="row" *ngIf="!joined && !callEnded" style="margin-top:10px;margin-bottom:40px">
+    <div class="col-12">
       <button [hidden]="invitations != null && invitations.length >= maxGuests" type="button" id="add_someone" (click)="addSomeone()" class="btn btn-primary col-sm-12"> 
           <i class="fas fa-user-plus"></i> Add Someone
       </button>
       <hr/>
     </div>
-  </div>
+  </div> -->
   
   
+
+
   <!-- just for debugging -->
   <!--   
   <div class="row" *ngIf="roomObj" style="margin-top:10px;margin-bottom:40px">

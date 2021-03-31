@@ -827,5 +827,9 @@ s
 
    */
 
+  guestClicked(invitation: Invitation) {
+     // do anything when guest is clicked?  kinda thinkng no
+  }
+
 
 }

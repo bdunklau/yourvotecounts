@@ -46,6 +46,7 @@ export class InvitationFormComponent implements OnInit {
   names: {
       displayName: string;
       phoneNumber: string;
+      photoURL?: string
   }[]
 
   //invitation: Invitation;
@@ -166,11 +167,19 @@ export class InvitationFormComponent implements OnInit {
   }
 
 
-  addSomeone3(displayName: string, phoneNumber: string) {
-      this.names.push({displayName: displayName, phoneNumber: phoneNumber});
+  async addSomeone3(displayName: string, phoneNumber: string) {
+      // query by phone number to get profile pic if it exists
+      let photoURL = ''
+      if(phoneNumber && phoneNumber != '') {
+          let somebody = await this.userService.getUserWithPhone(phoneNumber)
+          if(somebody && somebody.photoURL) photoURL = somebody.photoURL
+          if(photoURL == '') photoURL = await this.userService.getDefaultProfilePicUrl();
+      }
+      this.names.push({displayName: displayName, phoneNumber: phoneNumber, photoURL: photoURL});
       let group = this.fb.group({
             displayName: new FormControl(displayName, [Validators.required]),
-            phoneNumber: new FormControl(this.formatPhone2(phoneNumber), { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ })
+            phoneNumber: new FormControl(this.formatPhone2(phoneNumber), { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ }),
+            photoURL: new FormControl(photoURL)         
           } 
           //, { updateOn: 'blur' }  // another option
       )
@@ -269,7 +278,9 @@ export class InvitationFormComponent implements OnInit {
            * string in the <input>.  So the 'if' block below won't get executed.  We can just take the value entered by the user
            */
           if(this.nameArray.at(i).value.displayName.displayName2) {
-              this.names[i] = {displayName: this.nameArray.at(i).value.displayName.displayName2, phoneNumber: this.nameArray.at(i).value.phoneNumber}
+              this.names[i] = {displayName: this.nameArray.at(i).value.displayName.displayName2, 
+                               phoneNumber: this.nameArray.at(i).value.phoneNumber,
+                               photoURL: this.nameArray.at(i).value.photoURL}
           } 
 
           // create the invitation
@@ -277,6 +288,7 @@ export class InvitationFormComponent implements OnInit {
           invitation.invitationId = commonInvitationId;
           invitation.setCreator(this.user);
           invitation.displayName = this.names[i].displayName
+          invitation.photoURL = this.names[i].photoURL
           // console.log('onSubmit(): this.names['+i+'] = ', this.names[i])
           // console.log('onSubmit(): this.names['+i+'].displayName = ', this.names[i].displayName)
          
@@ -383,8 +395,12 @@ export class InvitationFormComponent implements OnInit {
   }
   
 
-  onFriendSelected(friend: Friend, loopIdx: number) {
-      this.nameArray.controls[loopIdx].setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2) })
+  async onFriendSelected(friend: Friend, loopIdx: number) {
+      let photoURL = ''
+      let friendPerson = await this.userService.getUserWithPhone(friend.phoneNumber2)
+      if(friendPerson && friendPerson.photoURL) photoURL = friendPerson.photoURL
+      if(photoURL == '') photoURL = await this.userService.getDefaultProfilePicUrl()
+      this.nameArray.controls[loopIdx].setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2), photoURL: photoURL })
       console.log('onFriendSelected(): this.nameArray.at('+loopIdx+').value: ', this.nameArray.at(loopIdx).value)
       // console.log('onFriendSelected() loopIdx = ', loopIdx)
       // console.log('onFriendSelected() this.nameArray.at('+loopIdx+') = ', this.nameArray.at(loopIdx))

@@ -1,3 +1,20 @@
+
+.circular--portrait {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin-left:-8px;
+  margin-right:10px;
+}
+
+.circular--portrait img {
+  width: 100%;
+  height: auto;
+}
+
+
 .fa-rotate-135 {
     -moz-transform: rotate(135deg);
     -o-transform: rotate(135deg);
