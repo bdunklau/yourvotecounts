@@ -50,7 +50,7 @@
               <img src="{{invitations[0].creatorPhotoURL}}" height="98%">
             </div>
 
-            Host: {{invitations[0].creatorName}} &nbsp;&nbsp; {{invitations[0].creatorPhone | phone}}
+            Host: {{invitations[0].creatorName}}
         </mat-chip>
 
 
@@ -97,7 +97,7 @@
                 <img src="{{invitation.photoURL}}" height="98%">
               </div>
 
-              {{invitation.displayName}} &nbsp;&nbsp; {{invitation.phoneNumber | phone}}
+              {{invitation.displayName}} 
               <mat-icon style="margin-bottom:5px" matChipRemove><i class="fas fa-times" style="color:#ffffff" (click)="delete_guest(invitation)"></i></mat-icon>
           </mat-chip>
         </mat-chip-list>
