@@ -729,6 +729,15 @@ s
     this.setRecordingState()
   } 
 
+
+  start_recording3() {
+      let alreadyRecordedSomething = this.roomObj['mark_time'] && this.roomObj['mark_time'].length > 0
+      if(alreadyRecordedSomething) {
+          this.confirmRerecord(this.start_recording.bind(this))
+      }
+      else this.start_recording()
+  } 
+
   stop_recording() {
     this.roomObj['recording_state'] = ""
     this.messageService.updateRecordingStatus("stopped")
@@ -829,6 +838,36 @@ s
 
   guestClicked(invitation: Invitation) {
      // do anything when guest is clicked?  kinda thinkng no
+  }
+
+
+  async confirmRerecord(fnStartRecording) {
+    
+    var modalRef = this.showOkCancel(fnStartRecording);
+    
+    modalRef.componentInstance.title = `Erase Recording?`;
+    modalRef.componentInstance.question = 'Do you want to record over your last recording?';
+    modalRef.componentInstance.thing = '';
+    modalRef.componentInstance.warning_you = 'This cannot be undone.';
+    modalRef.componentInstance.really_warning_you = 'Are you sure?';
+
+  }
+
+
+  showOkCancel(callback) {
+    const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
+    modalRef.result.then(async (result) => {
+      // the ok/delete case
+      // this.closeResult = `Closed with: ${result}`;
+
+      // so that we get updated memberCount and leaderCount
+      // this.team = await this.teamService.deleteTeamMember(team_member);
+      callback();
+    }, (reason) => {
+      // the cancel/dismiss case
+      // this.closeResult = `Dismissed ${reason}`;
+    });
+    return modalRef;
   }
 
 
