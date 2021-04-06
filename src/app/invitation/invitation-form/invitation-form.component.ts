@@ -55,6 +55,7 @@ export class InvitationFormComponent implements OnInit {
   user: FirebaseUserModel;
   host: string;  //also includes port
   friend?: Friend
+  defaultProfilePicUrl:string
 
   constructor(
     private smsService: SmsService,
@@ -88,6 +89,8 @@ export class InvitationFormComponent implements OnInit {
     // we don't want this - we want config/settings/website_domain_name
     if (isPlatformBrowser(this.platformId)) {
         // console.log(this.router.getCurrentNavigation().state.friend.phoneNumber);
+        
+        this.defaultProfilePicUrl = await this.userService.getDefaultProfilePicUrl()
 
         this.maxGuests = this.settingsService.maxGuests
         this.currentInviteCount = this.currentInvitations ? this.currentInvitations.length : 0
@@ -123,7 +126,7 @@ export class InvitationFormComponent implements OnInit {
           this.canInvite = this.canInviteMore()
           console.log('listenForInvitations():  this.currentInvitations = ', this.currentInvitations)
       }.bind(this)
-      // this.invitationIdSub = 
+
       this.invitationIdSub = this.messageService.listenForInvitations().subscribe({
           next: iii, 
           error: () => {}, 
@@ -169,11 +172,10 @@ export class InvitationFormComponent implements OnInit {
 
   async addSomeone3(displayName: string, phoneNumber: string) {
       // query by phone number to get profile pic if it exists
-      let photoURL = ''
+      let photoURL = this.defaultProfilePicUrl
       if(phoneNumber && phoneNumber != '') {
           let somebody = await this.userService.getUserWithPhone(phoneNumber)
           if(somebody && somebody.photoURL) photoURL = somebody.photoURL
-          if(photoURL == '') photoURL = await this.userService.getDefaultProfilePicUrl();
       }
       this.names.push({displayName: displayName, phoneNumber: phoneNumber, photoURL: photoURL});
       let group = this.fb.group({
@@ -399,7 +401,7 @@ export class InvitationFormComponent implements OnInit {
       let photoURL = ''
       let friendPerson = await this.userService.getUserWithPhone(friend.phoneNumber2)
       if(friendPerson && friendPerson.photoURL) photoURL = friendPerson.photoURL
-      if(photoURL == '') photoURL = await this.userService.getDefaultProfilePicUrl()
+      if(photoURL == '') photoURL = this.defaultProfilePicUrl
       this.nameArray.controls[loopIdx].setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2), photoURL: photoURL })
       console.log('onFriendSelected(): this.nameArray.at('+loopIdx+').value: ', this.nameArray.at(loopIdx).value)
       // console.log('onFriendSelected() loopIdx = ', loopIdx)
