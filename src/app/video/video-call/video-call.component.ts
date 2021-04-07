@@ -57,6 +57,9 @@ export class VideoCallComponent implements OnInit {
   videoTrack: LocalVideoTrack;
   audioTrack: LocalAudioTrack;
   localTracks: LocalTrack[] = [];
+  screenTrack: LocalVideoTrack
+  screenStream: any
+  screenElement: HTMLVideoElement
   activeRoom: Room;
   //user: FirebaseUserModel;
   isHost: boolean = false;
@@ -71,6 +74,7 @@ export class VideoCallComponent implements OnInit {
   connecting: boolean = false
   videoMuted: boolean = false
   audioMuted: boolean = false
+  screenIsShared = false
   // compositionInProgress: boolean = false
   // publishButtonText = "Get Recording" // we change this to "Workin' on it" at the beginning of compose()
   callEnded: boolean = false
@@ -442,6 +446,9 @@ export class VideoCallComponent implements OnInit {
   // async compose() { ... }
 
 
+  /**
+   * called from   join_call()
+   */
   private async initializeDevice(kind?: MediaDeviceKind, deviceId?: string) {
     try {
         this.isInitializing = true;
@@ -498,7 +505,9 @@ s
 
 
   
-
+  /**
+   * called from   initializeDevice()
+   */
   private initializeTracks(kind?: MediaDeviceKind, deviceId?: string) {
     if (kind) {
         switch (kind) {
@@ -868,6 +877,45 @@ s
       // this.closeResult = `Dismissed ${reason}`;
     });
     return modalRef;
+  }
+
+
+  /**
+   * https://www.twilio.com/docs/video/screen-capture-chrome
+   */
+  async share_screen(currentlyShared) {
+      try {
+          this.screenIsShared = !currentlyShared
+          let theparent = this.videoCellsRef.nativeElement
+
+          if(this.screenIsShared) { 
+          
+              if(!this.screenTrack) {
+                  const mediaDevices = navigator.mediaDevices as any  // workaround  https://github.com/microsoft/TypeScript/issues/33232
+                  this.screenStream = await mediaDevices.getDisplayMedia()
+                  this.screenTrack = new LocalVideoTrack(this.screenStream.getTracks()[0])
+              }
+
+              /*await? */ this.activeRoom.localParticipant.publishTrack(this.screenTrack)
+                
+              this.screenElement = this.screenTrack.attach()
+              let child = this.screenElement
+              this.renderer.setStyle(this.screenElement, this.dimension.type, this.dimension.value) 
+              this.renderer.appendChild(theparent, child)
+          }
+          if(!this.screenIsShared) {
+              /*await? */ this.activeRoom.localParticipant.unpublishTrack(this.screenTrack)
+              this.screenTrack.detach()
+              let child = this.screenElement
+              this.renderer.removeChild(theparent, child)
+          }
+            
+      }
+      catch(err) {
+          console.log('err: ', err)
+      }
+
+
   }
 
 
