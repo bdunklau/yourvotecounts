@@ -29,9 +29,8 @@
 <hr/>
 <div class="row" style="margin-top:20px">
     <div class="col-3">
-        {{official.photoUrl}}
         <div class="circular--portrait">
-            <img [attr.src]="official.photoUrl" width="75">
+            <img ng-src="official.photoUrl" width="75">
         </div>
 
         &nbsp;<br/>&nbsp;<br/>
@@ -46,7 +45,7 @@
     </div>
     <div class="col-9">
         <b>{{official.name}}</b> ({{official.party}})
-        
+        <P>{{official.photoUrl}}</P>
         <span *ngFor="let address of official.address">
             <p>
                 {{address.line1}}
