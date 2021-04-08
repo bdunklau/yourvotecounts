@@ -146,6 +146,12 @@ export class SearchOfficialsComponent implements OnInit {
 
             // duplicated from committee.service
             _.each(this.civicResult.officials, official => {
+                // TODO total hack
+                if(official.photoUrl && official.photoUrl.startsWith('http://www.house.state.tx.us')) {
+                    let step1 = official.photoUrl.substring('http://www.house.state.tx.us'.length)
+                    let step2 = 'https://house.texas.gov/'+step1
+                    official.photoUrl = step2
+                }
                 _.map(official.channels, channel => {
                     channel.url = `https://www.${channel.type}.com/${channel.id}`
                     channel.color_class = ''
