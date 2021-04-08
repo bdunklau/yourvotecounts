@@ -187,7 +187,7 @@ banner ad
             <div class="col-8 text-right">
             <span *ngIf="room && room.officials && room.officials.length > 0">
                 <a (click)="officialsCollapsed = !officialsCollapsed"> 
-                    <span *ngIf="officialsCollapsed">Expand for contact info <i class="fas fa-chevron-down"></i></span> 
+                    <span *ngIf="officialsCollapsed">Contact Individually <i class="fas fa-chevron-down"></i></span> 
                     <span *ngIf="!officialsCollapsed">Collapse <i class="fas fa-chevron-up"></i></span>  
                 </a>
             </span>
@@ -196,7 +196,37 @@ banner ad
         </div>
 
 
-        <span *ngIf="room && room.officials">
+        <span *ngIf="room && room.officials && room.officials.length > 0">
+
+
+
+            <!-- <a (click)="popSocialMedia(channel)" class="btn btn-primary {{channel.color_class}} col-12" style="color:#ffffff"> <i [class]="channel.icon"></i> </a> -->
+
+
+        <!-- don't show the "contact all" buttons if there's only one rep listed -->
+        <span *ngIf="room.officials.length > 1">
+        <div class="row">
+            <div class="col-12 col-md-4" style="margin-bottom:10px">
+                <!-- TODO NEED TO FIX EMAIL ADDRESS, SUBJECT MAYBE AND GREETING DEFINITELY -->
+                <a href='mailto:{{emailAddresses}}?subject=Video Message from a Voter&body={{salutation}}%0D%0A%0D%0AI created a short video message for you.  Thanks for watching!%0D%0A%0D%0A{{video_title}}%0D%0A%0D%0A{{currentUrl}}%0D%0A(If the link above is not clickable, please copy into your browser)%0D%0A%0D%0A' class="btn btn-primary col-12" style="color:#ffffff"><i class="fas fa-envelope"></i> Email All </a>    
+            </div>  
+            
+            <div class="col-12 col-md-4" style="margin-bottom:10px">
+                <a class="btn btn-primary facebook_color col-12" (click)="facebookTagAll()" style="color:#ffffff"> <i class="fab fa-facebook-f"></i> Tag All </a>
+            </div> 
+            <div class="col-12 col-md-4" style="margin-bottom:10px">
+                <a class="btn btn-primary twitter_color col-12" (click)="twitterTagAll()" style="color:#ffffff"> <i class="fab fa-twitter"></i> Tag All </a>
+            </div>            
+        </div>
+        </span>
+
+
+
+
+
+
+
+
         <div [ngClass]="{'row': true, 'justify-content-center': officialsCollapsed}"  style="margin-top:0px">
                 <span *ngFor="let official of room.officials" [ngClass]="{'col-12': !officialsCollapsed}">
                     <app-view-official [inputCollapsed]="officialsCollapsed" [canDelete]="isHost" [official]="official"></app-view-official>

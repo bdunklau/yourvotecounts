@@ -32,6 +32,8 @@ export class NgbdModalConfirmComponent implements OnInit {
      * NOTE - copies ALL THE TIME even when it makes no sense (like when the button is a simple OK button)
      * But in that case, who cares really - you're following up with a Ctrl-V.  The user will probably never know
      * they've copied random info to their clipboard
+     * 
+     * BUT HOW DOES THIS GET CALLED ?!??!?
      */
     copyContent() {
         // https://material.angular.io/cdk/clipboard/overview#click-an-element-to-copy

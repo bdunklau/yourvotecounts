@@ -17,6 +17,9 @@ import {
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SettingsService } from 'src/app/settings/settings.service';
 import { Settings } from '../../settings/settings.model';
+import { NgbdModalConfirmComponent } from '../../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Clipboard } from '@angular/cdk/clipboard'
 
 
 @Component({
@@ -59,10 +62,15 @@ export class ViewVideoComponent implements OnInit {
     confirmed_robot = false
     need_to_check = false
     HUMAN_ROBOT_THRESHOLD = 0.41  // 0 < robot < 0.4 < human < 1.0
+    emailAddresses: string
+    salutation: string
+    currentUrl: string
 
 
     constructor(private roomService: RoomService,
                 private userService: UserService,
+                private _modalService: NgbModal,
+                private clipboard: Clipboard,
                 private recaptchaV3Service: ReCaptchaV3Service,
                 private settingsService: SettingsService,
                 private http: HttpClient,
@@ -158,6 +166,10 @@ export class ViewVideoComponent implements OnInit {
             console.log('ngOnInit():  confirmed_human = ', this.confirmed_human)
             ///////////////////////////////////////////////////////////////////////////////////////
 
+            
+            this.emailAddresses = this.refigureEmailAddresses()
+            this.salutation = this.refigureSalutation()            
+            this.currentUrl = window.location.href
 
 
         }
@@ -232,6 +244,92 @@ export class ViewVideoComponent implements OnInit {
         this.committeeDialogTranslated = true
     }
 
+
+    /**
+     * get all FB handles and the window.location.href and copy that to clipboard
+     * Pop up modal saying this stuff has been copied to the clipboard and can how be pasted into FB
+     */
+    facebookTagAll() { 
+        let thePost = this.createSocialMediaPost('Facebook')
+
+        let toClipboard = function() {
+            // ref:   ngbd-modal-confirm.component.ts:copyContent()
+            this.clipboard.copy(thePost)
+        }.bind(this)
+
+        var modalRef = this.showOkDialog(toClipboard);
+        modalRef.componentInstance.title = 'Copied!';
+        modalRef.componentInstance.question = '';
+        modalRef.componentInstance.thing = 'A Facebook post has been copied to your clipboard.  Go to Facebook and paste - that\'s it!';
+        modalRef.componentInstance.warning_you = '';
+        modalRef.componentInstance.really_warning_you = '';
+        modalRef.componentInstance.confirmText = 'OK';
+    }
+
+    twitterTagAll() { 
+        let thePost = this.createSocialMediaPost('Twitter')
+
+        let toClipboard = function() {
+            // ref:   ngbd-modal-confirm.component.ts:copyContent()
+            this.clipboard.copy(thePost)
+        }.bind(this)
+
+        var modalRef = this.showOkDialog(toClipboard);
+        modalRef.componentInstance.title = 'Copied!';
+        modalRef.componentInstance.question = '';
+        modalRef.componentInstance.thing = 'A Twitter post has been copied to your clipboard.  Go to Twitter and paste - that\'s it!';
+        modalRef.componentInstance.warning_you = '';
+        modalRef.componentInstance.really_warning_you = '';
+        modalRef.componentInstance.confirmText = 'OK';
+    }
+
+    createSocialMediaPost(postType /* FB or Twitter */) {
+        let unflattened = _.map(this.room.officials, (official:Official) => official.channels)
+        let allChannels = _.flatten(unflattened)
+        let allOneType = _.filter(allChannels, {type: postType})
+        let allHandlesOfAType = _.map(allOneType, aChannel => { 
+            if(!aChannel.id.startsWith('@')) return '@'+aChannel.id
+            else return aChannel.id
+        })
+        let joined = _.join(allHandlesOfAType, " ")
+        let thePost = joined+'\n\n'+window.location.href
+        return thePost
+    }
+
+    showOkDialog(callback) {
+        //  ngbd-modal-confirm.component.ts
+        //  ngbd-modal-confirm.component.html
+        const modalRef = this._modalService.open(NgbdModalConfirmComponent, {ariaLabelledBy: 'modal-basic-title'});
+  
+        modalRef.result.then(async (result) => {
+          // the ok/delete case
+          // this.closeResult = `Closed with: ${result}`;
+  
+          // so that we get updated memberCount and leaderCount
+          // this.team = await this.teamService.deleteTeamMember(team_member);
+          callback();
+        }, (reason) => {
+          // the cancel/dismiss case
+          // this.closeResult = `Dismissed ${reason}`;
+        });
+        
+        modalRef.componentInstance.showCancelButton = false // hides the Cancel button
+        modalRef.componentInstance.danger = false // makes the OK button gray instead of red
+        return modalRef;
+    }
+
+
+    refigureEmailAddresses() {
+        let unflattedEmails = _.map(this.room.officials, (official:Official) => official.emails)
+        let theseEmails = _.flatten(unflattedEmails)
+        return _.join(theseEmails, ";") // most clients expect commas, let's see what happens with ;'s
+    }
+
+    refigureSalutation() {
+        let names = _.map(this.room.officials, (official:Official) => "the Honorable "+official.name)
+        return "To " + _.join(names, ", ") + ","
+    }
+
     
     private listenForOfficials() {
         
@@ -250,6 +348,8 @@ export class ViewVideoComponent implements OnInit {
                     if(!self.room.officials) self.room.officials = []
                     self.room.officials.push(official)
                     self.roomService.setOfficials(self.room)
+                    self.emailAddresses = self.refigureEmailAddresses()
+                    self.salutation = self.refigureSalutation()
                     //console.log('self.room.officials = ', self.room.officials)
                     // now close the search-officials.component.ts slide up footer
                     self.translated = false
