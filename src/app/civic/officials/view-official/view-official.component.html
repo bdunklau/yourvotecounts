@@ -29,8 +29,9 @@
 <hr/>
 <div class="row" style="margin-top:20px">
     <div class="col-3">
+        {{official.photoUrl}}
         <div class="circular--portrait">
-            <img src="{{official.photoUrl}}" width="75">
+            <img [attr.src]="official.photoUrl" width="75">
         </div>
 
         &nbsp;<br/>&nbsp;<br/>
