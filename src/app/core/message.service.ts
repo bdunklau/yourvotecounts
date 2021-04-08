@@ -4,6 +4,8 @@ import { FirebaseUserModel } from '../user/user.model';
 import { TeamMember } from '../team/team-member.model';
 import { Team } from '../team/team.model';
 import { Invitation } from '../invitation/invitation.model'
+import { CommitteeService } from '../civic/committees/committee.service';
+import { Committee } from '../civic/officials/view-official/view-official.component';
 
 
 @Injectable({
@@ -22,6 +24,7 @@ export class MessageService {
   // private team_member = new Subject<TeamMember>();
   private team = new Subject<Team>();
   private invitationListener = new Subject<Invitation[]>();
+  private committeeSelectionListener = new Subject<Committee>()
   private vmState = new Subject<boolean>();
 
   constructor() { }
@@ -149,6 +152,16 @@ export class MessageService {
    */
   listenForInvitations() {
       return this.invitationListener
+  }
+
+
+  setCurrentCommittee(committee: Committee) {
+      this.committeeSelectionListener.next(committee)
+  }
+
+
+  listenForCommitteeSelection() {
+      return this.committeeSelectionListener
   }
 
 }

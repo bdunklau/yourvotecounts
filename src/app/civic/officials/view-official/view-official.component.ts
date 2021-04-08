@@ -203,6 +203,13 @@ export class Official {
 }
 
 
+export class Committee {
+  id: string // the doc id
+  name: string
+  officials?: Official[]
+}
+
+
 export class CivicResult {
   normalizedInput?: {line1:string, line2?:string, city?:string, state?:string, zip?:string}
   kind: string

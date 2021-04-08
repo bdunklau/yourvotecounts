@@ -144,6 +144,7 @@ export class SearchOfficialsComponent implements OnInit {
             this.civicResult = obj.result as CivicResult
             console.log("this.civicResult  :  ", this.civicResult );
 
+            // duplicated from committee.service
             _.each(this.civicResult.officials, official => {
                 _.map(official.channels, channel => {
                     channel.url = `https://www.${channel.type}.com/${channel.id}`

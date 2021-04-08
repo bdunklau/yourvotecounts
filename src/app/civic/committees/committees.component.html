@@ -1,0 +1,49 @@
+
+<div class="container">
+<h3 style="margin-top:20px">Committees</h3>
+
+<div class="row">
+    <!-- left side of page -->
+    <div class="col">
+        <app-committee-list></app-committee-list>
+    </div>
+
+
+    <!-- right side of page -->
+    <div class="col">
+        <span *ngIf="selectedCommittee">
+        Name: {{selectedCommittee.name}}
+        </span>
+        
+        
+        <form (ngSubmit)="onSubmit()" #committeeForm="ngForm">
+        
+            <div class="form-group">
+              <div style="margin-top:20px">Ex:   ocd-division/country:us/state:tx/sldl:48</div>
+              <input type="text" class="form-control" id="ocdId_field" placeholder="ocdId"
+                      [(ngModel)]="ocdIdValue" name="ocdId" #ocdId="ngModel" required>
+
+              <div [hidden]="ocdId.valid || ocdId.pristine"
+                   class="alert alert-danger">
+                   ocdId is required
+              </div>
+        
+
+              <button id="send_ocdId" type="submit" class="btn btn-success" style="margin-top: 20px"
+                      [disabled]="!committeeForm.form.valid">Submit</button>
+            </div>
+        
+        </form>
+
+
+        <span *ngIf="selectedCommittee">
+        <div class="row" *ngFor="let official of selectedCommittee.officials">            
+            <app-view-official  [official]="official"></app-view-official>
+        </div>
+        </span>
+
+        
+    </div>
+</div>
+
+</div>

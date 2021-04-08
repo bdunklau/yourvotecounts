@@ -40,10 +40,12 @@ export class ViewVideoComponent implements OnInit {
     editing_title = false
     editing_description = false
     editing_allowed = false // if logged in and host or guest of video
-    collapsed = false
+    //collapsed = false
     translated = false
+    committeeDialogTranslated = false
     private official_selected_sub: Subscription
     private official_deleted_sub: Subscription
+    private committee_selected_sub: Subscription
     isHost = false
     isGuest = false
     initialized = false
@@ -167,6 +169,7 @@ export class ViewVideoComponent implements OnInit {
     ngOnDestroy() {
         if(this.official_selected_sub) this.official_selected_sub.unsubscribe();
         if(this.official_deleted_sub) this.official_deleted_sub.unsubscribe();
+        if(this.committee_selected_sub) this.committee_selected_sub.unsubscribe();
         if(this.userSubscription) this.userSubscription.unsubscribe();
         ///////////////////////////////////////////////////////////////////////////////////////
         // reCAPTCHA v3  
@@ -224,6 +227,11 @@ export class ViewVideoComponent implements OnInit {
         this.translated = true
     }
 
+
+    openCommitteeDialog() {
+        this.committeeDialogTranslated = true
+    }
+
     
     private listenForOfficials() {
         
@@ -265,6 +273,26 @@ export class ViewVideoComponent implements OnInit {
                 },
                 complete: function() {
                 }
+            })
+
+            
+            /**
+             * HEADSUP-76
+             */
+            let setCommittee = function(committee) { 
+                // this.selectedCommittee = committee
+                if(!self.room.officials) self.room.officials = []
+                _.each(committee.officials, official => {
+                    self.room.officials.push(official)
+                })
+                self.roomService.setOfficials(self.room)
+                self.committeeDialogTranslated = false
+            }.bind(this)
+
+            this.committee_selected_sub = this.messageService.listenForCommitteeSelection().subscribe({
+                next: setCommittee,
+                error: () => {}, 
+                complete: () => {}
             })
         }
     }

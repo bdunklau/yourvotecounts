@@ -206,7 +206,13 @@ banner ad
 
         <div class="row" style="margin-top:10px" *ngIf="isHost">
             <div class="col">
-                <button id="mybtn1" class="btn btn-primary col-12" (click)="openOfficialDialog()"> <i class="fas fa-user-plus"></i> Add Elected Official  </button>
+                <button id="mybtn1" class="btn btn-primary col-12" (click)="openOfficialDialog()"> <i class="fas fa-user-plus"></i> Add by Address  </button>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:20px" *ngIf="isHost">
+            <div class="col">
+                <button id="mybtn1" class="btn btn-primary col-12" (click)="openCommitteeDialog()"> <i class="fas fa-user-plus"></i> Add Committee  </button>
             </div>
         </div>
     </span>
@@ -241,11 +247,21 @@ banner ad
 
 
 
-<!-- SEARCH OFFICIALS SLIDE-UP FORM -->
+<!-- SEARCH OFFICIALS BY ADDRESS SLIDE-UP FORM -->
 <div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': translated}">   
                 
     <a href="javascript:void(0)" class="pull-right" (click)="translated = !translated" style="margin-top:10px;margin-right:10px;color:black"><i class="fa fa-close fa-2x"></i></a>   
     <app-search-officials [inputCollapsed]="false"></app-search-officials>
+  
+</div> 
+
+
+
+<!-- ADD OFFICIALS BY COMMITTEE SLIDE-UP FORM -->
+<div id="mybox2" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': committeeDialogTranslated}" style="padding-top:30px">   
+                
+    <a href="javascript:void(0)" class="pull-right" (click)="committeeDialogTranslated = !committeeDialogTranslated" style="margin-top:10px;margin-right:10px;color:black"><i class="fa fa-close fa-2x"></i></a>   
+    <app-committee-list></app-committee-list>
   
 </div> 
 

@@ -101,6 +101,8 @@ import {MatNativeDateModule} from '@angular/material/core';
 import { VideoCallNotAllowedComponent } from './video/video-call-not-allowed/video-call-not-allowed.component';
 import { GetStartedComponent } from './get-started/get-started.component';
 import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha';
+import { CommitteesComponent } from './civic/committees/committees.component';
+import { CommitteeListComponent } from './civic/committee-list/committee-list.component';
 
 
 
@@ -217,6 +219,8 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     VideoSearchComponent,
     VideoCallNotAllowedComponent,
     GetStartedComponent,
+    CommitteesComponent,
+    CommitteeListComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
