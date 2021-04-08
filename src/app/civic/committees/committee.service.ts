@@ -43,10 +43,12 @@ export class CommitteeService {
         // duplicated from search-officials.component
         _.each(civicResult.officials, official => {
             // TODO total hack
-            if(official.photoUrl && official.photoUrl.startsWith('http://www.house.state.tx.us')) {
-                let step1 = official.photoUrl.substring('http://www.house.state.tx.us'.length)
+            //  Example:  http://www.house.state.tx.us/photos/members/3205.jpg
+            if(official.photoUrl && official.photoUrl.startsWith('http://www.house.state.tx.us/')) {
+                let step1 = official.photoUrl.substring('http://www.house.state.tx.us/'.length)
                 let step2 = 'https://house.texas.gov/'+step1
                 official.photoUrl = step2
+                console.log('NEW PHOTO URL: ', official.photoUrl)
             }
             _.map(official.channels, channel => {
                 channel.url = `https://www.${channel.type}.com/${channel.id}`
