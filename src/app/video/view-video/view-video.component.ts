@@ -322,7 +322,7 @@ export class ViewVideoComponent implements OnInit {
     refigureEmailAddresses() {
         let unflattedEmails = _.map(this.room.officials, (official:Official) => official.emails)
         let theseEmails = _.flatten(unflattedEmails)
-        return _.join(theseEmails, ";") // most clients expect commas. MSOutlook wants ;'s
+        return _.join(theseEmails, ",") // most clients expect commas. MSOutlook wants ;'s
     }
 
     refigureSalutation() {
