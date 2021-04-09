@@ -76,7 +76,7 @@ exports.compose = functions.https.onRequest((req, res) => {
         let aspectRatio = 9/16
         let width = 1280
         if(participantCount === 2) {
-            aspectRatio = 1
+            aspectRatio = 3/4
             width = 960
         }
         if(participantCount === 3) aspectRatio = 9/21
