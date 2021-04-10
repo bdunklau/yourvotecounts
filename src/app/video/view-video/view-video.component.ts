@@ -51,6 +51,7 @@ export class ViewVideoComponent implements OnInit {
     private committee_selected_sub: Subscription
     isHost = false
     isGuest = false
+    isAdmin = false
     initialized = false
     showAd = false
     private userSubscription: Subscription;
@@ -156,6 +157,7 @@ export class ViewVideoComponent implements OnInit {
             // for reCAPTCHA v3  
             let user = await this.userService.getCurrentUser()
             if(user) {
+                this.isAdmin = user.isAdmin()
                 this.confirmed_human = true
             }
             else {
