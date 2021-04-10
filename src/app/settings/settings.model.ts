@@ -1,5 +1,4 @@
 export class Settings {
-  address_choices_adjustment?: string  // https://headsupvideo.atlassian.net/browse/HEADSUP-46
   admin_sms: string
   cloud_host: string
   cloud_host_test_path: string

@@ -21,7 +21,6 @@ export class SearchOfficialsComponent implements OnInit {
     officialType:string = "Federal" 
     civicResult: CivicResult
     @Input() inputCollapsed = true
-    address_choices_adjustment = '-75' // also stored in config/settings/address_choices_adjustment
     settings: Settings
 
     
@@ -50,7 +49,6 @@ export class SearchOfficialsComponent implements OnInit {
         
         if(isPlatformBrowser(this.platformId)) {
             this.settings = await this.settingsService.getSettingsDoc()
-            this.adjustAddressResultPlacement()
             gapi.load("client");
             //this.loadClient()
             
@@ -178,24 +176,6 @@ export class SearchOfficialsComponent implements OnInit {
             
         }
     }
-
-
-    adjustAddressResultPlacement() {        
-        let userAgent = navigator.userAgent
-        let elems = document.getElementsByClassName("pac-container")
-        if(userAgent.toLowerCase().indexOf('mac os x') != -1) {
-            console.log('userAgent: ', userAgent)
-            _.each(elems, elem => {
-                elem.style.marginTop = `${this.settings.address_choices_adjustment}px`
-            })
-        }
-        
-        // _.each(elems, elem => {
-        //     elem.style.marginTop = `${this.settings.address_choices_adjustment}px`
-        // })
-    }
-
-
 
 
 }
