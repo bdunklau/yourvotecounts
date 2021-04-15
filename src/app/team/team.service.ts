@@ -34,6 +34,7 @@ export class TeamService {
                       team_name: team.name,
                       userId: user.uid,
                       displayName: user.displayName,
+                      phoneNumber: user.phoneNumber,
                       leader: false}
     batch.set(teamMemberRef, teamMember);
 
@@ -70,6 +71,7 @@ export class TeamService {
                      team_name: teamName,
                      userId: user.uid,
                      displayName: user.displayName,
+                     phoneNumber: user.phoneNumber,
                      leader: true}
     batch.set(teamMemberRef, teamMember);
     await batch.commit();

@@ -11,9 +11,9 @@
 <table class="table table-striped">
   <thead *ngIf="canAddTeamMembers">
   <tr>
-    <th scope="col" colspan="2">Members
+    <th scope="col" colspan="3">Members
     </th>
-    <th scope="col" class="text-right">Team Lead (Y/N)
+    <th scope="col" colspan="3" class="text-right">Team Lead (Y/N)
     </th>
   </tr>
   </thead>
@@ -25,7 +25,23 @@
               (click)="confirmDelete(team_member)"></i></a>
     </td>
 
-    <td id="team_member_{{team_member.displayName}}">{{team_member.displayName}}</td>
+    <td id="team_member_{{team_member.displayName}}">{{team_member.displayName}} 
+      <BR/><span class="text-muted small">{{team_member.phoneNumber | phone}}</span>
+    </td>
+
+    <td>
+      <a href="javascript:void(0)" (click)="invite(team_member)"> <i class="fa fa-video" style="color:#555555"></i>  </a>
+    </td>
+
+    <td>
+      <a href="tel:{{team_member.phoneNumber}}"> <i class="fas fa-phone-alt" style="color:#555555"></i>  </a>
+    </td>
+
+    <td>
+      <a href="sms:{{team_member.phoneNumber}}"> <i class="fas fa-sms" style="color:#555555"></i>  </a>
+    </td>
+
+
 
     <td>
       <span *ngIf="!canSetLeaders">

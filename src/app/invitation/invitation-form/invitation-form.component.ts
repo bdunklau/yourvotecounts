@@ -20,6 +20,7 @@ import { SettingsService } from '../../settings/settings.service';
 import { MessageService } from '../../core/message.service';
 import { /*Subject, Observable,*/ Subscription } from 'rxjs';
 import { Friend } from '../../friend/friend.model';
+import { TeamMember } from 'src/app/team/team-member.model';
 
 
 
@@ -55,6 +56,7 @@ export class InvitationFormComponent implements OnInit {
   user: FirebaseUserModel;
   host: string;  //also includes port
   friend?: Friend
+  team_member?: TeamMember
   defaultProfilePicUrl:string
 
   constructor(
@@ -74,12 +76,21 @@ export class InvitationFormComponent implements OnInit {
       this.createForm();
 
       // friend-list.component.html
-      if(this.router.getCurrentNavigation().extras && this.router.getCurrentNavigation().extras.state) {
+      if(!this.router.getCurrentNavigation()) return
+      if(!this.router.getCurrentNavigation().extras) return
+      if(!this.router.getCurrentNavigation().extras.state) return
+      
+      if(this.router.getCurrentNavigation().extras.state.friend) {
           this.friend = this.router.getCurrentNavigation().extras.state.friend as Friend
           console.log('this.friend.displayName2 = ', this.friend.displayName2)
           console.log('this.friend.phoneNumber2 = ', this.friend.phoneNumber2)
           this.addSomeone3(this.friend.displayName2, this.friend.phoneNumber2)
-      } 
+      }
+      else if(this.router.getCurrentNavigation().extras.state.team_member) {
+          this.team_member = this.router.getCurrentNavigation().extras.state.team_member as TeamMember
+          this.addSomeone3(this.team_member.displayName, this.team_member.phoneNumber)
+      }
+
 
       // console.log('this.invitationForm = ', this.invitationForm)
   }
@@ -104,7 +115,7 @@ export class InvitationFormComponent implements OnInit {
          * if friend passed in from friend-list.component.html, then we already added that person in the constructor
          * In that case, make the user press "Add Guest" before someone else can be added
          */
-        if(!this.friend)
+        if(!this.friend && !this.team_member)
             this.addSomeone()
     
         this.user = await this.userService.getCurrentUser();

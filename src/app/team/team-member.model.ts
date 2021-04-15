@@ -13,6 +13,7 @@ export class TeamMember {
   teamDocId: string;
   team_name: string;
   leader: boolean;
+  phoneNumber: string
 
   // constructor(user: FirebaseUserModel) {
   //   this.user = user;
@@ -26,6 +27,7 @@ export class TeamMember {
                     team_name: string,
                     userId: string,
                     displayName: string,
+                    phoneNumber: string,
                     leader: boolean}) {
     this.teamMemberDocId = obj.teamMemberDocId;
     this.access_expiration_ms = obj.access_expiration_ms
@@ -36,6 +38,7 @@ export class TeamMember {
     this.userId = obj.userId;
     this.displayName = obj.displayName;
     this.leader = obj.leader;
+    this.phoneNumber = obj.phoneNumber;
   }
 
   toObj(): any {
@@ -47,6 +50,7 @@ export class TeamMember {
             team_name: this.team_name,
             userId: this.userId,
             displayName: this.displayName,
+            phoneNumber: this.phoneNumber,
             leader: this.leader};
   }
 

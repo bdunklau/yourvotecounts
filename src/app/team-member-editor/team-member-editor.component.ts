@@ -12,6 +12,7 @@ import { UserService } from '../user/user.service';
 import * as _ from 'lodash';
 import { MessageService } from '../core/message.service';
 import { map, take/*, take, switchMap*/ } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-team-member-editor',
@@ -31,6 +32,7 @@ export class TeamMemberEditorComponent implements OnInit {
   canSetLeaders = false
 
   constructor(private teamService: TeamService,
+              private router: Router,
               private userService: UserService,
               @Inject(PLATFORM_ID) private platformId,
               private _modalService: NgbModal,
@@ -199,6 +201,11 @@ export class TeamMemberEditorComponent implements OnInit {
       // this.closeResult = `Dismissed ${reason}`;
     });
     return modalRef;
+  }
+
+
+  invite(team_member: TeamMember) {
+      this.router.navigate(['/invitations'], {state: {team_member: team_member}})
   }
 
 }
