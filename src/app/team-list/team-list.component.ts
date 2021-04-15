@@ -11,6 +11,7 @@ import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal
 // import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from '../core/message.service';
 import { isPlatformBrowser } from '@angular/common';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-team-list',
@@ -29,9 +30,11 @@ export class TeamListComponent implements OnInit {
   teams: TeamMember[]; // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
   private subscription: Subscription;
   private memberSubscription: Subscription;
+  private canCreateTeam = false
 
   constructor(private route: ActivatedRoute,
               private teamService: TeamService,
+              private userService: UserService,
               private messageService: MessageService,
               @Inject(PLATFORM_ID) private platformId,
               // private _modalService: NgbModal,
@@ -39,10 +42,14 @@ export class TeamListComponent implements OnInit {
     this.teamListUser = teamListUser;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
       if(isPlatformBrowser(this.platformId)) {
           this.teams = [];
           // query team_member where userId = user.uid
+
+          let user = await this.userService.getCurrentUser()
+          if(user.access_expiration_ms > new Date().getTime())
+              this.canCreateTeam = true
 
           this.subscription = this.teamService.getTeamsForUser(this.teamListUser.uid).pipe(
             map(actions => {
