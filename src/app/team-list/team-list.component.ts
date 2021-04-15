@@ -30,7 +30,7 @@ export class TeamListComponent implements OnInit {
   teams: TeamMember[]; // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
   private subscription: Subscription;
   private memberSubscription: Subscription;
-  private canCreateTeam = false
+  canCreateTeam = false
 
   constructor(private route: ActivatedRoute,
               private teamService: TeamService,
