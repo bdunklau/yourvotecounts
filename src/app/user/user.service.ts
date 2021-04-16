@@ -153,6 +153,13 @@ export class UserService {
     return user;
   }
 
+  async getUserById(uid: string) {
+      var userDoc = await this.afs.collection('user').doc(uid).ref.get();
+      let user = new FirebaseUserModel();
+      user.populate(userDoc.data());
+      return user
+  }
+
   ///////////////////////////////////////////////////////////////////////
   // may not be useful if angular universal makes us get rid of promises in favor of observables
   // we'll see...   10.1.20

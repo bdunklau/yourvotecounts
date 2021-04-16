@@ -25,7 +25,7 @@
               (click)="confirmDelete(team_member)"></i></a>
     </td>
 
-    <td id="team_member_{{team_member.displayName}}">{{team_member.displayName}} 
+    <td id="team_member_{{team_member.displayName}}"><a href="/my-videos/{{team_member.userId}}" style="color:#0000EE">{{team_member.displayName}}</a> 
       <BR/><span class="text-muted small">{{team_member.phoneNumber | phone}}</span>
     </td>
 

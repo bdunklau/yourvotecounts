@@ -83,6 +83,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'minimal-account-info', component: MinimalAccountInfoComponent, canActivate: [AuthGuard, DisabledGuard], resolve: { user: UserResolver} },
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
+  { path: 'my-videos/:uid', component: MyVideosComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
   { path: 'my-videos', component: MyVideosComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
   { path: 'privacy', component: PrivacyPolicyComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'promo-code', component: PromoCodeComponent, canActivate: [AuthGuard, DisabledGuard] },
