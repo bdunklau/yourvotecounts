@@ -78,3 +78,8 @@ exports.verifyCaptcha = adminTasks.verifyCaptcha
 
 const teamTasks = require('./team');
 exports.updateTeamMemberExpiration = teamTasks.updateTeamMemberExpiration
+
+const roomTasks = require('./room');
+exports.updateViewsOnRoomCreated = roomTasks.updateViewsOnRoomCreated
+exports.updateViewsOnRoomUpdated = roomTasks.updateViewsOnRoomUpdated
+exports.updateTotalTimeOnRoomUpdated = roomTasks.updateTotalTimeOnRoomUpdated

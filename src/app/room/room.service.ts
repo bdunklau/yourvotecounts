@@ -27,6 +27,8 @@ import * as firebase from 'firebase/app';
 import { HttpClient } from '@angular/common/http';
 import { Settings } from '../settings/settings.model';
 import { isPlatformBrowser } from '@angular/common';
+import { TeamService } from '../team/team.service';
+import { TeamMember } from '../team/team-member.model';
 
 
 @Injectable({
@@ -43,6 +45,7 @@ export class RoomService {
   settings: Settings
 
   constructor(
+    private teamService: TeamService,
     private settingsService: SettingsService,
     @Inject(PLATFORM_ID) private platformId,
     private afs: AngularFirestore,
@@ -72,7 +75,7 @@ export class RoomService {
    * @param phoneNumber the phone of the current user - compare with the phone numbers in the invitation object to tell 
    * if this person is the host or a guest 
    */
-  createRoomObj(rm: Room, invitations: Invitation[], phoneNumber: string) {
+  async createRoomObj(rm: Room, invitations: Invitation[], phoneNumber: string) {
     let roomObj = {        
         RoomSid: rm.sid,
         created_ms: new Date().getTime(),
@@ -88,6 +91,12 @@ export class RoomService {
         recording_state: '',
         mark_time: [], // the start- and stop-recording times
     }
+
+    // this will not work if the user belongs to more than one team !!!!
+    // ref:  https://headsup-video.atlassian.net/wiki/spaces/HEADSUP/pages/104136705/Associate+Video+with+a+Team#What-if-a-user-belongs-to-more-than-one-team%3F
+    let teamId = await this.getFirstTeam(invitations[0].creatorId)
+    if(teamId) roomObj['teamDocId'] = teamId
+
     roomObj.phones.push(roomObj.hostPhone)
     let guest = _.find(roomObj['guests'], g => {
         return g['guestPhone'] === phoneNumber
@@ -99,6 +108,13 @@ export class RoomService {
     else roomObj['host_joined_ms'] = new Date().getTime()
     
     return roomObj;
+  }
+
+
+  private async getFirstTeam(hostId: string) {
+      let teamMemberships:TeamMember[] = await this.teamService.getTeamsForUser_snapshot(hostId)
+      if(teamMemberships.length < 1) return 
+      return teamMemberships[0].teamDocId
   }
 
 
@@ -136,7 +152,7 @@ export class RoomService {
     
     let roomDocs = this.afs.collection('room', ref => ref.where("RoomSid", "==", rm.sid)).snapshotChanges().pipe(take(1));
     
-    roomDocs.subscribe(data  => {
+    roomDocs.subscribe(async data  => {
       let found = false
       let roomObj = {}
       data.forEach(function(roomDoc) {
@@ -150,7 +166,7 @@ export class RoomService {
         this.addJoinTime(roomObj, invitations, phoneNumber)
       }
       else {
-        roomObj = this.createRoomObj(rm, invitations, phoneNumber);
+        roomObj = await this.createRoomObj(rm, invitations, phoneNumber);
       }
       
       this.saveRoom(roomObj);

@@ -54,6 +54,8 @@ export class TeamService {
     team.created = firebase.firestore.Timestamp.now();
     team.memberCount = 1;
     team.leaderCount = 1;
+    team.views = 0
+    team.totalTime = 0
     const user = await this.userService.getCurrentUser();
     team.setCreator(user);
 
@@ -128,6 +130,8 @@ export class TeamService {
     team.creatorPhone = teamDoc.data()['creatorPhone'];
     team.leaderCount = teamDoc.data()['leaderCount']; // e2e testing caught this omission :)
     team.memberCount = teamDoc.data()['memberCount']; // e2e testing caught this omission :)
+    team.views = teamDoc.data()['views'] ? teamDoc.data()['views'] : 0
+    team.totalTime = teamDoc.data()['totalTime'] ? teamDoc.data()['totalTime'] : 0
     console.log('teamDoc.data() = ', teamDoc.data());
     return team;
   }
@@ -148,6 +152,24 @@ export class TeamService {
   getTeamsForUser(userId: string) {
     var retThis = this.afs.collection('team_member', ref => ref.where("userId", "==", userId)).snapshotChanges();
     return retThis;
+  }
+
+  /**
+   * the take(1) automatically unsubscribes after the query
+   */
+  async getTeamsForUser_snapshot(userId: string) {    
+      let observable = this.getTeamsForUser(userId).pipe(take(1));
+      let docChangeActions = await observable.toPromise()
+      let teamMembershipsFound = []
+      if(!docChangeActions) return
+      if(docChangeActions.length < 1) return 
+      
+      _.each(docChangeActions, obj => {
+        let teamMember = obj.payload.doc.data() as TeamMember
+        teamMembershipsFound.push(teamMember)
+        // let docId = obj.payload.doc['id']
+      })
+      return teamMembershipsFound
   }
 
   update(team: Team) {

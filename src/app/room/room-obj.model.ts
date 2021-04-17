@@ -38,6 +38,7 @@ export class RoomObj {
     tempEditFolder?: string
     uploadFiles?: string[]
     views = 0
+    teamDocId?: string
 
     constructor() {
 

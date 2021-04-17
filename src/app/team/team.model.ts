@@ -15,6 +15,8 @@ export class Team {
   creatorPhone: string;
   memberCount = 0;
   leaderCount = 0;
+  views = 0
+  totalTime = 0
 
   constructor() {
   }
@@ -28,7 +30,9 @@ export class Team {
           creatorName: this.creatorName,
           creatorPhone: this.creatorPhone,
           memberCount: this.memberCount,
-          leaderCount: this.leaderCount};
+          leaderCount: this.leaderCount,
+          views: this.views,
+          totalTime: this.totalTime};
   }
 
   /**
