@@ -13,6 +13,7 @@ import { Router } from "@angular/router";
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 import { LogService } from '../log/log.service';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-team-editor',
@@ -35,17 +36,21 @@ export class TeamEditorComponent implements OnInit {
   // });
   private routeSubscription: Subscription;
   private memberSubscription: Subscription;
+  isAdmin = false
 
   constructor(private teamService: TeamService,
+              private userService: UserService,
               private route: ActivatedRoute,
               private router: Router,
               private _modalService: NgbModal,
               private messageService: MessageService,
               private log: LogService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     this.team = new Team();
+    let user = await this.userService.getCurrentUser()
+    this.isAdmin = user.isAdmin()
 
     // See TeamResolver and app-routing.module.ts for /teams/edit
     // You'll see that the team object below is created by TeamResolver
