@@ -3,10 +3,10 @@
         <div class="col-12">
             <hr style="border: .05em solid #ededed;"/>
             <div class="row">
-                <div class="col-5">
+                <div class="col-4">
                     <a href="/view-video/{{room.CompositionSid}}"><img [attr.src]="room.screenshotUrl" style="width:100%"></a>
                 </div>
-                <div class="col-6">
+                <div class="col-7">
                     <div class="row">
                         <div class="col-12">
                             <span *ngIf="room.video_title">{{room.video_title}} </span>
@@ -41,10 +41,10 @@
             </div>            
             
             <div class="row" [hidden]="!room.expanded">
-                <div class="col-5">
+                <div class="col-4">
                     {{room.hostName}}  
                 </div>
-                <div class="col-7"><a href="tel:{{room.hostPhone}}">{{room.hostPhone | phone}} </a></div>
+                <div class="col-8"><a href="tel:{{room.hostPhone}}">{{room.hostPhone | phone}} </a></div>
             </div>
 
 
@@ -53,8 +53,8 @@
                 <div class="col-12 small bold">Guests</div>
             </div>            
             <div class="row" [hidden]="!room.expanded" *ngFor="let guest of room.guests">
-                <div class="col-5">{{guest.guestName}} </div>
-                <div class="col-7"><a href="tel:{{guest.guestPhone}}">{{guest.guestPhone | phone}} </a></div>
+                <div class="col-4">{{guest.guestName}} </div>
+                <div class="col-8"><a href="tel:{{guest.guestPhone}}">{{guest.guestPhone | phone}} </a></div>
             </div>
 
 
