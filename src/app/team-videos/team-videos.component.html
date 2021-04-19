@@ -14,9 +14,18 @@
                     </div>
                     <div class="row">
                         <div class="col-12 small">
-                            {{room.created_ms | date: 'MMM d, yyyy'}} <span *ngIf="room.call_ended_ms">&nbsp;&nbsp;call time: {{(room.call_ended_ms - room.created_ms)/1000 | elapsedTime}}</span>   
+                            {{room.created_ms | date: 'MMM d, yyyy'}}   
                         </div>
                     </div>
+
+                    <span *ngIf="room.call_ended_ms">
+                    <div class="row">
+                        <div class="col-12 small">
+                            call time: {{(room.call_ended_ms - room.created_ms)/1000 | elapsedTime}}   
+                        </div>
+                    </div>
+                    </span>
+
                     <div class="row" [hidden]="!room.expanded">
                         <div class="col-12 small">
                             {{room.created_ms | date: 'h:mm a'}} to 
