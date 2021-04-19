@@ -24,6 +24,8 @@ export class TeamViewerComponent implements OnInit {
   team_members: TeamMember[];
   private memberSubscription: Subscription;
   canEditTeam = false;
+  showMembers = true
+  showVideos = false
 
   constructor(private route: ActivatedRoute,
               private teamService: TeamService,

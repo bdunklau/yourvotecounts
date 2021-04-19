@@ -15,18 +15,18 @@
 
 
 
-<div class="row" style="margin-top:30px">
-  <div class="col-12 col-sm-6" style="margin-bottom:20px">
-      <button class="btn btn-primary col-12" (click)="showMembers = true;showVideos = false"> <i class="fa fa-users"></i> Show Members  </button>
-  </div>
-  <div class="col-12 col-sm-6" style="margin-bottom:20px">
-      <button class="btn btn-primary col-12" (click)="showMembers = false;showVideos = true"> <i class="fas fa-list"></i> Show Videos  </button>
-  </div>
+<div class="row" style="margin-top:30px" [hidden]="!canEditTeam">
+    <div class="col-6" style="margin-bottom:20px">
+        <button [ngClass]="{'btn': true, 'btn-primary': showMembers, 'col-12': true}" (click)="showMembers = true;showVideos = false"> <i class="fa fa-users"></i> Show Members  </button>
+    </div>
+    <div class="col-6" style="margin-bottom:20px">
+        <button [ngClass]="{'btn': true, 'btn-primary': showVideos, 'col-12': true}" (click)="showMembers = false;showVideos = true"> <i class="fas fa-list"></i> Show Videos  </button>
+    </div>
 </div>
 
 
 
-<div class="row" [hidden]="showMembers" style="margin-top:30px">
+<div class="row" [hidden]="!showMembers" style="margin-top:30px">
   <div class="col">
 
     <app-team-member-editor
@@ -37,10 +37,12 @@
 </div>
 
 
-<div class="row" [hidden]="showVideos" style="margin-top:30px">
+<div class="row" [hidden]="!showVideos" style="margin-top:30px">
   <div class="col">
 
-    showVideos
+    <app-team-videos
+        [team]="team">
+    </app-team-videos>
 
   </div>
 </div>

@@ -29,6 +29,7 @@ import { Settings } from '../settings/settings.model';
 import { isPlatformBrowser } from '@angular/common';
 import { TeamService } from '../team/team.service';
 import { TeamMember } from '../team/team-member.model';
+import { Team } from '../team/team.model';
 
 
 @Injectable({
@@ -333,6 +334,12 @@ export class RoomService {
       // }
       // console.log('getRooms(): rooms = ', rooms)
       // return rooms      
+  }
+
+
+  getRoomsForTeam(team: Team) {
+    let observable = this.afs.collection('room', ref => ref.where('teamDocId', '==', team.id).orderBy('created_ms', 'desc')).snapshotChanges()
+    return observable
   }
 
 

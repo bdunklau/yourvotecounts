@@ -103,6 +103,7 @@ import { GetStartedComponent } from './get-started/get-started.component';
 import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module, ReCaptchaV3Service } from 'ng-recaptcha';
 import { CommitteesComponent } from './civic/committees/committees.component';
 import { CommitteeListComponent } from './civic/committee-list/committee-list.component';
+import { TeamVideosComponent } from './team-videos/team-videos.component';
 
 
 
@@ -221,6 +222,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     GetStartedComponent,
     CommitteesComponent,
     CommitteeListComponent,
+    TeamVideosComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857
