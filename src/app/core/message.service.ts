@@ -6,6 +6,8 @@ import { Team } from '../team/team.model';
 import { Invitation } from '../invitation/invitation.model'
 import { CommitteeService } from '../civic/committees/committee.service';
 import { Committee } from '../civic/officials/view-official/view-official.component';
+import { Licensee } from '../license/licensee/licensee.model';
+import { LicenseeContact } from '../license/licensee-contact/licensee-contact.model';
 
 
 @Injectable({
@@ -26,6 +28,8 @@ export class MessageService {
   private invitationListener = new Subject<Invitation[]>();
   private committeeSelectionListener = new Subject<Committee>()
   private vmState = new Subject<boolean>();
+  private licenseeListener = new Subject<Licensee>()
+  private licenseeContactListener = new Subject<LicenseeContact>()
 
   constructor() { }
 
@@ -162,6 +166,26 @@ export class MessageService {
 
   listenForCommitteeSelection() {
       return this.committeeSelectionListener
+  }
+
+
+  setCurrentLicensee(licensee: Licensee) {
+      return this.licenseeListener.next(licensee)
+  }
+
+
+  listenForLicensee() {
+      return this.licenseeListener
+  }
+
+
+  setCurrentLicenseeContact(licenseeContact: LicenseeContact) {
+      return this.licenseeContactListener.next(licenseeContact)
+  }
+
+
+  listenForLicenseeContact() {
+      return this.licenseeContactListener
   }
 
 }

@@ -104,6 +104,11 @@ import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module, ReCaptchaV3Service } from 'ng
 import { CommitteesComponent } from './civic/committees/committees.component';
 import { CommitteeListComponent } from './civic/committee-list/committee-list.component';
 import { TeamVideosComponent } from './team-videos/team-videos.component';
+import { LicenseeFormComponent } from './license/licensee-form/licensee-form.component';
+import { LicenseeMgmtComponent } from './license/licensee-mgmt/licensee-mgmt.component';
+import { LicenseeContactFormComponent } from './license/licensee-contact-form/licensee-contact-form.component';
+import { LicenseeContactListComponent } from './license/licensee-contact-list/licensee-contact-list.component';
+import { LicenseeListComponent } from './license/licensee-list/licensee-list.component';
 
 
 
@@ -223,6 +228,11 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     CommitteesComponent,
     CommitteeListComponent,
     TeamVideosComponent,
+    LicenseeFormComponent,
+    LicenseeMgmtComponent,
+    LicenseeContactFormComponent,
+    LicenseeContactListComponent,
+    LicenseeListComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

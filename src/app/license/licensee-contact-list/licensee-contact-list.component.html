@@ -1,0 +1,23 @@
+
+<div class="row" style="margin-top:20px">
+    <div class="col">
+      <h5>{{inputLicensee.name}}</h5>
+    </div>
+</div>
+    
+  
+  <table class="table table-striped">
+    <tbody>
+    <tr *ngFor="let licenseeContact of licenseeContacts" class="hand" (click)="licenseeContactSelected(licenseeContact)"> 
+
+      <td>{{licenseeContact.displayName}}</td>
+      <td class="text-right">
+        <a>
+          <!-- fa-2x, fa-4x etc if you want bigger icons -->
+          <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  

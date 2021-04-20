@@ -1,0 +1,29 @@
+
+<!-- make this like the team list page    team-list.component.html -->
+
+
+<div class="row" style="margin-top:20px">
+    <div class="col">
+      <h3>Licensees</h3>
+    </div>
+    <!-- <div class="col text-right">
+      <a [hidden]="!canCreateTeam" id="create_team" routerLink="/teams/add" class="btn btn-primary">+ Add Team</a>
+    </div> -->
+</div>
+    
+  
+  <table class="table table-striped">
+    <tbody>
+    <tr *ngFor="let licensee of licensees" class="hand" (click)="licenseeSelected(licensee)"> 
+
+      <td>{{licensee.name}}</td>
+      <td class="text-right">
+        <a>
+          <!-- fa-2x, fa-4x etc if you want bigger icons -->
+          <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  

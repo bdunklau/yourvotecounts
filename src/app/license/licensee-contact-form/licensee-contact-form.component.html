@@ -1,0 +1,53 @@
+
+    <h5 style="margin-top:20px">Add Licensee Contact</h5>
+    
+
+    <!-- <form (ngSubmit)="onSubmit(friendForm)" #friendForm="ngForm"> -->
+    <form (ngSubmit)="onSubmit()" [formGroup]="licenseeContactForm">
+    <div class="form-group">
+    
+        <div class="row">
+            <div class="col"  style="margin-top:10px">
+    
+                <input type="text" class="form-control" placeholder="Licensee Contact Name"  formControlName="licenseeContactName">
+            </div>
+        </div>
+    
+    
+        <div class="row">
+            <div class="col"  style="margin-top:10px">
+    
+                <input type="text" class="form-control"
+                        (input)="formatPhone($event)" placeholder="(   ) ___-____"
+                        formControlName="licenseeContactPhone">
+            </div>
+        </div>
+    
+    
+        <div class="row">
+            <div class="col"  style="margin-top:10px">    
+                <button type="submit" class="btn btn-success" [hidden]="!licenseeContactForm.valid">Save</button>
+            </div>
+            <div class="col"  style="margin-top:10px">    
+                <button type="button" class="btn btn-danger" [hidden]="!licenseeContactForm.valid" (click)="deleteLicenseeContact(licenseeContact)">
+                    <span *ngIf="!confirmDelete">Delete</span>
+                    <span *ngIf="confirmDelete">Really?</span>
+                </button>
+            </div>
+            <div class="col"  style="margin-top:10px" [hidden]="!confirmDelete">    
+                <button type="button" class="btn" [hidden]="!licenseeContactForm.valid" (click)="confirmDelete = false">Cancel</button>
+            </div>
+        </div>
+    
+    
+    
+    </div>
+    
+    
+        <!-- <P>friendNameValue: {{friendForm.get('friendName').value}}</P> -->
+    
+    </form>
+        
+        
+        
+    

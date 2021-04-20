@@ -58,11 +58,13 @@ import { VideoSearchComponent } from './video/video-search/video-search.componen
 import { VideoCallNotAllowedComponent } from './video/video-call-not-allowed/video-call-not-allowed.component';
 import { GetStartedComponent } from './get-started/get-started.component';
 import { CommitteesComponent } from './civic/committees/committees.component';
+import { LicenseeMgmtComponent } from './license/licensee-mgmt/licensee-mgmt.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'admin/committees', component: CommitteesComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, SettingsGuard], data: {role: 'admin'} },
+  { path: 'admin/licensees', component: LicenseeMgmtComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'admin/tags', component: TagsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'admin/videos', component: VideoListComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   // { path: 'admin/vm', component: VmMainComponent, canActivate: [VmGuard], data: {role: 'admin'} },
