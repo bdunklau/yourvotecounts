@@ -375,6 +375,9 @@ export class InvitationFormComponent implements OnInit {
       console.log('validatePhoneNo(): field.value = ', field.value)
   }
 
+  /**
+   * duplicated in   licensee-contact-form.component.ts
+   */
   private formatPhone2(value) {    
       var phoneNumDigits = value.replace(/\D/g, '');
     
