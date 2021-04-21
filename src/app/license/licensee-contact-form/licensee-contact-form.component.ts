@@ -6,6 +6,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { MessageService } from 'src/app/core/message.service';
 import { Subscription } from 'rxjs';
 import { LicenseeContact } from '../licensee-contact/licensee-contact.model';
+import { UserService } from 'src/app/user/user.service';
 
 @Component({
   selector: 'app-licensee-contact-form',
@@ -27,6 +28,7 @@ export class LicenseeContactFormComponent implements OnInit {
 
     
     constructor(private licenseService: LicenseService, 
+            private userService: UserService,
             private messageService: MessageService,
             @Inject(PLATFORM_ID) private platformId) { }
 
@@ -50,7 +52,14 @@ export class LicenseeContactFormComponent implements OnInit {
     }
 
     
-
+    /**
+     * https://headsupvideo.atlassian.net/browse/HEADSUP-93
+     * 
+     * Find out if the new licensee contact already a registered user or not
+     * If registered already, query for the person's uid and insert into the 
+     * LicenseeContact object.  If the contact is not registered yet, then we
+     * have a db trigger that fires whenever new 'user' docs are created.
+     */
     async onSubmit(/*form: NgForm*/) {
         let licenseeContact:LicenseeContact = new LicenseeContact()
         if(this.licenseeContact && this.licenseeContact.id) licenseeContact.id = this.licenseeContact.id
@@ -58,10 +67,20 @@ export class LicenseeContactFormComponent implements OnInit {
         licenseeContact.phoneNumber = this.getPhoneForSaving( this.licenseeContactForm.get('licenseeContactPhone').value )
         licenseeContact.created_ms = new Date().getTime()
         licenseeContact.licenseeId = this.inputLicensee.id
-
+        let uid = await this.getUid(licenseeContact.phoneNumber)
+        console.log('uid = ', uid)
+        if(uid) licenseeContact.uid = uid
+        
         await this.licenseService.addLicenseeContact(licenseeContact)
         this.licenseeContactForm.reset();
         this.licenseeContact = new LicenseeContact()
+    }
+
+
+    private async getUid(phoneNumber: string) {
+        let user = await this.userService.getUserByPhone(phoneNumber)
+        if(!user) return 
+        return user['uid']
     }
 
 

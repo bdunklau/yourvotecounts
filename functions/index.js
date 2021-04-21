@@ -66,6 +66,7 @@ exports.getTermsOfService = terms_of_service.getTermsOfService;
 const my_account = require('./my-account');
 exports.generateThumbnail = my_account.generateThumbnail;
 exports.restoreDefaultPng = my_account.restoreDefaultPng;
+exports.updateLicenseeContactIdOnUserCreated = my_account.updateLicenseeContactIdOnUserCreated;
 
 
 const adminTasks = require('./admin');

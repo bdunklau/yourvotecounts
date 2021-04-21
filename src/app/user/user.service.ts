@@ -402,7 +402,11 @@ export class UserService {
 
 
     async getUserByPhone(phoneNumber: string) {
-        return await this.getUserWithPhone(phoneNumber)
+        let userRef = this.afs.collection('user', ref => ref.where('phoneNumber', '==', phoneNumber).limit(1)).snapshotChanges().pipe(take(1))
+        let userPromise = await userRef.toPromise()    
+        if(!userPromise || userPromise.length == 0) return null   
+        let userObj = userPromise[0].payload.doc.data()
+        return userObj
     }
 
 
