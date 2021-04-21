@@ -27,7 +27,7 @@ export class ElapsedTimePipe implements PipeTransform {
                 return `${mins} min`
             else if(secs > 0) 
                 return `${secs} secs`
-            else return 'no time left' 
+            else return '0' 
             // return `${mins}:${secs}`
         }
 
