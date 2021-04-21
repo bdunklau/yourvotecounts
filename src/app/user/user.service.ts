@@ -401,6 +401,11 @@ export class UserService {
     }
 
 
+    async getUserByPhone(phoneNumber: string) {
+        return await this.getUserWithPhone(phoneNumber)
+    }
+
+
     async getUserWithPhone(phoneNumber: string) {
         console.log('getUserWithPhone(): phoneNumber: ', phoneNumber)
         let userRef = this.afs.collection('user', ref => ref.where('phoneNumber', '==', phoneNumber).limit(1)).snapshotChanges().pipe(take(1))
