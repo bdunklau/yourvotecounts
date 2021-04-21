@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
 import { MessageService } from '../core/message.service';
 import { Licensee } from './licensee/licensee.model';
 import { LicenseeContact } from './licensee-contact/licensee-contact.model';
+import * as _ from 'lodash'
+import { take } from 'rxjs/operators';
 
 /**
  *  ng generate class license/licensee/licensee --type=model
@@ -44,6 +46,19 @@ export class LicenseService {
     getLicensees() {
         var retThis = this.afs.collection('licensee').snapshotChanges();
         return retThis;
+    }
+
+
+    async isLicenseeContact(phoneNumber: string) {
+        let docChangeActions: DocumentChangeAction<unknown>[] = await this.afs.collection('licensee_contact', ref => ref.where('phoneNumber', '==', phoneNumber)).snapshotChanges().pipe(take(1)).toPromise()
+        let isLicensed = false
+        if(docChangeActions && docChangeActions.length > 0) {
+            _.each(docChangeActions, obj => {
+                isLicensed = true
+            })
+        }
+        
+        return isLicensed
     }
 
     

@@ -12,6 +12,7 @@ import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal
 import { MessageService } from '../core/message.service';
 import { isPlatformBrowser } from '@angular/common';
 import { UserService } from '../user/user.service';
+import { LicenseService } from '../license/license.service';
 
 @Component({
   selector: 'app-team-list',
@@ -35,6 +36,7 @@ export class TeamListComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private teamService: TeamService,
               private userService: UserService,
+              private licenseService: LicenseService,
               private messageService: MessageService,
               @Inject(PLATFORM_ID) private platformId,
               // private _modalService: NgbModal,
@@ -48,8 +50,11 @@ export class TeamListComponent implements OnInit {
           // query team_member where userId = user.uid
 
           let user = await this.userService.getCurrentUser()
-          if(user.access_expiration_ms > new Date().getTime())
-              this.canCreateTeam = true
+          this.canCreateTeam = await this.getCanCreateTeam(user)
+          console.log('this.canCreateTeam = ', this.canCreateTeam)
+          // if(user.access_expiration_ms > new Date().getTime())
+          //     this.canCreateTeam = true
+
 
           this.subscription = this.teamService.getTeamsForUser(this.teamListUser.uid).pipe(
             map(actions => {
@@ -76,6 +81,18 @@ export class TeamListComponent implements OnInit {
   ngOnDestroy() {
     if(this.subscription) this.subscription.unsubscribe();
     if(this.memberSubscription) this.memberSubscription.unsubscribe();
+  }
+
+  async getCanCreateTeam(user: FirebaseUserModel) {
+      if(!user) return false
+      if(user.isAdmin()) return true 
+      // user already belongs to a team?  then no
+      let teamsFound = await this.teamService.getTeamsForUser_snapshot(user.uid)
+      if(teamsFound && teamsFound.length > 0) return false
+      
+      // if found in licensee_contact, then yes (because you don't belong to a team already (immediately above))
+      let allowed = await this.licenseService.isLicenseeContact(user.phoneNumber)
+      return allowed
   }
 
   // notice ngOnInit() - that's where we make this object TeamMember, not Team
