@@ -17,11 +17,11 @@ exports.logNewUser = functions.auth.user().onCreate((user) => {
 
 
 exports.recordNewUser = functions.auth.user().onCreate((user) => {
-  let daysOut = 60
-  var access_expiration_ms = moment().startOf('day').add(daysOut, 'days').add(1, 'days').subtract(1, 'second').toDate().getTime()
+  // let daysOut = 60
+  // var access_expiration_ms = moment().startOf('day').add(daysOut, 'days').add(1, 'days').subtract(1, 'second').toDate().getTime()
 
   // start out with no access to create video   https://headsupvideo.atlassian.net/browse/HEADSUP-67?focusedCommentId=10135
-  // var access_expiration_ms = new Date().getTime() - 1000
+  var access_expiration_ms = new Date().getTime() - 1000
   return db.collection('user').doc(user.uid)
       .set({uid: user.uid,
             access_expiration_ms: access_expiration_ms,
