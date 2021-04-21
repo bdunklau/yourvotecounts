@@ -61,8 +61,8 @@ export class AppComponent {
         }
 
         var nxt = function(value /* FirebaseUserModel */) {
-          console.log('AppComponent: next(): value = ', value);
-          console.log('AppComponent: next(): this = ', this);
+          // console.log('AppComponent: next(): value = ', value);
+          // console.log('AppComponent: next(): this = ', this);
           if(value) this.setAdmin(value.isAdmin())
           if(value) this.isLoggedIn = true;
           else this.isLoggedIn = false
