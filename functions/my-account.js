@@ -113,14 +113,12 @@ exports.generateThumbnail = functions.storage.object().onFinalize(async (object)
 exports.updateLicenseeContactIdOnUserCreated = functions.firestore.document('user/{uid}').onCreate(async (snap, context) => {
     var db = admin.firestore();
     var data = snap.data()
-    console.log('PAY ATTENTION: === data.phoneNumber = ', data.phoneNumber)
     // let dt = await db.collection('licensee_contact').where('phoneNumber', '==', data.phoneNumber).limit(1).get()
 
     return db.collection('licensee_contact').where('phoneNumber', '==', data.phoneNumber).limit(1).get().then(snap => {
         let licenseeContactId
-        console.log('PAY ATTENTION: === snap = ', snap) // QuerySnapshot
+        // console.log('PAY ATTENTION: === snap = ', snap) // QuerySnapshot
         snap.forEach(function(doc1) { // loop should only fire once
-            console.log('PAY ATTENTION: === doc1.data().id = ', doc1.data().id) // QuerySnapshot
             licenseeContactId = doc1.data().id;
         })
         return db.collection('licensee_contact').doc(licenseeContactId).update({uid: context.params.uid})
