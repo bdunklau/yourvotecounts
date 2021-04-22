@@ -397,7 +397,8 @@ export class UserService {
 
 
     getFriends(user: FirebaseUserModel) {
-        return this.afs.collection('friend', ref => ref.where('phoneNumber1', '==', user.phoneNumber).orderBy('displayName2_lowerCase', 'asc').limit(25)).snapshotChanges()
+        // no need to limit right now
+        return this.afs.collection('friend', ref => ref.where('phoneNumber1', '==', user.phoneNumber).orderBy('displayName2_lowerCase', 'asc')/*.limit(25)*/).snapshotChanges()
     }
 
 
