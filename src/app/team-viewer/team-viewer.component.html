@@ -15,7 +15,7 @@
 
 
 
-<div class="row" style="margin-top:30px" [hidden]="!canEditTeam">
+<div class="row" style="margin-top:30px" [hidden]="!canShowMembersAndVideos">
     <div class="col-6" style="margin-bottom:20px">
         <button [ngClass]="{'btn': true, 'btn-primary': showMembers, 'col-12': true}" (click)="showMembers = true;showVideos = false"> <i class="fa fa-users"></i> Show Members  </button>
     </div>

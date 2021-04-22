@@ -154,6 +154,14 @@ export class TeamService {
     return retThis;
   }
 
+  
+  /**
+   * at some point, we'll have to limit the query
+   */
+  getAllTeams() {
+      return this.afs.collection('team').snapshotChanges();
+  }
+
   /**
    * the take(1) automatically unsubscribes after the query
    */

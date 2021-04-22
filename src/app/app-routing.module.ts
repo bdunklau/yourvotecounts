@@ -66,6 +66,7 @@ const routes: Routes = [
   { path: 'admin/committees', component: CommitteesComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard, SettingsGuard], data: {role: 'admin'} },
   { path: 'admin/licensees', component: LicenseeMgmtComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'admin/tags', component: TagsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
+  { path: 'admin/teams/:all', component: TeamsComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'admin/videos', component: VideoListComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   // { path: 'admin/vm', component: VmMainComponent, canActivate: [VmGuard], data: {role: 'admin'} },
   { path: 'disabled', component: DisabledComponent },

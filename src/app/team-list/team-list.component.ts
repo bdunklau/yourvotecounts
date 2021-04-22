@@ -7,7 +7,6 @@ import { TeamMember } from '../team/team-member.model';
 import { Subscription } from 'rxjs';
 import * as _ from 'lodash';
 import { map, take } from 'rxjs/operators';
-import { NgbdModalConfirmComponent } from '../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
 // import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from '../core/message.service';
 import { isPlatformBrowser } from '@angular/common';
@@ -28,7 +27,8 @@ export class TeamListComponent implements OnInit {
 
   phoneVal: string;
   // teams: Team[];
-  teams: TeamMember[]; // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
+  // teams: TeamMember[]; // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
+  teams: {team_name: string, teamDocId: string}[]
   private subscription: Subscription;
   private memberSubscription: Subscription;
   canCreateTeam = false
@@ -55,26 +55,48 @@ export class TeamListComponent implements OnInit {
           // if(user.access_expiration_ms > new Date().getTime())
           //     this.canCreateTeam = true
 
-
-          this.subscription = this.teamService.getTeamsForUser(this.teamListUser.uid).pipe(
-            map(actions => {
-              return actions.map(a => {
-                const data = a.payload.doc.data() as TeamMember;
-                const id = a.payload.doc['id'];
-                var returnThis = { id, ...data };
-                // console.log('returnThis = ', returnThis);
-                return returnThis;
-              });
-            })
-          )
-            .subscribe(objs => {
-              // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
-              this.teams = _.map(objs, obj => {
-                let tm = obj as unknown;
-                return tm as TeamMember;
-              })
-            });
+          let isAdmin = this.admin()
+          this.normalUser(isAdmin)
       }
+  }
+
+  private admin() {
+      if(!this.route.snapshot.params.all) return false
+      this.subscription = this.teamService.getAllTeams().pipe(
+        map(actions => {
+          return actions.map(a => {
+            const data:Team = a.payload.doc.data() as Team;
+            // const id = a.payload.doc['id'];
+            return {team_name: data.name, teamDocId: data.id};
+          });
+        })
+      )
+        .subscribe((objs: {team_name: string, teamDocId: string}[]) => {
+          this.teams = objs
+        });
+      return true
+  }
+
+  private normalUser(isAdmin: boolean) {
+      if(isAdmin) return
+      this.subscription = this.teamService.getTeamsForUser(this.teamListUser.uid).pipe(
+        map(actions => {
+          return actions.map(a => {
+            const data = a.payload.doc.data() as TeamMember;
+            // const id = a.payload.doc['id'];
+            // var returnThis = { id, ...data };
+            // return returnThis;
+            return {team_name: data.team_name, teamDocId: data.teamDocId};
+          });
+        })
+      )
+        .subscribe(objs => {
+          // need TeamMember objects, not Team's, because we need the leader attribute from TeamMember
+          this.teams = _.map(objs, obj => {
+            let tm = obj as unknown;
+            return tm as TeamMember;
+          })
+        });
   }
 
   // always unsubscribe

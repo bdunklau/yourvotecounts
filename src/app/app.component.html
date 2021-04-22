@@ -36,6 +36,7 @@
    
    <a [hidden]="!isAdmin" id="users_link" class="nav-link" (click)="closeNav()" [routerLink]="['/users']"><i class="fa fa-users"></i> User Mgmt</a>
    <a [hidden]="!isAdmin" id="sms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/admin/licensees']"> <i class="far fa-id-badge"></i> Licensees</a>
+   <a [hidden]="!isAdmin" id="sms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/admin/teams/all']"> <i class="fa fa-users"></i> Teams</a>
    <a [hidden]="!isAdmin" id="sms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/sms']"> <i class="fa fa-sms"></i> SMS</a>
    <a [hidden]="!isAdmin" id="log_link" class="nav-link" (click)="closeNav()" [routerLink]="['/log']"><i class="far fa-file"></i> Logs</a>
    <a [hidden]="!isAdmin" id="terms_link" class="nav-link" (click)="closeNav()" [routerLink]="['/terms']"><i class="fas fa-file-contract"></i> Terms</a>

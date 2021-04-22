@@ -24,6 +24,7 @@ export class TeamViewerComponent implements OnInit {
   team_members: TeamMember[];
   private memberSubscription: Subscription;
   canEditTeam = false;
+  canShowMembersAndVideos = false
   showMembers = true
   showVideos = false
 
@@ -87,6 +88,7 @@ export class TeamViewerComponent implements OnInit {
   setTeamEditPermissions(user: FirebaseUserModel, team: Team, team_members: TeamMember[]) {
     if(!user || !team || !team_members) return false;
     this.canEditTeam = user.canEditTeam(team, team_members);
+    this.canShowMembersAndVideos = this.canEditTeam || user.isAdmin()
   }
 
 }
