@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { RoomObj } from '../../room/room-obj.model';
 import { RoomService } from '../../room/room.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 
 @Component({
@@ -22,14 +23,14 @@ export class VideoProducingComponent /*implements OnInit*/ {
     // private roomSubscription: Subscription;
 
 
-    // constructor(
-    //   private roomService: RoomService,
-    //   private router: Router,) { }
+    constructor(
+      @Inject(PLATFORM_ID) private platformId,) { }
 
-    // ngOnInit() {      
-    //     this.roomObj = this.roomService.roomObj
-    //     this.monitorRoom(this.roomObj.RoomSid) // guaranteed by the VideoProducingGuard
-    // }
+    ngOnInit() {      
+        if (isPlatformBrowser(this.platformId)) {  
+          
+        }
+    }
 
     
     // ngOnDestroy() {
