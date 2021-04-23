@@ -114,7 +114,7 @@ export class RoomService {
 
   private async getFirstTeam(hostId: string) {
       let teamMemberships:TeamMember[] = await this.teamService.getTeamsForUser_snapshot(hostId)
-      if(teamMemberships.length < 1) return 
+      if(!teamMemberships || teamMemberships.length < 1) return 
       return teamMemberships[0].teamDocId
   }
 
