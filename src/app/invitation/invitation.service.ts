@@ -6,7 +6,6 @@ import { LogService } from '../log/log.service';
 import { take } from 'rxjs/operators';
 import * as _ from 'lodash'
 import { Observable } from 'rxjs';
-import { MessageService } from '../core/message.service';
 
 
 @Injectable({
@@ -23,7 +22,6 @@ export class InvitationService {
   constructor(
     private afs: AngularFirestore,
     private userService: UserService,
-    private messageService: MessageService,
     private log: LogService,) { }
 
 
@@ -79,7 +77,6 @@ export class InvitationService {
           await batch.commit()
           delete this.invitations
           this.invitations = []
-          this.messageService.setCurrentInvitations(this.invitations)
       }
   }
 
