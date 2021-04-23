@@ -6,6 +6,7 @@ import { LogService } from '../log/log.service';
 import { take } from 'rxjs/operators';
 import * as _ from 'lodash'
 import { Observable } from 'rxjs';
+import { MessageService } from '../core/message.service';
 
 
 @Injectable({
@@ -22,6 +23,7 @@ export class InvitationService {
   constructor(
     private afs: AngularFirestore,
     private userService: UserService,
+    private messageService: MessageService,
     private log: LogService,) { }
 
 
@@ -57,21 +59,6 @@ export class InvitationService {
 
 
 
-  /**
-   * THIS DOESN'T WORK ANYMORE BECAUSE invitation.invitationId IS NOT THE DOC ID ANYMORE
-   */
-  // TODO FIXME
-  /* async */ deleteInvitation_needs_fixing(invitation: Invitation) {
-    let batch = this.afs.firestore.batch();
-    var invitationRef = this.afs.collection('invitation').doc(invitation.invitationId).ref;
-    batch.delete(invitationRef);
-    //batch.update(teamRef, {memberCount: firebase.firestore.FieldValue.increment(-1)});
-    /* await */ batch.commit();
-    this.log.i('deleted '+invitation.invitationId);
-    //return await this.getTeamData(team_member.teamDocId);
-  }
-
-
   deleteInvitation(docId: string) {
       let promise = this.afs.collection('invitation').doc(docId).update({deleted_ms: new Date().getTime()})
       return promise
@@ -92,6 +79,7 @@ export class InvitationService {
           await batch.commit()
           delete this.invitations
           this.invitations = []
+          this.messageService.setCurrentInvitations(this.invitations)
       }
   }
 

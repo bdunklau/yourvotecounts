@@ -433,8 +433,9 @@ export class VideoCallComponent implements OnInit {
     this.joined = false 
     this.finalizePreview();
     if(this.isHost) {
-        delete this.invitationService.invitations
-        this.invitationService.invitations = []
+        // delete this.invitationService.invitations
+        // this.invitationService.invitations = []
+        await this.invitationService.deleteInvitations(this.invitationService.invitations[0].invitationId)
         this.router.navigate(['/video-call-complete', this.roomObj.RoomSid, 'host', this.phoneNumber])
     }
   }
@@ -479,7 +480,6 @@ export class VideoCallComponent implements OnInit {
         this.showTestPattern = false
     }
   }
-s
 
 
 
