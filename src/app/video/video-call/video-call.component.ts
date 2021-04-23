@@ -435,8 +435,9 @@ export class VideoCallComponent implements OnInit {
     if(this.isHost) {
         // delete this.invitationService.invitations
         // this.invitationService.invitations = []
-        await this.invitationService.deleteInvitations(this.invitationService.invitations[0].invitationId)
-        this.router.navigate(['/video-call-complete', this.roomObj.RoomSid, 'host', this.phoneNumber])
+        this.invitationService.deleteInvitations(this.invitationService.invitations[0].invitationId).then(() => {
+            this.router.navigate(['/video-call-complete', this.roomObj.RoomSid, 'host', this.phoneNumber])
+        })
     }
   }
 
