@@ -108,6 +108,8 @@ export class VideoCallComponent implements OnInit {
     
       if(isPlatformBrowser(this.platformId)) {
         
+          console.log('ngOnInit:  HEADSUP-96')
+        
           // got all this stuff from video-call-complete.guard.ts
           //this.me = await this.userService.getCurrentUser() // this is NOT how we tell if I am the guest
           this.invitations = this.invitationService.invitations  // see  ValidInvitationGuard
