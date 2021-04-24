@@ -436,6 +436,11 @@ export class VideoCallComponent implements OnInit {
     if(connected) this.activeRoom.disconnect();  
     this.roomService.disconnect(this.roomObj, this.phoneNumber);
     this.joined = false 
+    this.activeRoom.localParticipant.unpublishTrack(this.videoTrack)
+    this.activeRoom.localParticipant.unpublishTrack(this.audioTrack)
+    this.videoTrack.stop()
+    this.audioTrack.stop()
+    console.log('camera light should be off now')
     this.finalizePreview();
     if(this.isHost) {
         delete this.invitationService.invitations
