@@ -104,14 +104,45 @@ export class InvitationFormGuard implements CanActivate {
                 this.router.navigate(['/error-page'])
                 return false
             }
+            else {
+                // now deactivate the camera and mic.  We only activated to make sure we could.
+                this.turnCameraOff()
+                this.turnMicOff()
+            }
         }
 
         return true
     }
+
+
+    turnCameraOff() {
+        if(!this.videoStream) return
+        let tracks = this.videoStream.getTracks();
+        tracks.forEach(function (track) {
+            track.stop();
+        });
+        console.log('camera off')
+    }
+
+
+    turnMicOff() {
+        if(!this.audioStream) return
+        let tracks = this.audioStream.getTracks();
+        tracks.forEach(function (track) {
+            track.stop();
+        });
+    }
+
+
+    
+    videoStream: any
+    audioStream: any
+
+
     async checkCameraAndMicEnablement(): Promise<{ok: boolean, msg?: string, title?: string}> {
         
-        let cam = await this.testCamera()
-        let mic = await this.testMic()
+        let cam = await this.testCamera(this.camSuccess.bind(this), this.camFail.bind(this))
+        let mic = await this.testMic(this.micSuccess.bind(this), this.micFail.bind(this))
         console.log(`ngOnInit():  camera = ${cam}`)
         console.log(`ngOnInit():  mic = ${mic}`)
         let regardless = false // set to true to test the redirection to error page
@@ -136,36 +167,55 @@ export class InvitationFormGuard implements CanActivate {
         }
     }
 
+
+    camSuccess(stream) {
+        this.videoStream = stream
+        return 1
+    }
+
+    camFail(err) {
+        console.log('camFail: err = ', err)
+        return -1
+    }
     
-    async testCamera() {
+    async testCamera(successFn, errorFn) {
         let loc = 'testCamera()'
-        return await this.testMedia(loc, {video:true}) 
+        return await this.testMedia(loc, {video:true}, successFn, errorFn) 
     }
 
+
+    micSuccess(stream) {
+        this.audioStream = stream
+        return 1
+    }
+
+    micFail(err) {
+        console.log('micFail: err = ', err)
+        return -1
+    }
     
-    async testMic() {
+    async testMic(successFn, errorFn) {
         let loc = 'testMic()'
-        return await this.testMedia(loc, {audio:true}) 
+        return await this.testMedia(loc, {audio:true}, successFn, errorFn) 
     }
 
 
-    async testMedia(loc, mediaType) {
-        // this.stuff.push(`${loc}: begin`)
-        let allow = function(allowed) {
-            this.cameraAllowed = allowed
-            let p = new Promise((resolve, reject) => {resolve(allowed)})
-            return p
-        }.bind(this)
+    async testMedia(loc, mediaType, success, err) {
+        // let allow = function(allowed) {
+        //     this.cameraAllowed = allowed
+        //     let p = new Promise((resolve, reject) => {resolve(allowed)})
+        //     return p
+        // }.bind(this)
 
-        let success = async function(stream) {
-            // this.stuff.push(`${loc}: allowed`)
-            return await allow(1)
-        }.bind(this)
+        // let success = async function(stream) {
+        //     // this.stuff.push(`${loc}: allowed`)
+        //     return await allow(1)
+        // }.bind(this)
 
-        let err = async function(err) {
-            // this.stuff.push(`${loc}: err`)
-            return await allow(-1)
-        }.bind(this)
+        // let err = async function(err) {
+        //     // this.stuff.push(`${loc}: err`)
+        //     return await allow(-1)
+        // }.bind(this)
 
         if(navigator) {
             if(navigator.mediaDevices) {
