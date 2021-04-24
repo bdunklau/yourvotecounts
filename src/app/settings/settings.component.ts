@@ -162,4 +162,9 @@ export class SettingsComponent implements OnInit {
         }
     }
 
+
+    tempLocationHref() {
+        window.location.href = 'https://www.google.com'
+    }
+
 }
