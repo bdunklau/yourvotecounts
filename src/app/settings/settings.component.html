@@ -160,6 +160,40 @@ See   invitation-form.component.html
         </div>
     </div>
 
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-6" style="margin-top:5px">
+            <button type="button" (click)="turnCameraOn()" class="btn btn-primary col-sm-12"> camera on </button>
+        </div>
+        <div class="col-6" style="margin-top:5px">
+            <button type="button" (click)="turnCameraOff()" class="btn btn-primary col-sm-12"> camera off </button>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-12" style="margin-top:5px">
+            videoStream: {{videoStream}}
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-6" style="margin-top:5px">
+            <button type="button" (click)="turnMicOn()" class="btn btn-primary col-sm-12"> mic on </button>
+        </div>
+        <div class="col-6" style="margin-top:5px">
+            <button type="button" (click)="turnMicOff()" class="btn btn-primary col-sm-12"> mic off </button>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-12" style="margin-top:5px">
+            audioStream: {{audioStream}}
+        </div>
+    </div>
+
     
     <div class="row" style="margin-top:20px">
         <div class="col">
