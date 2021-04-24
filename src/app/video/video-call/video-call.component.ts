@@ -423,6 +423,7 @@ export class VideoCallComponent implements OnInit {
         delete this.invitationService.invitations
         this.invitationService.invitations = []
         // this.router.navigate(['/video-call-complete', this.activeRoom.sid, 'guest', this.phoneNumber])
+        console.log('HEADSUP-97')
         window.location.href = `/video-call-complete/${this.activeRoom.sid}/guest/${this.phoneNumber}`
       }
     }
@@ -447,6 +448,7 @@ export class VideoCallComponent implements OnInit {
         delete this.invitationService.invitations
         this.invitationService.invitations = []
         // this.router.navigate(['/video-call-complete', this.roomObj.RoomSid, 'host', this.phoneNumber])
+        console.log('HEADSUP-97')
         window.location.href = `/video-call-complete/${this.roomObj.RoomSid}/host/${this.phoneNumber}`
     }
   }
