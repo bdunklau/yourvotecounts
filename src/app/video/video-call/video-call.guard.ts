@@ -58,11 +58,11 @@ export class VideoCallGuard implements CanActivate {
                 return false
 
 
-            if(this.wrongBrowser()) {
-                this.errorPageService.errorMsg = "Switch to Safari.  Your Mac/iOS device will not allow this page to load using Chrome.  Don't blame us - blame Apple."
-                this.router.navigate(['/error-page'])
-                return false
-            }
+            // if(this.wrongBrowser()) {
+            //     this.errorPageService.errorMsg = "Switch to Safari.  Your Mac/iOS device will not allow this page to load using Chrome.  Don't blame us - blame Apple."
+            //     this.router.navigate(['/error-page'])
+            //     return false
+            // }
 
 
 
@@ -140,12 +140,16 @@ export class VideoCallGuard implements CanActivate {
 
     
 
-    wrongBrowser() {
-        let mac = navigator.appVersion.toLowerCase().indexOf('mac os x') != -1
-        let chrome = navigator.appVersion.toLowerCase().indexOf('chrome') != -1
-        let wrongBrowser = mac && chrome
-        return wrongBrowser
-    }
+    /**
+     * duplicated at invitation-form.guard.ts
+     * That is upstream from here.  That guard is activated when the user first goes to "Video Call" aka /invitations
+     */
+    // wrongBrowser() {
+    //     let mac = navigator.appVersion.toLowerCase().indexOf('mac os x') != -1
+    //     let chrome = navigator.appVersion.toLowerCase().indexOf('chrome') != -1
+    //     let wrongBrowser = mac && chrome
+    //     return wrongBrowser
+    // }
 
 
   

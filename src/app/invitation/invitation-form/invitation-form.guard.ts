@@ -47,6 +47,14 @@ export class InvitationFormGuard implements CanActivate {
             if(!enabled)
                 return false
 
+
+            // if(this.wrongBrowser()) {
+            //     this.errorPageService.errorMsg = "Switch to Safari.  Your Mac/iOS device will not allow this page to load using Chrome.  Don't blame us - blame Apple."
+            //     this.router.navigate(['/error-page'])
+            //     return false
+            // }
+    
+
             let authed = await this.authGuard.canActivate()
             if(!authed) 
                 return false
@@ -240,5 +248,21 @@ export class InvitationFormGuard implements CanActivate {
             return -1
         }
     }
+    
+    
+
+    /**
+     * duplicated at video-call.guard.ts
+     * THIS is really where we need to check for incompatible browsers
+     * Before this fix was put in, a user on a Mac/Chrome environment could get to the invitation
+     * form and actually send the invitation out.  The invitation WOULD GET TEXTED to the guest BUT
+     * the host would THEN be sent to the "wrong browser" page.  That's a definite "fix me"
+     */
+    // wrongBrowser() {
+    //     let mac = navigator.appVersion.toLowerCase().indexOf('mac os x') != -1
+    //     let chrome = navigator.appVersion.toLowerCase().indexOf('chrome') != -1
+    //     let wrongBrowser = mac && chrome
+    //     return wrongBrowser
+    // }
   
 }
