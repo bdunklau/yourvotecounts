@@ -431,12 +431,12 @@ export class VideoCallComponent implements OnInit {
   }
 
 
-  leave_call() {
+  async leave_call() {
     if(this.isHost)
         this.stop_recording()
     const connected = this.activeRoom != null && (this.activeRoom.state == "connected" || this.activeRoom.state == "reconnecting" || this.activeRoom.state == "reconnected");
     if(connected) this.activeRoom.disconnect();  
-    this.roomService.disconnect(this.roomObj, this.phoneNumber);
+    await this.roomService.disconnect(this.roomObj, this.phoneNumber);
     this.joined = false 
     this.activeRoom.localParticipant.unpublishTrack(this.videoTrack)
     this.activeRoom.localParticipant.unpublishTrack(this.audioTrack)

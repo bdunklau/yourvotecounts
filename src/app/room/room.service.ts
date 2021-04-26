@@ -62,10 +62,10 @@ export class RoomService {
   }
 
 
-  saveRoom(roomObj: any) {
+  async saveRoom(roomObj: any) {
     // How do we keep from overwriting data when the second person joins?
     // see video-call.component.ts:join_call()
-    this.afs.collection('room').doc(roomObj['RoomSid']).set(roomObj)
+    await this.afs.collection('room').doc(roomObj['RoomSid']).set(roomObj)
   }
 
 
@@ -190,14 +190,14 @@ export class RoomService {
   }
 
 
-  disconnect(roomObj: RoomObj, phoneNumber: string) {
+  async disconnect(roomObj: RoomObj, phoneNumber: string) {
     // is this the host phone or the guest phone?
     let isHost = roomObj.hostPhone === phoneNumber;
     if(isHost) {
-      this.disconnectEveryone(roomObj, phoneNumber)
+      await this.disconnectEveryone(roomObj, phoneNumber)
     }
     else {     
-      this.disconnectGuest(roomObj, phoneNumber)
+      await this.disconnectGuest(roomObj, phoneNumber)
     }
     
   }
@@ -207,22 +207,22 @@ export class RoomService {
    * If the host is disconnecting, then all other participants should be disconnected also
    * and the call is over.
    */
-  private disconnectEveryone(roomObj: RoomObj, phoneNumber: string) {
+  private async disconnectEveryone(roomObj: RoomObj, phoneNumber: string) {
     roomObj['host_left_ms'] = new Date().getTime()
     _.each(roomObj['guests'], guest => {
       guest['left_ms'] = new Date().getTime()
     })
     roomObj['call_ended_ms'] = new Date().getTime()
-    this.saveRoom(roomObj);
+    await this.saveRoom(roomObj);
   }
 
 
-  private disconnectGuest(roomObj: RoomObj, phoneNumber: string) {
+  private async disconnectGuest(roomObj: RoomObj, phoneNumber: string) {
     let guest = _.find(roomObj['guests'], obj => {
       return obj['guestPhone'] === phoneNumber
     })
     guest['left_ms'] = new Date().getTime()
-    this.saveRoom(roomObj);
+    await this.saveRoom(roomObj);
     
   }
 
