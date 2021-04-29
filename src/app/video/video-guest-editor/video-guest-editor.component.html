@@ -1,0 +1,28 @@
+
+<span *ngIf="editingInvitation">
+<h5 style="margin-top:20px">Edit Invitation</h5>
+
+
+
+<div class="row" style="margin-top:20px">
+    <div class="col-12"  style="margin-top:10px">
+        {{editingInvitation.displayName}}
+    </div>
+</div>
+
+
+<div class="row" style="margin-top:50px">
+    <div class="col-6"  style="margin-top:10px">    
+        <button type="button" class="btn btn-danger col-12" (click)="deleteInvitation(editingInvitation)">
+            <span *ngIf="!confirmDelete">Delete</span>
+            <span *ngIf="confirmDelete">Really?</span>
+        </button>
+    </div>
+    <div class="col-6"  style="margin-top:10px" [hidden]="!confirmDelete">    
+        <button type="button" class="btn col-12" (click)="confirmDelete = false">Cancel</button>
+    </div>
+</div>
+
+
+
+</span>

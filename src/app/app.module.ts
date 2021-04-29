@@ -109,6 +109,7 @@ import { LicenseeMgmtComponent } from './license/licensee-mgmt/licensee-mgmt.com
 import { LicenseeContactFormComponent } from './license/licensee-contact-form/licensee-contact-form.component';
 import { LicenseeContactListComponent } from './license/licensee-contact-list/licensee-contact-list.component';
 import { LicenseeListComponent } from './license/licensee-list/licensee-list.component';
+import { VideoGuestEditorComponent } from './video/video-guest-editor/video-guest-editor.component';
 
 
 
@@ -233,6 +234,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     LicenseeContactFormComponent,
     LicenseeContactListComponent,
     LicenseeListComponent,
+    VideoGuestEditorComponent,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

@@ -29,6 +29,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { MessageService } from '../../core/message.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmComponent } from '../../util/ngbd-modal-confirm/ngbd-modal-confirm.component';
+import { VideoGuestEditorComponent } from '../video-guest-editor/video-guest-editor.component';
 
 
 @Component({
@@ -85,10 +86,14 @@ export class VideoCallComponent implements OnInit {
   dimension: {type:string, value:string} = {type:'width', value:'48vw'}
   timeRemaining: number
   translated = false
+  translatedGuest = false
   collapsed = false
+  collapsedGuest = false
   // canAddPeople = false
   maxGuests: number
   countDownInterval
+  // selectedInvitation: Invitation
+  @ViewChild('editGuestDirective')  videoGuestEditorComponent: VideoGuestEditorComponent
 
 
   constructor(private route: ActivatedRoute,
@@ -858,8 +863,10 @@ export class VideoCallComponent implements OnInit {
 
    */
 
-  guestClicked(invitation: Invitation) {
-     // do anything when guest is clicked?  kinda thinkng no
+  guestClicked(invitation: Invitation) {  
+      this.videoGuestEditorComponent.setInvitation(invitation)
+      // this.selectedInvitation = invitation   
+      this.translatedGuest = true
   }
 
 
@@ -929,6 +936,12 @@ export class VideoCallComponent implements OnInit {
       }
 
 
+  }
+
+
+  onDeletedInvitation(invitation: Invitation) {
+      this.translatedGuest = false
+      this.delete_guest(invitation)
   }
 
 

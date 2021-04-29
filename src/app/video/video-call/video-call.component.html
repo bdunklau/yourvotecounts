@@ -98,7 +98,7 @@
               </div>
 
               {{invitation.displayName}} 
-              <mat-icon style="margin-bottom:5px" matChipRemove><i class="fas fa-times" style="color:#ffffff" (click)="delete_guest(invitation)"></i></mat-icon>
+              <!-- <mat-icon style="margin-bottom:5px" matChipRemove><i class="fas fa-times" style="color:#ffffff" (click)="delete_guest(invitation)"></i></mat-icon> -->
           </mat-chip>
         </mat-chip-list>
 
@@ -373,4 +373,14 @@
   <a href="javascript:void(0)" class="pull-right" (click)="translated = !translated"><i class="fa fa-close"></i></a>   
   <app-invitation-form  (outputInvitations)="onInvitationsSent($event)"></app-invitation-form>
 </div>
+</div> 
+
+
+
+<!-- when you click one of the guest "chips" this screen slides up -->
+<div class="mydiv target" [ngClass]="{'collapsed' : collapsedGuest, 'translated': translatedGuest}">   
+  <div class="container">       
+    <a href="javascript:void(0)" class="pull-right" (click)="translatedGuest = !translatedGuest"><i class="fa fa-close"></i></a>   
+    <app-video-guest-editor #editGuestDirective (outputDeletedInvitation)="onDeletedInvitation($event)"></app-video-guest-editor>
+  </div>
 </div> 
