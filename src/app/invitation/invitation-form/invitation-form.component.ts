@@ -47,6 +47,7 @@ export class InvitationFormComponent implements OnInit {
   names: {
       displayName: string;
       phoneNumber: string;
+      email?: string
       photoURL?: string
   }[]
 
@@ -84,11 +85,11 @@ export class InvitationFormComponent implements OnInit {
           this.friend = this.router.getCurrentNavigation().extras.state.friend as Friend
           console.log('this.friend.displayName2 = ', this.friend.displayName2)
           console.log('this.friend.phoneNumber2 = ', this.friend.phoneNumber2)
-          this.addSomeone3(this.friend.displayName2, this.friend.phoneNumber2)
+          this.addSomeone3(this.friend.displayName2, this.friend.phoneNumber2, '')
       }
       else if(this.router.getCurrentNavigation().extras.state.team_member) {
           this.team_member = this.router.getCurrentNavigation().extras.state.team_member as TeamMember
-          this.addSomeone3(this.team_member.displayName, this.team_member.phoneNumber)
+          this.addSomeone3(this.team_member.displayName, this.team_member.phoneNumber, '')
       }
 
 
@@ -166,32 +167,34 @@ export class InvitationFormComponent implements OnInit {
       // this.nameArray.push(group);
       // // console.log('this.nameArray: ', this.nameArray)
       // this.canInvite = this.canInviteMore()      
-      this.addSomeone3('', '')
+      this.addSomeone3('', '', '')
   }
 
 
   addSomeone2() {
       let displayName = ''
       let phoneNumber = ''
+      let email = ''
       if(this.friend) {
           displayName = this.friend.displayName2
           phoneNumber = this.friend.phoneNumber2
       }
-      this.addSomeone3(displayName, phoneNumber)
+      this.addSomeone3(displayName, phoneNumber, '')
   }
 
 
-  async addSomeone3(displayName: string, phoneNumber: string) {
+  async addSomeone3(displayName: string, phoneNumber: string, email: string) {
       // query by phone number to get profile pic if it exists
       let photoURL = this.defaultProfilePicUrl
       if(phoneNumber && phoneNumber != '') {
           let somebody = await this.userService.getUserWithPhone(phoneNumber)
           if(somebody && somebody.photoURL) photoURL = somebody.photoURL
       }
-      this.names.push({displayName: displayName, phoneNumber: phoneNumber, photoURL: photoURL});
+      this.names.push({displayName: displayName, phoneNumber: phoneNumber, email: email, photoURL: photoURL});
       let group = this.fb.group({
             displayName: new FormControl(displayName, [Validators.required]),
             phoneNumber: new FormControl(this.formatPhone2(phoneNumber), { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ }),
+            email: new FormControl(this.formatPhone2(email), { validators: [/*TODO should have email validation*/] /* DOES work   , updateOn: "blur" */ }),
             photoURL: new FormControl(photoURL)         
           } 
           //, { updateOn: 'blur' }  // another option
@@ -252,6 +255,10 @@ export class InvitationFormComponent implements OnInit {
     return this.invitationForm.get("phone");
   }
 
+  get email() {
+    return this.invitationForm.get("email");
+  }
+
   get message() {
     return this.invitationForm.get("message");
   }
@@ -293,6 +300,7 @@ export class InvitationFormComponent implements OnInit {
           if(this.nameArray.at(i).value.displayName.displayName2) {
               this.names[i] = {displayName: this.nameArray.at(i).value.displayName.displayName2, 
                                phoneNumber: this.nameArray.at(i).value.phoneNumber,
+                               email: this.nameArray.at(i).value.email,
                                photoURL: this.nameArray.at(i).value.photoURL}
           } 
 
@@ -301,6 +309,7 @@ export class InvitationFormComponent implements OnInit {
           invitation.invitationId = commonInvitationId;
           invitation.setCreator(this.user);
           invitation.displayName = this.names[i].displayName
+          invitation.email = this.names[i].email
           invitation.photoURL = this.names[i].photoURL
           // console.log('onSubmit(): this.names['+i+'] = ', this.names[i])
           // console.log('onSubmit(): this.names['+i+'].displayName = ', this.names[i].displayName)
@@ -416,7 +425,7 @@ export class InvitationFormComponent implements OnInit {
       let friendPerson = await this.userService.getUserWithPhone(friend.phoneNumber2)
       if(friendPerson && friendPerson.photoURL) photoURL = friendPerson.photoURL
       if(photoURL == '') photoURL = this.defaultProfilePicUrl
-      this.nameArray.controls[loopIdx].setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2), photoURL: photoURL })
+      this.nameArray.controls[loopIdx].setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2), email: '', photoURL: photoURL })
       console.log('onFriendSelected(): this.nameArray.at('+loopIdx+').value: ', this.nameArray.at(loopIdx).value)
       // console.log('onFriendSelected() loopIdx = ', loopIdx)
       // console.log('onFriendSelected() this.nameArray.at('+loopIdx+') = ', this.nameArray.at(loopIdx))

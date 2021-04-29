@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="row">
-                      <div class="col-12 col-sm-6" style="margin-bottom:10px">
+                      <div class="col-12 col-sm-4" style="margin-bottom:10px">
 
                            <!-- log.component.html also -->
                           <app-search-user-by-name (selectedFriend)="onFriendSelected($event, i)" [friendsOnly]="true" 
@@ -51,8 +51,8 @@
                       </div>
 
 
-                      <div class="col-12 col-sm-6">
-                          <input class="col-12 form-control" formControlName="phoneNumber" placeholder="Phone" 
+                      <div class="col-12 col-sm-4" style="margin-bottom:10px">
+                          <input class="col-12 form-control" formControlName="phoneNumber" 
                                 (input)="formatPhone($event)" placeholder="(   ) ___-____"
                                 [ngStyle]="{'border':   nameArray.controls[i].get('phoneNumber') && nameArray.controls[i].get('phoneNumber').invalid && (nameArray.controls[i].get('phoneNumber').dirty || nameArray.controls[i].get('phoneNumber').touched)    ? '1px solid red' : ''}">
                                 
@@ -67,6 +67,13 @@
                           </div>
                            -->
 
+                      </div>
+                      
+
+                      <div class="col-12 col-sm-4">
+                          <input class="col-12 form-control" formControlName="email" placeholder="email optional" 
+                                [ngStyle]="{'border':   nameArray.controls[i].get('email') && nameArray.controls[i].get('email').invalid && (nameArray.controls[i].get('email').dirty || nameArray.controls[i].get('email').touched)    ? '1px solid red' : ''}">
+                                
                       </div>
 
                 </div>

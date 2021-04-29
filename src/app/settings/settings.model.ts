@@ -6,6 +6,7 @@ export class Settings {
   disabled: boolean;
   firebase_functions_host: string
   from_sms: string;
+  from_email: string
   heapThreshold: number
   max_call_time: number  // seconds
   to_sms: string;

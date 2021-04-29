@@ -5,7 +5,7 @@ import { UserService } from '../user/user.service';
 import { LogService } from '../log/log.service';
 import { take } from 'rxjs/operators';
 import * as _ from 'lodash'
-import { Observable } from 'rxjs';
+import { Settings } from '../settings/settings.model';
 
 
 @Injectable({
@@ -148,6 +148,23 @@ export class InvitationService {
   }
 
 
+  async updateEmail(invitation: Invitation) {
+      await this.afs.collection('invitation').doc(invitation.docId).update({email: invitation.email})
+  }
+
+
+  async emailInvitation(invitation: Invitation, settings: Settings) {
+      const doc = {
+          to: invitation.email,
+          from: settings.from_email,
+          subject: 'HeadsUp! video call invitation from '+invitation.creatorName,
+          text: invitation.message,
+          html: ''
+      }
+      await this.afs.collection('email').add(doc)
+  }
+
+  
 
   // TODO FIXME is this fixed?
   /************

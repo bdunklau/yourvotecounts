@@ -4,21 +4,126 @@
 
 
 
-<div class="row" style="margin-top:20px">
-    <div class="col-12"  style="margin-top:10px">
+<div class="row" style="margin-top:30px">
+    <div class="col-12">
         {{editingInvitation.displayName}}
     </div>
 </div>
 
+<div class="row" style="margin-top:10px">
+    <div class="col-12">
+        {{editingInvitation.phoneNumber | phone}}
+    </div>
+</div>
 
-<div class="row" style="margin-top:50px">
-    <div class="col-6"  style="margin-top:10px">    
+
+<div class="row" style="margin-top:30px">
+    <div class="col-6 small text-muted">
+        Email
+    </div>
+</div>
+
+<span *ngIf="editingEmail || !editingInvitation.email">
+    <div class="row no-gutters" style="margin-top:5px">
+        <div class="col-9 col-lg-10">
+            <input class="form-control col-12"
+                type="text"
+                [(ngModel)]="email"
+                placeholder="email optional" />
+        </div> 
+        <div class="col-2 col-lg-1">
+            <button (click)="save_email()" class="btn btn-success col-12" ><i class="fas fa-check"></i>  </button>
+        </div>
+    
+    </div>        
+</span>
+
+<span *ngIf="editingInvitation.email && !editingEmail">
+    <div class="row no-gutters" style="margin-top:5px">
+        <div class="col-12">
+            {{editingInvitation.email}} 
+            <button type="button" class="btn" (click)="editEmail()"><i class="fas fa-pen"></i></button>
+        </div> 
+    </div>        
+</span>
+
+
+
+<div class="row" style="margin-top:40px">
+    <div class="col-9 col-sm-3 small text-muted">
+        Invitation URL
+    </div>
+    <div class="col-1 small text-right">
+        <button type="button" class="btn" (click)="copyUrl(url)">Copy <i class="far fa-copy"></i></button>
+    </div>
+</div>
+
+<div class="row" style="margin-top:5px">
+    <div class="col-12">
+        {{url}}
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span *ngIf="editingInvitation.email">
+    <!-- <span *ngIf="!editingEmail">
+        <div class="row no-gutters" style="margin-top:10px">
+            <div class="col-12">
+                {{editingInvitation.email}}  <button type="button" class="btn" (click)="editingEmail = !editingEmail"><i class="fas fa-pen"></i></button>
+            </div>        
+        </div>
+    </span> -->
+
+    
+    <div class="row" style="margin-top:10px" [hidden]="editingEmail">
+        <div class="col-12 col-sm-6"  style="margin-top:10px">
+            <!-- <button type="button" class="btn btn-primary col-12" (click)="sendEmail(editingInvitation)"><i class="fas fa-envelope"></i> Invite by Email</button> -->
+        </div>
+    </div>
+    
+    <span *ngIf="sendingEmail">
+    <div class="row" style="margin-top:10px">
+        <div class="col-12 col-sm-6"  style="margin-top:10px">    
+            <img id="spinner" src="/assets/loading_spinner.gif" height="40">
+        </div>
+    </div>
+    </span>
+</span>
+
+
+
+
+
+<!-- <span *ngIf="!editingInvitation.email">
+<div class="row" style="margin-top:20px">
+    <div class="col-12 col-sm-6"  style="margin-top:10px">  
+        <button type="button" class="btn btn-primary col-12" (click)="addingEmail = !addingEmail">Add Email</button>
+    </div>
+</div>
+</span> -->
+
+
+
+<div class="row" style="margin-top:80px">
+    <div class="col-12 col-sm-6"  style="margin-top:10px">    
         <button type="button" class="btn btn-danger col-12" (click)="deleteInvitation(editingInvitation)">
-            <span *ngIf="!confirmDelete">Delete</span>
+            <span *ngIf="!confirmDelete">Delete Invitation</span>
             <span *ngIf="confirmDelete">Really?</span>
         </button>
     </div>
-    <div class="col-6"  style="margin-top:10px" [hidden]="!confirmDelete">    
+    <div class="col-12 col-sm-6"  style="margin-top:10px" [hidden]="!confirmDelete">    
         <button type="button" class="btn col-12" (click)="confirmDelete = false">Cancel</button>
     </div>
 </div>

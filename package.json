@@ -41,6 +41,7 @@
     "@google-cloud/storage": "^3.1.0",
     "@ng-bootstrap/ng-bootstrap": "^9.0.2",
     "@nguniversal/express-engine": "^10.0.2",
+    "@sendgrid/mail": "^7.4.2",
     "@types/gapi": "0.0.39",
     "angular-svg-round-progressbar": "^4.0.0",
     "angularfire": "^2.3.0",

@@ -13,6 +13,7 @@
     "node": "10"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.4.2",
     "cheerio": "^1.0.0-rc.5",
     "child-process-promise": "^2.2.1",
     "cors": "^2.8.5",

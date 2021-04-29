@@ -15,6 +15,7 @@ export class Invitation {
 
     displayName: string;
     phoneNumber: string;
+    email?: string
     created: Date;
     created_ms: number;
     creatorId: string;
@@ -47,6 +48,7 @@ export class Invitation {
       deleted_ms: this.deleted_ms,
     }
     if(this.photoURL) asObj['photoURL'] = this.photoURL
+    if(this.email) asObj['email'] = this.email
     return asObj
   }
     

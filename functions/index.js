@@ -84,3 +84,6 @@ const roomTasks = require('./room');
 exports.updateViewsOnRoomCreated = roomTasks.updateViewsOnRoomCreated
 exports.updateViewsOnRoomUpdated = roomTasks.updateViewsOnRoomUpdated
 exports.updateTotalTimeOnRoomUpdated = roomTasks.updateTotalTimeOnRoomUpdated
+
+const emailTasks = require('./email');
+exports.sendEmail = emailTasks.sendEmail
