@@ -39,6 +39,7 @@ export class ViewVideoComponent implements OnInit {
     room:RoomObj
     browser:string
     video_title:string
+    video_title_for_email: string // https://headsupvideo.atlassian.net/browse/HEADSUP-104
     video_description:string
     editing_title = false
     editing_description = false
@@ -148,7 +149,7 @@ export class ViewVideoComponent implements OnInit {
                 this.videoUrl = this.room.videoUrlAlt
                 this.videoType = "video/mp4"
             }
-            if(this.room.video_title) this.video_title = this.room.video_title
+            if(this.room.video_title) this.setVideoTitle(this.room.video_title)
             if(this.room.video_description) this.video_description = this.room.video_description
             this.initialized = true
 
@@ -180,6 +181,16 @@ export class ViewVideoComponent implements OnInit {
     }
 
 
+    /**
+     * https://headsupvideo.atlassian.net/browse/HEADSUP-104
+     */
+    private setVideoTitle(title: string) {
+        this.video_title = title
+        this.video_title_for_email = this.video_title.replace(/&/g, 'and');
+        console.log('this.video_title_for_email = ', this.video_title_for_email)
+    }
+
+
     ngOnDestroy() {
         if(this.official_selected_sub) this.official_selected_sub.unsubscribe();
         if(this.official_deleted_sub) this.official_deleted_sub.unsubscribe();
@@ -199,6 +210,7 @@ export class ViewVideoComponent implements OnInit {
 
 
     save_title() {
+        this.setVideoTitle(this.video_title)  // https://headsupvideo.atlassian.net/browse/HEADSUP-104
         this.roomService.saveVideoTitle(this.room.RoomSid, this.video_title)
         this.editing_title = false
     }
