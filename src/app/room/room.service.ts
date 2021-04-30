@@ -338,7 +338,11 @@ export class RoomService {
 
 
   getRoomsForTeam(team: Team) {
-    let observable = this.afs.collection('room', ref => ref.where('teamDocId', '==', team.id).orderBy('created_ms', 'desc')).snapshotChanges()
+    let observable = this.afs.collection('room', ref => ref.where('teamDocId', '==', team.id).orderBy('created_ms', 'desc')).snapshotChanges() // works
+
+    // TODO come back to this
+    // console.log('getRoomsForTeam')
+    // let observable = this.afs.collection('room', ref => ref.where('teamDocId', '==', team.id).where('CompositionSid', '!=', false).orderBy('CompositionSid', 'asc').orderBy('created_ms', 'desc')).snapshotChanges()
     return observable
   }
 
