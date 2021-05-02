@@ -73,6 +73,13 @@ export class VideoCallCompleteGuard implements CanActivate {
                 return false
             }
 
+            /**
+             * https://headsupvideo.atlassian.net/browse/HEADSUP-106
+             */
+            if(!roomObj.call_ended_ms) {
+                await this.roomService.setCallEnded(roomObj)
+            }
+
 
             ///////////////////////////////////////////////////////////////////////
             // At this point - we have valid RoomSid, 'host' or 'guest' and some kind of phoneNumber path param

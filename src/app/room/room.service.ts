@@ -372,6 +372,16 @@ export class RoomService {
 
 
   /**
+   * https://headsupvideo.atlassian.net/browse/HEADSUP-106
+   */
+  async setCallEnded(roomObj: RoomObj) {
+      let call_ended_ms = new Date().getTime()
+      await this.afs.collection('room').doc(roomObj.RoomSid).update({call_ended_ms: call_ended_ms})
+      roomObj.call_ended_ms = call_ended_ms
+  }
+
+
+  /**
    * for admins
    * video-list.component.ts
    */
