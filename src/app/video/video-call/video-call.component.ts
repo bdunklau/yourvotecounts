@@ -752,9 +752,22 @@ export class VideoCallComponent implements OnInit {
     // You want created_ms NOT host_joined_ms - if host isn't the first to join, then mark_time.start_recording will be off
     // You will end up capturing footage PRIOR to the segment you actually wanted to record.
     let diff = this.getTimeDiff({first: this.roomObj.created_ms, second: now })
-    this.roomObj['mark_time'].push({"start_recording_ms": now, "start_recording": diff})
+    let timeElem = this.getTimeElement(this.roomObj, now, diff)
+    this.roomObj['mark_time'].push(timeElem)
     this.setRecordingState()
   } 
+
+
+  private getTimeElement(roomObj: RoomObj, now: number, diff: string) {
+      let timeElement = {"start_recording_ms": now, "start_recording": diff}
+      if(!roomObj.guests) return timeElement
+      if(roomObj.guests.length == 0) return timeElement
+      // https://headsupvideo.atlassian.net/browse/HEADSUP-105
+      // design note: host should not click record until the guest has joined
+      let guestDiff = this.getTimeDiff({first: roomObj.guests[0]['joined_ms'], second: now })
+      timeElement['start_recording_guest'] = guestDiff
+      return timeElement
+  }
 
 
   start_recording3() {

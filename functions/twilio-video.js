@@ -49,7 +49,13 @@ var createToken = async function(req) {
 }
 
 
-// called from video-call-complete.component.ts: compose()
+
+/**
+ * https://headsupvideo.atlassian.net/browse/HEADSUP-105
+ * for now, hardcoded to only compose a single guest
+ * 
+ * called from video-call-complete.component.ts: compose()
+ */
 exports.compose = functions.https.onRequest((req, res) => {
     cors(req, res, async () => {
         var db = admin.firestore();
@@ -83,17 +89,36 @@ exports.compose = functions.https.onRequest((req, res) => {
         let height = parseInt(width * aspectRatio)
         let resolution = `${width}x${height}`  // 21:9 also 32:9  1280 is max width
 
+        let audioSources = '*'
+        let videoLayout = {
+            grid : {
+              max_rows: max_rows,
+              video_sources: ['*']
+            }
+        }
+        let statusCallbackBase = `https://${req.query.firebase_functions_host}/twilioCallback?room_name=${req.query.room_name}&firebase_functions_host=${req.query.firebase_functions_host}&website_domain_name=${req.query.website_domain_name}&cloud_host=${req.query.cloud_host}`
+        let statusCallback = statusCallbackBase
+
+        // compose single guest, or everyone?
+        let justGuest = req.query.participantSid ? true : false 
+        if(justGuest) {
+            audioSources = req.query.participantSid
+            videoLayout = {
+                single : {
+                    video_sources: [req.query.participantSid]
+                }
+            }
+            statusCallback = `${statusCallbackBase}&participantSid=${req.query.participantSid}`
+        }
+
+
+
         return client.video.compositions.create({
             roomSid: req.query.RoomSid,
-            audioSources: '*',
+            audioSources: audioSources,
             // videoLayout:  see  https://www.twilio.com/docs/video/api/compositions-resource#specifying-video-layouts
-            videoLayout: {
-              grid : {
-                max_rows: max_rows,
-                video_sources: ['*']
-              }
-            },
-            statusCallback: `https://${req.query.firebase_functions_host}/twilioCallback?room_name=${req.query.room_name}&firebase_functions_host=${req.query.firebase_functions_host}&website_domain_name=${req.query.website_domain_name}&cloud_host=${req.query.cloud_host}`,
+            videoLayout: videoLayout,
+            statusCallback: statusCallback,
             resolution: resolution, 
             format: 'mp4'
         })
@@ -318,6 +343,7 @@ exports.twilioCallback = functions.https.onRequest(async (req, res) => {
             firebase_function: '/downloadComplete',
             website_domain_name: req.query.website_domain_name
         };
+        if(req.query.participantSid) formData['participantSid'] = req.query.participantSid
 
 
         request.post(
@@ -391,6 +417,7 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
         tempEditFolder:  `/home/bdunklau/videos/${req.body.CompositionSid}`,
         downloadComplete: true,
         website_domain_name: req.body.website_domain_name
+        participantSid:  req.body.participantSid  OPTIONAL  https://headsupvideo.atlassian.net/browse/HEADSUP-105
     }
      */
 
@@ -431,6 +458,7 @@ exports.downloadComplete = functions.https.onRequest((req, res) => {
             projectId: settingsObj.data().projectId,
             storage_keyfile: settingsObj.data().storage_keyfile
         }
+        if(req.body.participantSid) formData['participantSid'] = req.body.participantSid
         let vmUrl = `http://${settingsObj.data().cloud_host}/cutVideo`
         request.post(
             {
