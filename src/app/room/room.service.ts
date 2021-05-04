@@ -104,6 +104,7 @@ export class RoomService {
     })
     if(guest) {
         guest['joined_ms'] = new Date().getTime()
+        guest['participantSid'] = rm.localParticipant.sid
     }
     //if(phoneNumber === invitation.phoneNumber) roomObj['guests'][0]['joined_ms'] = new Date().getTime()
     else roomObj['host_joined_ms'] = new Date().getTime()
@@ -122,7 +123,7 @@ export class RoomService {
   // the room already exists.  see video-call.component.ts:join_call()
   // the join time here is for someone OTHER than the first person to join.  The first person's join time is 
   // written when the room is created/connected to
-  addJoinTime(roomObj: any, invitations: Invitation[], phoneNumber: string) {
+  addJoinTime(roomObj: any, invitations: Invitation[], phoneNumber: string, participantSid: string) {
     let isHost = invitations[0].creatorPhone === phoneNumber;
     if(isHost) {
       roomObj['host_joined_ms'] = new Date().getTime()
@@ -134,6 +135,7 @@ export class RoomService {
       })
       if(guest) {
         guest['joined_ms'] = new Date().getTime()
+        guest['participantSid'] = participantSid
         delete guest['left_ms']// = null // allows guest to hang up and rejoin the call
       }
     }
@@ -164,7 +166,7 @@ export class RoomService {
       if(found) {
         // Since the room already exists, all we need to do is figure out if the user is the host or guest
         // and write the corresponding "join" time to the database
-        this.addJoinTime(roomObj, invitations, phoneNumber)
+        this.addJoinTime(roomObj, invitations, phoneNumber, rm.localParticipant.sid)
       }
       else {
         roomObj = await this.createRoomObj(rm, invitations, phoneNumber);
