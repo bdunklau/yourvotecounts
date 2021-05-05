@@ -18,7 +18,7 @@ export class RoomObj {
     RoomSid: string
     call_ended_ms?: number
     created_ms: number
-    guests?: {guestName: string, guestPhone: string, joined_ms?: number}[]
+    guests?: {guestName: string, guestPhone: string, joined_ms?: number, participantSid?: string}[]
     hostId: string
     hostName: string
     hostPhone: string
