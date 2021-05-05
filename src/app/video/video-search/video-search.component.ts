@@ -57,8 +57,8 @@ export class VideoSearchComponent implements OnInit {
 
 
     paramsChange(tagName) {
-        
-        let parms = {limit: 25}            
+        // TODO make this infinite scrolling and reduce the limit to 5-10
+        let parms = {limit: 200}            
         this.tagName = tagName
         console.log('ngOnInit():  this.route.snapshot.params.tagName = ', this.route.snapshot.params.tagName)
         if(this.tagName) {
