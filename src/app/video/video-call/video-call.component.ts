@@ -83,7 +83,7 @@ export class VideoCallComponent implements OnInit {
   // me: FirebaseUserModel
   //trackMap: Map<RemoteTrack, ElementRef> = new Map<RemoteTrack, ElementRef>()
   showTestPattern = true
-  dimension: {type:string, value:string} = {type:'width', value:'48vw'}
+  dimension: {type:string, value:string} = {type:'width', value:'50vw'}
   timeRemaining: number
   translated = false
   translatedGuest = false
