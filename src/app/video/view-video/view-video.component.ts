@@ -141,7 +141,7 @@ export class ViewVideoComponent implements OnInit {
                 else return true
             }
 
-            this.userAgent = window.navigator.userAgent
+            this.userAgent = "userAgent: "+window.navigator.userAgent
 
             // this.browser = window.navigator.userAgent
             if(safari()) {
