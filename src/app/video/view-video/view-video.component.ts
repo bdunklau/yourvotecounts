@@ -67,6 +67,7 @@ export class ViewVideoComponent implements OnInit {
     emailAddresses: string
     salutation: string
     currentUrl: string
+    userAgent = 'user agent: n/a'
 
 
     constructor(private roomService: RoomService,
@@ -129,19 +130,12 @@ export class ViewVideoComponent implements OnInit {
                 this.showAd = true
             }
 
-            let safari = function() {
-                // Detect Safari
-                let safariAgent = window.navigator.userAgent.indexOf("Safari") > -1
-                // Detect Chrome 
-                let chromeAgent = window.navigator.userAgent.indexOf("Chrome") > -1
-                if(!safariAgent) return false
-                // Discard Safari since it also matches Chrome 
-                if ((chromeAgent) && (safariAgent)) return false
-                else return true
-            }
+            let deviceIsiPhone = window.navigator.userAgent.toLowerCase().indexOf("iphone") != -1
+
+            this.userAgent = "userAgent: "+window.navigator.userAgent
 
             // this.browser = window.navigator.userAgent
-            if(safari()) {
+            if(deviceIsiPhone) {
                 this.videoUrl = this.room.videoUrl
                 this.videoType = "application/x-mpegURL"
             }
