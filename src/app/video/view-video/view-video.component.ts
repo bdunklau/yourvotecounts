@@ -67,6 +67,7 @@ export class ViewVideoComponent implements OnInit {
     emailAddresses: string
     salutation: string
     currentUrl: string
+    userAgent = 'user agent: n/a'
 
 
     constructor(private roomService: RoomService,
@@ -139,6 +140,8 @@ export class ViewVideoComponent implements OnInit {
                 if ((chromeAgent) && (safariAgent)) return false
                 else return true
             }
+
+            this.userAgent = window.navigator.userAgent
 
             // this.browser = window.navigator.userAgent
             if(safari()) {
