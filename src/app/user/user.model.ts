@@ -2,7 +2,11 @@ import * as _ from 'lodash';
 import { Team } from '../team/team.model';
 import { TeamMember } from '../team/team-member.model';
 
+
+
+// ng generate class user/user --type=model
 export class FirebaseUserModel {
+  access_expiration_ms?: number
   uid: string; // the doc id
   image: string;
   displayName: string;
@@ -20,6 +24,9 @@ export class FirebaseUserModel {
   privacyPolicyRead: boolean = false;
   // teams: Team[];
   RoomSid: string; // can only be in one room at a time
+  promo_code?: string
+  // IF YOU ADD MORE FIELDS HERE, YOU HAVE TO ADD THEM TO populate() BELOW ALSO
+
 
   constructor(){
     this.uid = "";
@@ -42,6 +49,7 @@ export class FirebaseUserModel {
   }
 
   populate(obj) {
+    if(obj.access_expiration_ms) this.access_expiration_ms = obj.access_expiration_ms
     this.uid = obj.uid;
     this.image = obj.image;
     this.displayName = obj.displayName;
@@ -58,6 +66,7 @@ export class FirebaseUserModel {
     this.privacyPolicyRead = obj.privacyPolicyRead;
     if(obj.isDisabled === true || obj.isDisabled === false) this.isDisabled = obj.isDisabled;
     else this.isDisabled = false;
+    if(obj.promo_code) this.promo_code = obj.promo_code
     // console.log('populate: this = ', this);
   }
 

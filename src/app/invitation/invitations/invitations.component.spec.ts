@@ -9,6 +9,20 @@ import { BehaviorSubject, of } from 'rxjs';
 import { UserService } from '../../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
+
+
+
+// from:   https://atom-morgan.github.io/how-to-test-angular-canactivate-guards/
+class MockRouter {
+  navigate(path) {
+    console.log("MockRouter: path = ", path)
+  }
+
+  getCurrentNavigation() {
+      return {}
+  }
+}
 
 
 describe('InvitationsComponent', () => {
@@ -44,6 +58,7 @@ describe('InvitationsComponent', () => {
         { provide: AngularFireStorage, useValue: {}},
         { provide: HttpClient, useValue: {} },
         { provide: AngularFireAuth, useValue: {} },
+        { provide: Router, useClass: MockRouter },
         { provide: AngularFirestore, useValue: AngularFirestoreStub },
       ]
     })
@@ -57,6 +72,8 @@ describe('InvitationsComponent', () => {
   });
 
   it('should create', () => {
+    console.log('InvitationsComponent: begin')
     expect(component).toBeTruthy();
+    console.log('InvitationsComponent: end')
   });
 });

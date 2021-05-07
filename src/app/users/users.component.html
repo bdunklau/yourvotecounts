@@ -3,7 +3,7 @@
 
 <div class="row">
   <div class="col-sm-2 text24">
-    Users
+    User Mgmt
   </div>
   <div class="offset-sm-6 col-sm-4 text18">disable everyone
     <label class="switch" id="disable_everyone">
@@ -14,59 +14,118 @@
 </div>
 
 
-<div class="row">
+<div class="row" style="margin-bottom:50px">
   <div class="col"><app-search-user-by-name (selectedUser)="onUserSelectedByName($event)"></app-search-user-by-name></div>
   <div class="col"><app-search-user-by-phone (selectedUser)="onUserSelectedByPhone($event)"></app-search-user-by-phone></div>
 </div>
 
 
+
 <form [hidden]="!user.displayName" (ngSubmit)="onSubmit()" #userForm="ngForm">
+  <h5>Found this user</h5>
+
   <div class="form-group padtop20">
     <div class="row">
-      <div class="col">
-          <input type="text" class="form-control" id="nameField" placeholder="Name"
+      <div class="col-6">
+          <input type="text" class="form-control col-12" id="nameField" placeholder="Name"
                   [(ngModel)]="nameValue" name="name" #name="ngModel" required>
       </div>
 
-      <div class="col text18" [hidden]="!user.uid || (me != null && me.uid === user.uid)">
-        disabled
+      <div class="col-6" id="online_label" style="float:right">
+        <div [hidden]="!user.online" class="online_circle" style="float:right"></div>
+        <div [hidden]="!user.online" style="float:right">online &nbsp;</div>
+        <div [hidden]="user.online" class="offline_circle" style="float:right"></div>
+        <div [hidden]="user.online" style="float:right">offline &nbsp;</div>
+      </div>
+
+
+    </div>
+
+    
+    <div class="row" style="margin-top:10px">
+      
+      <div class="col-12">
+        
+          <!-- <app-date-chooser [inputIsSingleDate]="trueValue" [from]="user.access_expiration_ms" (dateSelection)="onDateSelection($event)"></app-date-chooser>
+          <BR/>thedate: {{thedate}} -->
+
+
+          <!-- https://v10.material.angular.io/components/datepicker/overview -->
+          <mat-form-field appearance="fill" style="width:100%">
+            <mat-label>Subscription expires on</mat-label>
+            <!-- <input matInput [matDatepicker]="picker" (dateInput)="captureDate('input', $event)" (dateChange)="captureDate('change', $event)"> -->
+            <input matInput [matDatepicker]="picker" (dateInput)="captureDate('input', $event)" [(ngModel)]="access_expiration" name="access_expiration">
+            <!-- <input matInput [matDatepicker]="picker" (dateChange)="captureDate('change', $event)"> -->
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          
+          <!-- <div class="example-events">
+            <div *ngFor="let e of events">{{e}}</div>
+          </div> -->        
+
+
+          <!-- conforms visually that expiry time is 11:59:59
+          <BR/>Hosting access ends on
+          <br/>{{user.access_expiration_ms | date: 'long'}} ({{user.access_expiration_ms}}) -->
+
+      </div>
+    </div>
+
+
+    <div class="row">
+      
+      <div class="col" style="margin-top:10px" [hidden]="!user.uid || (me != null && me.uid === user.uid)">
+        <b>disabled</b> &nbsp;&nbsp;
         <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
         <label class="switch" id="disabled_switch_{{user.displayName}}">
           <input id="disabled_checkbox_{{user.displayName}}" type="checkbox" class="success" [checked]="user.isDisabled" (click)="checked($event, user)">
           <span class="slider round"></span>
         </label>
       </div>
+
+      <div class="col text-right"><span class="small text-muted">Joined</span> <br/>{{user.date_ms | date: 'MM/dd/yyyy'}}</div>
     </div>
 
-    <div class="row">
-      <div class="col" id="phoneLabel">{{user.phoneNumber}}</div>
-      <div class="col" id="online_label">
-        <div [hidden]="!user.online" class="online_circle">online</div>
-        <div [hidden]="user.online" class="offline_circle">offline</div>
-      </div>
+    <div class="row" style="margin-bottom:10px">
+      <div class="col" id="phoneLabel"><span class="small text-muted">Phone</span> <br/> <a href="tel:{{user.phoneNumber}}">{{user.phoneNumber | phone}}</a>   </div>
     </div>
-    <div class="row">
-      <div class="col">{{user.uid}}</div>
+    <div class="row" style="margin-bottom:10px">
+      <div class="col"><span class="small text-muted">Roles</span> <br/>  <span *ngFor="let role of user.roles">{{role}}</span> <span *ngIf="!user.roles">None</span> </div>
     </div>
-    <div class="row">
-      <div class="col">Joined {{user.date_ms | date: 'MM/dd/yyyy'}}</div>
+    <div class="row" style="margin-bottom:10px">
+      <div class="col"><span class="small text-muted">UID</span> <br/> {{user.uid}}</div>
     </div>
-    <div class="row">
-      <div class="col">Roles:</div>
+
+  </div>
+  <!-- end of form-group div -->
+
+  <div class="row">
+    <div class="col-12 col-sm-6" style="margin-bottom:20px">
+        <button id="submit_user" type="submit" class="col-12 btn btn-success" [disabled]="!userForm.form.valid">Submit</button>
     </div>
-    <div class="row">
-      <div class="col"><span *ngFor="let role of roles">{{role}}</span></div>
-    </div>
-    <div class="row">
-      <div class="col"><span *ngIf="!roles">None</span></div>
+    <div class="col-12 col-sm-6">
+        <button id="cancel_user" type="button" class="col-12 btn btn-secondary" (click)="cancel()">Cancel</button>
     </div>
   </div>
 
-  <button id="submit_user" type="submit" class="btn btn-success" [disabled]="!userForm.form.valid">Submit</button>
-  &nbsp;
-  <button id="cancel_user" type="button" (click)="cancel()" class="btn btn-secondary">Cancel</button>
+  <!-- bottom spacing/padding -->
+  <div class="row" style="margin-bottom:20px">
+    <div class="col">&nbsp; </div>
+  </div>
 
 </form>
 
+<div class="row">
+    <div class="col">Most Recent 25 Users
+    </div>
+</div>
+<div class="row" *ngFor="let someuser of users" style="border-top:1px solid #cdcdcd;padding-top:20px;padding-bottom:20px">
+    <div class="col-6 col-md-3">{{someuser.displayName}}</div>
+    <div class="col-6 col-md-3">{{someuser.phoneNumber | phone}}</div>
+    <div class="col-6 col-md-3">
+      <span class="small text-muted">{{someuser.date_ms | date:'MMM d, yyyy'}}<BR/>{{someuser.uid}}</span>
+    </div>
+</div>
 
 </div>

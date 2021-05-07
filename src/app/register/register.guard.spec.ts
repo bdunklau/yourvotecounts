@@ -45,6 +45,8 @@ describe('RegisterGuard', () => {
   });
 
   it('should ...', inject([RegisterGuard], (guard: RegisterGuard) => {
+    console.log('RegisterGuard: begin')
     expect(guard).toBeTruthy();
+    console.log('RegisterGuard: end')
   }));
 });

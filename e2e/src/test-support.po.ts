@@ -2,7 +2,7 @@ import { browser, by, element } from 'protractor';
 import * as _ from 'lodash';
 import { MyAccountPage } from './my-account.po';
 import { MainPage } from './main.po';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Api } from './api.po';
 
 export class TestSupport {
@@ -74,12 +74,12 @@ export class TestSupport {
     logParm += '&displayName='+log['displayName'];
     logParm += '&phoneNumber='+log['phoneNumber'];
     logParm += '&date_ms='+log['date_ms'];
-    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLog?'+logParm+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
+    return browser.get('https://us-central1-yourvotecounts-dev.cloudfunctions.net/createLog?'+logParm+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
   }
 
   createLogs(options: any) {
     browser.waitForAngularEnabled(false);
-    var url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLogs?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
+    var url = 'https://us-central1-yourvotecounts-dev.cloudfunctions.net/createLogs?auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
     if(options.millis) url += '&millis='+options.millis;
     if(options.levels) url += '&levels='+options.levels;
     if(options.count) url += '&count='+options.count;
@@ -88,13 +88,13 @@ export class TestSupport {
 
   createLogsWithDate(millis) {
     browser.waitForAngularEnabled(false);
-    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createLogs?millis='+millis+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
+    return browser.get('https://us-central1-yourvotecounts-dev.cloudfunctions.net/createLogs?millis='+millis+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
   }
 
   deleteLogs(opts: {by: string, value: string}) {
     browser.waitForAngularEnabled(false);
     var parms = 'by='+opts.by+'&value='+opts.value
-    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/deleteLogs?'+parms+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
+    return browser.get('https://us-central1-yourvotecounts-dev.cloudfunctions.net/deleteLogs?'+parms+'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY) as Promise<any>;
   }
 
   // get a "random" team name
@@ -137,7 +137,7 @@ export class TestSupport {
     var phoneNumber = data.phoneNumber
     var auth_key = data.auth_key ? '&auth_key='+data.auth_key : ''; //'&auth_key='+process.env.YOURVOTECOUNTS_AUTH_KEY;
     browser.waitForAngularEnabled(false);
-    return browser.get('https://us-central1-yourvotecounts-bd737.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
+    return browser.get('https://us-central1-yourvotecounts-dev.cloudfunctions.net/createCustomToken?phoneNumber='+phoneNumber+auth_key) as Promise<any>;
   }
 
   async setLegal(person, accepted: boolean) {

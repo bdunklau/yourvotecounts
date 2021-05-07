@@ -5,7 +5,7 @@ import { MyAccountPage } from './my-account.po';
 import { Api } from './api.po';
 import { ApiUser } from './api-user.po';
 
-describe('Logged in users', () => {
+fdescribe('Logged in users', () => {
   let page: MainPage;
   let testSupport: TestSupport;
   let myAccountPage: MyAccountPage;
@@ -18,21 +18,25 @@ describe('Logged in users', () => {
     myAccountPage = new MyAccountPage(testSupport);
   });
 
-   it('should be able to logout', async () => {
-    let person = page.loginAsSomeone();
-    browser.sleep(200);
-    page.clickLogout();
-    browser.sleep(500);
-    // console.log('should be able to logout:  666666666');
-    // browser.sleep(500);
-    // console.log('should be able to logout:  777777777777');
-    var login_link = page.getLoginLink();
+  
+  // passed on 1/10/21
+  fit('should be able to logout', async () => {
+    let slp = 300
+    let person = await page.loginAsSomeone();
+
+    await page.clickLogout(slp);
+    await browser.sleep(slp);
+    
+    var login_link = await page.getLoginLink(slp);
+    console.log("do you see the login link?...")
+    await browser.sleep(slp);
     expect(login_link.isDisplayed()).toBeTruthy();
   });
 
   // We DO want to make sure we can always point the browser to /token however
-  it('should be able to point browser to /token', async () => {
-    page.gotoTestSupport();
+  // passed on 1/10/21
+  fit('should be able to point browser to /token', async () => {
+    await page.gotoTestSupport();
     expect(page.getUrl()).toEqual(browser.baseUrl+'token');
   });
 
@@ -42,23 +46,22 @@ describe('Logged in users', () => {
   })
 
   
-  // passed 8/13/20
-  it('should be able to edit name', async () => {
+  // passed on 1/10/21
+  fit('should be able to edit name', async () => {
+    let slp = 1
     let person = await page.loginAsSomeone();
-    browser.sleep(500);
-    page.clickMyAccount();
-    browser.sleep(300);
-    myAccountPage.clickEdit();
-    myAccountPage.enterName('Bob');
-    myAccountPage.clickSubmit();
+    await page.clickMyAccount(slp);     
+    await myAccountPage.clickEdit(slp);
+    await myAccountPage.enterName('Bob');
+    await myAccountPage.clickSubmit();
     expect(myAccountPage.getNameLabel().isDisplayed()).toBeTruthy("expected name label to be displayed but it wasn't ");
     var name = await myAccountPage.getNameLabel().getText();
     expect(name == 'Bob').toBeTruthy("expected name to be Bob but it was actually: "+name);
-    browser.sleep(300);
-    myAccountPage.clickEdit();
-    myAccountPage.enterName(person.displayName);
-    myAccountPage.clickSubmit();
-    page.clickLogout();
+
+    await myAccountPage.clickEdit(slp);
+    await myAccountPage.enterName(person.displayName);
+    await myAccountPage.clickSubmit();
+    await page.clickLogout(slp);
   });
 
   // do this

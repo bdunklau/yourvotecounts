@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CanActivate, Router } from "@angular/router";
 import { UserService } from '../user/user.service';
 
@@ -6,24 +7,33 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-  constructor(
-    public userService: UserService,
-    private router: Router
-  ) {}
+    constructor(
+        public userService: UserService,
+        @Inject(PLATFORM_ID) private platformId,
+        private router: Router
+    ) {}
 
-  async canActivate(): Promise<boolean> {
-    try {
-      var user = await this.userService.getCurrentUser()
+    async canActivate(): Promise<boolean> {
+        if(isPlatformBrowser(this.platformId)) {
+            try {
+              var user = await this.userService.getCurrentUser()
 
-      // if there's no user, then send the user to /login and return false
-      // otherwise return true
-      if(!user) {
-        this.router.navigate(['/login']);
-        return false
-      }
-      else return true;
-    } catch(e) {
-      return false;
+              // if there's no user, then send the user to /login and return false
+              // otherwise return true
+              if(!user) {
+                this.router.navigate(['/login']);
+                return false
+              }
+              else return true;
+            } catch(e) {
+              this.router.navigate(['/home']);
+              return false;
+            }
+        }
+
+        else return true; // false will hang the server server-side
+
     }
-  }
+
+
 }

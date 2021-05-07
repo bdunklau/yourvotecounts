@@ -72,6 +72,8 @@ describe('LogComponent', () => {
   });
 
   it('should create', () => {
+    console.log('LogComponent: begin')
     expect(component).toBeTruthy();
+    console.log('LogComponent: end')
   });
 });

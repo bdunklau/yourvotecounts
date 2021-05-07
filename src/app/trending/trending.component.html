@@ -1,0 +1,26 @@
+
+<div class="row">
+<div class="col" style="color:black;border-radius:10px;padding-right:30px;padding-left:30px">
+<!-- <div class="container"> -->
+
+
+<div class="row" style="background-color:#e9f3ff">
+    <div class="col-10" style="padding-top:15px;padding-bottom:5px;padding-right:15px;padding-left:15px;border-bottom:1px solid #dddddd">
+        <h5><B>Trending</B> &nbsp;&nbsp; <i class="fas fa-poll"></i></h5>
+    </div>
+    <div class="col-2 text-right" (click)="collapsed = !collapsed" style="padding-top:15px;padding-bottom:5px;padding-right:15px;padding-left:15px;border-bottom:1px solid #dddddd">
+        <i [ngClass]="{'fas':true, 'fa-chevron-down': collapsed, 'fa-chevron-up': !collapsed}"></i>
+    </div>
+</div>
+
+<div class="row handcursor" *ngIf="!collapsed">
+    <div class="col" *ngFor="let tag of mostPopular" (click)="listTaggedVideos(tag)" style="background-color:#f9fbfd;padding-top:15px;padding-bottom:15px;padding-right:15px;padding-left:15px;">
+        <div class="row"><div class="col"><B>{{tag.name}}</B></div></div>
+        <div class="row"><div class="col text-muted">{{tag.count}} videos</div></div>
+    </div>
+</div>
+
+
+<!-- </div> -->
+</div>
+</div>

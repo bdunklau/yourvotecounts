@@ -1,0 +1,7 @@
+
+
+<div class="row" *ngFor="let committee of committees">
+    <!-- <div class="col"><a [routerLink]="['/admin/committees/', committee.id]">{{committee.name}}</a></div> -->
+    <div class="col"><a (click)="selectCommittee(committee)">{{committee.name}}</a></div>
+</div>
+

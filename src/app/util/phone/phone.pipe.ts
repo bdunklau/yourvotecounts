@@ -1,5 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+
+
+/**
+ * ng generate pipe util/phone/phone --module=app
+ */
 @Pipe({
   name: 'phone'
 })

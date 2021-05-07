@@ -1,0 +1,38 @@
+
+
+.mydiv{  
+    height:100%;
+    width:100%;
+    margin:auto;
+    background-color:white; 
+    position: fixed; 
+    top:100%;
+    border:1px solid #cdcdcd;
+    overflow-y: auto;
+    overflow-x: hidden
+  }
+  
+.target {
+      -moz-transition: -moz-transform .5s;
+      -o-transition: -o-transform .5s;
+      -webkit-transition: -webkit-transform .5s;
+       -moz-transform-origin: bottom;
+      -ms-transform-origin: bottom;
+      -o-transform-origin: bottom;
+      -webkit-transform-origin: bottom;
+      transform-origin: bottom;
+      transition: transform .5s;
+}
+  
+.collapsed {
+      -moz-transform: scaleY(0);
+      -ms-transform: scaleY(0);
+      -o-transform: scaleY(0);
+      -webkit-transform: scaleY(0);
+      transform: scaleY(0);
+     
+}
+
+.translated {
+    transform:translate(0px,-60%);
+}

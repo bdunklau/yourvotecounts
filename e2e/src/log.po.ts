@@ -2,7 +2,7 @@ import { browser, by, element, ElementArrayFinder } from 'protractor';
 import * as protractor from 'protractor';
 import { BasePage } from './base.po';
 import * as _ from 'lodash';
-import * as moment from 'moment'
+import moment from 'moment'
 import { TestSupport } from './test-support.po';
 
 // from  https://blog.cloudboost.io/building-your-first-tests-for-angular5-with-protractor-a48dfc225a75

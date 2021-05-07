@@ -6,6 +6,8 @@ import { UserService } from '../user/user.service';
 import { HttpClient/*, HttpHeaders, HttpParams, HttpErrorResponse*/ } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireStorage } from '@angular/fire/storage';
+import * as firebase from 'firebase'
+import { environment } from '../../../src/environments/environment';
 
 
 
@@ -30,6 +32,10 @@ describe('TeamService', () => {
       }),
     };
 
+    if (!firebase.apps.length) {
+        firebase.initializeApp(environment.firebase);
+    }
+
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [ UserService,
@@ -41,7 +47,9 @@ describe('TeamService', () => {
   }));
 
   it('should be created', () => {
+    console.log('TeamService: begin')
     const service: TeamService = TestBed.get(TeamService);
     expect(service).toBeTruthy();
+    console.log('TeamService: end')
   });
 });

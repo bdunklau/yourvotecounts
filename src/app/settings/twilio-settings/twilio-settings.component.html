@@ -1,0 +1,68 @@
+<div class="container">
+    <H3>Twilio Settings</H3>
+    
+    <!-- 
+    See   settings.component.html
+    -->
+    
+    
+    <span *ngIf="twilioSettings">
+    
+    
+    <form (ngSubmit)="onSubmit()" #twilioForm="ngForm" novalidate>
+        <div class="row" style="margin-top:10px">
+            <div class="col-4" style="margin-top:5px">
+                Account SID
+            </div>
+            <div class="col-8">
+                <input type="text" class="col-12 form-control" id="twilio_account_sid_field" [(ngModel)]="twilioSettings.twilio_account_sid"  name="twilio_account_sid" #twilio_account_sid="ngModel" required>  
+            </div>
+        </div>
+    
+    
+        <div class="row" style="margin-top:10px">
+            <div class="col-4" style="margin-top:5px">
+                API Key
+            </div>
+            <div class="col-8">
+                <input type="text" class="col-12 form-control" id="twilio_api_key_field" [(ngModel)]="twilioSettings.twilio_api_key"  name="twilio_api_key" #twilio_api_key="ngModel" required> 
+            </div>
+        </div>
+        
+    
+        <div class="row" style="margin-top:10px">
+            <div class="col-4" style="margin-top:5px">
+                Auth Key
+            </div>
+            <div class="col-8">
+                <input type="text" class="col-12 form-control" id="twilio_auth_key_field" [(ngModel)]="twilioSettings.twilio_auth_key"  name="twilio_auth_key" #twilio_auth_key="ngModel" required>
+            </div>
+        </div>
+    
+    
+        <div class="row" style="margin-top:10px">
+            <div class="col-4" style="margin-top:5px">
+                Secret
+            </div>
+            <div class="col-8">
+                <input type="text" class="col-12 form-control" id="twilio_secret_field" [(ngModel)]="twilioSettings.twilio_secret"  name="twilio_secret" #twilio_secret="ngModel" required>
+            </div>
+        </div>
+        
+    
+        
+        <div class="row" style="margin-top:20px">
+            <div class="col">
+                <button id="doit" [disabled]="!twilioForm.valid" (click)="doit()" class="btn btn-primary col-sm-12">  Submit </button>
+            </div>
+        </div>
+    
+    </form>
+    
+    
+    </span>   
+    <!-- make sure settings object exists  -->
+    
+    
+    </div>
+    

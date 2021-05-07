@@ -1,0 +1,26 @@
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <app-licensee-form></app-licensee-form>
+        </div>
+        <div class="col">
+            <app-licensee-list></app-licensee-list>
+        </div>
+    </div>
+
+    
+    <span *ngIf="licensee && licensee.id">
+    <div class="row">
+        <div class="col">
+            <app-licensee-contact-form [inputLicensee]="licensee"></app-licensee-contact-form>
+        </div>
+        <div class="col">
+            <app-licensee-contact-list [inputLicensee]="licensee"></app-licensee-contact-list>
+        </div>
+    </div>
+    </span>
+
+
+</div>
+

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
+import { ErrorPageService } from './error-page.service'
 
 @Component({
   selector: 'app-error-page',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ErrorPageComponent implements OnInit {
 
-  constructor() { }
+  errorMsg: string = 'Houston, we have a problem'
+  errorTitle: string = 'Error'
+
+  constructor(
+    private errorPageService: ErrorPageService) { }
 
   ngOnInit(): void {
+    if(this.errorPageService.errorMsg)
+      this.errorMsg = this.errorPageService.errorMsg
+      this.errorTitle = this.errorPageService.errorTitle
   }
 
 }

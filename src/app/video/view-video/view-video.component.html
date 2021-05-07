@@ -1,19 +1,310 @@
-<div class="container">
-    <h5>SeeSaw Video</h5>
 
-    <div class="row" style="margin-bottom:20px"><div class="col">Here's your video</div></div>
-    
-    <!-- div class="row" style="margin-bottom:20px"><div class="col">Created:</div><div class="col-sm-11">{{composition.date_ms | date:'long'}}</div></div -->
 
-    <!-- div class="row" style="margin-bottom:20px"><div class="col">{{composition.composition_MediaUri}}</div></div -->
-    <div class="row" style="margin-bottom:20px">
-        <div class="col">
-            <video width="320" height="240" controls>
-                <source src="movie.mp4" type="video/mp4">
-                <!-- source src="movie.ogg" type="video/ogg" -->
-                Your browser does not support the video tag.
-            </video>
+
+<!-- reCAPTCHA v3     https://dethariel.github.io/ng-recaptcha/v3        -->
+<span *ngIf="need_to_check" >
+    <div [ngStyle]="{'background': 'url('+room.screenshotUrl+')', 'width': '100%', 'height':'35%', 'opacity':'0.2', 'background-size': 'cover', 'background-position': 'center', 'background-repeat': 'no-repeat'}">
+    </div>
+
+    <div class="container"   [ngStyle]="{ 'margin-top': '20px'}">
+        <h3>Humans Only</h3>
+
+        <div class="row" style="margin-top:30px">
+            <div class="col-12">
+                You must be an actual human to view this video.  Click "I am not a robot" or Login.
+            </div>
+        </div>
+        <div class="row" style="margin-top:30px">
+            <div class="col-12">
+            <!-- add Login button -->
+
+            <button class="btn col-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4" style="background-color:#cdcdcd" (click)="executeAction('robot')"><i class="fas fa-robot"></i> &nbsp; I am not a robot</button>
+            </div>
+        </div>
+        <div class="row" style="margin-top:50px">
+            <div class="col-12">
+                <a class="btn btn-primary col-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4" style="color:#ffffff" routerLink="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+            </div>
+        </div>
+    </div>
+</span>
+<!-- reCAPTCHA v3 -->
+
+
+
+
+<!-- reCAPTCHA v3     https://dethariel.github.io/ng-recaptcha/v3        -->
+<span *ngIf="confirmed_robot">
+    <div [ngStyle]="{'background': 'url('+room.screenshotUrl+')', 'width': '100%', 'height':'35%', 'opacity':'0.2', 'background-size': 'cover', 'background-position': 'center', 'background-repeat': 'no-repeat'}">
+    </div>
+
+    <div class="container" style="margin-top:20px">
+        <h3>Are You a Robot?</h3>
+        <div class="row">
+            <div class="col-12">
+                You kinda look like a robot.  If you're actually a human, login using this button.
+                <P>&nbsp;</P>
+                <P>
+                    <a class="btn btn-primary col-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4" style="color:#ffffff" routerLink="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                </P>
+            </div>
+        </div>
+    </div>
+</span>
+<!-- reCAPTCHA v3 -->
+
+
+
+
+
+
+<span *ngIf="confirmed_human == true">
+
+
+<!-- ONE BIG ROW, ONE BIG COL - COL SPANS THE WHOLE WIDTH FOR SMALL SCREENS BUT ONLY SPANS 6 FOR MD AND HIGHER -->
+<div class="row">
+    <div class="col-12 col-md-6 offset-md-3">
+
+
+
+<div class="row">
+    <div class="col-12" *ngIf="videoUrl">
+        <video style="width:100%;" controls playsinline preload="metadata">
+            <source src="{{videoUrl}}" type="{{videoType}}">
+            Your browser does not support the video tag.
+        </video>
+
+    </div>
+</div>
+
+
+<!-- get rid of this - just trying to figure out if the FB in-app browser is serving up the wrong url to my iPhone -->
+<!-- <div class="row">
+    <div class="col-12" *ngIf="videoUrl">
+        {{videoUrl}}
+        <BR/>{{videoType}}
+        <BR/>{{userAgent}}
+    </div>
+</div> -->
+
+
+
+
+<!-- sanity check...  
+<div class="row" style="margin-bottom:20px">
+    <div class="col" *ngIf="videoUrl">
+        <a href="{{videoUrl}}">{{videoUrl}}</a>
+        <br/>{{browser}}
+    </div>
+</div> 
+-->
+
+
+
+<!-- 
+banner ad
+-->
+<app-banner-ad *ngIf="showAd"></app-banner-ad>
+
+ <!-- container gives a little bit of edge padding on small screens -->
+<div class="container" [ngStyle]="{'margin-top': showAd ? '70px' : '20px', 'margin-bottom': '32px'}">
+
+
+    <!-- ==================== VIDEO TITLE LABEL AND FIELD ========================= -->
+    <div class="row" *ngIf="!editing_title">
+        <div class="col" (click)="beginEditTitle()">
+            <h3>
+                <span *ngIf="video_title">{{video_title}}</span>  
+                <span *ngIf="!video_title && initialized">(Add title)</span>  
+            </h3>
         </div>
     </div>
 
+    <div class="row no-gutters" *ngIf="editing_title">
+        <div class="col-10 col-lg-11">
+            <input class="form-control col-12"
+                type="text"
+                id="video_title"
+                [(ngModel)]="video_title"
+                placeholder="Title" />
+        </div>
+
+        <div class="col-2 col-lg-1">
+            <button id="save_title" (click)="save_title()" class="btn btn-success col-12" ><i class="fas fa-check"></i>  </button>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col">
+            <span *ngIf="room.views">{{room.views}} views</span>
+            <span *ngIf="!room.views">No views</span>
+        </div>
+    </div>
+
+
+    <!-- ==================== VIDEO DESCRIPTION LABEL AND FIELD ========================= -->
+    <div class="row" *ngIf="!editing_description" style="margin-top:10px">
+        <div class="col text-style" (click)="beginEditDescription()">
+                <span *ngIf="video_description" style="white-space: pre-wrap;" [innerHTML]="video_description | linkify"></span>
+                <span *ngIf="!video_description && initialized">(Add description)</span>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="editing_description" style="margin-top:10px">
+        <div class="col">
+            <textarea class="form-control col-12"
+                      id="video_description" 
+                      placeholder="Video description"
+                      [(ngModel)]="video_description"
+                      rows="10">{{video_description}}</textarea>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="editing_description" style="margin-top:10px">
+        <div class="col">
+            <button id="save_description" (click)="save_description()" class="btn btn-success col-12"><i class="fas fa-check"></i>  Save Description </button>
+        </div>
+    </div>
+
+    <!-- <h1>Tags</h1>
+    <div class="row" *ngFor="let atag of room.tags">
+        <div class="col">
+            tag: {{atag}}
+        </div>
+    </div> -->
+
+    <app-tag-editor [inputIsHost]="isHost || isAdmin" [inputRoomToTagEditor]="room"></app-tag-editor>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-6">
+            <button class="btn btn-primary col-12" (click)="showElectedOfficials = true;showComments = false"> <i class="fa fa-users"></i> Officials  </button>
+        </div>
+        <div class="col-6">
+            <button class="btn btn-primary col-12" (click)="showElectedOfficials = false;showComments = true"> <i class="fas fa-comments"></i> Comments  </button>
+        </div>
+    </div>
+
+
+    <span *ngIf="showElectedOfficials"> 
+
+        <div class="row" style="margin-top:30px;margin-bottom:10px">
+            <div class="col-4">
+                <h3>Officials</h3>
+            </div>
+            
+            <!-- no point in showing expand/collapse icon if there aren't any legislators -->
+            <div class="col-8 text-right">
+            <span *ngIf="room && room.officials && room.officials.length > 0">
+                <a (click)="officialsCollapsed = !officialsCollapsed"> 
+                    <span *ngIf="officialsCollapsed">Contact Individually <i class="fas fa-chevron-down"></i></span> 
+                    <span *ngIf="!officialsCollapsed">Collapse <i class="fas fa-chevron-up"></i></span>  
+                </a>
+            </span>
+            </div>
+            
+        </div>
+
+
+        <span *ngIf="room && room.officials && room.officials.length > 0">
+
+
+
+            <!-- <a (click)="popSocialMedia(channel)" class="btn btn-primary {{channel.color_class}} col-12" style="color:#ffffff"> <i [class]="channel.icon"></i> </a> -->
+
+
+        <!-- don't show the "contact all" buttons if there's only one rep listed -->
+        <span *ngIf="room.officials.length > 1">
+        <div class="row">
+            <div class="col-12 col-md-4" style="margin-bottom:10px">
+                <!-- TODO NEED TO FIX EMAIL ADDRESS, SUBJECT MAYBE AND GREETING DEFINITELY -->
+                <a href='mailto:{{emailAddresses}}?subject=Video Message from a Voter&body={{salutation}}%0D%0A%0D%0AI created a short video message for you.  Thanks for watching!%0D%0A%0D%0A{{video_title_for_email}}%0D%0A%0D%0A{{currentUrl}}%0D%0A(If the link above is not clickable, please copy into your browser)%0D%0A%0D%0A' class="btn btn-primary col-12" style="color:#ffffff"><i class="fas fa-envelope"></i> Email All </a>    
+            </div>  
+            
+            <div class="col-12 col-md-4" style="margin-bottom:10px">
+                <a class="btn btn-primary facebook_color col-12" (click)="facebookTagAll()" style="color:#ffffff"> <i class="fab fa-facebook-f"></i> Tag All </a>
+            </div> 
+            <div class="col-12 col-md-4" style="margin-bottom:10px">
+                <a class="btn btn-primary twitter_color col-12" (click)="twitterTagAll()" style="color:#ffffff"> <i class="fab fa-twitter"></i> Tag All </a>
+            </div>            
+        </div>
+        </span>
+
+
+
+
+
+
+
+
+        <div [ngClass]="{'row': true, 'justify-content-center': officialsCollapsed}"  style="margin-top:0px">
+                <span *ngFor="let official of room.officials" [ngClass]="{'col-12': !officialsCollapsed}">
+                    <app-view-official [inputCollapsed]="officialsCollapsed" [canDelete]="isHost" [official]="official"></app-view-official>
+                </span>
+        </div>
+        </span>
+
+        <div class="row" style="margin-top:10px" *ngIf="isHost">
+            <div class="col">
+                <button id="mybtn1" class="btn btn-primary col-12" (click)="openOfficialDialog()"> <i class="fas fa-user-plus"></i> Add by Address  </button>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:20px" *ngIf="isHost">
+            <div class="col">
+                <button id="mybtn1" class="btn btn-primary col-12" (click)="openCommitteeDialog()"> <i class="fas fa-user-plus"></i> Add Committee  </button>
+            </div>
+        </div>
+    </span>
+
 </div>
+<!-- end:   <div class="container" [ngStyle]="{'margin-top': showAd ? '70px' : '20px', 'margin-bottom': '32px'}"> -->
+
+
+
+    </div>
+</div>
+<!-- ONE BIG ROW, ONE BIG COL - COL SPANS THE WHOLE WIDTH FOR SMALL SCREENS BUT ONLY SPANS 6 FOR MD AND HIGHER -->
+
+
+
+
+
+
+<!-- COMMENTS SECTION -->
+<!-- put comment section outside of "container" so that the slide-up comment edit form spans the whole width of the page  -->
+<span *ngIf="showComments">   
+    <div class="row">
+        <div class="col">
+            <app-comments [inputRoomToComments]="room"></app-comments>
+        </div>
+    </div>
+</span>
+
+
+
+
+
+
+
+<!-- SEARCH OFFICIALS BY ADDRESS SLIDE-UP FORM -->
+<div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': translated}">   
+                
+    <a href="javascript:void(0)" class="pull-right" (click)="translated = !translated" style="margin-top:10px;margin-right:10px;color:black"><i class="fa fa-close fa-2x"></i></a>   
+    <app-search-officials [inputCollapsed]="false"></app-search-officials>
+  
+</div> 
+
+
+
+<!-- ADD OFFICIALS BY COMMITTEE SLIDE-UP FORM -->
+<div id="mybox2" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': committeeDialogTranslated}" style="padding-top:30px">   
+                
+    <a href="javascript:void(0)" class="pull-right" (click)="committeeDialogTranslated = !committeeDialogTranslated" style="margin-top:10px;margin-right:10px;color:black"><i class="fa fa-close fa-2x"></i></a>   
+    <app-committee-list></app-committee-list>
+  
+</div> 
+
+
+</span>
+<!-- <span *ngIf="confirmed_human == true"> -->

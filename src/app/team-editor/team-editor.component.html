@@ -1,5 +1,5 @@
 <div class="container">
-<h5>Team Editor</h5>
+<h5 style="margin-top:20px">Team Editor</h5>
 
 <div class="row">
   <div class="col">
@@ -28,7 +28,7 @@
       &nbsp;
       &nbsp;
       <!-- <button id="delete_team" *ngIf="team.id" type="button" [routerLink]="['/teams/']" (click)="deleteTeam(teamNameForm)" class="btn btn-danger">Delete Team</button> -->
-      <button id="delete_team" *ngIf="team.id" type="button" (click)="confirmDelete(teamNameForm, team)" class="btn btn-danger">Delete Team</button>
+      <button [hidden]="!isAdmin" id="delete_team" *ngIf="team.id" type="button" (click)="confirmDelete(teamNameForm, team)" class="btn btn-danger">Delete Team</button>
 
     </form>
   </div>

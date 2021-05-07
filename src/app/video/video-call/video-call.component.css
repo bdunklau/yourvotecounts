@@ -1,0 +1,65 @@
+
+.circular--portrait {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin-left:-8px;
+  margin-right:10px;
+}
+
+.circular--portrait img {
+  width: 100%;
+  height: auto;
+}
+
+
+.fa-rotate-135 {
+    -moz-transform: rotate(135deg);
+    -o-transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=-0.7071067811865477, M12=-0.7071067811865475, M21=0.7071067811865475, M22=-0.7071067811865477, SizingMethod='auto expand')";
+    filter: progid: DXImageTransform.Microsoft.Matrix( M11=-0.7071067811865477, M12=-0.7071067811865475, M21=0.7071067811865475, M22=-0.7071067811865477, SizingMethod='auto expand');
+    margin-left: 0%;
+    margin-top: 0%;
+  }
+
+
+  
+.mydiv{  
+  height:100%;
+  width:100%;
+  margin:auto;
+  background-color:white; 
+  position: fixed; 
+  top:100%;
+  border:1px solid #cdcdcd;
+  overflow: scroll;
+}
+
+.target {
+    -moz-transition: -moz-transform .5s;
+    -o-transition: -o-transform .5s;
+    -webkit-transition: -webkit-transform .5s;
+     -moz-transform-origin: bottom;
+    -ms-transform-origin: bottom;
+    -o-transform-origin: bottom;
+    -webkit-transform-origin: bottom;
+    transform-origin: bottom;
+    transition: transform .5s;
+}
+
+.collapsed {
+    -moz-transform: scaleY(0);
+    -ms-transform: scaleY(0);
+    -o-transform: scaleY(0);
+    -webkit-transform: scaleY(0);
+    transform: scaleY(0);
+   
+}
+
+.translated {
+  transform:translate(0px,-100%);
+}

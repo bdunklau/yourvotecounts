@@ -1,0 +1,47 @@
+
+<!-- see comment-form.component.html -->
+
+
+    <form (ngSubmit)="onSubmit()" [formGroup]="tagForm">
+        <div class="form-group">
+        
+            <div class="row">
+                <div class="col-12">
+        
+                    <input type="text" class="form-control col-12" placeholder="#tag"  formControlName="tagFC">
+    
+                </div>
+            </div>
+        
+        
+            <div class="row">
+                <div class=" col-12 col-sm-4"  style="margin-top:10px">
+                    <span *ngIf="tagForm">
+                    <button type="submit" class="btn btn-success col-12" [hidden]="!tagForm.valid">Save</button>
+                    </span>
+                </div>
+                <div class=" col-12 col-sm-4"  style="margin-top:10px">
+                    <span *ngIf="!confirmDelete && canDelete">
+                    <button class="btn btn-danger col-12" (click)="confirmDelete = true">Delete</button>
+                    </span>
+    
+                    <span *ngIf="confirmDelete && canDelete">
+                    <button class="btn btn-default col-12" (click)="confirmDelete = false" style="background-color:#ededed">Cancel</button>
+                    </span>
+    
+    
+                </div>
+                <div class=" col-12 col-sm-4"  style="margin-top:10px">
+    
+                    <span *ngIf="confirmDelete && canDelete">
+                    <button class="btn btn-danger col-12" (click)="deleteTag(tag)">Confirm</button>
+                    </span>
+                </div>
+            </div>
+            
+        
+        </div>
+        
+    </form>
+    
+               

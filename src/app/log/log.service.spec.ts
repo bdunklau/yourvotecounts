@@ -51,7 +51,9 @@ describe('LogService', () => {
   );
 
   it('should be created', () => {
+    console.log('LogService: begin')
     const service: LogService = TestBed.get(LogService);
     expect(service).toBeTruthy();
+    console.log('LogService: end')
   });
 });

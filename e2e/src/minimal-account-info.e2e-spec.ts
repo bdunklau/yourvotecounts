@@ -16,11 +16,12 @@ describe('Minimal Account Info Guard', () => {
 
 
   it('should not be able to visit most pages until completing their profile', async () => {
+    let slp = 1
       // make list of the links that users cannot visit with an incomplete account
       // teams, my-account,
     page.loginNewUser();
     browser.sleep(500);
-    page.clickMyAccount();
+    await page.clickMyAccount(slp);
     browser.sleep(500);
     var url = await page.getUrl();
     expect(url === browser.baseUrl+'minimal-account-info').toBeTruthy('expected My Account link to send us to /minimal-account-info page, but instead we got '+url);
@@ -38,16 +39,17 @@ describe('Minimal Account Info Guard', () => {
     browser.sleep(500);
     url = await page.getUrl();
     expect(url === browser.baseUrl+'home').toBeTruthy('expected Home link to send us to /home page, but instead we got '+url);
-    page.clickLogout();
+    await page.clickLogout(slp);
   });
 
 
   // make sure the guard doesn't accidentally redirect everyone
   // passed 8/13/20
   it('should allow those with completed profiles to access pages', async () => {
+    let slp = 1
     page.loginAsSomeone();
     browser.sleep(500);
-    page.clickMyAccount();
+    await page.clickMyAccount(slp);
     browser.sleep(500);
     var url = await page.getUrl();
     expect(url === browser.baseUrl+'myaccount').toBeTruthy('expected My Account link to send us to /myaccount page, but instead we got '+url);
@@ -63,7 +65,7 @@ describe('Minimal Account Info Guard', () => {
     browser.sleep(500);
     url = await page.getUrl();
     expect(url === browser.baseUrl+'home').toBeTruthy('expected Home link to send us to /home page, but instead we got '+url);
-    page.clickLogout();
+    await page.clickLogout(slp);
   });
 
 

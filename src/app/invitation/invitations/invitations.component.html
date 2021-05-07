@@ -1,8 +1,20 @@
-<div class="container">
-    <h5>Invitations</h5>
 
-    <button id="send_invitation_button" type="button" [routerLink]="['/invitation-form']" class="btn btn-primary">Send Invitation</button>
-    <P>&nbsp;</P>
-    <button id="view_invitations_button" type="button" [routerLink]="['/invitation-list']" class="btn btn-primary">View Invitations</button>
+<!-- 
+<div style="padding-left:10px;padding-right:10px"> <app-browser-check #mediaCheck (outputMediaResults)="onMediaResults($event)"></app-browser-check> </div>
+ -->
+
+
+<div class="container" style="margin-top:20px">
+    <h5>Call Someone</h5>
+
+
+    <!-- button id="send_invitation_button" type="button" [routerLink]="['/invitation-form']" class="btn btn-primary">Send Invitation</button -->
+
+
+    <!-- don't event show this form if the camera and mic aren't enabled -->
+    <app-invitation-form></app-invitation-form>
+
+    
 
 </div>
+

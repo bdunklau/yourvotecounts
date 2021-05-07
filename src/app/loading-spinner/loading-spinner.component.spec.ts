@@ -20,6 +20,8 @@ describe('LoadingSpinnerComponent', () => {
   });
 
   it('should create', () => {
+    console.log('LoadingSpinnerComponent: begin')
     expect(component).toBeTruthy();
+    console.log('LoadingSpinnerComponent: end')
   });
 });

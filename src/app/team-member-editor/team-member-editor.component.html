@@ -1,8 +1,8 @@
 
 <div id="team_member_editor" *ngIf="team && team.id">
-<h5 id="team_member_heading">Members</h5>
-
+  
 <span *ngIf="canAddTeamMembers">
+  <div>Add Members</div>
   <app-search-user-by-name2 (selectedUser)="onUserSelectedByName($event)"
                             [placeholder]="'Add Someone'">
   </app-search-user-by-name2>
@@ -11,9 +11,9 @@
 <table class="table table-striped">
   <thead *ngIf="canAddTeamMembers">
   <tr>
-    <th scope="col" colspan="2">Name
+    <th colspan="2">Members
     </th>
-    <th scope="col" class="text-right">Leader (Y/N)
+    <th colspan="2" class="text-right">Team Lead (Y/N)
     </th>
   </tr>
   </thead>
@@ -25,11 +25,34 @@
               (click)="confirmDelete(team_member)"></i></a>
     </td>
 
-    <td id="team_member_{{team_member.displayName}}">{{team_member.displayName}}</td>
+
+    <td colspan="2">
+      <div class="row">
+        <div class="col-6"><a href="/my-videos/{{team_member.userId}}" style="color:#0000EE">{{team_member.displayName}}</a> </div>
+        <div class="col-3"><a href="javascript:void(0)" (click)="invite(team_member)"> <i class="fa fa-video" style="color:#555555"></i>  </a></div>
+        <div class="col-3"><a href="tel:{{team_member.phoneNumber}}"> <i class="fas fa-phone-alt" style="color:#555555"></i>  </a></div>
+      </div>
+      <div class="row">
+        <div class="col-12"><span class="small">{{team_member.phoneNumber | phone}}</span></div>
+      </div>
+
+          <!--     
+          Have to do a bunch of crap just to get rid of the "unsafe:" that automatically prefixes the "sms:"
+          Not worth it right now
+          https://stackoverflow.com/questions/40754050/how-to-avoid-adding-prefix-unsafe-to-link-by-angular-2
+          <td>
+            <a href="sms:{{team_member.phoneNumber}}"> <i class="fas fa-sms" style="color:#555555"></i>  </a>
+          </td>
+          -->
+
+    </td>
+
+
+
 
     <td>
       <span *ngIf="!canSetLeaders">
-         <span *ngIf="team_member.leader">leader</span>
+         <span *ngIf="team_member.leader">team lead</span>
       </span>
       <span *ngIf="canSetLeaders">
         <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->

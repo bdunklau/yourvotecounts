@@ -57,21 +57,27 @@ describe('AppComponent', () => {
   }));
 
   it('should create the app', () => {
+    console.log('AppComponent: begin: 1')
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
+    console.log('AppComponent: end: 1')
   });
 
-  it(`should have as title 'SeeSaw'`, () => {
+  it(`should have as title 'HeadsUp'`, () => {
+    console.log('AppComponent: begin: 2')
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('SeeSaw');
+    expect(app.title).toEqual('HeadsUp');
+    console.log('AppComponent: end: 2')
   });
 
   it('should find title in the navbar', () => {
+    console.log('AppComponent: begin: 3')
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('nav > a').textContent).toContain('SeeSaw');
+    expect(compiled.querySelector('nav > a').textContent).toContain('HeadsUp');
+    console.log('AppComponent: end: 3')
   });
 });

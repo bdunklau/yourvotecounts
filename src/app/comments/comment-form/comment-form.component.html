@@ -1,0 +1,57 @@
+
+<span  [hidden]="!isLoggedIn">
+<form (ngSubmit)="onSubmit()" [formGroup]="commentForm">
+    <div class="form-group">
+    
+        <div class="container">
+        <div class="row no-gutters">
+            <div class="col-12">
+    
+                <!-- <input type="text" class="form-control col-12" placeholder="Write a comment..."  formControlName="comment"> -->
+
+                <!-- https://headsupvideo.atlassian.net/browse/HEADSUP-34 -->
+                    <textarea matInput 
+                       style="padding: 3px 3px;border:1px solid gray;margin:0 0 0 0"
+                       class="form-control col-12"
+                       cols="10"
+                       rows="4"
+                       placeholder="Write a comment..." 
+                       [formControl]="commentFC" 
+                       (change)="onCommentChange()"></textarea>
+
+            </div>
+        </div> 
+    
+    
+        <div class="row">
+            <div class=" col-12 col-sm-4"  style="margin-top:10px">
+                <span *ngIf="commentForm">
+                <button type="submit" class="btn btn-success col-12" [hidden]="!commentForm.valid || !canEdit">Save</button>
+                </span>
+            </div>
+            <div class=" col-12 col-sm-4"  style="margin-top:10px">
+                <span *ngIf="!confirmDelete && canDelete">
+                <button class="btn btn-danger col-12" (click)="confirmDelete = true">Delete</button>
+                </span>
+
+                <span *ngIf="confirmDelete && canDelete">
+                <button class="btn btn-default col-12" (click)="confirmDelete = false" style="background-color:#ededed">Cancel</button>
+                </span>
+
+
+            </div>
+            <div class=" col-12 col-sm-4"  style="margin-top:10px">
+
+                <span *ngIf="confirmDelete && canDelete">
+                <button class="btn btn-danger col-12" (click)="deleteComment(comment)">Confirm</button>
+                </span>
+            </div>
+        </div>
+        </div>
+        <!-- end:  <div class="container"></div> -->
+    
+    </div>
+    
+</form>
+</span>     
+           

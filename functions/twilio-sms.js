@@ -8,13 +8,13 @@ const twilio = require('twilio');
 var db = admin.firestore();
 
 
-// firebase deploy --only functions:sendSms
+// firebase deploy --only functions:sendSms,functions:notifyHeapWarning
 
 
 
 var getKeys = function() {
   return new Promise((resolve, reject) => {
-    return db.collection('config').doc('keys').get().then(doc => {
+    return db.collection('config').doc('twilio').get().then(doc => {
       var keys = doc.data();
       resolve(keys);
       return;
@@ -33,6 +33,16 @@ var addCountryCode = function(phone) {
 }
 
 
+/**
+ * NOT SURE I LIKE DOING IT THIS WAY
+ * Pro's: we have a record of the text message that was sent
+ * Con's: we now have to deal with these records
+ * 
+ * WOULD IT BE BETTER TO HAVE AN HTTPS FUNCTION that listens for GETS/POSTS and have those web requests trigger the same code as below?
+ * 
+ * MAYBE KEEP THIS THE WAY IT IS... At some point, we're going to want to review the messages that were
+ * send.  If we trigger by http calls, we won't be able to see what was sent
+ */
 // triggered from  sms.service.ts
 exports.sendSms = functions.firestore.document('sms/{id}').onCreate(async (snap, context) => {
   let keys = await getKeys();
@@ -83,6 +93,46 @@ exports.sendSms = functions.firestore.document('sms/{id}').onCreate(async (snap,
 })
 
 
+/**
+ * Called from yourvotecounts-vm:index.js:notifyHeapWarning()
+ * 
+ * The purpose of this function is to trigger an SMS message to me letting me know that the
+ * heap used by the node server has exceeded config/settings/heapThreshold
+ */
+exports.notifyHeapWarning = functions.https.onRequest(async (req, res) => {
+
+    /**
+     * passed in from index.js: notifyHeapWarning()
+     * 
+    
+        let formData = {
+          heapUsed: req.body.heapUsed,
+          heapThreshold: req.body.heapThreshold,
+          website_domain_name: req.body.website_domain_name
+        }
+     */
+    let twilioDoc = await db.collection('config').doc('twilio').get()
+    let twilioKeys = twilioDoc.data()
+
+    let settingsDoc = await db.collection('config').doc('settings').get()
+    let settings = settingsDoc.data()
+
+    var details = {};
+    details.to = addCountryCode(settings['admin_sms'])
+    details.from = addCountryCode(settings['from_sms'])
+    details.body = `VM heap use: ${req.body.heapUsed} GB has exceeded the threshold of ${req.body.heapThreshold} GB`
+
+    // require the Twilio module and create a REST client
+    const client = twilio(twilioKeys['twilio_account_sid'], twilioKeys['twilio_auth_key'])
+    return client.messages
+      .create(details)
+      .then((message) => {
+          return res.status(200).send(JSON.stringify({result: 'ok'}))
+      });
+
+})
+
+
 /************
 USAGE:
 
@@ -98,7 +148,7 @@ var validateKeys = function(auth_key) {
       resolve('no key');
     }
 
-    return db.collection('config').doc('keys').get().then(doc => {
+    return db.collection('config').doc('twilio').get().then(doc => {
       var keys = doc.data();
       keys.valid = doc.data().twilio_auth_key === auth_key;
       resolve(keys);

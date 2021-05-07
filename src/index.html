@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>YourVoteCounts</title>
+  <title>HeadsUp</title>
   <base href="/">
   <script src="https://use.fontawesome.com/505431f526.js"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css">
@@ -14,11 +14,48 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdVvBbQRVIRGlQo_xxKEEmX6ndigE8iDM&libraries=places&language=en"></script>
+
+  <!-- https://developers.google.com/identity/sign-in/web/reference -->
+  <script src="https://apis.google.com/js/client.js?onload=init" async defer></script>
 
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+  <!-- set in server.ts -->
+  <meta property="og:title" content="$OG_TITLE">
+  <meta property="og:description" content="$OG_DESCRIPTION">
+  <meta property="og:image" content="$OG_IMAGE">
+  <!-- what's this for?   meta property="og:url" content="http://euro-travel-example.com/index.htm"  -->
+
+  
+  <!-- set in server.ts -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:description" content="$OG_DESCRIPTION" />
+  <meta name="twitter:title" content="$OG_TITLE" />
+  <meta name="twitter:image" content="$OG_IMAGE" />
+  <!-- meta name="twitter:creator" content="@therealdanvega" /  -->
+  <!-- meta name="twitter:site" content="@therealdanvega" / -->
+
+
+  <!-- reCAPTCHA v3  https://developers.google.com/recaptcha/docs/v3 -->
+  <script src="https://www.google.com/recaptcha/api.js?render=6LdddIUaAAAAAC7IlHEIRyhyoiUESJEOTvlOo5-5"></script>
+
+
+
 </head>
 <body>
+
+  <!-- HEADSUP-46    HEADSUP-80 -->
+  <style type="text/css">
+  .pac-container {  
+    z-index: 9999999 !important;  
+    top: 90px !important;
+    left: 11px !important; 
+  }
+  </style>
+
   <app-root></app-root>
 </body>
 </html>

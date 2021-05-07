@@ -20,6 +20,8 @@ describe('SearchLogByLevelComponent', () => {
   });
 
   it('should create', () => {
+    console.log('SearchLogByLevelComponent: begin')
     expect(component).toBeTruthy();
+    console.log('SearchLogByLevelComponent: end')
   });
 });

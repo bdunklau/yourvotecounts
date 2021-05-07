@@ -1,0 +1,42 @@
+
+<div class="container">
+    <h3 style="margin-top:20px">Enter Promo Code</h3>
+
+
+    <div class="row">
+        <div class="col">
+            <P>The page you're trying to reach requires a Promo code for access</P>
+            <P>Enter a valid Promo code for access</P>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:20px">
+        <div class="col">
+            
+            <input type="text"
+                    class="form-control"
+                    id="promo_code_field" [(ngModel)]="promo_code"
+                    name="promo_code"
+                    placeholder="Promo code"
+                    #token="ngModel">
+        </div>
+    </div>
+
+    
+    <div class="row" style="margin-top:20px">
+        <div class="col">            
+            <button id="btn_promo_code" (click)="check_promo_code()" class="btn btn-success col-sm-12"> 
+                <!-- i class="fas fa-phone-alt"></i --> &nbsp; Submit 
+            </button>
+        </div>
+    </div>
+    
+    
+    <div class="row" style="margin-top:20px" *ngIf="invalidPromoCode">
+        <div class="col"> <span style="color:red">Not a valid Promo code</span>   
+        </div>
+    </div>
+
+
+</div>

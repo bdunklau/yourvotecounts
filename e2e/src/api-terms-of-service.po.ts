@@ -8,7 +8,7 @@ export class ApiTermsOfService {
   constructor() { }
 
   async getTermsOfService() {
-    var url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/getTermsOfService'; // auth_key not required
+    var url = 'https://us-central1-yourvotecounts-dev.cloudfunctions.net/getTermsOfService'; // auth_key not required
     var flow = protractor.promise.controlFlow();
     var result = await flow.execute(function() {
         var defer = protractor.promise.defer();

@@ -1,0 +1,29 @@
+
+<div class="row" *ngFor="let comment of comments" style="margin-bottom:20px">
+    <div class="col">
+        <div class="row"><div class="col-10"><small><B>{{comment.author}}</B></small></div>   <div class="col-1"><i [hidden]="!canEdit(comment)" class="fas fa-pen" (click)="selectComment(comment)"></i></div>  </div>
+
+        <!-- util/linkify/linkify.pipe.ts -->
+        <div class="row"><div class="col"><span style="white-space: pre-wrap;" [innerHTML]="comment.comment | linkify"></span></div></div>
+
+        <span *ngIf="comment.linkPreview">
+        <a href="{{comment.linkPreview.url}}" target="_blank">
+        <div class="row">
+            <div class="col-12" style="color:black">
+                <div class="row no-gutters" style="border:1px solid #cdcdcd;border-radius:10px;">
+                    <div class="col-3"><div class="rounded"><img [attr.src]="comment.linkPreview.image"/></div></div>
+                    <div class="offset-1 col-8" style="padding-top:10px">
+                        <b>{{comment.linkPreview.title}}</b>
+                        <BR/>{{comment.linkPreview.host}}
+                    </div>
+                </div>  
+            </div>  
+        </div>
+        </a>
+        </span>
+
+        <small class="text-muted">{{comment.date_ms | date:'short'}}</small>
+    </div>
+</div>
+
+

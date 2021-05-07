@@ -56,6 +56,8 @@ describe('SearchUserByNameComponent', () => {
   });
 
   it('should create', () => {
+    console.log('SearchUserByNameComponent: begin')
     expect(component).toBeTruthy();
+    console.log('SearchUserByNameComponent: end')
   });
 });

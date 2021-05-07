@@ -1,0 +1,82 @@
+
+    <div class="row no-gutters" *ngFor="let room of rooms" style="margin-bottom:10px">
+        <div class="col-12">
+            <hr style="border: .05em solid #ededed;"/>
+            <div class="row">
+                <div class="col-4">
+                    <a href="/view-video/{{room.CompositionSid}}"><img [attr.src]="room.screenshotUrl" style="width:100%"></a>
+                </div>
+                <div class="col-7">
+                    <div class="row">
+                        <div class="col-12">
+                            <span *ngIf="room.video_title">{{room.video_title}} </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 small">
+                            {{room.created_ms | date: 'MMM d, yyyy'}}   
+                        </div>
+                    </div>
+
+                    <span *ngIf="room.call_ended_ms">
+                    <div class="row">
+                        <div class="col-12 small">
+                            call time: {{(room.call_ended_ms - room.created_ms)/1000 | elapsedTime}}   
+                        </div>
+                    </div>
+                    </span>
+
+                    <div class="row" [hidden]="!room.expanded">
+                        <div class="col-12 small">
+                            {{room.created_ms | date: 'h:mm a'}} to 
+                            
+                            <span *ngIf="room.call_ended_ms">{{room.call_ended_ms | date: 'h:mm a'}} </span>
+                            <span *ngIf="!room.call_ended_ms"> - </span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-1 text-right">               
+                    <span [hidden]="room.expanded"><i class="fas fa-chevron-right" (click)="room.expanded = !room.expanded"></i></span>                 
+                    <span [hidden]="!room.expanded"><i class="fas fa-chevron-up" (click)="room.expanded = !room.expanded"></i></span>                 
+                </div>
+
+            </div>
+
+
+            
+            <div class="row" [hidden]="!room.expanded">
+                <div class="col-12 small bold">Host</div>
+            </div>            
+            
+            <div class="row" [hidden]="!room.expanded">
+                <div class="col-4">
+                    {{room.hostName}}  
+                </div>
+                <div class="col-8"><a href="tel:{{room.hostPhone}}">{{room.hostPhone | phone}} </a></div>
+            </div>
+
+
+
+            <div class="row" [hidden]="!room.expanded">
+                <div class="col-12 small bold">Guests</div>
+            </div>            
+            <div class="row" [hidden]="!room.expanded" *ngFor="let guest of room.guests">
+                <div class="col-4">{{guest.guestName}} </div>
+                <div class="col-8"><a href="tel:{{guest.guestPhone}}">{{guest.guestPhone | phone}} </a></div>
+            </div>
+
+
+
+            <div class="row" [hidden]="!isAdmin">
+                <div class="col-12 small text-muted">Room ID &nbsp; {{room.RoomSid}} <span *ngIf="!room.RoomSid"> - </span></div>
+            </div>
+            <div class="row" [hidden]="!isAdmin">
+                <div class="col-12 small text-muted">Video ID &nbsp; {{room.CompositionSid}} <span *ngIf="!room.CompositionSid"> - </span></div>
+            </div>
+
+            
+        </div>
+    </div>
+    
+

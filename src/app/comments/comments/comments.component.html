@@ -1,0 +1,62 @@
+
+
+<div class="row">
+    <div class="col-12 col-md-6 offset-md-3">
+
+
+            <div class="container">  <!--  gives a little bit of edge padding on small screens -->
+            <div class="row">
+                <div class="col">
+                    <h5>Comments</h5>
+                </div>
+            </div>
+            </div>
+
+
+            <!-- there's already an inner container in app-comment-form -->
+            <div class="row">
+                <div class="col-12">
+                    <app-comment-form [inputRoomToCommentForm]="inputRoomToComments"></app-comment-form>
+                </div>
+            </div>
+
+
+            <div class="container">  <!--  gives a little bit of edge padding on small screens -->
+            <div class="row">
+                <div class="col-12">
+                    <app-comment-list [inputRoomToCommentList]="inputRoomToComments" (outputSelectedComment)="onSelectedComment($event)"></app-comment-list>
+                </div>
+            </div>
+            </div>
+
+
+    </div>
+</div>
+
+
+
+<div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : editFormCollapsed, 'translated': editFormTranslated}" style="padding-top:10px"> 
+    <div class="container"> <!-- gives a little bit of edge padding on small screens -->
+        <div class="row">
+            <div class="col-9 col-md-6 offset-md-3">
+                <h5>Edit Comments</h5>
+            </div>
+            <div class="col-3 pull-right">
+                <a href="javascript:void(0)" class="pull-right" (click)="editFormTranslated = !editFormTranslated" style="color:black"><i class="fa fa-close fa-2x"></i></a>  
+            </div>
+        </div>
+    </div> <!-- end: container -->
+
+
+    <div class="row">
+        <div class="col-12 col-md-6 offset-md-3">
+            <app-comment-form #editCommentFormDirective
+                    [inputRoomToCommentForm]="inputRoomToComments"
+                    (outputSavedComment)="onSavedComment($event)"
+                    (outputDeletedComment)="onDeletedComment($event)">        
+            </app-comment-form>
+        </div>
+    </div>
+</div> 
+
+

@@ -1,10 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { UserService } from '../user/user.service';
 import { FirebaseUserModel } from '../user/user.model';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs';
 //import { PhonePipe } from '../util/phone/phone.pipe';
+import { environment } from '../../environments/environment';
+import { MessageService } from '../core/message.service';
 
 
 @Component({
@@ -32,42 +35,47 @@ export class MyAccountComponent implements OnInit {
 
     constructor(private userService: UserService,
                 private afStorage: AngularFireStorage,
+                @Inject(PLATFORM_ID) private platformId,
+                private messageService: MessageService,
               ) { }
 
     async ngOnInit() {
-      this.user = await this.userService.getCurrentUser();
+      if(isPlatformBrowser(this.platformId)) {
+          this.user = await this.userService.getCurrentUser();
 
-      this.userSubscription = this.userService.subscribe(this.user.uid, async (users:[FirebaseUserModel]) => {
-        console.log('ngOnInit: entered');
-        if(users && users.length > 0) {
-          this.user = users[0];
-          this.nameValue = this.user.displayName;
-          this.phoneNumber = this.user.phoneNumber;
-          //this.photoURL = this.user.photoURL;  // 8/11/20 not using this.user.photoURL
-          this.photoFileName = this.user.photoFileName;
-          if(this.oldPhotoFileName && this.oldPhotoFileName != this.user.photoFileName) {
-            // delete the old profile-pic and thumb_profile-pic in storage
-            this.afStorage.ref(this.oldPhotoFileName).delete();
-            let pic = this.oldPhotoFileName.substring("thumb_".length)
-            this.afStorage.ref(pic).delete();
-          }
-          this.oldPhotoFileName = this.user.photoFileName;
-          
-          // Create a reference from a Google Cloud Storage URI
-          if(this.user.photoFileName) {
-            await this.afStorage.storage
-                 .refFromURL('gs://yourvotecounts-bd737.appspot.com/'+this.user.photoFileName)
-                 .getDownloadURL().then(url => {
-                     console.log("this.photoURL = ", url)
-                     this.photoURL = url;
-                     this.isUploading = false;
-                  })
-          }
-          
-          console.log('ngOnInit: photoURL = ', this.photoURL);
-        }
-      })
-
+          this.userSubscription = this.userService.subscribe(this.user.uid, async (users:[FirebaseUserModel]) => {
+            console.log('ngOnInit: entered');
+            if(users && users.length > 0) {
+              this.user = users[0];
+              this.nameValue = this.user.displayName;
+              this.phoneNumber = this.user.phoneNumber;
+              //this.photoURL = this.user.photoURL;  // 8/11/20 not using this.user.photoURL
+              this.photoFileName = this.user.photoFileName;
+              if(this.oldPhotoFileName && this.oldPhotoFileName != this.user.photoFileName) {
+                // delete the old profile-pic and thumb_profile-pic in storage
+                this.afStorage.ref(this.oldPhotoFileName).delete();
+                let pic = this.oldPhotoFileName.substring("thumb_".length)
+                this.afStorage.ref(pic).delete();
+              }
+              this.oldPhotoFileName = this.user.photoFileName;
+              
+              // Create a reference from a Google Cloud Storage URI
+              console.log('environment.firebase.storageBucket:  ', environment.firebase.storageBucket)
+              if(this.user.photoFileName) {
+                  console.log('this.user.photoFileName:  '+this.user.photoFileName)
+                  await this.afStorage.storage
+                    .refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName)
+                    .getDownloadURL().then(url => {
+                        console.log("this.photoURL = ", url)
+                        this.photoURL = url;
+                        this.isUploading = false;
+                      })
+              }
+              
+              console.log('ngOnInit: photoURL = ', this.photoURL);
+            }
+          })
+      }
     }
 
     ngOnDestroy() {
@@ -110,7 +118,8 @@ export class MyAccountComponent implements OnInit {
       const task = this.ref.put(event.target.files[0]);
       this.uploadProgress = task.percentageChanges();
       this.uploadProgress.subscribe(obj => {
-        this.current = (obj * 100) / 100
+        let temp = (obj * 100) / 100
+        this.current = temp >= 99 ? 99 : temp 
         if(obj === 100) {
           // 100 = 100% complete - aka the upload is done
           // do stuff here if you want

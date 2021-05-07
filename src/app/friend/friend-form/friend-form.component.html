@@ -1,0 +1,44 @@
+
+    <h5 style="margin-top:20px">Add Friend</h5>
+    
+
+<!-- <form (ngSubmit)="onSubmit(friendForm)" #friendForm="ngForm"> -->
+<form (ngSubmit)="onSubmit()" [formGroup]="friendForm">
+<div class="form-group">
+
+    <div class="row">
+        <div class="col"  style="margin-top:10px">
+
+            <input type="text" class="form-control" id="friend_name_field" placeholder="Friend Name"  formControlName="friendName">
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col"  style="margin-top:10px">
+
+            <input type="text" class="form-control" id="friend_phone_field"
+                    (input)="formatPhone($event)" placeholder="(   ) ___-____"
+                    formControlName="friendPhone">
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col"  style="margin-top:10px">
+
+            <button id="save_friend" type="submit" class="btn btn-success" [hidden]="!friendForm.valid">Save</button>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+    <!-- <P>friendNameValue: {{friendForm.get('friendName').value}}</P> -->
+
+</form>
+    
+    
+    

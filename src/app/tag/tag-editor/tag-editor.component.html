@@ -1,0 +1,90 @@
+
+
+    <!-- <h1>Tags</h1>
+    <div class="row" *ngFor="let atag of inputRoomToTagEditor.tags">
+        <div class="col">
+            tag: {{atag}}
+        </div>
+    </div> -->
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-12">
+            <i class="fas fa-tag fa-rotate-90"></i>&nbsp;&nbsp; <b>Tags</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            <span [hidden]="!inputIsHost" (click)="editingTagNames = true"> <i class="fas fa-pen"></i></span>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:10px" [hidden]="editingTagNames">
+        <div class="col-12">
+
+            <div class="example-container">
+
+                <!-- <mat-form-field class="example-chip-list col-12"> -->
+                    <mat-chip-list #viewChipList aria-label="Tag selection">
+                        <mat-chip
+                            *ngFor="let tagName of inputRoomToTagEditor.tags"
+                            style="background-color:#e6ebff"
+                            (click)=listTaggedVideos(tagName)
+                            [selectable]="selectable"
+                            [removable]="removable"
+                            (removed)="remove(tagName)">
+                            {{tagName}}
+                        </mat-chip>
+                    </mat-chip-list>
+                    
+                <!-- </mat-form-field> -->
+            
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:10px" [hidden]="!editingTagNames">
+        <div style="width:100%">
+            <!-- 
+            removed this class
+            It added the box with the shadow around all of this 
+            -->
+
+            <!-- mat-elevation-z8  -->
+            <div class="example-container">
+
+                <mat-form-field class="example-chip-list col-12">
+                    <mat-chip-list #chipList aria-label="Tag selection">
+                        <mat-chip
+                            *ngFor="let tagName of inputRoomToTagEditor.tags"
+                            style="background-color:#e6ebff"
+                            [selectable]="selectable"
+                            [removable]="removable"
+                            (removed)="remove(tagName)">
+                            {{tagName}}
+                            <mat-icon matChipRemove *ngIf="removable && editingTagNames"><i class="fas fa-times" (click)="remove(tagName)"></i></mat-icon>
+                        </mat-chip>
+                        <input
+                            placeholder="Select Tags ..."
+                            #tagInput
+                            [formControl]="tagsCtrl"
+                            [matAutocomplete]="auto"
+                            [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            (matChipInputTokenEnd)="add($event)">
+                    </mat-chip-list>
+                    
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                        <mat-option *ngFor="let tagName of filteredTags | async" [value]="tag">
+                            {{tagName}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <button [hidden]="!editingTagNames" class="btn btn-success col-12" (click)="saveTags()"><i class="fas fa-tag"></i> Save Tags</button>
+        </div>
+    </div>

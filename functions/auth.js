@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin')
-const log = require('./log')
+const log = require('./log');
+const moment = require('moment');
 
 // can only call this once globally and we already do that in index.js
 //admin.initializeApp(functions.config().firebase);
@@ -16,8 +17,14 @@ exports.logNewUser = functions.auth.user().onCreate((user) => {
 
 
 exports.recordNewUser = functions.auth.user().onCreate((user) => {
+  // let daysOut = 60
+  // var access_expiration_ms = moment().startOf('day').add(daysOut, 'days').add(1, 'days').subtract(1, 'second').toDate().getTime()
+
+  // start out with no access to create video   https://headsupvideo.atlassian.net/browse/HEADSUP-67?focusedCommentId=10135
+  var access_expiration_ms = new Date().getTime() - 1000
   return db.collection('user').doc(user.uid)
       .set({uid: user.uid,
+            access_expiration_ms: access_expiration_ms,
             phoneNumber: user.phoneNumber,
             date: admin.firestore.Timestamp.now(),
             date_ms: admin.firestore.Timestamp.now().toMillis()})
@@ -55,9 +62,11 @@ exports.initiateDeleteUser = functions.https.onRequest(async (req, res) => {
 })
 
 // Listen for any change on document `id` in collection `users`
-exports.updateUser = functions.firestore.document('user/{id}').onUpdate((change, context) => {
+exports.updateUser = functions.firestore.document('user/{id}').onUpdate(async (change, context) => {
   const newName = change.after.data().displayName;
   const oldName = change.before.data().displayName;
+  const newExpiry = change.after.data().access_expiration_ms;
+  const oldExpiry = change.before.data().access_expiration_ms;
   if(newName !== oldName) {
     var values = {};
     if(change.after.data().email) values.email = change.after.data().email;
@@ -68,8 +77,30 @@ exports.updateUser = functions.firestore.document('user/{id}').onUpdate((change,
     if(change.after.data().disabled) values.disabled = change.after.data().disabled;
     return admin.auth().updateUser(change.after.data().uid, values);
   }
+  else if(oldExpiry !== newExpiry) {
+    // console.log('oldExpiry = ', oldExpiry, '  newExpiry = ', newExpiry);
+    await updateExpirationDates({creatorId: context.params.id, access_expiration_ms: newExpiry})
+  }
   return false;
 });
+
+/**
+ * update team docs
+ * update team_member docs
+ * set access_expiration_ms = args.access_expiration_ms
+ * where creatorId = args.creatorId
+ */
+let updateExpirationDates = async function(args) {
+  console.log('args.creatorId = ', args.creatorId, '  args.access_expiration_ms = ', args.access_expiration_ms);
+  
+  var teams = await db.collection('team').where('creatorId','==', args.creatorId).get();
+  const batch = db.batch();
+  teams.forEach(function(team) {
+    // triggers team.js:updateTeamMemberExpiration()
+    batch.update(team.ref, {access_expiration_ms: args.access_expiration_ms})
+  })
+  return batch.commit()
+}
 
 // pass phoneNumber request parameter without country code and get an auth token
 exports.createCustomToken = functions.https.onRequest(async (req, res) => {

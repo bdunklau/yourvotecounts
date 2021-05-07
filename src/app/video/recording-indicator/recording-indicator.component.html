@@ -1,0 +1,14 @@
+
+
+<div class="navbar-brand"  
+    [ngStyle]="{'background-color': '#ffffff', 
+                'color': recording_state=='recording' ? '#ff0000' : '#000000', 
+                'margin-left': '25px', 
+                'padding-left': recording_state!='' ? '10px' : '0px', 
+                'padding-right': recording_state!='' ? '10px' : '0px' }" >
+    <span *ngIf="recording_state=='recording'"><i class="fas fa-circle"></i></span>
+    <span *ngIf="recording_state=='paused'"><i class="fas fa-pause"></i></span>
+    <span *ngIf="recording_state=='stopped'"><i class="fas fa-stop"></i></span>
+    {{recording_state}}
+</div>
+

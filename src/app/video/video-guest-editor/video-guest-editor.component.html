@@ -1,0 +1,139 @@
+
+<span *ngIf="editingInvitation">
+<h5 style="margin-top:20px">Edit Invitation</h5>
+
+
+
+<div class="row" style="margin-top:30px">
+    <div class="col-12">
+        {{editingInvitation.displayName}}
+    </div>
+</div>
+
+<div class="row" style="margin-top:10px">
+    <div class="col-12">
+        {{editingInvitation.phoneNumber | phone}}
+    </div>
+</div>
+
+
+<div class="row" style="margin-top:30px">
+    <div class="col-6 small text-muted">
+        Email
+    </div>
+</div>
+
+<span *ngIf="editingEmail || !editingInvitation.email">
+    <div class="row no-gutters" style="margin-top:5px">
+        <div class="col-9 col-lg-10">
+            <input class="form-control col-12"
+                type="text"
+                [(ngModel)]="email"
+                placeholder="email optional" />
+        </div> 
+        <div class="col-2 col-lg-1">
+            <button (click)="save_email()" class="btn btn-success col-12" ><i class="fas fa-check"></i>  </button>
+        </div>
+    
+    </div>        
+</span>
+
+<span *ngIf="editingInvitation.email && !editingEmail">
+    <div class="row no-gutters" style="margin-top:5px">
+        <div class="col-12">
+            {{editingInvitation.email}} 
+            <button type="button" class="btn" (click)="editEmail()"><i class="fas fa-pen"></i></button>
+        </div> 
+    </div>        
+</span>
+
+
+
+<div class="row" style="margin-top:40px">
+    <div class="col-5 col-sm-3 small text-muted">
+        Invitation URL
+    </div>
+    <div class="col-3 small text-right">
+                     <!-- btn-default is overridden in the css file -->
+        <a class="btn btn-default" href="mailto:{{editingInvitation.email}}?subject=video call invitation&body=Hi {{editingInvitation.displayName}}%0D%0A%0D%0AHere is the link to our video call.  You can use this link from your phone or computer.%0D%0A%0D%0A{{url}}%0D%0A%0D%0AThanks!%0D%0A{{editingInvitation.creatorName}}">Email <i class="fas fa-envelope"></i></a>
+        
+    </div>
+    <div class="col-2 small text-right">
+                     <!-- btn-default is overridden in the css file -->
+        <button type="button" class="btn btn-default" (click)="copyUrl(url)">Copy <i class="far fa-copy"></i></button>
+    </div>
+</div>
+
+<div class="row" style="margin-top:5px">
+    <div class="col-12">
+        {{url}}
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span *ngIf="editingInvitation.email">
+    <!-- <span *ngIf="!editingEmail">
+        <div class="row no-gutters" style="margin-top:10px">
+            <div class="col-12">
+                {{editingInvitation.email}}  <button type="button" class="btn" (click)="editingEmail = !editingEmail"><i class="fas fa-pen"></i></button>
+            </div>        
+        </div>
+    </span> -->
+
+    
+    <div class="row" style="margin-top:10px" [hidden]="editingEmail">
+        <div class="col-12 col-sm-6"  style="margin-top:10px">
+            <!-- <button type="button" class="btn btn-primary col-12" (click)="sendEmail(editingInvitation)"><i class="fas fa-envelope"></i> Invite by Email</button> -->
+        </div>
+    </div>
+    
+    <span *ngIf="sendingEmail">
+    <div class="row" style="margin-top:10px">
+        <div class="col-12 col-sm-6"  style="margin-top:10px">    
+            <img id="spinner" src="/assets/loading_spinner.gif" height="40">
+        </div>
+    </div>
+    </span>
+</span>
+
+
+
+
+
+<!-- <span *ngIf="!editingInvitation.email">
+<div class="row" style="margin-top:20px">
+    <div class="col-12 col-sm-6"  style="margin-top:10px">  
+        <button type="button" class="btn btn-primary col-12" (click)="addingEmail = !addingEmail">Add Email</button>
+    </div>
+</div>
+</span> -->
+
+
+
+<div class="row" style="margin-top:40px">
+    <div class="col-12 col-sm-6"  style="margin-top:10px">    
+        <button type="button" class="btn btn-danger col-12" (click)="deleteInvitation(editingInvitation)">
+            <span *ngIf="!confirmDelete">Delete Invitation</span>
+            <span *ngIf="confirmDelete">Really?</span>
+        </button>
+    </div>
+    <div class="col-12 col-sm-6"  style="margin-top:10px" [hidden]="!confirmDelete">    
+        <button type="button" class="btn col-12" (click)="confirmDelete = false">Cancel</button>
+    </div>
+</div>
+
+
+
+</span>

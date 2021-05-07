@@ -1,0 +1,42 @@
+
+<div class="container">
+    <h3 style="margin-top:20px">New/Edit Licensee</h3>
+    <form (ngSubmit)="onSubmit()" #licenseeForm="ngForm">
+  
+        <div class="form-group">
+            <input type="text" class="form-control" id="licensee_name_field" placeholder="Licensee"
+                    [(ngModel)]="licensee.name" name="licName" #licName="ngModel" required>
+            <div [hidden]="licName.valid || licName.pristine"
+                class="alert alert-danger">
+              Name is required
+            </div>
+
+
+            <input type="text" class="form-control" id="number_of_teams_field" placeholder="Number of teams"
+                    [(ngModel)]="licensee.number_of_teams" name="lic_number_of_teams" #lic_number_of_teams="ngModel" required>
+            <div [hidden]="lic_number_of_teams.valid || lic_number_of_teams.pristine"
+                class="alert alert-danger">
+              Number of teams is required
+            </div>
+
+            
+            <!-- https://v10.material.angular.io/components/datepicker/overview -->
+            <mat-form-field appearance="fill" style="width:100%">
+                <mat-label>License expires on</mat-label>
+                <input matInput [matDatepicker]="picker" (dateInput)="captureDate('input', $event)" [(ngModel)]="expiration" name="expiration">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+      
+      
+            <button type="button" class="btn" style="margin-top: 20px" (click)="cancelLicenseeForm(licenseeForm)">Cancel</button>
+      
+            <button type="submit" class="btn btn-success" style="margin-top: 20px"
+                    [disabled]="!licenseeForm.form.valid">Submit</button>
+        </div>
+  
+    </form>
+  
+  </div>
+  

@@ -1,0 +1,85 @@
+
+
+<span *ngIf="inputCollapsed">
+    <div class="col" style="margin-bottom:20px">
+        <div class="row">
+            <div class="col-12">
+                <div class="myCenterBlock">
+                    <div class="circular--portrait">
+                        <img src="{{official.photoUrl}}" width="75">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">{{official.name}}</div>
+        </div>
+        <div class="row">
+            <div class="col-12 myCenterBlock">{{official.party}}</div>
+        </div>
+    </div>
+</span>
+
+
+
+
+<span *ngIf="!inputCollapsed">
+<div class="col-12">
+
+<hr/>
+<div class="row" style="margin-top:20px">
+    <div class="col-3">
+        <div class="circular--portrait">
+            <img [attr.src]="official.photoUrl" width="75">
+        </div>
+
+        &nbsp;<br/>&nbsp;<br/>
+        <button *ngIf="canSelect" (click)="selectOfficial()" class="btn btn-primary">Select</button>
+        <button *ngIf="canDelete" (click)="deleteOfficial()" class="btn btn-danger">Delete</button>
+
+        <!-- works but not needed: copy to clipboard
+        &nbsp;<br/>&nbsp;<br/>
+        <span *ngIf="!toastHack"><button ngxClipboard (click)="doToast()" [cbContent]="getOfficialInfo()" class="btn btn-secondary">Copy</button></span>
+        <span *ngIf="toastHack">Copied!</span>
+        -->
+    </div>
+    <div class="col-9">
+        <b>{{official.name}}</b> ({{official.party}})
+        <!-- just testing...
+        <P>{{official.photoUrl}}</P>
+        <P>[attr.src]="official.photoUrl"</P> -->
+        <span *ngFor="let address of official.address">
+            <p>
+                {{address.line1}}
+                <span *ngIf="address.line2"><br/>{{address.line2}}</span>
+                <span *ngIf="address.line3"><br/>{{address.line3}}</span>
+                <br/>{{address.city}}, {{address.state}} {{address.zip}}
+            </p>
+        </span>
+        <span *ngFor="let phone of official.phones">
+            <p><a href="tel:{{phone}}" class="btn btn-success col-12"> <i class="fas fa-phone-alt"></i>  </a></p>
+        </span>
+        
+        <span *ngFor="let email of official.emails">
+            <!-- OOPS! TITLE OF THE VIDEO ISN'T ACTUALLY AVAILABLE IN THE COMPONENT - WOULD HAVE TO PASS IT IN SOMEHOW -->
+            <p><a href='mailto:{{email}}?subject=Video Message from a Voter&body=To%20the%20Honorable%20{{official.name}}%0D%0A%0D%0AI created a short video message for you.  Thanks for watching!%0D%0A%0D%0A{{currentUrl}}%0D%0A(If the link above is not clickable, please copy into your browser)%0D%0A%0D%0A' class="btn btn-primary col-12"><i class="fas fa-envelope"></i> </a></p>
+        </span>
+
+        <span *ngFor="let url of official.urls">
+            <p><a href="{{url}}" target="officialurl" class="btn btn-primary col-12"> <i class="fas fa-external-link-alt"></i>  </a></p>
+        </span>
+        
+        <span *ngFor="let channel of official.channels">
+            <span *ngIf="channel.type == 'YouTube'">
+            <p><a href="{{channel.url}}" target="socmedia" class="btn btn-primary {{channel.color_class}} col-12"> <i [class]="channel.icon"></i> </a></p>
+            </span>
+            
+            <span *ngIf="channel.type != 'YouTube'">
+            <p><a (click)="popSocialMedia(channel)" class="btn btn-primary {{channel.color_class}} col-12" style="color:#ffffff"> <i [class]="channel.icon"></i> </a></p>
+            </span>
+        </span>
+    </div>
+</div>
+
+</div>
+</span>

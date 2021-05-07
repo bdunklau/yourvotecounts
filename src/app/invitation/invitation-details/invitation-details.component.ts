@@ -30,7 +30,7 @@ import { connect,
 export class InvitationDetailsComponent implements OnInit {
 
   browserOk:boolean = true
-  invitation: Invitation;
+  invitations: Invitation[];
   private routeSubscription: Subscription;
   okUrl = true;
   @ViewChild('preview', {static: false}) previewElement: ElementRef;
@@ -52,6 +52,12 @@ export class InvitationDetailsComponent implements OnInit {
               private router: Router) { }
 
   async ngOnInit() {
+    // simpler...  got this from valid-invitation.guard.ts
+    this.invitations = this.invitationService.invitations
+    this.phoneNumber = this.route.params['phoneNumber']
+    this.isHost = this.invitations[0].creatorPhone === this.phoneNumber
+
+    /*******************
     //this.user = await this.userService.getCurrentUser();
     this.routeSubscription = this.route.data.subscribe(routeData => {
       //console.log('routeData = ', routeData);  // type:  plain ol' Object
@@ -71,6 +77,7 @@ export class InvitationDetailsComponent implements OnInit {
       //console.log('navigator = ', navigator); to see the operation sys, browser type and other stuff
       
     })
+    *******************/
 
   }
 
@@ -82,8 +89,8 @@ export class InvitationDetailsComponent implements OnInit {
 
   
   async join_call() {
-    let roomName = this.invitation.id;
-    this.router.navigate(['/video-call', this.invitation.id, this.invitation.creatorPhone, 'join'])
+    let roomName = this.invitations[0].invitationId;
+    this.router.navigate(['/video-call', this.invitations[0].invitationId, this.invitations[0].creatorPhone, 'join'])
   }
 
 

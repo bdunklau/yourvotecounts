@@ -71,6 +71,8 @@ describe('TeamListComponent', () => {
   });
 
   it('should create', () => {
+    console.log('TeamListComponent: begin')
     expect(component).toBeTruthy();
+    console.log('TeamListComponent: end')
   });
 });

@@ -1,0 +1,46 @@
+
+
+.script {
+    font-size: 26px;
+    font-style: italic;
+    font-family: 'Times New Roman', Times, serif
+}
+
+.thepeople {
+    font-size: 26px;
+    font-family: 'Times New Roman', Times, serif
+}
+
+/************
+.my-container {
+    position: relative;
+    overflow: hidden;
+    background-color:#1167b1;
+    height: 100%;
+}
+.my-container h1 {
+    padding: 200px;
+    position: relative;
+    z-index: 2;
+} 
+.my-container img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    opacity: 0.2;
+}
+**************/
+
+.heading {
+    padding-top:20px;
+    padding-bottom:20px;
+    font-weight:normal;
+    font-size:32px
+}
+
+.content {
+    padding-bottom: 50px;
+    font-size:22px;
+}
+

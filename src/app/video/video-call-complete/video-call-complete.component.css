@@ -1,0 +1,14 @@
+.fa-rotate-135 {
+    -moz-transform: rotate(135deg);
+    -o-transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=-0.7071067811865477, M12=-0.7071067811865475, M21=0.7071067811865475, M22=-0.7071067811865477, SizingMethod='auto expand')";
+    filter: progid: DXImageTransform.Microsoft.Matrix( M11=-0.7071067811865477, M12=-0.7071067811865475, M21=0.7071067811865475, M22=-0.7071067811865477, SizingMethod='auto expand');
+    margin-left: 0%;
+    margin-top: 0%;
+  }
+
+.custom-control-label {
+    padding-left: 20px;
+}

@@ -27,7 +27,8 @@ describe('Team page', () => {
 
 
   /* passed inconsistently*/
-  it('should be able to create and delete a team', () => {
+  it('should be able to create and delete a team', async () => {
+    let slp = 1
     // testSupport.login(testSupport.normalUser.phoneNumber);
     page.loginAsSomeone();
     var sleep = 300;
@@ -66,11 +67,12 @@ describe('Team page', () => {
     // clean up
     teamPage.deleteTeam();
     teamPage.verifyPageOnDeleteTeam();
-    teamPage.clickLogout();
+    await teamPage.clickLogout(slp);
   });
 
 
-   it('should be able to add and remove people from a team', () => {
+   it('should be able to add and remove people from a team', async () => {
+    let slp = 1
     teamPage.createTeam(/*testSupport.names[0].phoneNumber*/);
     teamPage.selectTeam();
     // teamPage.editTeam(); // don't have to click Edit Team to add team members
@@ -89,13 +91,14 @@ describe('Team page', () => {
     // clean up
     teamPage.editTeam();
     teamPage.deleteTeam();
-    page.clickLogout();
+    await page.clickLogout(slp);
   })
 
 
   // We have to test the drop down here because it's a different component than the one
   // in the log page.  This one clears its contents when a name is chosen
    it('should display correct list of users in dropdown', async () => {
+    let slp = 1
 
     // create a team
     // type a few letters into the name field to add someone
@@ -187,11 +190,12 @@ describe('Team page', () => {
     // clean up
     teamPage.editTeam();
     teamPage.deleteTeam();
-    page.clickLogout();
+    await page.clickLogout(slp);
   })
 
 
-  it('should allow leaders to edit team attributes', () => {
+  it('should allow leaders to edit team attributes', async () => {
+    let slp = 1
     teamPage.createTeam(/*testSupport.names[0].phoneNumber*/);
     teamPage.selectTeam();
     teamPage.editTeam();
@@ -200,13 +204,14 @@ describe('Team page', () => {
     // clean up
     teamPage.editTeam();
     teamPage.deleteTeam();
-    teamPage.clickLogout();
+    await teamPage.clickLogout(slp);
   })
 
 
    it('should prevent non-leaders from adding/removing people', async () => {
+    let slp = 1
     teamPage.createTeamWithTwoPeople(/*testSupport.names[0].phoneNumber*/);
-    page.clickLogout();
+    await page.clickLogout(slp);
 
     page.loginAsSomeoneElse();   // the "added" person
     browser.sleep(300);
@@ -217,7 +222,7 @@ describe('Team page', () => {
     teamPage.verifyMemberListIsDisplayed();
     teamPage.verifyMembersCannotBeAdded();
     teamPage.verifyMembersCannotBeRemoved();
-    page.clickLogout();
+    await page.clickLogout(slp);
 
     // clean up
     page.loginAsSomeone();
@@ -226,15 +231,16 @@ describe('Team page', () => {
     teamPage.selectTeam();
     teamPage.editTeam();
     teamPage.deleteTeam();
-    page.clickLogout();
+    await page.clickLogout(slp);
   })
 
 
    it('should let leaders delete a team', async () => {
+    let slp = 1
     teamPage.createTeamWithTwoPeople(/*testSupport.names[0].phoneNumber*/);
     browser.sleep(300);
     teamPage.makeOtherPersonLeader();
-    page.clickLogout();
+    await page.clickLogout(slp);
 
     // now login as the person that was just made leader
     page.loginAsSomeoneElse();
@@ -244,26 +250,27 @@ describe('Team page', () => {
     teamPage.editTeam();
     teamPage.deleteTeam();
     teamPage.verifyPageOnDeleteTeam();
-    page.clickLogout();
+    await page.clickLogout(slp);
 
     // login as original user and make sure the team doesn't exist for him either
     page.loginAsSomeone();
     browser.sleep(300);
     page.clickTeams();
     teamPage.verifyTeamDoesNotExist();
-    page.clickLogout();
+    await page.clickLogout(slp);
   })
 
 
-   it('should prevent non-leaders from editing or deleting a team', () => {
+   it('should prevent non-leaders from editing or deleting a team', async () => {
+    let slp = 1
     teamPage.createTeamWithTwoPeople(/*testSupport.names[0].phoneNumber*/);
-    page.clickLogout();
+    await page.clickLogout(slp);
     page.loginAsSomeoneElse();
     browser.sleep(300);
     page.clickTeams();
     teamPage.selectTeam();
     teamPage.verifyTeamEditLinkDoesNotExist();
-    page.clickLogout();
+    await page.clickLogout(slp);
 
     // clean up
     page.loginAsSomeone();
@@ -272,13 +279,14 @@ describe('Team page', () => {
     teamPage.selectTeam();
     teamPage.editTeam();
     teamPage.deleteTeam();
-    page.clickLogout();
+    await page.clickLogout(slp);
   })
 
 
   // failed
-   it('should alert leaders if they are about to revoke their leadership role', () => {
+   it('should alert leaders if they are about to revoke their leadership role', async () => {
     let pause = 1000;
+    let slp = 1
     teamPage.createTeamWithTwoPeople(/*testSupport.names[0].phoneNumber*/);
                                         browser.sleep(500);
     teamPage.makeOtherPersonLeader();
@@ -299,7 +307,7 @@ describe('Team page', () => {
                                         browser.sleep(pause);
     teamPage.verifyIAmNotLeader();
                                         browser.sleep(pause);
-    teamPage.clickLogout();
+    await teamPage.clickLogout(slp);
 
     // clean up
     page.loginAsSomeoneElse();
@@ -308,12 +316,13 @@ describe('Team page', () => {
     teamPage.selectTeam();
     teamPage.editTeam();
     teamPage.deleteTeam();
-    page.clickLogout();
+    await page.clickLogout(slp);
   })
 
 
   // failed
-   it('should not allow team to be leader-less', () => {
+   it('should not allow team to be leader-less', async () => {
+     let slp = 1
     // create a team with just you
     // try to revoke your own leader access - verify not allowed
     // add someone to the team
@@ -340,7 +349,7 @@ describe('Team page', () => {
     // clean up
     teamPage.editTeam();
     teamPage.deleteTeam();
-    teamPage.clickLogout();
+    await teamPage.clickLogout(slp);
   })
 
 

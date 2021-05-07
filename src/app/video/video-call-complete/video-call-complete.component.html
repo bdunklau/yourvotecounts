@@ -1,0 +1,252 @@
+<!-- Sent here after the host hangs up
+Need to put the "Get Recording" button and logic on this page.
+This is where we will publish the video
+Reason: We want to move the guests off the /video-call page so they can't refresh the page,
+so we don't have to code so defensively
+-->
+
+
+<!-- Message to guests: Call Ended.  Your host did not record this call -->
+<span *ngIf="!isHost && roomObj && roomObj['call_ended_ms'] && (!roomObj['mark_time'] || roomObj['mark_time'].length == 0)">
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            
+            <h5 style="margin-top:20px"> <i class="fas fa-phone-alt fa-rotate-135"></i> Call Ended</h5>
+            <div class="row">
+                <div class="col">
+                Video call has ended
+                </div>
+            </div>
+
+            <!---------------------------------------------------------------
+            Almost duplicated from video-producing.component.html 
+            ----------------------------------------------------------------->            
+            <h5 style="margin-top:20px">
+                <i class="fas fa-video-slash"></i>
+                Call Not Recorded
+            </h5>        
+        
+        
+            <div class="row">
+                <div class="col-12">
+                    The host did not record this call 
+                </div>
+            </div>
+        
+        
+            <h5 style="margin-top:20px">
+                <i class="fas fa-sign-out-alt"></i>
+                Close
+            </h5>
+        
+            <div class="row" style="margin-top:20px;margin-bottom:20px">
+                <div class="col-12">
+                    You may close this window now or you can browse trending videos...
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-12 col-sm-6"><app-trending [inputExpanded]="true"></app-trending></div>
+        <!---------------------------------------------------------------
+        Almost duplicated from video-producing.component.html 
+        ----------------------------------------------------------------->   
+
+    </div>
+
+</div>
+</span>
+
+
+
+
+
+<!-- Message to host: Call Ended.  You did not record this call -->
+<span *ngIf="isHost && roomObj && roomObj['call_ended_ms'] && (!roomObj['mark_time'] || roomObj['mark_time'].length == 0)">
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            
+            <h5 style="margin-top:20px"> <i class="fas fa-phone-alt fa-rotate-135"></i> Call Ended</h5>
+            <div class="row">
+                <div class="col">
+                Video call has ended
+                </div>
+            </div>
+
+            <!---------------------------------------------------------------
+            Almost duplicated from video-producing.component.html 
+            ----------------------------------------------------------------->            
+            <h5 style="margin-top:20px">
+                <i class="fas fa-video-slash"></i>
+                Call Not Recorded
+            </h5>        
+        
+        
+            <div class="row">
+                <div class="col-12">
+                    You did not record this call.  Did you mean to?  Just checking.  If you meant to record this call, you will need to re-invite your guests.
+                    Don't forget to hit "Start Recording" :)
+                </div>
+            </div>
+        
+        
+            <h5 style="margin-top:20px">
+                <i class="fas fa-sign-out-alt"></i>
+                Close
+            </h5>
+        
+            <div class="row" style="margin-top:20px;margin-bottom:20px">
+                <div class="col-12">
+                    You may close this window now or you can browse trending videos...
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-12 col-sm-6"><app-trending [inputExpanded]="true"></app-trending></div>
+        <!---------------------------------------------------------------
+        Almost duplicated from video-producing.component.html 
+        ----------------------------------------------------------------->   
+
+    </div>
+
+</div>
+</span>
+
+
+
+
+<!-- Message to Guests:  call is over.  Preparing video now -->
+<!-- I just copied this from the block below and added a ! in front of isHost to make this block apply to the guests -->
+<span *ngIf="!isHost && roomObj && roomObj['call_ended_ms'] && roomObj['mark_time'] && roomObj['mark_time'].length > 0">
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            
+            <h5 style="margin-top:20px"> <i class="fas fa-phone-alt fa-rotate-135"></i> Call Ended</h5>
+            <div class="row">
+                <div class="col">
+                Video call has ended
+                </div>
+            </div>
+
+            <!---------------------------------------------------------------
+            Almost duplicated from video-producing.component.html 
+            ----------------------------------------------------------------->            
+            <h5 style="margin-top:20px">
+              <i class="fas fa-cogs"></i>
+                Now Preparing Video
+            </h5>        
+        
+        
+            <div class="row">
+                <div class="col-12">
+                    We are preparing your video now. 
+                </div>
+            </div>
+        
+            <h5 style="margin-top:20px">
+                <i class="fas fa-clock"></i>
+                Takes Some Time
+            </h5>
+        
+            <div class="row" style="margin-top:0px">
+                <div class="col-12">
+                    This process can take several minutes.
+                </div>
+            </div>
+        
+            <h5 style="margin-top:20px">
+                <i class="fas fa-sms"></i>
+                Watch Your Texts
+            </h5>
+        
+            <div class="row" style="margin-top:0px">
+                <div class="col-12">
+                    We will text you when it is ready.
+                </div>
+            </div>
+        
+            <div class="row" style="margin-top:20px;margin-bottom:20px">
+                <div class="col-12">
+                    You may close this window now or you can browse trending videos...
+                </div>
+            </div>
+
+
+
+
+        </div>
+        <div class="col-12 col-sm-6"><app-trending [inputExpanded]="true"></app-trending></div>
+        <!---------------------------------------------------------------
+        Almost duplicated from video-producing.component.html 
+        ----------------------------------------------------------------->   
+
+    </div>
+
+</div>
+</span>
+    
+
+    
+<!-- Message to Host:  click button(s) to produce video -->
+<span *ngIf="isHost && roomObj && roomObj['call_ended_ms'] && roomObj['mark_time'] && roomObj['mark_time'].length > 0">
+<div class="container">
+    <h5 style="margin-top:20px"> <i class="fas fa-phone-alt fa-rotate-135"></i> &nbsp; Call Ended</h5>
+    <div class="row" style="margin-top:20px">
+        <div class="col">
+        Video call has ended
+        </div>
+    </div>
+
+    <div class="row" *ngIf="isHost">
+        <div class="col">
+        Ready to produce your video?
+        </div>
+    </div>
+
+
+    <!-- checkbox:  Include Host in video? -->
+    <div class="row" style="margin-top:20px" [hidden]="!hostCheckboxIsVisible">
+        <div class="col-12">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="hostCheckbox"
+                    [(ngModel)]="hostCheckboxValue" name="ihc" #ihc="ngModel" required>
+                <label class="custom-control-label" for="hostCheckbox">include Host in Video</label>
+            </div>
+        </div>
+    </div>
+            
+    
+
+    <div class="row" style="margin-top:70px">
+        <div class="col-12">
+          <button [disabled]="compositionInProgress" id="compose" (click)="compose()" class="btn btn-success col-sm-12"><i class="fas fa-cloud-download-alt"></i> &nbsp; {{publishButtonText}} </button>
+          <P>&nbsp;</P>
+        </div>
+    </div>
+
+</div>
+</span>
+  
+  
+      <!-- move this to video-call-complete.component.html   -->
+      <!-- Progress updates for composition -->
+      <!-- <span  *ngIf="compositionInProgress">
+          <div class="row">
+            <div class="col-12">
+              <b>Preparing your video now!</b> - We will text you when it's done
+            </div>
+          </div>
+  
+          <span *ngIf="roomObj && roomObj['compositionProgress']">
+          <div class="row" *ngFor="let progress of roomObj['compositionProgress']"> 
+            <div class="col-12">
+              {{progress}}
+            </div>
+          </div>
+          </span>
+      </span> -->
+

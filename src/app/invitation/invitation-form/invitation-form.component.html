@@ -1,123 +1,104 @@
-<div class="container">
-  <h5>Send Invitation</h5>
-  Use this page to invite someone to participate in a video call with you
+
+    <div class="row" style="margin-top:20px">          
+        <div class="col">
+            <span *ngIf="numberOfInvitationsRemaining == 1">Invite 1 additional person to participate in a video call</span>
+            <span *ngIf="numberOfInvitationsRemaining == maxGuests">Invite up to {{numberOfInvitationsRemaining}} people to participate in a video call</span>
+            <span *ngIf="numberOfInvitationsRemaining < maxGuests && numberOfInvitationsRemaining > 1">Invite up to {{numberOfInvitationsRemaining}} additional people to participate in a video call</span>
+        </div>
+    </div>
+    
         <!-- 
           for masking, see  https://www.npmjs.com/package/ngx-mask
         -->
 
-    <!--
-    <form (ngSubmit)="onSubmit(invitationForm)" #invitationForm="ngForm">
-        <div class="form-group">
-          <input type="text" class="form-control" id="invitation_name_field" placeholder="Name"
-                  [(ngModel)]="nameValue" name="name" #name="ngModel" required>
-          <div [hidden]="name.valid || name.pristine"
-               class="alert alert-danger">
-            Name is required
-          </div>
-        </div>
-        
-        <div class="form-group">
-            <input type="text" class="form-control" id="invitation_phone_field" placeholder="Phone"
-                    [pattern]="phonePattern"
-                    [(ngModel)]="phoneValue" name="phone" #phone="ngModel" required>
-            <div [hidden]="phone.valid || phone.pristine"
-                 class="alert alert-danger">
-              10 digit phone required
+    <form [formGroup]="invitationForm" (ngSubmit)="onSubmit()" novalidate>
+      
+
+      <div formArrayName="nameArray">
+        <div class="row" style="margin-top:20px" *ngFor="let dummy of nameArray.controls; let i = index" formGroupName="{{i}}">
+            <hr/>
+            <div class="col">
+                <hr/>
+                <div class="row">
+                    <div class="col">
+                       
+                      <!-- <br/>nameArray.controls[i].get('displayName').value: {{nameArray.controls[i].get('displayName').value | json}} -->
+                      <!-- <br/>nameArray.controls[i].get('phoneNumber').value: {{nameArray.controls[i].get('phoneNumber').value}} -->
+                        <b>Guest #{{i+1+maxGuests-numberOfInvitationsRemaining}}</b> &nbsp;&nbsp;&nbsp; <button class="btn btn-default" (click)="removeItem(i)"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="row">
+                      <div class="col-12 col-sm-4" style="margin-bottom:10px">
+
+                           <!-- log.component.html also -->
+                          <app-search-user-by-name (selectedFriend)="onFriendSelected($event, i)" [friendsOnly]="true" 
+                                [formGroup_AAA]="invitationForm"
+                                [formArray_AAA]="nameArray"
+                                [arrayName_AAA]="'nameArray'"
+                                [groupIdx_AAA]="i"
+                                [controllName_AAA]="'displayName'">
+                          </app-search-user-by-name>
+
+
+                          <!-- validate: name - works but I like the simple border highlighing better
+                          <div *ngIf="nameArray.controls[i].get('displayName') && nameArray.controls[i].get('displayName').invalid && (nameArray.controls[i].get('displayName').dirty || nameArray.controls[i].get('displayName').touched)">
+                            <p class="alert alert-danger" *ngIf="nameArray.controls[i].get('displayName').errors.required">
+                              Name is required 
+                            </p>
+                          </div>
+                           -->
+
+                      </div>
+
+
+                      <div class="col-12 col-sm-4" style="margin-bottom:10px">
+                          <input class="col-12 form-control" formControlName="phoneNumber" 
+                                (input)="formatPhone($event)" placeholder="(   ) ___-____"
+                                [ngStyle]="{'border':   nameArray.controls[i].get('phoneNumber') && nameArray.controls[i].get('phoneNumber').invalid && (nameArray.controls[i].get('phoneNumber').dirty || nameArray.controls[i].get('phoneNumber').touched)    ? '1px solid red' : ''}">
+                                
+                          <!-- validate: phone - works but I like the simple border highlighing better
+                          <div *ngIf="nameArray.controls[i].get('phoneNumber') && nameArray.controls[i].get('phoneNumber').invalid && (nameArray.controls[i].get('phoneNumber').dirty || nameArray.controls[i].get('phoneNumber').touched)">
+                            <p class="alert alert-danger" *ngIf="nameArray.controls[i].get('phoneNumber').errors.required">
+                              Phone is required
+                            </p>
+                            <p class="alert alert-danger" *ngIf="nameArray.controls[i].get('phoneNumber').errors.phoneNumberInvalid">
+                              Phone is not valid
+                            </p>
+                          </div>
+                           -->
+
+                      </div>
+                      
+
+                      <div class="col-12 col-sm-4">
+                          <input class="col-12 form-control" formControlName="email" placeholder="email optional" 
+                                [ngStyle]="{'border':   nameArray.controls[i].get('email') && nameArray.controls[i].get('email').invalid && (nameArray.controls[i].get('email').dirty || nameArray.controls[i].get('email').touched)    ? '1px solid red' : ''}">
+                                
+                      </div>
+
+                </div>
             </div>
-        </div>
-  
-        <button id="submit_invitation" type="submit" class="btn btn-success" [disabled]="!invitationForm.form.valid">Send Invitation</button>
-        &nbsp;
-        <button id="cancel_invitation" type="button" (click)="cancel(invitationForm)" class="btn btn-secondary">Cancel</button>
-  
-    </form>
-    -->
 
-
-
-
-    <form *ngIf="invitationForm" [formGroup]="invitationForm" (ngSubmit)="onSubmit()" novalidate ngNoForm>
-      <div class="field" style="margin-bottom:20px">
-        <!-- label class="label" for="phone">Phone</label -->
-        <div class="control">
-          <input
-            class="form-control"
-            type="phone"
-            id="phone"
-            formControlName="phone"
-            placeholder="Phone"
-          />
-          <div *ngIf="phone.invalid && (phone.dirty || phone.touched)">
-            <p class="alert alert-danger" *ngIf="phone.errors.required">
-              Phone is required
-            </p>
-            <p class="alert alert-danger" *ngIf="phone.errors.phoneNumberInvalid">
-              Phone is not valid
-            </p>
-            <!-- 
-            <p class="help is-danger" *ngIf="email.errors.email">
-              Phone is not valid.
-            </p>
-            -->
-          </div>
-        </div>
-      </div>
-
-      <div class="field" style="margin-bottom:20px">
-        <!-- label class="label" for="name">Name</label -->
-        <div class="control">
-          <input
-            class="form-control"
-            type="text"
-            id="name"
-            formControlName="name"
-            placeholder="Name"
-          />
-          <div *ngIf="name.invalid && (name.dirty || name.touched)">
-            <p class="alert alert-danger" *ngIf="name.errors.required">
-              Name is required
-            </p>
-          </div>
         </div>
       </div>
 
       
-      <div class="field" style="margin-bottom:20px">
-        <textarea class="form-control" 
-                  id="message" 
-                  formControlName="message"
-                  placeholder="Text message"
-                  rows="10">
-                {{message}}
-        </textarea>
+      <div class="row" style="margin-top:20px">
+          <div class="col">
+            <!-- type="button" keeps the form from being submit, which is what we want in this case -->
+            <button [hidden]="!canInvite" type="button" id="add_someone" (click)="addSomeone()" class="btn btn-primary col-sm-12"> 
+                <i class="fas fa-user-plus"></i> Add Guest
+            </button>
+          </div>
       </div>
 
-
-      <!--
-      <div class="field">
-        <div class="control">
-          <button class="btn btn-success" type="submit" [disabled]="!invitationForm.valid">
-            Save
-          </button>
-        </div>
+      
+      <div class="row" style="margin-top:40px">
+          <div class="col">
+              <button id="doit" [hidden]="!invitationForm.valid || (names && names.length == 0)" (click)="doit()" class="btn btn-primary col-sm-12"> <i class="far fa-paper-plane"></i> Send Invite </button>
+          </div>
       </div>
-
-      <div class="field">
-        <div class="control">
-          <button id="cancel_invitation" type="button" (click)="cancel()" class="btn btn-secondary">Cancel</button>
-        </div>
-      </div>
-      -->
-
-      <button id="submit_invitation" type="submit" class="btn btn-success col-sm-12" [disabled]="!invitationForm.valid">Send Invitation  <i class="fa fa-sms"></i> </button>
-      <P>&nbsp;</P>
-      <button id="cancel_invitation" type="button" (click)="cancel()" class="btn btn-secondary col-sm-12">Cancel</button>
-      <P>&nbsp;</P>
-      <button id="view_invitations_button" type="button" [routerLink]="['/invitation-list']" class="btn btn-primary col-sm-12">View Invitations</button>
-
-
-
 
     </form>
-  
-</div>
+
+    

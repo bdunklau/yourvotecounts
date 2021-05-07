@@ -11,7 +11,7 @@ export class PrivacyPolicyService {
 
   async getPolicy() {
     var ppDoc = await this.afs.collection('config').doc('privacy_policy').ref.get();
-    return ppDoc.data().text;
+    return ppDoc.data()['text'];
   }
 
   updatePolicy(pp: string) {

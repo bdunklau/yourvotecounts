@@ -8,7 +8,7 @@ export class ApiPrivacyPolicy {
   constructor() { }
 
   async getPrivacyPolicy() {
-    var url = 'https://us-central1-yourvotecounts-bd737.cloudfunctions.net/getPrivacyPolicy'; // auth_key not required
+    var url = 'https://us-central1-yourvotecounts-dev.cloudfunctions.net/getPrivacyPolicy'; // auth_key not required
     var flow = protractor.promise.controlFlow();
     var result = await flow.execute(function() {
         var defer = protractor.promise.defer();

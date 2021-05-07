@@ -60,6 +60,8 @@ describe('TeamViewerComponent', () => {
   });
 
   it('should create', () => {
+    console.log('TeamViewerComponent: begin')
     expect(component).toBeTruthy();
+    console.log('TeamViewerComponent: end')
   });
 });

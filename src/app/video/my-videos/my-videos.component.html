@@ -1,0 +1,59 @@
+<div style="margin-top:20px;overflow-x:hidden;padding-left:20px;">
+<h3>{{whose}} Videos</h3>
+
+
+<div class="row no-gutters" *ngFor="let room of videos" style="margin-bottom:10px">
+    <div class="col-12">
+        <div class="row">
+            
+            <div class="col-5">
+                <a href="/view-video/{{room.CompositionSid}}"><img [attr.src]="room.screenshotUrl" style="width:100%"></a>
+                <!-- <br/>screenshot: {{room.screenshotUrl}} -->
+            </div>
+            
+            <div class="col-5">
+                <B>{{room.video_title}}</B>
+                <BR/>Views {{room.views}}
+                <BR/><span class="small">{{room.created_ms | date: 'MMM d, yyyy'}}</span>
+                <!-- <BR/>{{room.RoomSid}}
+                <BR/>{{room.CompositionSid}} -->
+            </div>
+            
+            <div class="col-1">
+                <button class="btn btn-default" (click)="openVideoControlMenu(room)"><i class="fas fa-ellipsis-v"></i></button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div id="mybox1" class="mydiv target" [ngClass]="{'collapsed' : collapsed, 'translated': translated}" style="margin-right:0px;margin-left:0px">   
+       
+    <div class="row" style="margin-top:20px;margin-right:-10px;margin-left:-10px" (click)="deleteVideo()">
+        <div class="offset-1 col-2" [ngStyle]="{'color': confirmingDelete ? 'red' : 'black'}">
+            <i class="fas fa-trash"></i>
+        </div>
+        <div class="col-9" [ngStyle]="{'color': confirmingDelete ? 'red' : 'black'}">
+            <span *ngIf="!confirmingDelete">Delete video</span>
+            <span *ngIf="confirmingDelete">Confirm Delete</span>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:20px;margin-right:-10px;margin-left:-10px;border-top:1px solid #ababab;padding-top:20px" (click)="translated = !translated; confirmingDelete = false">
+        <div class="offset-1 col-2">
+            <i class="fa fa-close"></i>
+        </div>
+        <div class="col-9">
+            Cancel
+        </div>
+    </div>
+  
+</div> 

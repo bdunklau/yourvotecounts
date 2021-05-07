@@ -20,6 +20,8 @@ describe('ErrorPageComponent', () => {
   });
 
   it('should create', () => {
+    console.log('ErrorPageComponent: begin')
     expect(component).toBeTruthy();
+    console.log('ErrorPageComponent: end')
   });
 });

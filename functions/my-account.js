@@ -6,13 +6,37 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 const {Storage} = require('@google-cloud/storage');
+const console = require('console');
+const { query } = require('express');
 
 // can only call this once globally and we already do that in index.js
 //admin.initializeApp(functions.config().firebase);
 var db = admin.firestore();
 
 
-// firebase deploy --only functions:generateThumbnail
+// firebase deploy --only functions:updateLicenseeContactIdOnUserCreated,functions:generateThumbnail,functions:restoreDefaultPng
+
+
+exports.restoreDefaultPng = functions.storage.object().onDelete(async (object) => {
+  // https://headsupvideo.atlassian.net/browse/HEADSUP-63
+  if(object.name === 'thumb_profile-pic-default.png') {
+
+    const tempFilePath = path.join(os.tmpdir(), 'default_bak.png');
+    const bucket = admin.storage().bucket(object.bucket);
+    await bucket.file('default_bak.png').download({destination: tempFilePath});
+
+    const defaultThumbPath = path.join(path.dirname('thumb_profile-pic-default.png'), 'thumb_profile-pic-default.png');
+    await bucket.upload(tempFilePath, {
+      destination: defaultThumbPath,
+      metadata: {contentType: object.contentType},
+    });
+
+    // Once the default thumbnail has been uploaded, delete the local file to free up disk space.
+    return fs.unlinkSync(tempFilePath);
+    
+  }
+  else return false
+})
 
 
 exports.generateThumbnail = functions.storage.object().onFinalize(async (object) => {
@@ -77,3 +101,28 @@ exports.generateThumbnail = functions.storage.object().onFinalize(async (object)
 
   else return false;
 });
+
+
+/**
+ * query licensee_contact collection for anyone with this user's uid
+ * 
+ * When the user is created, we know his phoneNumber
+ * Query licensee_contact for phoneNumber
+ * If the phoneNumber is found, then set licensee_contact.uid = user.uid
+ */
+exports.updateLicenseeContactIdOnUserCreated = functions.firestore.document('user/{uid}').onCreate(async (snap, context) => {
+    var db = admin.firestore();
+    var data = snap.data()
+    // let dt = await db.collection('licensee_contact').where('phoneNumber', '==', data.phoneNumber).limit(1).get()
+
+    return db.collection('licensee_contact').where('phoneNumber', '==', data.phoneNumber).limit(1).get().then(snap => {
+        let licenseeContactId
+        // console.log('PAY ATTENTION: === snap = ', snap) // QuerySnapshot
+        snap.forEach(function(doc1) { // loop should only fire once
+            licenseeContactId = doc1.data().id;
+        })
+        return db.collection('licensee_contact').doc(licenseeContactId).update({uid: context.params.uid})
+
+    })
+
+})

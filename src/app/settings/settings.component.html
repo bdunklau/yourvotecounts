@@ -1,0 +1,218 @@
+<div class="container">
+<H3>General Settings</H3>
+
+<!-- 
+cloud_host: string
+disabled: boolean;
+firebase_functions_host: string
+from_sms: string;
+to_sms: string;
+website_domain_name: string
+promo_codes: string[]
+projectId: string
+storage_keyfile: string 
+
+
+See   invitation-form.component.html
+-->
+
+
+<span *ngIf="settings">
+
+
+<form (ngSubmit)="onSubmit()" #settingsForm="ngForm" novalidate>
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Max Call Time (secs)
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="max_call_time_field" [(ngModel)]="settings.max_call_time"  name="max_call_time" #max_call_time="ngModel" required>  
+        </div>
+    </div>
+
+    
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Admin SMS
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="admin_sms_field" [(ngModel)]="settings.admin_sms"  name="admin_sms" #admin_sms="ngModel" required>  
+        </div>
+    </div>
+
+    
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            <app-vm-health></app-vm-health> Cloud Host 
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="cloud_host_field" [(ngModel)]="settings.cloud_host"  name="cloud_host" #cloud_host="ngModel" required>  
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Test Path
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="cloud_host_test_path_field" [(ngModel)]="settings.cloud_host_test_path"  name="cloud_host_test_path" #cloud_host_test_path="ngModel" required>  
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col" style="margin-top:5px">
+            Test Cloud Host: 
+        </div>
+        <div class="col-8"> <a href="http://{{settings.cloud_host}}{{settings.cloud_host_test_path}}" target="testcloud">http://{{settings.cloud_host}}{{settings.cloud_host_test_path}}</a>
+        </div>
+    </div>
+
+    
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Console Logging
+        </div>
+        <div class="col-8">
+            <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
+            <label class="switch" id="console_logging_switch">
+                <input id="console_logging_checkbox" type="checkbox" class="success" [checked]="settings.console_logging" (click)="consoleLoggingChecked($event)">
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Firebase Functions Host
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="firebase_functions_host_field" [(ngModel)]="settings.firebase_functions_host"  name="firebase_functions_host" #firebase_functions_host="ngModel" required> 
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Disabled
+        </div>
+        <div class="col-8">
+
+            <!-- CHECK THIS OUT:  https://bootsnipp.com/snippets/GaxR2 -->
+            <label class="switch" id="disabled_switch">
+                <input id="disabled_checkbox" type="checkbox" class="success" [checked]="settings.disabled" (click)="disabledChecked($event)">
+                <span class="slider round"></span>
+            </label>
+
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Heap Threshold (GB)
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="heapThreshold_field" [(ngModel)]="settings.heapThreshold"  name="heapThreshold" #heapThreshold="ngModel" required> 
+        </div>
+    </div>
+
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            From SMS
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="from_sms_field" [(ngModel)]="settings.from_sms"  name="from_sms" #from_sms="ngModel" required>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Website Domain Name
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="website_domain_name_field" [(ngModel)]="settings.website_domain_name"  name="website_domain_name" #website_domain_name="ngModel" required>
+        </div>
+    </div>
+    
+    
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Project ID
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="projectId_field" [(ngModel)]="settings.projectId"  name="projectId" #projectId="ngModel" required>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-4" style="margin-top:5px">
+            Storage Key File
+        </div>
+        <div class="col-8">
+            <input type="text" class="col-12 form-control" id="storage_keyfile_field" [(ngModel)]="settings.storage_keyfile"  name="storage_keyfile" #storage_keyfile="ngModel" required>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-6" style="margin-top:5px">
+            <button type="button" (click)="turnCameraOn()" class="btn btn-primary col-sm-12"> camera on </button>
+        </div>
+        <div class="col-6" style="margin-top:5px">
+            <button type="button" (click)="turnCameraOff()" class="btn btn-primary col-sm-12"> camera off </button>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-12" style="margin-top:5px">
+            videoStream: {{videoStream}}
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-6" style="margin-top:5px">
+            <button type="button" (click)="turnMicOn()" class="btn btn-primary col-sm-12"> mic on </button>
+        </div>
+        <div class="col-6" style="margin-top:5px">
+            <button type="button" (click)="turnMicOff()" class="btn btn-primary col-sm-12"> mic off </button>
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-12" style="margin-top:5px">
+            audioStream: {{audioStream}}
+        </div>
+    </div>
+
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-6" style="margin-top:5px">
+            <button type="button" (click)="tempLocationHref()" class="btn btn-primary col-sm-12"> loc.href </button>
+        </div>
+    </div>
+
+    
+    <div class="row" style="margin-top:20px">
+        <div class="col">
+            <button id="doit" [disabled]="!settingsForm.valid" (click)="doit()" class="btn btn-primary col-sm-12">  Submit </button>
+        </div>
+    </div>
+
+</form>
+
+
+</span>   
+<!-- make sure settings object exists  -->
+
+
+</div>

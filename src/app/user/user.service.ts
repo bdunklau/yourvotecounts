@@ -1,8 +1,10 @@
 import { Injectable } from "@angular/core";
+
 // import 'rxjs/add/operator/toPromise';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
+import 'firebase/auth'
 
 // TODO FIXME https://angular.io/guide/http
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
@@ -11,34 +13,92 @@ import { Observable, throwError } from 'rxjs';
 import { FirebaseUserModel } from '../user/user.model';
 import 'rxjs/add/operator/map'
 import { MessageService } from '../core/message.service';
-import { Team } from '../team/team.model';
 import { map } from 'rxjs/operators';
 import { Subject, /*Observable,*/ Subscription } from 'rxjs';
-import { LogService } from '../log/log.service'; // injected in signIn() below
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
+import { environment } from '../../environments/environment';
+import { Friend } from '../friend/friend.model';
+import { take } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 
 @Injectable()
 export class UserService {
 
-  private user: FirebaseUserModel;
+  user: FirebaseUserModel;
+  userSubscription: Subscription
 
   constructor(
     private afs: AngularFirestore,
     private http: HttpClient,
+    private router: Router,
     public afAuth: AngularFireAuth,
     private messageService: MessageService,
     private afStorage: AngularFireStorage,
     // can't inject LogService because UserService is injected INTO LogService
-  ){ }
+  ) { 
+      
+      firebase.auth().onAuthStateChanged(async user => {
+          // console.log('watch: ngOnInit: onAuthStateChanged(): user = ', user)
+          if(user) {
+              this.listenForUser(user)
+              this.afs.collection('user').doc(user.uid).update({online: true});
 
-  ngOnInit() {
-    // isn't this just for components, not services?
+              // await this.signIn(/*this.log,*/ user); // circular dependency - can't inject log service            
+          }
+          else {
+              // user logged out
+              if(this.userSubscription) this.userSubscription.unsubscribe()
+              delete this.user
+              this.messageService.updateUser(null);
+          }
+      })
   }
 
-  ngOnDestroy() {
-    // isn't this just for components, not services?
+
+  private listenForUser(user /*firebaseUser*/) {
+      if(this.userSubscription) this.userSubscription.unsubscribe()
+
+      this.userSubscription = this.subscribe(user.uid, async (users:[FirebaseUserModel]) => {
+        if(users && users.length > 0) {          
+            this.user = users[0]
+
+            // duplicated/adapted from setFirebaseUser()
+            await this.afStorage.storage
+            .refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName)
+            .getDownloadURL().then(url => {
+                console.log("this.photoURL = ", url)
+                /**
+                 * prevents e2e test error on logout
+                 */
+                if(this.user) {
+                    this.user.photoURL = url
+                    this.messageService.updateUser(this.user) // see app.component.ts:ngOnInit()
+                }
+            })
+
+            /**
+             * prevents e2e test error on logout
+             */
+            if(this.user) {
+                this.user.online = true;            
+                // this.updateUser(this.user); // saves the online state    // FIXME circular - don't update user inside userSubscription
+                console.log('onAuthStateChanged(): this.user = ', this.user);
+                this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
+            }
+
+        }
+      })
+      
   }
+
+  // ngOnInit() {
+  //   // isn't this just for components, not services?
+  // }
+
+  // ngOnDestroy() {
+  //   // isn't this just for components, not services?
+  // }
 
 
   // create FirebaseUserModel from firebase.user
@@ -93,28 +153,44 @@ export class UserService {
     return user;
   }
 
+  async getUserById(uid: string) {
+      var userDoc = await this.afs.collection('user').doc(uid).ref.get();
+      let user = new FirebaseUserModel();
+      user.populate(userDoc.data());
+      return user
+  }
+
+  ///////////////////////////////////////////////////////////////////////
+  // may not be useful if angular universal makes us get rid of promises in favor of observables
+  // we'll see...   10.1.20
   async getCurrentUser() : Promise<FirebaseUserModel> {
     if(this.user) {
-      console.log('getCurrentUser():  get cached user: ', this.user);
       return this.user
     }
-    var user = await this.createFirebaseUserModel()
-    .catch(function(error) {
-      console.log('getCurrentUser():  error: ', error);
-    })
+    var user
+    try {
+        user = await this.createFirebaseUserModel()
+    } catch(e) {
+        console.log('probably user not logged in?... error: ', e)
+    }
 
     if(!user) {
-      console.log('getCurrentUser() user = undefined so return early');
       return null;
     }
 
     return new Promise<FirebaseUserModel>(async (resolve, reject) => {
-      var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
-      this.user = user;
-      this.user.populate(userDoc.data());
-      console.log('getCurrentUser(): DATABASE HIT this.user = ', this.user);
-      this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
-      resolve(this.user);
+        var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
+        this.user = user;
+        this.user.populate(userDoc.data());
+        
+        if(this.user.photoFileName) {
+            console.log('watch: this.user.photoFileName:  '+this.user.photoFileName)
+            let photoURL = await this.afStorage.storage.refFromURL('gs://'+environment.firebase.storageBucket+'/'+this.user.photoFileName).getDownloadURL()
+            this.user.photoURL = photoURL
+        }
+
+        this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
+        resolve(this.user);
     });
   }
 
@@ -145,6 +221,19 @@ export class UserService {
       .valueChanges();
   }
 
+  searchFriends(/*currUser,*/ nameVal, limit) {
+    if(!nameVal || nameVal === '' || !this.user) {
+        return [];
+    }
+    return this.afs.collection('friend', ref => ref
+      .where("uid1", "==", this.user.uid)  // my friends only, duh
+      .orderBy("displayName2_lowerCase")
+      .startAt(nameVal.toLowerCase())
+      .endAt(nameVal.toLowerCase()+"\uf8ff")
+      .limit(limit))
+      .valueChanges();
+  }
+
   searchByPhone(phoneVal, limit) {
     return this.afs.collection('user', ref => ref
       .orderBy("phoneNumber")
@@ -155,33 +244,11 @@ export class UserService {
   }
 
 
-  async setFirebaseUser(firebase_auth_currentUser, online: boolean) {
-    let user:FirebaseUserModel = this.firebaseUserToFirebaseUserModel(firebase_auth_currentUser);
-    this.user = new FirebaseUserModel();
-    var userDoc = await this.afs.collection('user').doc(user.uid).ref.get();
-    console.log('setFirebaseUser(): userDoc.data() = ', userDoc.data());
-    this.user.populate(userDoc.data());
-    this.user.online = online;
-    this.updateUser(this.user); // saves the online state
-    console.log('setFirebaseUser(): this.user = ', this.user);
-    this.messageService.updateUser(this.user); // how app.component.ts knows we have a user now
-  }
-
-
-  async signIn(log: LogService, firebase_auth_currentUser) {
-    await this.setFirebaseUser(firebase_auth_currentUser, true);
-    log.i('login');
-  }
-
-
   signOut() {
     let user = new FirebaseUserModel();
     this.user.online = false;
     user.populate(this.user);
-    this.updateUser(user);
-    this.user = null
-    console.log('signOut(): this.user = ', this.user);
-    this.messageService.updateUser(this.user);
+    return this.updateUser(user);
   }
 
   subscribe(uid: string, fn: ((users:[FirebaseUserModel]) => void) ): Subscription {
@@ -194,7 +261,7 @@ export class UserService {
                 let u = new FirebaseUserModel();
                 u.populate(data);
                 return u;
-                // const id = a.payload.doc.id;  // valid but not needed here
+                // const id = a.payload.doc['id'];  // valid but not needed here
               });
             })
           )
@@ -253,6 +320,9 @@ export class UserService {
     data['online'] = value.online === true ? true : false;
     data['tosAccepted'] = value.tosAccepted === true ? true : false;
     data['privacyPolicyRead'] = value.privacyPolicyRead === true ? true : false;
+    if(value.access_expiration_ms) {
+        data['access_expiration_ms'] = value.access_expiration_ms
+    }
     let updateRes = this.afs.collection('user').doc(value.uid).ref.update(data);
     console.log('updateUser: DATABASE UPDATE: ', data);
     return updateRes;
@@ -261,5 +331,133 @@ export class UserService {
   addGuest(guest: {displayName: string, phoneNumber: string, invitationId: string}) {
     this.afs.collection('guest').doc(guest.phoneNumber).set(guest);
   }
+
+
+    async setPromoCode(user: FirebaseUserModel) {
+        await this.afs.collection('user').doc(user.uid).update({promo_code: user.promo_code})
+    }
+
+    async addFriend(args: {person1: FirebaseUserModel, person2: any}) {
+
+        let now = new Date().getTime()
+        let id1 = this.afs.createId()
+        let id2 = this.afs.createId()
+        let batch = this.afs.firestore.batch()
+        let ref1 = this.afs.collection('friend').doc(id1).ref
+        let ref2 = this.afs.collection('friend').doc(id2).ref
+        // TODO defaults to US if no country code
+        let phone1 = args.person1.phoneNumber.startsWith('+') ? args.person1.phoneNumber : '+1'+args.person1.phoneNumber
+        let phone2 = args.person2.phoneNumber.startsWith('+') ? args.person2.phoneNumber : '+1'+args.person2.phoneNumber
+
+        let asUser = await this.getUserWithPhone(phone2)  
+
+        let friendEntry = {friendId1: id1,
+          displayName1: args.person1.displayName, 
+          phoneNumber1: phone1, 
+          uid1: args.person1.uid,
+          friendId2: id2,
+          displayName2: args.person2.displayName,
+          displayName2_lowerCase: args.person2.displayName.toLowerCase(),
+          phoneNumber2: phone2,
+          date_ms: now }
+
+        let reciprocalEntry = {friendId1: id2,
+          displayName1: args.person2.displayName, 
+          phoneNumber1: phone2,
+          friendId2: id1, 
+          displayName2: args.person1.displayName,
+          displayName2_lowerCase: args.person1.displayName.toLowerCase(),
+          phoneNumber2: phone1,
+          date_ms: now,
+          uid2: args.person1.uid }
+        
+        if(asUser) {
+            friendEntry['displayName2'] = asUser.displayName
+            friendEntry['displayName2_lowerCase'] = asUser.displayName.toLowerCase()
+            friendEntry['uid2'] = asUser.uid
+            reciprocalEntry['displayName1'] = asUser.displayName
+            reciprocalEntry['uid1'] = asUser.uid
+        }
+
+        batch.set(ref1, friendEntry)
+        batch.set(ref2, reciprocalEntry)
+        await batch.commit()
+    }
+
+
+    async deleteFriend(friend: Friend) {
+        
+        let batch = this.afs.firestore.batch()
+        let ref1 = this.afs.collection('friend').doc(friend.friendId1).ref
+        let ref2 = this.afs.collection('friend').doc(friend.friendId2).ref
+        batch.delete(ref1)
+        batch.delete(ref2)
+        await batch.commit()
+    }
+
+
+    getFriends(user: FirebaseUserModel) {
+        // no need to limit right now
+        return this.afs.collection('friend', ref => ref.where('phoneNumber1', '==', user.phoneNumber).orderBy('displayName2_lowerCase', 'asc')/*.limit(25)*/).snapshotChanges()
+    }
+
+
+    async getUserByPhone(phoneNumber: string) {
+        let userRef = this.afs.collection('user', ref => ref.where('phoneNumber', '==', phoneNumber).limit(1)).snapshotChanges().pipe(take(1))
+        let userPromise = await userRef.toPromise()    
+        if(!userPromise || userPromise.length == 0) return null   
+        let userObj = userPromise[0].payload.doc.data()
+        return userObj
+    }
+
+
+    async getUserWithPhone(phoneNumber: string) {
+        console.log('getUserWithPhone(): phoneNumber: ', phoneNumber)
+        let userRef = this.afs.collection('user', ref => ref.where('phoneNumber', '==', phoneNumber).limit(1)).snapshotChanges().pipe(take(1))
+        let userPromise = await userRef.toPromise()    
+        if(!userPromise || userPromise.length == 0) return null   
+        let userObj = userPromise[0].payload.doc.data()
+
+        // get photoURL from photoFileName
+        if(!userObj['photoFileName']) {
+            userObj['photoFileName'] = 'thumb_profile-pic-default.png'
+        }
+        
+        userObj['photoURL'] = await this.afStorage.storage
+            .refFromURL('gs://'+environment.firebase.storageBucket+'/'+userObj['photoFileName'])
+            .getDownloadURL()
+
+        let theUser = new FirebaseUserModel()
+        theUser.populate(userObj);
+        return theUser
+    }
+
+
+    async getProfilePicUrl(photoFileName: string) {
+      return await this.afStorage.storage
+          .refFromURL('gs://'+environment.firebase.storageBucket+'/'+photoFileName)
+          .getDownloadURL()
+    }
+
+
+    async getDefaultProfilePicUrl() {
+      return this.getProfilePicUrl('thumb_profile-pic-default.png')
+      // return await this.afStorage.storage
+      //     .refFromURL('gs://'+environment.firebase.storageBucket+'/thumb_profile-pic-default.png')
+      //     .getDownloadURL()
+    }
+
+
+    getUsersByDate() {
+      return this.afs.collection('user', ref => ref.orderBy('date_ms', 'desc').limit(25)).snapshotChanges()
+    }
+    
+
+    // getMembersByTeamId(id: string) {
+    //   // Observable< DocumentChangeAction <unknown> []>
+    //   var retThis = this.afs.collection('team_member', ref => ref.where("teamDocId", "==", id)).snapshotChanges();
+    //   return retThis;
+    // }
+
 
 }

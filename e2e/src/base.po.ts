@@ -21,15 +21,18 @@ export class BasePage {
     field.sendKeys(Key.BACK_SPACE);
   }
 
-  clickLogout() {
-    browser.sleep(500);
-    this.pullDownMyMenu();
-    this.getLogoutLink().click();
+  async clickLogout(ms) {
+    console.log("about to logout...")
+    await browser.sleep(ms);
+    await this.pullDownMyMenu();
+    await this.getLogoutLink().click();
   }
 
-  clickMyAccount() {
-    this.pullDownMyMenu();
-    this.getElement(by.id('myaccount_link')).click();
+  async clickMyAccount(ms) {
+    console.log("about to go to My Account...")
+    await browser.sleep(ms);
+    await this.pullDownMyMenu();
+    await this.getElement(by.id('myaccount_link')).click();
   }
 
   clickPrivacyPolicy() {
@@ -102,8 +105,10 @@ export class BasePage {
     return this.getElement(by.id('logout_link'));
   }
 
-  getLoginLink() {
-    this.getElement(by.id('hamburger_menu_icon')).click();
+  async getLoginLink(ms) {
+    console.log("about to check for login link...")
+    await browser.sleep(ms);
+    await this.getElement(by.id('hamburger_menu_icon')).click();
     return this.getElement(by.id('login_link'));
   }
 
@@ -118,8 +123,7 @@ export class BasePage {
   }
 
   goto(url) {
-    return browser.get(browser.baseUrl+url) as Promise<any>;
-    browser.sleep(100);
+    return browser.get(browser.baseUrl+url) //as Promise<any>;
   }
 
 
@@ -138,6 +142,7 @@ export class BasePage {
   }
 
   async loginAsSomeone() {
+    console.log(`logging in as: ${this.testSupport.names[0].displayName}`)
     return await this.loginAs(this.testSupport.names[0]);
     // this.testSupport.login(this.testSupport.names[0].phoneNumber);
     // await this.setLegal(this.testSupport.names[0], true);
@@ -163,9 +168,9 @@ export class BasePage {
   }
 
 
-  pullDownMyMenu() {
-    this.getElement(by.id('hamburger_menu_icon')).click();
-    browser.sleep(1000);
+  async pullDownMyMenu() {
+    await this.getElement(by.id('hamburger_menu_icon')).click();
+    await browser.sleep(1000);
   }
 
 }

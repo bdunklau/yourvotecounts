@@ -47,6 +47,8 @@ describe('ValidInvitationGuard', () => {
   });
 
   it('should be created', () => {
+    console.log('ValidInvitationGuard: begin')
     expect(guard).toBeTruthy();
+    console.log('ValidInvitationGuard: end')
   });
 });

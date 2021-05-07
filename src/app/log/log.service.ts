@@ -21,7 +21,7 @@ export class LogService {
     var ref = this.db.collection(logtype, rf => rf.where(opts.by, "==", opts.value)).snapshotChanges().pipe(take(1));
     ref.subscribe(data  => {
       data.forEach(function(dt) {
-        batch.delete(dt.payload.doc.ref);
+        batch.delete(dt.payload.doc['ref']);
       });
       batch.commit();
     });
