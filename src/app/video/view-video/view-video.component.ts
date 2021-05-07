@@ -131,11 +131,12 @@ export class ViewVideoComponent implements OnInit {
             }
 
             let deviceIsiPhone = window.navigator.userAgent.toLowerCase().indexOf("iphone") != -1
+            let deviceIsiPad = window.navigator.userAgent.toLowerCase().indexOf("ipad") != -1
 
             this.userAgent = "userAgent: "+window.navigator.userAgent
 
             // this.browser = window.navigator.userAgent
-            if(deviceIsiPhone) {
+            if(deviceIsiPhone || deviceIsiPad) {
                 this.videoUrl = this.room.videoUrl
                 this.videoType = "application/x-mpegURL"
             }
