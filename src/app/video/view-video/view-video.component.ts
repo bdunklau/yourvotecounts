@@ -502,7 +502,7 @@ export class ViewVideoComponent implements OnInit {
 
     private assembleTheMessage(thePost, postType, handles) {
         if(this.video_title) 
-            thePost += '\n\n'+this.video_title
+            thePost += this.video_title
         if(this.video_description && postType.toLowerCase() != 'twitter') 
             thePost += '\n\n'+this.video_description
         if(handles && handles != '')
@@ -513,6 +513,13 @@ export class ViewVideoComponent implements OnInit {
         }
         thePost += '\n\n'+window.location.href
         return thePost
+    }
+
+
+    expandOfficials(officialsCollapsed: boolean) {
+        console.log("expandOfficials")
+        if(this.officialsCollapsed) this.officialsCollapsed = !this.officialsCollapsed
+        // BUT IF expanded, don't collapse just by clicking anywhere.  You have to click the Collapse label or carat
     }
 
 
