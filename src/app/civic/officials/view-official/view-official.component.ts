@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Input, Inject, PLATFORM_ID, Output, EventEmitter } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as _ from 'lodash'
 import { RoomService } from '../../../room/room.service'
@@ -24,6 +24,7 @@ export class ViewOfficialComponent implements OnInit {
   @Input() canDelete = false // button enablement
   @Input() inputCollapsed = true
   currentUrl: string
+  @Output() socialMediaSelected = new EventEmitter</*a channel... */{type?:string, id?:string, url?:string, icon?: string, color_class?:string}>()
 
   constructor(private roomService: RoomService, 
               @Inject(PLATFORM_ID) private platformId,
@@ -120,14 +121,8 @@ export class ViewOfficialComponent implements OnInit {
 
   //  ngbd-modal-confirm.component.ts
   //  ngbd-modal-confirm.component.html
-  popSocialMedia(channel) {      
-      var modalRef = this.showOkDialog(() => {/*noop*/});
-      modalRef.componentInstance.title = '@'+channel.id;
-      modalRef.componentInstance.question = '';
-      modalRef.componentInstance.thing = this.currentUrl;
-      modalRef.componentInstance.warning_you = '';
-      modalRef.componentInstance.really_warning_you = '';
-      modalRef.componentInstance.confirmText = 'Copy';
+  popSocialMedia(channel: {type?:string, id?:string, url?:string, icon?: string, color_class?:string}) {   
+      this.socialMediaSelected.emit(channel)   
   }
 
 
