@@ -239,7 +239,13 @@ banner ad
 
         <div [ngClass]="{'row': true, 'justify-content-center': officialsCollapsed}"  style="margin-top:0px">
                 <span *ngFor="let official of room.officials" [ngClass]="{'col-12': !officialsCollapsed}">
-                    <app-view-official [inputCollapsed]="officialsCollapsed" [canDelete]="isHost" [official]="official"></app-view-official>
+                    <app-view-official 
+                        [inputCollapsed]="officialsCollapsed" 
+                        [canDelete]="isHost" 
+                        [official]="official" 
+                        (socialMediaSelected)="onSocialMediaSelected($event)"
+                        (click)="expandOfficials()">
+                    </app-view-official>
                 </span>
         </div>
         </span>

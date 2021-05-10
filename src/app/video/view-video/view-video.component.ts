@@ -292,19 +292,6 @@ export class ViewVideoComponent implements OnInit {
         modalRef.componentInstance.confirmText = 'OK';
     }
 
-    createSocialMediaPost(postType /* FB or Twitter */) {
-        let unflattened = _.map(this.room.officials, (official:Official) => official.channels)
-        let allChannels = _.flatten(unflattened)
-        let allOneType = _.filter(allChannels, {type: postType})
-        let allHandlesOfAType = _.map(allOneType, aChannel => { 
-            if(!aChannel.id.startsWith('@')) return '@'+aChannel.id
-            else return aChannel.id
-        })
-        let joined = _.join(allHandlesOfAType, " ")
-        let thePost = joined+'\n\n'+window.location.href
-        return thePost
-    }
-
     showOkDialog(callback) {
         //  ngbd-modal-confirm.component.ts
         //  ngbd-modal-confirm.component.html
@@ -458,5 +445,82 @@ export class ViewVideoComponent implements OnInit {
         );
     }
     ///////////////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * https://headsupvideo.atlassian.net/browse/HEADSUP-114
+     */
+    // see view-official.component.ts
+    onSocialMediaSelected(channel: {type?:string, id?:string, url?:string, icon?: string, color_class?:string}) {
+        console.log('onSocialMediaSelected: channel = ', channel)
+        let thePost = this.createSocialMediaPost2(channel)
+
+        let toClipboard = function() {
+            // ref:   ngbd-modal-confirm.component.ts:copyContent()
+            this.clipboard.copy(thePost)
+        }.bind(this)
+
+        var modalRef = this.showOkDialog(toClipboard);
+        modalRef.componentInstance.title = 'Copied!';
+        modalRef.componentInstance.question = '';
+        modalRef.componentInstance.thing = `A ${channel.type} post has been copied to your clipboard.  Go to ${channel.type} and paste - that's it!`;
+        modalRef.componentInstance.warning_you = '';
+        modalRef.componentInstance.really_warning_you = '';
+        modalRef.componentInstance.confirmText = 'OK';
+    }
+
+
+
+    /**
+     * https://headsupvideo.atlassian.net/browse/HEADSUP-114
+     */
+    private createSocialMediaPost2(channel: {type?:string, id?:string, url?:string, icon?: string, color_class?:string}) {
+        // fb or tw?  determines whether we include the description or not
+        let thePost = ''
+        if(channel.id && !channel.id.startsWith('@')) channel.id = '@'+channel.id  
+        thePost += this.assembleTheMessage(thePost, channel.type, [channel.id])
+        return thePost
+
+    }
+
+
+    createSocialMediaPost(postType /* FB or Twitter */) {
+        let unflattened = _.map(this.room.officials, (official:Official) => official.channels)
+        let allChannels = _.flatten(unflattened)
+        let allOneType = _.filter(allChannels, {type: postType})
+        let allHandlesOfAType = _.map(allOneType, aChannel => { 
+            if(!aChannel.id.startsWith('@')) return '@'+aChannel.id
+            else return aChannel.id
+        })
+        let handles = _.join(allHandlesOfAType, "\n")
+
+        let thePost = ''
+        thePost += this.assembleTheMessage(thePost, postType, handles)
+        return thePost
+    }
+
+
+    private assembleTheMessage(thePost, postType, handles) {
+        if(this.video_title) 
+            thePost += this.video_title
+        if(this.video_description && postType.toLowerCase() != 'twitter') 
+            thePost += '\n\n'+this.video_description
+        if(handles && handles != '')
+            thePost += '\n\n'+handles
+        if(this.room.tags && this.room.tags.length > 0) {
+            let hashtagString = _.join(this.room.tags, ' ')
+            thePost += '\n\n'+hashtagString
+        }
+        thePost += '\n\n'+window.location.href
+        return thePost
+    }
+
+
+    expandOfficials(officialsCollapsed: boolean) {
+        console.log("expandOfficials")
+        if(this.officialsCollapsed) this.officialsCollapsed = !this.officialsCollapsed
+        // BUT IF expanded, don't collapse just by clicking anywhere.  You have to click the Collapse label or carat
+    }
+
 
 }
