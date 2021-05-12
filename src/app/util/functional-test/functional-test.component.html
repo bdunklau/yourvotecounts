@@ -1,0 +1,223 @@
+
+<div class="container">
+    <h3 style="margin-top:20px">Let's Check Your Device</h3>
+
+
+    <!-- test sms -->
+    <span  *ngIf="testingSms">
+        <div class="row">
+
+            <div class="col-12" style="margin-top:20px"><h5>Verify SMS</h5></div>
+
+        </div>
+    <!-- <span  *ngIf="testingSms"> -->
+    </span>
+
+
+
+
+
+
+
+    <span  *ngIf="testingSms && deviceIsMobile == ''">
+        <div class="row">
+            
+            <!-- before we can test sms, we first have to ask the user if this device even GETS text messages - duh -->
+            <div class="col-12" style="margin-top:5px">
+                Is this device a mobile phone that receives text messages?
+            </div>
+    
+            <div class="col-6" style="margin-top:20px">
+                <button type="button" (click)="currentDeviceIsMobilePhone('yes')" class="btn btn-default col-11"> Yes </button>
+            </div>
+    
+            <div class="col-6" style="margin-top:20px">
+                <button type="button" (click)="currentDeviceIsMobilePhone('no')" class="btn btn-default col-11"> No </button>
+            </div>
+
+        </div>
+    <!-- <span  *ngIf="testingSms && deviceIsMobile == ''"> -->
+    </span>
+
+
+
+
+
+
+
+    <span  *ngIf="testingSms && deviceIsMobile == 'no'">
+        <div class="row">    
+    
+            <div class="col-12" style="margin-top:5px" *ngIf="deviceIsMobile == 'no'">
+                OK - click Next to check your webcam
+            </div>            
+        
+
+            <div class="col-12 col-sm-6" style="margin-top:20px" *ngIf="testingSms">
+                <button type="button" (click)="testingSms = false; smsTestComplete = true; testingWebcam = true" class="btn btn-primary col-sm-12"> Next <i class="fas fa-chevron-right"></i></button>
+            </div>
+
+        </div>
+    <!-- <span  *ngIf="testingSms && deviceIsMobile == 'no'"> -->
+    </span>
+
+
+
+
+
+
+    <span  *ngIf="testingSms && deviceIsMobile == 'yes' && smsOk == '' "> 
+    <div class="row">
+          
+        <div class="col-12" style="margin-top:5px">
+            Enter your mobile number to verify that we can send you SMS messages
+        </div>
+
+        <form [formGroup]="testForm" class="col-12" style="padding-left:0px;padding-right:0px">
+        <div class="col-12 col-sm-6" style="margin-top:20px">
+            <input type="text" class="form-control col-12"
+                    (input)="formatPhone($event)" placeholder="(   ) ___-____"
+                    formControlName="testPhoneControl">
+        </div>
+
+        <div class="col-12 col-sm-6" style="margin-top:20px">
+            <button type="button" (click)="testSms()" class="btn btn-primary col-12"> test SMS </button>
+        </div>
+        </form>
+
+
+        <div class="col-12" style="margin-top:20px" *ngIf="smsSent">
+            Wait 5-10 secs for the text message.  
+            <P>Did you receive it?</P>
+        </div>
+
+        <div class="col-6" style="margin-top:20px" *ngIf="smsSent">
+            <button type="button" (click)="smsFunctional()" class="btn btn-default col-12"> Yes </button>
+        </div>
+
+        <div class="col-6" style="margin-top:20px" *ngIf="smsSent">
+            <button type="button" (click)="smsNotFunctional()" class="btn btn-default col-12"> No </button>
+        </div>
+        
+
+    </div>
+    <!-- <span  *ngIf="testingSms && deviceIsMobile == 'yes'">  -->
+    </span>
+
+
+
+
+
+    
+
+    <span  *ngIf="testingSms && smsOk == 'yes'"> 
+    <div class="row">
+            
+        <div class="col-12" style="margin-top:5px">
+            <P><i class="fas fa-check-circle" style="color:green"></i> Great! You can receive video invitations by text message</P>
+            <P>Click "Next" to test your webcam</P>
+        </div>  
+
+        <div class="col-12 col-sm-6" style="margin-top:20px">
+            <button type="button" (click)="testingSms = false; smsTestComplete = true; testingWebcam = true" class="btn btn-primary col-sm-12"> Next <i class="fas fa-chevron-right"></i></button>
+        </div>     
+
+    </div>
+    <!-- <span  *ngIf="testingSms && smsOk == 'yes'"> -->
+    </span>
+
+
+    
+
+
+
+    <span  *ngIf="testingSms && smsOk == 'no'"> 
+    <div class="row">
+            
+        <div class="col-12" style="margin-top:5px">
+            <P>That's no good.</P>  
+            <P>Your carrier probably thinks we are trying to spam you.</P>
+            <P>We are working to resolve this issue but in the meantime, your host should be able to send your invitation by email.</P>
+            <P>Click "Next" to test your webcam</P>
+        </div>  
+
+        <div class="col-12 col-sm-6" style="margin-top:20px">
+            <button type="button" (click)="testingSms = false; smsTestComplete = true; testingWebcam = true" class="btn btn-primary col-sm-12"> Next <i class="fas fa-chevron-right"></i></button>
+        </div>      
+
+    </div>
+    <!-- <span  *ngIf="testingSms && smsOk == 'no'"> -->
+    </span>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- test camera and mic -->
+    <span  *ngIf="testingWebcam || webcamTestComplete" style="width:100%"> 
+    <div class="row" style="height:75px">
+
+         
+        <div class="col-12 col-sm-6" style="margin-top:20px"><h5>Verify Webcam</h5></div>
+
+        <div class="col-12 col-sm-6" style="margin-top:20px;margin-bottom:20px">
+            <div class="row" [hidden]="camResult != 'ok'"><div class="col-12"><i class="fas fa-check-circle" style="color:green"></i>&nbsp;&nbsp;&nbsp;<i class="fas fa-video"></i> &nbsp; Camera ok</div></div> 
+            
+            <div class="row" [hidden]="camResult == '' || camResult == 'ok'"><div class="col-12"><i class="fas fa-times-circle" style="color:red"></i>&nbsp;&nbsp;&nbsp;<i class="fas fa-video"></i> &nbsp; Camera not ok </div></div>
+        
+            <div class="row" [hidden]="micResult != 'ok'"><div class="col-12"><i class="fas fa-check-circle" style="color:green"></i>&nbsp;&nbsp;&nbsp;<i class="fas fa-microphone"></i> &nbsp; Mic ok</div></div>  
+            
+            <div class="row" [hidden]="micResult == '' || micResult == 'ok'"><div class="col-12"><i class="fas fa-times-circle" style="color:red"></i>&nbsp;&nbsp;&nbsp;<i class="fas fa-microphone"></i> &nbsp; Mic not ok </div></div>
+        </div>
+        
+        <div class="col-12" style="margin-top:5px" *ngIf="!webcamTestComplete">
+            Click "test webcam" to see if your camera and microphone can be activated
+        </div>
+
+        <div class="col-12 col-sm-6" style="margin-top:20px" *ngIf="!webcamTestComplete">
+            <button type="button" (click)="testWebcam()" class="btn btn-primary col-sm-12"> test webcam </button>
+        </div>
+
+
+        <!-- report webcam problem -->
+        <div class="col-12" style="margin-top:5px" [hidden]="camResult == '' || camResult == 'ok'">
+            <B>Webcam Problem</B> <P>{{camResult}}</P>
+        </div>
+
+
+        <!-- report mic problem -->
+        <div class="col-12" style="margin-top:5px" [hidden]="micResult == '' || micResult == 'ok'">
+            <B>Microphone Problem</B> <P>{{micResult}}</P>
+        </div>
+        
+
+        <div class="col-12" style="margin-top:10px" [hidden]="!webcamTestComplete">
+            <P>Device check complete</P>
+            <!-- good -->
+            <span [hidden]="camResult != 'ok' || micResult != 'ok' || smsOk != 'yes'">
+                <P>HeadsUp should work <I>flawlessly</I> with this device</P>
+            </span>
+
+            <!-- bad -->
+            <span [hidden]="camResult == 'ok' && micResult == 'ok' ">
+               <P>You will not be able to use this device due to the reasons mentioned above.</P>
+               <P>We apologize for the inconvenience.</P>
+            </span>
+            <P>You may close this window now</P>
+        </div>
+    </div>
+
+    <!-- <span  *ngIf="!testingSms" style="width:100%">  -->
+    </span>
+
+
+
+        
+
+</div>

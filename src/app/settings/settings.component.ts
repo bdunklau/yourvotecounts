@@ -122,44 +122,13 @@ export class SettingsComponent implements OnInit {
 
 
     async testMedia(loc, mediaType, success, err) {
-    //     let allow = function(allowed) {
-    //         this.cameraAllowed = allowed
-    //         let p = new Promise((resolve, reject) => {resolve(allowed)})
-    //         return p
-    //     }.bind(this)
-
-    //     let success = async function(stream) {
-    //         // this.stuff.push(`${loc}: allowed`)
-    //         return await allow(1)
-    //     }.bind(this)
-
-    //     let err = async function(err) {
-    //         // this.stuff.push(`${loc}: err`)
-    //         return await allow(-1)
-    //     }.bind(this)
-
-        if(navigator) {
-            if(navigator.mediaDevices) {
-                if(navigator.mediaDevices.getUserMedia) {
-                    return navigator.mediaDevices.getUserMedia(mediaType)
-                    .then(success)
-                    .catch(err);
-                    // this.stuff.push(`${loc}: end`)
-                }
-                else {
-                    // this.stuff.push(`${loc}: no getUserMedia`)
-                    return -1
-                }
-            }
-            else {
-                // this.stuff.push(`${loc}: no mediaDevices`) // FALLING TO HERE
-                return -1
-            }
-        }
-        else {
-            // this.stuff.push(`${loc}: no navigator`)
-            return -1
-        }
+        if(!navigator) return -1
+        if(!navigator.mediaDevices) return -1
+        if(!navigator.mediaDevices.getUserMedia) return -1
+  
+        return navigator.mediaDevices.getUserMedia(mediaType)
+        .then(success)
+        .catch(err);
     }
 
 

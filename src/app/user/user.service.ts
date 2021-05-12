@@ -20,6 +20,7 @@ import { environment } from '../../environments/environment';
 import { Friend } from '../friend/friend.model';
 import { take } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import * as _ from 'lodash'
 
 
 @Injectable()
@@ -458,6 +459,46 @@ export class UserService {
     //   var retThis = this.afs.collection('team_member', ref => ref.where("teamDocId", "==", id)).snapshotChanges();
     //   return retThis;
     // }
+
+
+    async recordCameraFunctionality(user: FirebaseUserModel, functional: boolean) {
+      await this.captureUserAgent(user)
+
+        let cameraChecks = user.cameraChecks
+        if(!cameraChecks) cameraChecks = []
+        cameraChecks.push({cameraCheckDate: new Date(), cameraCheckDate_ms: new Date().getTime(), functional: functional, userAgent: window.navigator.userAgent})
+        await this.afs.collection('user').doc(user.uid).update({cameraChecks: cameraChecks})
+    }
+
+
+    async recordMicFunctionality(user: FirebaseUserModel, functional: boolean) {
+      await this.captureUserAgent(user)
+
+        let micChecks = user.micChecks
+        if(!micChecks) micChecks = []
+        micChecks.push({micCheckDate: new Date(), micCheckDate_ms: new Date().getTime(), functional: functional, userAgent: window.navigator.userAgent})
+        await this.afs.collection('user').doc(user.uid).update({micChecks: micChecks})
+    }
+
+
+    async recordSmsFunctionality(user: FirebaseUserModel, functional: boolean) {
+        await this.captureUserAgent(user)
+
+        let smsChecks = user.smsChecks
+        if(!smsChecks) smsChecks = []
+        smsChecks.push({smsCheckDate: new Date(), smsCheckDate_ms: new Date().getTime(), functional: functional, userAgent: window.navigator.userAgent})
+        await this.afs.collection('user').doc(user.uid).update({smsChecks: smsChecks})
+    }
+
+
+    private async captureUserAgent(user: FirebaseUserModel) {
+        let userAgents = user.userAgents
+        if(!userAgents) userAgents = []
+        let userAgent = _.find(userAgents, ua => ua === window.navigator.userAgent)
+        if(!userAgent) userAgents.push(window.navigator.userAgent)
+        await this.afs.collection('user').doc(user.uid).update({userAgents: userAgents})
+        
+    }
 
 
 }

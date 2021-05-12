@@ -6,6 +6,7 @@ import { UserService } from '../user/user.service'
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { FirebaseUserModel } from '../user/user.model';
+import * as _ from 'lodash'
 
 @Component({
   selector: 'app-login',
@@ -42,18 +43,22 @@ export class LoginComponent implements OnInit {
 
             // https://headsupvideo.atlassian.net/browse/HEADSUP-59
             this.userSubscription = this.userService.subscribe(user.uid, async (users:[FirebaseUserModel]) => {
-                if(users && users.length > 0) {          
-                    let auser = users[0]
-        
-                    if(!auser.tosAccepted && !auser.privacyPolicyRead) {
-                      this.router.navigate(['/minimal-account-info'])
-                    }
-                    else {
-                      console.log('LoginComponent: going to /home')
-                      this.router.navigate(['/home'])
-                    }
-        
+                if(!users) return
+                if(users.length < 1) return                          
+                let auser = users[0]    
+                let needsToDoDeviceCheck = this.needsToDoDeviceCheck(auser) 
+                if(needsToDoDeviceCheck) {
+                  this.router.navigate(['/functional-test'])
+                  return
                 }
+
+                if(!auser.tosAccepted && !auser.privacyPolicyRead) {
+                  this.router.navigate(['/minimal-account-info'])
+                  return
+                }
+                
+                console.log('LoginComponent: going to /home')
+                this.router.navigate(['/home'])
             })
         }
 
@@ -90,6 +95,15 @@ export class LoginComponent implements OnInit {
 
     }
 
+  }
+
+  
+  private needsToDoDeviceCheck(auser: FirebaseUserModel) {
+      if(!auser.userAgents)  return true 
+      if(auser.userAgents.length == 0)  return true 
+      let userAgentFound = _.find(auser.userAgents, (agent) => { return agent == window.navigator.userAgent })
+      if(userAgentFound) return false
+      return true
   }
 
 

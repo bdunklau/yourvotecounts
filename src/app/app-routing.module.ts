@@ -59,6 +59,7 @@ import { VideoCallNotAllowedComponent } from './video/video-call-not-allowed/vid
 import { GetStartedComponent } from './get-started/get-started.component';
 import { CommitteesComponent } from './civic/committees/committees.component';
 import { LicenseeMgmtComponent } from './license/licensee-mgmt/licensee-mgmt.component';
+import { FunctionalTestComponent } from './util/functional-test/functional-test.component';
 
 
 const routes: Routes = [
@@ -72,6 +73,7 @@ const routes: Routes = [
   { path: 'disabled', component: DisabledComponent },
   { path: 'error-page', component: ErrorPageComponent },
   { path: 'friends', component: FriendsComponent, canActivate: [FriendGuard] },
+  { path: 'functional-test', component: FunctionalTestComponent },
   { path: 'get-started', component: GetStartedComponent },
   { path: 'home', component: HomeComponent },
   

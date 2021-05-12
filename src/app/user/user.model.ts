@@ -25,6 +25,10 @@ export class FirebaseUserModel {
   // teams: Team[];
   RoomSid: string; // can only be in one room at a time
   promo_code?: string
+  userAgents?: string[]
+  cameraChecks?: {cameraCheckDate: Date, cameraCheckDate_ms: number, functional: boolean, userAgent: string}[]
+  micChecks?: {micCheckDate: Date, micCheckDate_ms: number, functional: boolean, userAgent: string}[]
+  smsChecks?: {smsCheckDate: Date, smsCheckDate_ms: number, functional: boolean, userAgent: string}[]
   // IF YOU ADD MORE FIELDS HERE, YOU HAVE TO ADD THEM TO populate() BELOW ALSO
 
 
@@ -67,6 +71,10 @@ export class FirebaseUserModel {
     if(obj.isDisabled === true || obj.isDisabled === false) this.isDisabled = obj.isDisabled;
     else this.isDisabled = false;
     if(obj.promo_code) this.promo_code = obj.promo_code
+    if(obj.userAgents) this.userAgents = obj.userAgents
+    if(obj.cameraChecks) this.cameraChecks = obj.cameraChecks
+    if(obj.micChecks) this.micChecks = obj.micChecks
+    if(obj.smsChecks) this.smsChecks = obj.smsChecks
     // console.log('populate: this = ', this);
   }
 
