@@ -375,9 +375,11 @@ export class VideoCallComponent implements OnInit {
   monitorInvitation(invitation: Invitation) {
       let xxxx = this.invitationService.monitorInvitation(invitation.docId)
       this.invitationWatcher = xxxx.subscribe( res => {
-          console.log('monitorInvitation():  res: ', res)
+          // console.log('monitorInvitation():  res: ', res)
           let inv = res.payload.data() as Invitation
-          if(inv.deleted_ms != -1) {
+          console.log('monitorInvitation():  Invitation: ', inv)
+          let invitationDeleted = inv.deleted_ms != -1
+          if(invitationDeleted) {
               // remove the deleted guest
               _.remove(this.invitations, (invitation:Invitation) => {
                   return invitation.phoneNumber === inv.phoneNumber
@@ -388,7 +390,19 @@ export class VideoCallComponent implements OnInit {
               if(inv.phoneNumber === this.phoneNumber) // route.params should have returned phoneNumber by the time we try to delete someone
                   this.router.navigate(['/invitation-deleted'])
           }
+
+          if(!invitationDeleted) {              
+              this.invitationUpdated(inv)
+          }
       })
+  }
+
+
+  private invitationUpdated(invitation: Invitation) {
+      this.videoGuestEditorComponent.setInvitation(invitation)
+      // also find this invitation in the 'invitations' list and replace
+      var index = _.findIndex(this.invitations, {docId: invitation.docId});
+      this.invitations.splice(index, 1, invitation);
   }
 
 

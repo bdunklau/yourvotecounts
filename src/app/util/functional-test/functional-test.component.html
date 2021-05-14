@@ -7,7 +7,7 @@
     <span  *ngIf="testingSms">
         <div class="row">
 
-            <div class="col-12" style="margin-top:20px"><h5>Verify SMS</h5></div>
+            <div class="col-12" style="margin-top:20px"><h5>Check Text Messaging</h5></div>
 
         </div>
     <!-- <span  *ngIf="testingSms"> -->
@@ -15,58 +15,7 @@
 
 
 
-
-
-
-
-    <span  *ngIf="testingSms && deviceIsMobile == ''">
-        <div class="row">
-            
-            <!-- before we can test sms, we first have to ask the user if this device even GETS text messages - duh -->
-            <div class="col-12" style="margin-top:5px">
-                Is this device a mobile phone that receives text messages?
-            </div>
-    
-            <div class="col-6" style="margin-top:20px">
-                <button type="button" (click)="currentDeviceIsMobilePhone('yes')" class="btn btn-default col-11"> Yes </button>
-            </div>
-    
-            <div class="col-6" style="margin-top:20px">
-                <button type="button" (click)="currentDeviceIsMobilePhone('no')" class="btn btn-default col-11"> No </button>
-            </div>
-
-        </div>
-    <!-- <span  *ngIf="testingSms && deviceIsMobile == ''"> -->
-    </span>
-
-
-
-
-
-
-
-    <span  *ngIf="testingSms && deviceIsMobile == 'no'">
-        <div class="row">    
-    
-            <div class="col-12" style="margin-top:5px" *ngIf="deviceIsMobile == 'no'">
-                OK - click Next to check your webcam
-            </div>            
-        
-
-            <div class="col-12 col-sm-6" style="margin-top:20px" *ngIf="testingSms">
-                <button type="button" (click)="testingSms = false; smsTestComplete = true; testingWebcam = true" class="btn btn-primary col-sm-12"> Next <i class="fas fa-chevron-right"></i></button>
-            </div>
-
-        </div>
-    <!-- <span  *ngIf="testingSms && deviceIsMobile == 'no'"> -->
-    </span>
-
-
-
-
-
-
-    <span  *ngIf="testingSms && deviceIsMobile == 'yes' && smsOk == '' "> 
+    <span  *ngIf="testingSms && smsOk == '' "> 
     <div class="row">
           
         <div class="col-12" style="margin-top:5px">
@@ -101,7 +50,7 @@
         
 
     </div>
-    <!-- <span  *ngIf="testingSms && deviceIsMobile == 'yes'">  -->
+    <!-- <span  *ngIf="testingSms && smsOk == '' ">  -->
     </span>
 
 
@@ -164,7 +113,7 @@
     <div class="row" style="height:75px">
 
          
-        <div class="col-12 col-sm-6" style="margin-top:20px"><h5>Verify Webcam</h5></div>
+        <div class="col-12 col-sm-6" style="margin-top:20px"><h5>Check Webcam</h5></div>
 
         <div class="col-12 col-sm-6" style="margin-top:20px;margin-bottom:20px">
             <div class="row" [hidden]="camResult != 'ok'"><div class="col-12"><i class="fas fa-check-circle" style="color:green"></i>&nbsp;&nbsp;&nbsp;<i class="fas fa-video"></i> &nbsp; Camera ok</div></div> 
@@ -187,7 +136,7 @@
 
         <!-- report webcam problem -->
         <div class="col-12" style="margin-top:5px" [hidden]="camResult == '' || camResult == 'ok'">
-            <B>Webcam Problem</B> <P>{{camResult}}</P>
+            <B>Camera Problem</B> <P>{{camResult}}</P>
         </div>
 
 
@@ -210,6 +159,10 @@
                <P>We apologize for the inconvenience.</P>
             </span>
             <P>You may close this window now</P>
+        </div>
+
+        <div class="col-12 col-sm-6" style="margin-top:20px" *ngIf="webcamTestComplete">
+            <button type="button" (click)="checkAgain()" class="btn btn-primary col-12"> Check Device Again </button>
         </div>
     </div>
 

@@ -3,6 +3,7 @@ import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { UserService } from 'src/app/user/user.service';
 import { FirebaseUserModel } from 'src/app/user/user.model';
 import { SmsService } from 'src/app/sms/sms.service';
+import { FunctionalTestService } from './functional-test.service';
 
 @Component({
   selector: 'app-functional-test',
@@ -18,14 +19,11 @@ export class FunctionalTestComponent implements OnInit {
 
 
     testPhone: string
-    videoStream: any
-    audioStream: any
     camResult = ''
     micResult = ''
     textResult = ''
     smsSent = false
     user?: FirebaseUserModel
-    deviceIsMobile = ''  // string for tri-state null, true and false
     smsOk = ''
     
 
@@ -35,6 +33,7 @@ export class FunctionalTestComponent implements OnInit {
 
 
     constructor(private userService: UserService,
+                private functionalTestService: FunctionalTestService,
                 private smsService: SmsService) { }
 
     async ngOnInit() {
@@ -48,106 +47,17 @@ export class FunctionalTestComponent implements OnInit {
 
 
     async testWebcam() {
-        await this.turnOnCamera()
-        await this.turnOnMic()
+        let testResult = await this.functionalTestService.testWebcam()
+        this.camResult = testResult.camResult
+        this.micResult = testResult.micResult
         this.webcamTestComplete = true
     }
-    
 
-    
-    async turnOnCamera() {
-        let camValue = await this.testCamera(this.camSuccess.bind(this), this.camFail.bind(this))
+
+    checkAgain() {
+        window.location.reload()
     }
-
-    async turnCameraOff() {
-        if(!this.videoStream) return
-        let tracks = this.videoStream.getTracks();
-
-        tracks.forEach(function (track) {
-            track.stop();
-        });
-        console.log('camera off')
-    }
-
-    async camSuccess(stream) {
-        this.videoStream = stream
-        this.camResult = 'ok'
-        await this.recordCameraFunctionality(true)
-        await this.turnCameraOff()
-    }
-
-    async camFail(err) {
-        console.log('camFail: err = ', err)
-        this.camResult = 'You webcam is blocked by your device or browser.  Try another browser with this device.  If '+
-            'no other browser works, try a different device'
-        await this.recordCameraFunctionality(false)
-    }
-    
-    async testCamera(successFn, errorFn) {
-        return await this.testMedia({video:true}, successFn, errorFn) 
-    }
-
-    private async recordCameraFunctionality(bool: boolean) {
-        if(!this.user) return
-        await this.userService.recordCameraFunctionality(this.user, bool)
-    }
-
-
-    
-
-
-    
-    async turnOnMic() {
-        let micValue = await this.testMic(this.micSuccess.bind(this), this.micFail.bind(this))
-    }
-
-    async turnMicOff() {
-        if(!this.audioStream) return
-        let tracks = this.audioStream.getTracks();
-
-        tracks.forEach(function (track) {
-            track.stop();
-        });
-    }
-
-    async micSuccess(stream) {
-        this.audioStream = stream
-        this.micResult = 'ok'
-        await this.recordMicFunctionality(true)
-        await this.turnMicOff()
-    }
-
-    async micFail(err) {
-        console.log('micFail: err = ', err)
-        this.micResult = 'Your microphone is blocked by your device or browser.  Try another browser with this device.  If '+
-            'no other browser works, try a different device'
-        await this.recordMicFunctionality(false)
-    }
-    
-    async testMic(successFn, errorFn) {
-        return await this.testMedia({audio:true}, successFn, errorFn) 
-    }
-
-    private async recordMicFunctionality(bool: boolean) {
-        if(!this.user) return
-        await this.userService.recordMicFunctionality(this.user, bool)
-    }
-
-
-
-
-
-    
-    async testMedia(mediaType, success, err) {
-        if(!navigator) return -1
-        if(!navigator.mediaDevices) return -1
-        if(!navigator.mediaDevices.getUserMedia) return -1
-  
-        return navigator.mediaDevices.getUserMedia(mediaType)
-        .then(success)
-        .catch(err);
-
-    }
+       
 
 
     testSms() {        
@@ -281,11 +191,6 @@ export class FunctionalTestComponent implements OnInit {
     private async recordSmsFunctionality(bool: boolean) {
         if(!this.user) return
         await this.userService.recordSmsFunctionality(this.user, bool)
-    }
-
-
-    currentDeviceIsMobilePhone(yesno: string) {
-        this.deviceIsMobile = yesno
     }
 
 

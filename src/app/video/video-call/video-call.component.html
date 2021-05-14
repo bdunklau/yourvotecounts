@@ -87,7 +87,7 @@
         <mat-chip-list #viewChipList aria-label="guest selection">
           <mat-chip
               *ngFor="let invitation of invitations"
-              style="background-color:#00498D;height:30px;border-radius:15px;color:white;font-size:16px;"
+              [ngStyle]="{ 'background-color': ((invitation.cameraCheck && !invitation.cameraCheck.functional) || (invitation.micCheck && !invitation.micCheck.functional)) ? 'red' : '#00498D',  'height':'30px', 'border-radius':'15px', 'color':'white', 'font-size':'16px' }"
               (click)="guestClicked(invitation)"
               [selectable]="'false'"
               [removable]="removable"

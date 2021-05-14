@@ -7,8 +7,10 @@ import { InvitationService } from '../../invitation/invitation.service';
 import { ValidInvitationGuard } from '../../invitation/valid-invitation.guard';
 import { DisabledGuard } from '../../disabled/disabled.guard';
 import { InvitationDeletedGuard } from '../../invitation/invitation-deleted/invitation-deleted.guard';
-import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { FunctionalTestService } from '../../util/functional-test/functional-test.service';
+import { UserService } from '../../user/user.service';
+import { Invitation } from '../../invitation/invitation.model';
 
 
 /**
@@ -39,6 +41,8 @@ export class VideoCallGuard implements CanActivate {
         private validInvitationGuard: ValidInvitationGuard,
         private disabledGuard: DisabledGuard,
         private invitationDeletedGuard: InvitationDeletedGuard,
+        private functionalTestService: FunctionalTestService,
+        private userService: UserService,
         @Inject(PLATFORM_ID) private platformId
     ) {}
 
@@ -110,7 +114,8 @@ export class VideoCallGuard implements CanActivate {
                     this.router.navigate(['/view-video', roomObj['CompositionSid'] ])
                     return false            
                 }
-                else if(roomObj['call_ended_ms']) {    let hostOrGuest;
+                else if(roomObj['call_ended_ms']) {    
+                    let hostOrGuest;
                     if(roomObj['hostPhone'] === phoneNumber) 
                         hostOrGuest = 'host'
                     if(!hostOrGuest) {
@@ -123,19 +128,68 @@ export class VideoCallGuard implements CanActivate {
                     return false            
                 }
 
-
             }
 
+            let webcamReady = await this.webcamReady()
 
-            ///////////////////////////////////////////////////////////////////////////
-            // ALL GOOD - the call has not ended - PROCEED TO /video-call
+            /**
+             * good or bad - we're going to write the enablements to the invitation doc
+             * That way, the host knows the good or bad
+             * Notice monitorInvitation() in video-call.component.ts
+             */
+            let invitation = this.getThisInvitation(this.invitationService.invitations, next.params.phoneNumber)
+            this.invitationService.writeEnablements(invitation, webcamReady)
+
+
+            // console.log('next.params.invitationId = ', next.params.invitationId)
+            // console.log('next.params.phoneNumber = ', next.params.phoneNumber)
+            if(!webcamReady) {
+                this.router.navigate(['/functional-test'])
+                return false
+            }
+
             return true
+
         }
         else {
             return true
         }
 
 
+    }
+
+
+    private getThisInvitation(invitations: Invitation[], phoneNumber: string) {
+        let invitation = _.find(invitations, inv => {return inv.phoneNumber === phoneNumber})
+        console.log('getThisInvitation: invitations = ', invitations,'  phoneNumber = ', phoneNumber, ' xxx invitation = ', invitation)
+        return invitation
+    }
+
+
+    /**
+     * need to pass back WHAT isn't ready - don't just pass back a true/false for ready
+     * because we will be writing to the invitation record exactly what is not ready
+     */
+    private async webcamReady(): Promise<{passed: boolean, camera: boolean, camResult: string, mic: boolean, micResult: string, userAgent: string}> {
+        let user = await this.userService.getCurrentUser()
+        if(!user) {  // not logged in
+            let webcamOk = await this.functionalTestService.testWebcam()
+            console.log('webcamReady: no user webcamOk.passed = ',webcamOk.passed)
+            return webcamOk
+        }
+
+        if(this.functionalTestService.needToCheckDevice(user)) {
+            // check the cam, mic, sms not necessary
+            let webcamOk = await this.functionalTestService.testWebcam()
+            console.log('webcamReady: needToCheckDevice webcamOk.passed = ',webcamOk.passed)
+            return webcamOk
+        }
+        
+        // db has all the info we need (BUT MAY BE BAD CACHED INFO)
+        // return the true/false's from the db -  only care about cam and mic, not sms
+        let webcamOk = await this.functionalTestService.allEnabledForUser(user)
+        console.log('webcamReady: webcamOk = ', webcamOk)
+        return webcamOk
     }
 
     

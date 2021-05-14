@@ -13,6 +13,7 @@ import { UserService } from 'src/app/user/user.service';
 import { TeamService } from 'src/app/team/team.service';
 import { take } from 'rxjs/operators';
 import { TeamMember } from 'src/app/team/team-member.model';
+import { FunctionalTestService } from 'src/app/util/functional-test/functional-test.service';
 
 
 @Injectable({
@@ -30,6 +31,7 @@ export class InvitationFormGuard implements CanActivate {
         private userService: UserService,
         private teamService: TeamService,
         private promoCodeGuard: PromoCodeGuard,
+        private functionalTestService: FunctionalTestService,
         @Inject(PLATFORM_ID) private platformId
     ) {}
 
@@ -106,16 +108,9 @@ export class InvitationFormGuard implements CanActivate {
             
  
             let responseFromMediaCheck = await this.checkCameraAndMicEnablement()
-            if(!responseFromMediaCheck.ok) {
-                this.errorPageService.errorMsg = responseFromMediaCheck.msg
-                this.errorPageService.errorTitle = responseFromMediaCheck.title
-                this.router.navigate(['/error-page'])
+            if(!responseFromMediaCheck) {
+                this.router.navigate(['/functional-test'])
                 return false
-            }
-            else {
-                // now deactivate the camera and mic.  We only activated to make sure we could.
-                this.turnCameraOff()
-                this.turnMicOff()
             }
         }
 
@@ -123,146 +118,14 @@ export class InvitationFormGuard implements CanActivate {
     }
 
 
-    turnCameraOff() {
-        if(!this.videoStream) return
-        let tracks = this.videoStream.getTracks();
-        tracks.forEach(function (track) {
-            track.stop();
-        });
-        console.log('camera off')
-    }
-
-
-    turnMicOff() {
-        if(!this.audioStream) return
-        let tracks = this.audioStream.getTracks();
-        tracks.forEach(function (track) {
-            track.stop();
-        });
-    }
-
-
-    
-    videoStream: any
-    audioStream: any
-
-
     async checkCameraAndMicEnablement(): Promise<{ok: boolean, msg?: string, title?: string}> {
-        
-        let cam = await this.testCamera(this.camSuccess.bind(this), this.camFail.bind(this))
-        let mic = await this.testMic(this.micSuccess.bind(this), this.micFail.bind(this))
-        console.log(`ngOnInit():  camera = ${cam}`)
-        console.log(`ngOnInit():  mic = ${mic}`)
-        let regardless = false // set to true to test the redirection to error page
-        if((cam == -1) || (mic == -1) || regardless) {
- 
-            let camEnabled = cam == 1 ? 'enabled' : 'not allowed'
-            let micEnabled = mic == 1 ? 'enabled' : 'not allowed'
-            let blocked = []
-            let titleParts = []
-            if(cam != 1) {blocked.push('camera'); titleParts.push('Camera'); }
-            if(mic != 1) {blocked.push('microphone'); titleParts.push('Mic'); }
-            let blockedMedia = _.join(blocked, ' and ')
-            let blockedTitle = _.join(titleParts, '/') + ' Problem'
-            let msg = "Your device is preventing this browser from using your "+blockedMedia+". If you are not using the standard browser for your device (i.e. Safari on iPhones), we suggest using HeadsUp on your device's standard browser.  We apologize for the inconvenience."
-            console.log('checkCameraAndMicEnablement():  return ', {ok: false, msg: msg})
-            return {ok: false, msg: msg, title: blockedTitle}
-        }
-        else {
-            console.log('checkCameraAndMicEnablement():  return ', {ok: true})
-            
-            return {ok: true}
-        }
+        let user = await this.userService.getCurrentUser()
+        let cameraEnabled = await this.functionalTestService.isCameraEnabledForUser(user)
+        let micEnabled = await this.functionalTestService.isMicEnabledForUser(user)
+        console.log('cameraEnabled = ', cameraEnabled)
+        console.log('micEnabled = ', micEnabled)
+        return cameraEnabled && micEnabled
     }
 
-
-    camSuccess(stream) {
-        this.videoStream = stream
-        return 1
-    }
-
-    camFail(err) {
-        console.log('camFail: err = ', err)
-        return -1
-    }
-    
-    async testCamera(successFn, errorFn) {
-        let loc = 'testCamera()'
-        return await this.testMedia(loc, {video:true}, successFn, errorFn) 
-    }
-
-
-    micSuccess(stream) {
-        this.audioStream = stream
-        return 1
-    }
-
-    micFail(err) {
-        console.log('micFail: err = ', err)
-        return -1
-    }
-    
-    async testMic(successFn, errorFn) {
-        let loc = 'testMic()'
-        return await this.testMedia(loc, {audio:true}, successFn, errorFn) 
-    }
-
-
-    async testMedia(loc, mediaType, success, err) {
-        // let allow = function(allowed) {
-        //     this.cameraAllowed = allowed
-        //     let p = new Promise((resolve, reject) => {resolve(allowed)})
-        //     return p
-        // }.bind(this)
-
-        // let success = async function(stream) {
-        //     // this.stuff.push(`${loc}: allowed`)
-        //     return await allow(1)
-        // }.bind(this)
-
-        // let err = async function(err) {
-        //     // this.stuff.push(`${loc}: err`)
-        //     return await allow(-1)
-        // }.bind(this)
-
-        if(navigator) {
-            if(navigator.mediaDevices) {
-                if(navigator.mediaDevices.getUserMedia) {
-                    return navigator.mediaDevices.getUserMedia(mediaType)
-                    .then(success)
-                    .catch(err);
-                    // this.stuff.push(`${loc}: end`)
-                }
-                else {
-                    // this.stuff.push(`${loc}: no getUserMedia`)
-                    return -1
-                }
-            }
-            else {
-                // this.stuff.push(`${loc}: no mediaDevices`) // FALLING TO HERE
-                return -1
-            }
-        }
-        else {
-            // this.stuff.push(`${loc}: no navigator`)
-            return -1
-        }
-    }
-    
-    
-
-    /**
-     * duplicated at video-call.guard.ts
-     * THIS is really where we need to check for incompatible browsers
-     * Before this fix was put in, a user on a Mac/Chrome environment could get to the invitation
-     * form and actually send the invitation out.  The invitation WOULD GET TEXTED to the guest BUT
-     * the host would THEN be sent to the "wrong browser" page.  That's a definite "fix me"
-     */
-    // wrongBrowser() {
-    //     let mac = navigator.appVersion.toLowerCase().indexOf('mac os x') != -1
-    //     let chrome = navigator.appVersion.toLowerCase().indexOf('chrome') != -1
-    //     let wrongBrowser = mac && chrome
-    //     return wrongBrowser
-    // }
   
 }
