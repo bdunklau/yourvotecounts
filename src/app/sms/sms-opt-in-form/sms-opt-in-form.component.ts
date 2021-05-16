@@ -41,7 +41,6 @@ export class SmsOptInFormComponent implements OnInit {
         this.settings = await this.settingsService.getSettingsDoc()
         this.headsUpNumber = this.settings.from_sms
 
-        var ua = navigator.userAgent.toLowerCase();
         this.smsUrl = "sms:"+this.headsUpNumber+"?body=START";
 
     }
