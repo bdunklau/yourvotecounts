@@ -32,7 +32,11 @@ export class GetStartedComponent implements OnInit {
         this.settings = await this.settingsService.getSettingsDoc()
         this.headsUpNumber = this.settings.from_sms
 
-        this.smsUrl = "sms:"+this.headsUpNumber+"?body=START";
+        let ch = '?'
+        let isIPhone = window.navigator.userAgent.toLowerCase().indexOf('iphone') != -1
+        let isIPad = window.navigator.userAgent.toLowerCase().indexOf('ipad') != -1
+        if(isIPad || isIPhone) ch = ';'
+        this.smsUrl = "sms:"+this.headsUpNumber+ch+"body=START";
     }
 
 }
