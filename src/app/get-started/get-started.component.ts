@@ -36,7 +36,7 @@ export class GetStartedComponent implements OnInit {
         let isIPhone = window.navigator.userAgent.toLowerCase().indexOf('iphone') != -1
         let isIPad = window.navigator.userAgent.toLowerCase().indexOf('ipad') != -1
         if(isIPad || isIPhone) ch = ';'
-        this.smsUrl = "sms:"+this.headsUpNumber+ch+"body=START";
+        this.smsUrl = "sms://"+this.headsUpNumber+";?&body=START";
     }
 
 }
