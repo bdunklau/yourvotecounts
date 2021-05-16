@@ -42,9 +42,7 @@ export class SmsOptInFormComponent implements OnInit {
         this.headsUpNumber = this.settings.from_sms
 
         var ua = navigator.userAgent.toLowerCase();
-        this.smsUrl = "sms:"+this.headsUpNumber;
-        this.smsUrl += (ua.indexOf("iphone") > -1 || ua.indexOf("ipad") > -1) ? ";" : "?";
-        this.smsUrl += 'body=yes'
+        this.smsUrl = "sms:"+this.headsUpNumber+"?body=START";
 
     }
 
