@@ -197,7 +197,7 @@ export class InvitationService {
     /**
      * much better way to query when you only need one time results
      */
-    async queryOptIn(phoneNumber: string) {
+    async queryOptIn(phoneNumber: string): Promise<boolean> {
         //  twilio-sms.js : incomingSms()
         let optInSnapshots = await this.afs.collection('sms_opt_in', 
                ref => ref.where("From", "==", phoneNumber)
