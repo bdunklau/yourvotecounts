@@ -1177,6 +1177,8 @@ exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
                                     uploadFiles: admin.firestore.FieldValue.delete()
                                 })
 
+    let settings = await db.collection('config').doc('settings').get()
+    let headsUpNumber = settings.from_sms
     
     /**
      * Send SMS message to all participants - provide link to /view-video page
@@ -1187,7 +1189,7 @@ exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
     _.each(req.body.phones, phone => {
         // don't need to await, right?
         db.collection('sms').add({
-            from: '+12673314843', 
+            from: headsUpNumber, 
             to: phone, 
             //mediaUrl: string, // do we need this? 
             message: `Heads Up! Your video is ready!  Check it out below\n\nPlease don't thank us by replying to this text.  This number is not being monitored.\n\n${videoUrl}`,

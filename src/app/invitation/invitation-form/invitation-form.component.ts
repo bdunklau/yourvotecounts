@@ -290,7 +290,7 @@ export class InvitationFormComponent implements OnInit {
 
       // multiple invitation documents will all have this invitationId field
       let commonInvitationId = this.currentInvitations && this.currentInvitations.length > 0 ? this.currentInvitations[0].invitationId : this.invitationService.createId();
-
+      let settings = await this.settingsService.getSettingsDoc();
       for(var i=0; i < this.nameArray.length; i++) {
           //console.log('this.nameArray.at(i).value: ', this.nameArray.at(i).value)
           this.names[i] = this.nameArray.at(i).value
@@ -348,7 +348,7 @@ export class InvitationFormComponent implements OnInit {
           this.outputInvitations.emit(invitation)
 
           //console.log('SMS COMMENTED OUT *****************')
-          this.smsService.sendSms({from: "+12673314843", to: invitation.phoneNumber, mediaUrl: "", message: invitation.message});
+          this.smsService.sendSms({from: settings.from_sms, to: invitation.phoneNumber, mediaUrl: "", message: invitation.message});
       }
 
 

@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
-import { UserService } from 'src/app/user/user.service';
-import { FirebaseUserModel } from 'src/app/user/user.model';
-import { SmsService } from 'src/app/sms/sms.service';
+import { UserService } from '../../user/user.service';
+import { FirebaseUserModel } from '../../user/user.model';
+import { SmsService } from '../../sms/sms.service';
 import { FunctionalTestService } from './functional-test.service';
+import { SettingsService } from '../../settings/settings.service';
+import { Settings } from '../../settings/settings.model';
 
 @Component({
   selector: 'app-functional-test',
@@ -11,6 +13,8 @@ import { FunctionalTestService } from './functional-test.service';
   styleUrls: ['./functional-test.component.css']
 })
 export class FunctionalTestComponent implements OnInit {
+
+    settings: Settings
 
     testingSms = true
     smsTestComplete = false
@@ -34,14 +38,15 @@ export class FunctionalTestComponent implements OnInit {
 
     constructor(private userService: UserService,
                 private functionalTestService: FunctionalTestService,
+                private settingsService: SettingsService,
                 private smsService: SmsService) { }
 
     async ngOnInit() {
         this.user = await this.userService.getCurrentUser()
-        if(this.user) { 
-            this.testPhone = this.user.phoneNumber
-            this.testForm.setValue({testPhoneControl: this.formatPhone2(this.testPhone)})
-        }
+        if(!this.user) return
+        this.settings = await this.settingsService.getSettingsDoc()
+        this.testPhone = this.user.phoneNumber
+        this.testForm.setValue({testPhoneControl: this.formatPhone2(this.testPhone)})
     }
 
 
@@ -65,7 +70,7 @@ export class FunctionalTestComponent implements OnInit {
         console.log('this.testPhone = ', this.testPhone)
         let url = "https://headsup.video/home"
         let message = `HeadsUp!  This message verifies that you are able to received text messages from us\n\n${url}`
-        this.smsService.sendSms({from: "+12673314843", to: this.testPhone, mediaUrl: "", message: message});
+        this.smsService.sendSms({from: this.settings.from_sms, to: this.testPhone, mediaUrl: "", message: message});
         this.smsSent = true
     }
 
