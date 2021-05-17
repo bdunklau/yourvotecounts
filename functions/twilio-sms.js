@@ -53,14 +53,38 @@ exports.sendSms = functions.firestore.document('sms/{id}').onCreate(async (snap,
    * IF YOU CHANGE THIS QUERY HERE, YOU NEED TO CHANGE THE SAME QUERY IN invitation.service.ts:queryOptIn()
    * IT'S THE SAME QUERY
    */
-  var checkNumber = snap.data().to
-  let isOptIn = await db.collection('sms_opt_in', ref => ref.where("From", "==", checkNumber).orderBy("incoming_sms_date_ms", "asc").limitToLast(1)).get({source: 'server'})
-  if(!isOptIn) {
-      console.log(`No opt in for ${snap.data().to}`)
+
+
+
+  /*********************************************************************************************************
+   * THIS SUCKS - From != from    AND    To != to
+   * From = is the person who opted in/out  (incoming text)
+   * from = is the HeadsUp number           (outgoing text)
+   * 
+   * To = is the HeadsUp number that the user messaged to opt in/out  (incoming text)
+   * to = is the user that HeadsUp is messaging                       (outgoing text)
+   *********************************************************************************************************/
+
+  if(snap.data().SmsStatus && snap.data().SmsStatus.trim().toLowerCase() === 'received') {
+      console.log('function triggered by a received SMS message - return early do nothing')
       return true // true/false doesn't matter
   }
-  
-  console.log(`We DO have an opt in for ${snap.data().to} - send the text`)
+
+
+  var checkNumber = snap.data().to
+  let result = await db.collection('sms_opt_in').doc(checkNumber).get()
+
+  if(!result) {
+      console.log('No opt in records found at all for '+checkNumber+' - return early - don\'t send SMS')
+      return true // true/false doesn't matter
+  }
+
+  let isOptIn = result.data()['opt-in']
+
+  if(!isOptIn) {
+      console.log('No opt in for '+checkNumber)
+      return true // true/false doesn't matter
+  }
 
   let keys = await getKeys();
 
@@ -212,7 +236,7 @@ exports.incomingSms = functions.https.onRequest(async (req, res) => {
     }
     if(optingIn || optingOut) {
         doc['smsDocId'] = smsDocId        
-        await db.collection('sms_opt_in').add(doc)
+        await db.collection('sms_opt_in').doc(req.body.From).set(doc)
     }
     return res.status(200).send(JSON.stringify({result: 'ok'}))
 
