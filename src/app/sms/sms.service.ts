@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import { take } from 'rxjs/operators';
 import * as _ from 'lodash'
+import { InvitationService } from '../invitation/invitation.service';
 
 
 @Injectable({
@@ -10,9 +11,18 @@ import * as _ from 'lodash'
 })
 export class SmsService {
 
-  constructor(public afs: AngularFirestore) { }
+  constructor(public afs: AngularFirestore,
+              private invitationService: InvitationService) { }
 
-  sendSms(args: {from: string, to: string, mediaUrl: string, message: string}) {
+  async sendSms(args: {from: string, to: string, mediaUrl: string, message: string}) {
+    let sendIt = await this.optIn(args)
+    if(!sendIt) {
+        console.log(`sendSms: No opt in for ${args.to} - don't send SMS`)
+        return  //  https://headsupvideo.atlassian.net/browse/HEADSUP-118
+    }
+    
+    console.log(`sendSms: We have an opt in for ${args.to} - so send the message`)
+
     // Write to the sms collection
     var doc = {}
     doc['from'] = args.from;
@@ -39,5 +49,12 @@ export class SmsService {
         console.log('smsMessages:  ', smsMessages)
         return smsMessages
         // ref = ref.orderBy('date_ms', this.reverse ? 'desc' : 'asc').startAt(this.dates.date2).endAt(this.dates.date1);
+    }
+
+
+    private async optIn(args: {from: string, to: string, mediaUrl: string, message: string}): Promise<boolean> {
+        if(!args) return false
+        if(!args.to) return false
+        return await this.invitationService.queryOptIn(args.to)
     }
 }
