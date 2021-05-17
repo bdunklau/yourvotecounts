@@ -14,15 +14,14 @@ export class SmsService {
   constructor(public afs: AngularFirestore,
               private invitationService: InvitationService) { }
 
+  /**
+   * re:  https://headsupvideo.atlassian.net/browse/HEADSUP-118
+   * We aren't checking for opt-in here
+   * We check for the opt-in at the firebase trigger in twilio-sms.js:sendSms() because that is where
+   * all SMS messages are sent from.  That is the one place where we can check for opt-in and know 
+   * that we have the opt-in/opt-out status handled 
+   */
   async sendSms(args: {from: string, to: string, mediaUrl: string, message: string}) {
-    let sendIt = await this.optIn(args)
-    if(!sendIt) {
-        console.log(`sendSms: No opt in for ${args.to} - don't send SMS`)
-        return  //  https://headsupvideo.atlassian.net/browse/HEADSUP-118
-    }
-    
-    console.log(`sendSms: We have an opt in for ${args.to} - so send the message`)
-
     // Write to the sms collection
     var doc = {}
     doc['from'] = args.from;

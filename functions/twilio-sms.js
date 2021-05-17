@@ -46,6 +46,22 @@ var addCountryCode = function(phone) {
  */
 // triggered from  sms.service.ts
 exports.sendSms = functions.firestore.document('sms/{id}').onCreate(async (snap, context) => {
+  /**
+   * https://headsupvideo.atlassian.net/browse/HEADSUP-118
+   * short-circuit and return early if the "to" hasn't opted in
+   * 
+   * IF YOU CHANGE THIS QUERY HERE, YOU NEED TO CHANGE THE SAME QUERY IN invitation.service.ts:queryOptIn()
+   * IT'S THE SAME QUERY
+   */
+  var checkNumber = snap.data().to
+  let isOptIn = await db.collection('sms_opt_in', ref => ref.where("From", "==", checkNumber).orderBy("incoming_sms_date_ms", "asc").limitToLast(1)).get({source: 'server'})
+  if(!isOptIn) {
+      console.log(`No opt in for ${snap.data().to}`)
+      return true // true/false doesn't matter
+  }
+  
+  console.log(`We DO have an opt in for ${snap.data().to} - send the text`)
+
   let keys = await getKeys();
 
   var details = {};

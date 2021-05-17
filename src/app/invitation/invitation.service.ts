@@ -196,6 +196,9 @@ export class InvitationService {
 
     /**
      * much better way to query when you only need one time results
+     * 
+     * IF YOU CHANGE THIS QUERY HERE, YOU NEED TO CHANGE THE SAME QUERY IN twilio-sms.js:sendSms()
+     * IT'S THE SAME QUERY
      */
     async queryOptIn(phoneNumber: string): Promise<boolean> {
         //  twilio-sms.js : incomingSms()
