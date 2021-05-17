@@ -193,6 +193,30 @@ export class InvitationService {
         await this.afs.collection('invitation').doc(invitation.docId).update({cameraCheck: cameraStatus, micCheck: micStatus})
     }
 
+
+    /**
+     * much better way to query when you only need one time results
+     */
+    async queryOptIn(phoneNumber: string) {
+        //  twilio-sms.js : incomingSms()
+        let optInSnapshots = await this.afs.collection('sms_opt_in', 
+               ref => ref.where("From", "==", phoneNumber)
+                        .orderBy("incoming_sms_date_ms", "asc")
+                        .limitToLast(1))
+              .get({source: 'server'}) // makes sure you don't get cached results - I shouldn't have to do this
+              .toPromise()
+
+        let optIns = []
+        optInSnapshots.forEach((doc) => {
+            console.log('optInSnapshots:  doc.data() = ', doc.data())
+            optIns.push(doc.data())
+        })
+        if(optIns.length === 0) return false
+
+        // 0th element ONLY works because you're doing limitToLast(1) above
+        return optIns[0]['opt-in']
+    }
+
   
 
   // TODO FIXME is this fixed?

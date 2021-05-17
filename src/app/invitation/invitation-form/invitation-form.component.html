@@ -20,11 +20,23 @@
             <div class="col">
                 <hr/>
                 <div class="row">
-                    <div class="col">
+                    <div class="col-12 col-sm-5">
                        
                       <!-- <br/>nameArray.controls[i].get('displayName').value: {{nameArray.controls[i].get('displayName').value | json}} -->
                       <!-- <br/>nameArray.controls[i].get('phoneNumber').value: {{nameArray.controls[i].get('phoneNumber').value}} -->
                         <b>Guest #{{i+1+maxGuests-numberOfInvitationsRemaining}}</b> &nbsp;&nbsp;&nbsp; <button class="btn btn-default" (click)="removeItem(i)"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="col-12 col-sm-7" style="margin-top:5px">     
+                        <span *ngIf="nameArray.controls[i].get('optIn').value == 'optIn'">                            
+                            <i [ngClass]="{'fas': true, 'fa-check-circle': true}"  
+                            [ngStyle]="{'color': 'green'}" ></i>
+                            This person has opted in to receive text messages from HeadsUp
+                        </span>         
+                        <span *ngIf="nameArray.controls[i].get('optIn').value == 'optOut'">                          
+                            <i [ngClass]="{'fas': true, 'fa-times-circle': true}"  
+                            [ngStyle]="{'color': 'red'}" ></i>
+                            This person has not opted in to receive text messages from HeadsUp
+                        </span>
                     </div>
                 </div>
                 <div class="row">
