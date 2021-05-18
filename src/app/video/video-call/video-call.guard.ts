@@ -143,7 +143,7 @@ export class VideoCallGuard implements CanActivate {
 
             // console.log('next.params.invitationId = ', next.params.invitationId)
             // console.log('next.params.phoneNumber = ', next.params.phoneNumber)
-            if(!webcamReady) {
+            if(!webcamReady || !webcamReady.passed) {
                 this.router.navigate(['/functional-test'])
                 return false
             }
