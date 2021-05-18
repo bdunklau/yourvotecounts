@@ -41,7 +41,7 @@ export class FunctionalTestService {
     
     /**
      * Do we need to do a functional test, or does the user's db record already tell us about
-     * camera, mic and sms enablement?
+     * camera, mic?
      * 
      * This function will tell us.  Look for a record in the db having the exact userAgent as the
      * current userAgent string.  If we find an exact match, we know that the user had previously
@@ -54,12 +54,10 @@ export class FunctionalTestService {
         if(!auser.userAgents)  return true 
         if(!auser.cameraChecks) return true
         if(!auser.micChecks) return true
-        if(!auser.smsChecks) return true
 
         if(auser.userAgents.length == 0)  return true 
         if(auser.cameraChecks.length == 0)  return true 
         if(auser.micChecks.length == 0)  return true 
-        if(auser.smsChecks.length == 0)  return true
 
         let userAgentFound = _.find(auser.userAgents, (agent) => { return agent == window.navigator.userAgent })
         if(!userAgentFound) return true
@@ -69,8 +67,6 @@ export class FunctionalTestService {
         
         let micAgentFound = _.find(auser.micChecks, (micCheck) => { return micCheck.userAgent == window.navigator.userAgent })
         if(!micAgentFound) return true
-         
-        // we don't care what the userAgent is for SMS messages
         
         return false
     }

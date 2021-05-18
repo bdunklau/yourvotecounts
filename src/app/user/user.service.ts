@@ -479,17 +479,7 @@ export class UserService {
         micChecks.push({micCheckDate: new Date(), micCheckDate_ms: new Date().getTime(), functional: functional, userAgent: window.navigator.userAgent})
         await this.afs.collection('user').doc(user.uid).update({micChecks: micChecks})
     }
-
-
-    async recordSmsFunctionality(user: FirebaseUserModel, functional: boolean) {
-        await this.captureUserAgent(user)
-
-        let smsChecks = user.smsChecks
-        if(!smsChecks) smsChecks = []
-        smsChecks.push({smsCheckDate: new Date(), smsCheckDate_ms: new Date().getTime(), functional: functional, userAgent: window.navigator.userAgent})
-        await this.afs.collection('user').doc(user.uid).update({smsChecks: smsChecks})
-    }
-
+    
 
     private async captureUserAgent(user: FirebaseUserModel) {
         let userAgents = user.userAgents

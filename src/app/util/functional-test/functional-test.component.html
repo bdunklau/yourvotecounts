@@ -3,111 +3,6 @@
     <h3 style="margin-top:20px">Let's Check Your Device</h3>
 
 
-    <!-- test sms -->
-    <span  *ngIf="testingSms">
-        <div class="row">
-
-            <div class="col-12" style="margin-top:20px"><h5>Check Text Messaging</h5></div>
-
-        </div>
-    <!-- <span  *ngIf="testingSms"> -->
-    </span>
-
-
-
-    <span  *ngIf="testingSms && smsOk == '' "> 
-    <div class="row">
-          
-        <div class="col-12" style="margin-top:5px">
-            Enter your mobile number to verify that we can send you SMS messages
-        </div>
-
-        <form [formGroup]="testForm" class="col-12" style="padding-left:0px;padding-right:0px">
-        <div class="col-12 col-sm-6" style="margin-top:20px">
-            <input type="text" class="form-control col-12"
-                    (input)="formatPhone($event)" placeholder="(   ) ___-____"
-                    formControlName="testPhoneControl">
-        </div>
-
-        <div class="col-12 col-sm-6" style="margin-top:20px">
-            <button type="button" (click)="testSms()" class="btn btn-primary col-12"> test SMS </button>
-        </div>
-        </form>
-
-
-        <div class="col-12" style="margin-top:20px" *ngIf="smsSent">
-            Wait 5-10 secs for the text message.  
-            <P>Did you receive it?</P>
-        </div>
-
-        <div class="col-6" style="margin-top:20px" *ngIf="smsSent">
-            <button type="button" (click)="smsFunctional()" class="btn btn-default col-12"> Yes </button>
-        </div>
-
-        <div class="col-6" style="margin-top:20px" *ngIf="smsSent">
-            <button type="button" (click)="smsNotFunctional()" class="btn btn-default col-12"> No </button>
-        </div>
-        
-
-    </div>
-    <!-- <span  *ngIf="testingSms && smsOk == '' ">  -->
-    </span>
-
-
-
-
-
-    
-
-    <span  *ngIf="testingSms && smsOk == 'yes'"> 
-    <div class="row">
-            
-        <div class="col-12" style="margin-top:5px">
-            <P><i class="fas fa-check-circle" style="color:green"></i> Great! You can receive video invitations by text message</P>
-            <P>Click "Next" to test your webcam</P>
-        </div>  
-
-        <div class="col-12 col-sm-6" style="margin-top:20px">
-            <button type="button" (click)="testingSms = false; smsTestComplete = true; testingWebcam = true" class="btn btn-primary col-sm-12"> Next <i class="fas fa-chevron-right"></i></button>
-        </div>     
-
-    </div>
-    <!-- <span  *ngIf="testingSms && smsOk == 'yes'"> -->
-    </span>
-
-
-    
-
-
-
-    <span  *ngIf="testingSms && smsOk == 'no'"> 
-    <div class="row">
-            
-        <div class="col-12" style="margin-top:5px">
-            <P>That's no good.</P>  
-            <P>Your carrier probably thinks we are trying to spam you.</P>
-            <P>We are working to resolve this issue but in the meantime, your host should be able to send your invitation by email.</P>
-            <P>Click "Next" to test your webcam</P>
-        </div>  
-
-        <div class="col-12 col-sm-6" style="margin-top:20px">
-            <button type="button" (click)="testingSms = false; smsTestComplete = true; testingWebcam = true" class="btn btn-primary col-sm-12"> Next <i class="fas fa-chevron-right"></i></button>
-        </div>      
-
-    </div>
-    <!-- <span  *ngIf="testingSms && smsOk == 'no'"> -->
-    </span>
-
-
-
-
-
-
-
-
-
-
-
     <!-- test camera and mic -->
     <span  *ngIf="testingWebcam || webcamTestComplete" style="width:100%"> 
     <div class="row" style="height:75px">
@@ -148,10 +43,6 @@
 
         <div class="col-12" style="margin-top:10px" [hidden]="!webcamTestComplete">
             <P>Device check complete</P>
-            <!-- good -->
-            <span [hidden]="camResult != 'ok' || micResult != 'ok' || smsOk != 'yes'">
-                <P>HeadsUp should work <I>flawlessly</I> with this device</P>
-            </span>
 
             <!-- bad -->
             <span [hidden]="camResult == 'ok' && micResult == 'ok' ">
@@ -166,7 +57,7 @@
         </div>
     </div>
 
-    <!-- <span  *ngIf="!testingSms" style="width:100%">  -->
+    <!-- <span  *ngIf="testingWebcam || webcamTestComplete" style="width:100%">  -->
     </span>
 
 

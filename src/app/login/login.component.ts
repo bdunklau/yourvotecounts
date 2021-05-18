@@ -48,11 +48,13 @@ export class LoginComponent implements OnInit {
                 if(!users) return
                 if(users.length < 1) return                          
                 let auser = users[0]    
-                let needsToDoDeviceCheck = this.functionalTestService.needToCheckDevice(auser)
-                if(needsToDoDeviceCheck) {
-                  this.router.navigate(['/functional-test'])
-                  return
-                }
+
+                // Don't force this check just yet
+                // let needsToDoDeviceCheck = this.functionalTestService.needToCheckDevice(auser)
+                // if(needsToDoDeviceCheck) {
+                //   this.router.navigate(['/functional-test'])
+                //   return
+                // }
 
                 if(!auser.tosAccepted && !auser.privacyPolicyRead) {
                   this.router.navigate(['/minimal-account-info'])

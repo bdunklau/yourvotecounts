@@ -28,7 +28,6 @@ export class FirebaseUserModel {
   userAgents?: string[]
   cameraChecks?: {cameraCheckDate: Date, cameraCheckDate_ms: number, functional: boolean, userAgent: string}[]
   micChecks?: {micCheckDate: Date, micCheckDate_ms: number, functional: boolean, userAgent: string}[]
-  smsChecks?: {smsCheckDate: Date, smsCheckDate_ms: number, functional: boolean, userAgent: string}[]
   // IF YOU ADD MORE FIELDS HERE, YOU HAVE TO ADD THEM TO populate() BELOW ALSO
 
 
@@ -74,7 +73,6 @@ export class FirebaseUserModel {
     if(obj.userAgents) this.userAgents = obj.userAgents
     if(obj.cameraChecks) this.cameraChecks = obj.cameraChecks
     if(obj.micChecks) this.micChecks = obj.micChecks
-    if(obj.smsChecks) this.smsChecks = obj.smsChecks
     // console.log('populate: this = ', this);
   }
 
