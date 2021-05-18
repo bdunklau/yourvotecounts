@@ -1,37 +1,10 @@
 
 <div class="container" style="margin-top:20px">
 
-    <h3>SMS Opt-In <i class="fas fa-sms"></i></h3>
 
-    <div class="row">
-        <div class="col-12">
-            <!-- Please opt-in to receive text messages from HeadsUp.  
-            HeadsUp uses text messaging to invite you to video calls, and to inform you when your videos are ready for viewing.
-            We will never text you with weird or spammy offers.  Ever. -->
-            <P>Please opt-in to receive text messages from HeadsUp</P>
-            <P>HeadsUp uses text messaging to invite you to video calls, and to inform you when your videos are ready for viewing.</P>
-            <P>We will never text you with weird or spammy offers.  Ever.</P>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <form [formGroup]="smsOptInForm" class="col-12" style="padding-left:0px;padding-right:0px">
-            <div class="col-12 col-sm-6" style="margin-top:20px">
-                <input type="text" class="form-control col-12"
-                        (input)="formatPhone($event)" placeholder="(   ) ___-____"
-                        (keypress)="onKeypressEvent($event)"
-                        formControlName="smsOptInPhoneControl">
-            </div>
-
-            <div class="col-12 col-sm-6" style="margin-top:20px">
-                <a class="btn btn-primary" [href]="smsUrl | safeUrl">
-                    SMS {{smsUrl}}
-               </a>
-            </div>
-        </form>
-    </div>
-    
+    <h5 style="margin-top:40px"><i class="fas fa-sms"></i> &nbsp; Opt in for Text Messaging</h5>
+    <B>From your phone click the Opt In button &nbsp;&nbsp; </B> <a class="btn btn-primary" [href]="smsUrl | safeUrl"> Opt In</a>
+    <P>Or text the word START to &nbsp; {{headsUpNumber | phone}}</P>
 
 
 </div>

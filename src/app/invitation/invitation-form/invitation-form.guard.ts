@@ -14,6 +14,7 @@ import { TeamService } from 'src/app/team/team.service';
 import { take } from 'rxjs/operators';
 import { TeamMember } from 'src/app/team/team-member.model';
 import { FunctionalTestService } from 'src/app/util/functional-test/functional-test.service';
+import { InvitationService } from '../invitation.service';
 
 
 @Injectable({
@@ -32,6 +33,7 @@ export class InvitationFormGuard implements CanActivate {
         private teamService: TeamService,
         private promoCodeGuard: PromoCodeGuard,
         private functionalTestService: FunctionalTestService,
+        private invitationService: InvitationService,
         @Inject(PLATFORM_ID) private platformId
     ) {}
 
@@ -66,6 +68,16 @@ export class InvitationFormGuard implements CanActivate {
             if(!minimalInfo) 
                 return false
 
+
+            // TODO need SmsOptInGuard here - or just the code equivalent - may not need a full blown guard class
+            let user = await this.userService.getCurrentUser() // guaranteed by authGuard above
+            let optIn = await this.invitationService.queryOptIn(user.phoneNumber)
+            if(!optIn) {
+                this.router.navigate(['/optin'])
+                return false
+            }
+
+
             /**
              * https://headsupvideo.atlassian.net/browse/HEADSUP-51
              * Don't check promo codes anymore; check access_expiration_ms
@@ -77,7 +89,6 @@ export class InvitationFormGuard implements CanActivate {
             // if(!hasPromoCode) {
             //     return false
             // }    
-            let user = await this.userService.getCurrentUser() // guaranteed by authGuard above
             if(!!user.access_expiration_ms && user.access_expiration_ms > new Date().getTime()) {
                 // great - move on
             }

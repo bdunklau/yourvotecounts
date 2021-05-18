@@ -207,6 +207,8 @@ export class InvitationService {
                   .toPromise()
         
         if(!optInSnapshot) return false
+        if(!optInSnapshot.data) return false
+        if(!optInSnapshot.data()) return false
 
         return optInSnapshot.data()['opt-in']
     }
