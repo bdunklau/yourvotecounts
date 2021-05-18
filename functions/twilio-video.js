@@ -1178,7 +1178,7 @@ exports.deleteVideoComplete = functions.https.onRequest(async (req, res) => {
                                 })
 
     let settings = await db.collection('config').doc('settings').get()
-    let headsUpNumber = settings.from_sms
+    let headsUpNumber = settings.data().from_sms
     
     /**
      * Send SMS message to all participants - provide link to /view-video page
