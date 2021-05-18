@@ -268,7 +268,22 @@ export class InvitationFormComponent implements OnInit {
   get message() {
     return this.invitationForm.get("message");
   }
+
+
+  /**
+   * when validating one number at a time
+   */
+  private isValidPhone(numsAndChars: string): boolean {
+      if(!numsAndChars) return false
+      let myString = this.justNumbers(numsAndChars)  
+      if(myString.length < 10) return false
+      return true
+  }
+
   
+  /**
+   * just for form field validation
+   */
   ValidatePhone(control: AbstractControl): {[key: string]: any} | null  {
       if(!control || !control.value) return null
       let myString = this.justNumbers(control.value)  
@@ -373,9 +388,12 @@ export class InvitationFormComponent implements OnInit {
   
 
   /**
+   * Fires on every character entered
+   * field.value is the formatted phone number
+   * 
    * duplicated in friend-form.component.ts
    */
-  formatPhone(event) {
+  async formatPhone(event, loopIdx) {
       let field = event.target
       field.value = this.formatPhone2(field.value)
 
@@ -391,7 +409,28 @@ export class InvitationFormComponent implements OnInit {
       } 
 
       console.log('validatePhoneNo(): field.value = ', field.value)
+      let isValid = this.isValidPhone(field.value)
+      if(!isValid) {
+          this.nameArray.controls[loopIdx].patchValue({optIn: ''})
+          return
+      }
+
+      // query for opt-in...
+      let isOptIn = await this.queryForOptIn(field.value)
+      let optInFormValue = isOptIn ? 'optIn' : 'optOut'
+      this.nameArray.controls[loopIdx].patchValue({optIn: optInFormValue})
   }
+
+  
+    // arg is already validated
+    async queryForOptIn(numsAndChars: string): Promise<boolean> {
+        let justNums = this.justNumbers(numsAndChars)
+        if(justNums.length > 10) justNums = '+'+justNums
+        if(justNums.length === 10) justNums = '+1'+justNums
+        console.log('queryForOptIn(): check for opt in = ', justNums)
+        let optIn:boolean = await this.invitationService.queryOptIn(justNums)
+        return optIn
+    }
 
   /**
    * duplicated in   licensee-contact-form.component.ts

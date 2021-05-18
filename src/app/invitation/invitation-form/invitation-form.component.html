@@ -65,7 +65,7 @@
 
                       <div class="col-12 col-sm-4" style="margin-bottom:10px">
                           <input class="col-12 form-control" formControlName="phoneNumber" 
-                                (input)="formatPhone($event)" placeholder="(   ) ___-____"
+                                (input)="formatPhone($event, i)" placeholder="(   ) ___-____"
                                 [ngStyle]="{'border':   nameArray.controls[i].get('phoneNumber') && nameArray.controls[i].get('phoneNumber').invalid && (nameArray.controls[i].get('phoneNumber').dirty || nameArray.controls[i].get('phoneNumber').touched)    ? '1px solid red' : ''}">
                                 
                           <!-- validate: phone - works but I like the simple border highlighing better
