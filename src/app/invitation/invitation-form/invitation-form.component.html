@@ -20,11 +20,23 @@
             <div class="col">
                 <hr/>
                 <div class="row">
-                    <div class="col">
+                    <div class="col-12 col-sm-5">
                        
                       <!-- <br/>nameArray.controls[i].get('displayName').value: {{nameArray.controls[i].get('displayName').value | json}} -->
                       <!-- <br/>nameArray.controls[i].get('phoneNumber').value: {{nameArray.controls[i].get('phoneNumber').value}} -->
                         <b>Guest #{{i+1+maxGuests-numberOfInvitationsRemaining}}</b> &nbsp;&nbsp;&nbsp; <button class="btn btn-default" (click)="removeItem(i)"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="col-12 col-sm-7" style="margin-top:5px">     
+                        <span *ngIf="nameArray.controls[i].get('optIn').value == 'optIn'">                            
+                            <i [ngClass]="{'fas': true, 'fa-check-circle': true}"  
+                            [ngStyle]="{'color': 'green'}" ></i>
+                            This person has opted in to receive text messages from HeadsUp
+                        </span>         
+                        <span *ngIf="nameArray.controls[i].get('optIn').value == 'optOut'">                          
+                            <i [ngClass]="{'fas': true, 'fa-times-circle': true}"  
+                            [ngStyle]="{'color': 'red'}" ></i>
+                            This person has not opted in to receive text messages from HeadsUp
+                        </span>
                     </div>
                 </div>
                 <div class="row">
@@ -53,7 +65,7 @@
 
                       <div class="col-12 col-sm-4" style="margin-bottom:10px">
                           <input class="col-12 form-control" formControlName="phoneNumber" 
-                                (input)="formatPhone($event)" placeholder="(   ) ___-____"
+                                (input)="formatPhone($event, i)" placeholder="(   ) ___-____"
                                 [ngStyle]="{'border':   nameArray.controls[i].get('phoneNumber') && nameArray.controls[i].get('phoneNumber').invalid && (nameArray.controls[i].get('phoneNumber').dirty || nameArray.controls[i].get('phoneNumber').touched)    ? '1px solid red' : ''}">
                                 
                           <!-- validate: phone - works but I like the simple border highlighing better

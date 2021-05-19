@@ -1,0 +1,67 @@
+
+<div class="container">
+    <h3 style="margin-top:20px">Let's Check Your Device</h3>
+
+
+    <!-- test camera and mic -->
+    <span  *ngIf="testingWebcam || webcamTestComplete" style="width:100%"> 
+    <div class="row" style="height:75px">
+
+         
+        <div class="col-12 col-sm-6" style="margin-top:20px"><h5>Check Webcam</h5></div>
+
+        <div class="col-12 col-sm-6" style="margin-top:20px;margin-bottom:20px">
+            <div class="row" [hidden]="camResult != 'ok'"><div class="col-12"><i class="fas fa-check-circle" style="color:green"></i>&nbsp;&nbsp;&nbsp;<i class="fas fa-video"></i> &nbsp; Camera ok</div></div> 
+            
+            <div class="row" [hidden]="camResult == '' || camResult == 'ok'"><div class="col-12"><i class="fas fa-times-circle" style="color:red"></i>&nbsp;&nbsp;&nbsp;<i class="fas fa-video"></i> &nbsp; Camera not ok </div></div>
+        
+            <div class="row" [hidden]="micResult != 'ok'"><div class="col-12"><i class="fas fa-check-circle" style="color:green"></i>&nbsp;&nbsp;&nbsp;<i class="fas fa-microphone"></i> &nbsp; Mic ok</div></div>  
+            
+            <div class="row" [hidden]="micResult == '' || micResult == 'ok'"><div class="col-12"><i class="fas fa-times-circle" style="color:red"></i>&nbsp;&nbsp;&nbsp;<i class="fas fa-microphone"></i> &nbsp; Mic not ok </div></div>
+        </div>
+        
+        <div class="col-12" style="margin-top:5px" *ngIf="!webcamTestComplete">
+            Click "test webcam" to see if your camera and microphone can be activated
+        </div>
+
+        <div class="col-12 col-sm-6" style="margin-top:20px" *ngIf="!webcamTestComplete">
+            <button type="button" (click)="testWebcam()" class="btn btn-primary col-sm-12"> test webcam </button>
+        </div>
+
+
+        <!-- report webcam problem -->
+        <div class="col-12" style="margin-top:5px" [hidden]="camResult == '' || camResult == 'ok'">
+            <B>Camera Problem</B> <P>{{camResult}}</P>
+        </div>
+
+
+        <!-- report mic problem -->
+        <div class="col-12" style="margin-top:5px" [hidden]="micResult == '' || micResult == 'ok'">
+            <B>Microphone Problem</B> <P>{{micResult}}</P>
+        </div>
+        
+
+        <div class="col-12" style="margin-top:10px" [hidden]="!webcamTestComplete">
+            <P>Device check complete</P>
+
+            <!-- bad -->
+            <span [hidden]="camResult == 'ok' && micResult == 'ok' ">
+               <P>You will not be able to use this device due to the reasons mentioned above.</P>
+               <P>We apologize for the inconvenience.</P>
+            </span>
+            <P>You may close this window now</P>
+        </div>
+
+        <div class="col-12 col-sm-6" style="margin-top:20px" *ngIf="webcamTestComplete">
+            <button type="button" (click)="checkAgain()" class="btn btn-primary col-12"> Check Device Again </button>
+        </div>
+    </div>
+
+    <!-- <span  *ngIf="testingWebcam || webcamTestComplete" style="width:100%">  -->
+    </span>
+
+
+
+        
+
+</div>

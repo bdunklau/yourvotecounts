@@ -2,13 +2,14 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const twilio = require('twilio');
+const _ = require('lodash');
 
 // can only call this once globally and we already do that in index.js
 //admin.initializeApp(functions.config().firebase);
 var db = admin.firestore();
 
 
-// firebase deploy --only functions:sendSms,functions:notifyHeapWarning
+// firebase deploy --only functions:sendSms,functions:notifyHeapWarning,functions:incomingSms
 
 
 
@@ -45,6 +46,46 @@ var addCountryCode = function(phone) {
  */
 // triggered from  sms.service.ts
 exports.sendSms = functions.firestore.document('sms/{id}').onCreate(async (snap, context) => {
+  /**
+   * https://headsupvideo.atlassian.net/browse/HEADSUP-118
+   * short-circuit and return early if the "to" hasn't opted in
+   * 
+   * IF YOU CHANGE THIS QUERY HERE, YOU NEED TO CHANGE THE SAME QUERY IN invitation.service.ts:queryOptIn()
+   * IT'S THE SAME QUERY
+   */
+
+
+
+  /*********************************************************************************************************
+   * THIS SUCKS - From != from    AND    To != to
+   * From = is the person who opted in/out  (incoming text)
+   * from = is the HeadsUp number           (outgoing text)
+   * 
+   * To = is the HeadsUp number that the user messaged to opt in/out  (incoming text)
+   * to = is the user that HeadsUp is messaging                       (outgoing text)
+   *********************************************************************************************************/
+
+  if(snap.data().SmsStatus && snap.data().SmsStatus.trim().toLowerCase() === 'received') {
+      console.log('function triggered by a received SMS message - return early do nothing')
+      return true // true/false doesn't matter
+  }
+
+
+  var checkNumber = snap.data().to
+  let result = await db.collection('sms_opt_in').doc(checkNumber).get()
+
+  if(!result) {
+      console.log('No opt in records found at all for '+checkNumber+' - return early - don\'t send SMS')
+      return true // true/false doesn't matter
+  }
+
+  let isOptIn = result.data()['opt-in']
+
+  if(!isOptIn) {
+      console.log('No opt in for '+checkNumber)
+      return true // true/false doesn't matter
+  }
+
   let keys = await getKeys();
 
   var details = {};
@@ -156,5 +197,47 @@ var validateKeys = function(auth_key) {
     })
 
   })
+  
 
 }
+
+
+
+/**
+ * Prod version called by:
+ * https://www.twilio.com/console/sms/services/MG3082c99f0043de1563b9f1ec5bf37d22
+ * 
+ * Dev version called by:
+ * https://www.twilio.com/console/sms/services/MG48435b7534fe7615253a564110dbb93e
+ * 
+ * Incoming messages are NOT just opt-ins.  They could be STOP's or anything else we decide to support
+ * As of 5/15/21, we are only supporing opt-in's and STOP's
+ * 
+ * In the first half of this function, we record the incoming sms message in the sms collection
+ * 
+ * In the second half of this fucntion, we check to see if this incoming message is a request to
+ * opt in or opt out.  If it's one of those, then we also write to the sms_opt_in collection
+ */
+exports.incomingSms = functions.https.onRequest(async (req, res) => {
+    let doc = req.body
+    let d = new Date()
+    let ms = d.getTime()
+    doc['incoming_sms_date'] = d
+    doc['incoming_sms_date_ms'] = ms
+    let smsDocId = db.collection('sms').doc().id
+    await db.collection('sms').doc(smsDocId).set(doc)
+    let optingIn = req.body.Body.trim().toLowerCase() === 'start'
+    if(optingIn) {
+        doc['opt-in'] = true
+    }
+    let optingOut = req.body.Body.trim().toLowerCase() === 'stop'
+    if(optingOut) {
+        doc['opt-in'] = false
+    }
+    if(optingIn || optingOut) {
+        doc['smsDocId'] = smsDocId        
+        await db.collection('sms_opt_in').doc(req.body.From).set(doc)
+    }
+    return res.status(200).send(JSON.stringify({result: 'ok'}))
+
+})

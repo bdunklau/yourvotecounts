@@ -59,6 +59,8 @@ import { VideoCallNotAllowedComponent } from './video/video-call-not-allowed/vid
 import { GetStartedComponent } from './get-started/get-started.component';
 import { CommitteesComponent } from './civic/committees/committees.component';
 import { LicenseeMgmtComponent } from './license/licensee-mgmt/licensee-mgmt.component';
+import { FunctionalTestComponent } from './util/functional-test/functional-test.component';
+import { SmsOptInFormComponent } from './sms/sms-opt-in-form/sms-opt-in-form.component';
 
 
 const routes: Routes = [
@@ -72,6 +74,7 @@ const routes: Routes = [
   { path: 'disabled', component: DisabledComponent },
   { path: 'error-page', component: ErrorPageComponent },
   { path: 'friends', component: FriendsComponent, canActivate: [FriendGuard] },
+  { path: 'functional-test', component: FunctionalTestComponent },
   { path: 'get-started', component: GetStartedComponent },
   { path: 'home', component: HomeComponent },
   
@@ -88,6 +91,7 @@ const routes: Routes = [
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
   { path: 'my-videos/:uid', component: MyVideosComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
   { path: 'my-videos', component: MyVideosComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
+  { path: 'optin', component: SmsOptInFormComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
   { path: 'privacy', component: PrivacyPolicyComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'promo-code', component: PromoCodeComponent, canActivate: [AuthGuard, DisabledGuard] },
   { path: 'search-officials', component: SearchOfficialsComponent, canActivate: [SearchOfficialsGuard] },

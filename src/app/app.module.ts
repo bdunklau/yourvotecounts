@@ -110,6 +110,10 @@ import { LicenseeContactFormComponent } from './license/licensee-contact-form/li
 import { LicenseeContactListComponent } from './license/licensee-contact-list/licensee-contact-list.component';
 import { LicenseeListComponent } from './license/licensee-list/licensee-list.component';
 import { VideoGuestEditorComponent } from './video/video-guest-editor/video-guest-editor.component';
+import { FunctionalTestComponent } from './util/functional-test/functional-test.component';
+import { SmsOptInComponent } from './sms/sms-opt-in/sms-opt-in.component';
+import { SmsOptInFormComponent } from './sms/sms-opt-in-form/sms-opt-in-form.component';
+import { SafeUrlPipe } from './util/safe-url/safe-url.pipe';
 
 
 
@@ -235,6 +239,10 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     LicenseeContactListComponent,
     LicenseeListComponent,
     VideoGuestEditorComponent,
+    FunctionalTestComponent,
+    SmsOptInComponent,
+    SmsOptInFormComponent,
+    SafeUrlPipe,
     // FileSelectDirective,
   ],
   entryComponents: [NgbdModalConfirmComponent], // https://stackoverflow.com/a/39376857

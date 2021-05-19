@@ -25,6 +25,7 @@ export class Invitation {
     message: string;
     deleted_ms: number
     photoURL?: string
+    // what about cameraCheck and micCheck ??????
     
     constructor() {
       this.created = new Date();
@@ -49,6 +50,7 @@ export class Invitation {
     }
     if(this.photoURL) asObj['photoURL'] = this.photoURL
     if(this.email) asObj['email'] = this.email
+    // what about cameraCheck and micCheck ??????
     return asObj
   }
     

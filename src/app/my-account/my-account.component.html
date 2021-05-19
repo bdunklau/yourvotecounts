@@ -45,10 +45,13 @@
       </div>
       <div class="col">
         <div class="row">
-          <div class="col" id="myaccount_name_label">{{nameValue}}</div>
+          <div class="col" id="myaccount_name_label">{{nameValue}} &nbsp; <i class="fas fa-pen" (click)="edit()"></i></div>
         </div>
         <div class="row">
           <div class="col"><a href="tel:{{phoneNumber}}">{{phoneNumber | phone}}</a></div>
+        </div>
+        <div class="row" style="margin-top:20px">
+          <div class="col"><button class="btn btn-primary" [routerLink]="['/functional-test']">test webcam</button></div>
         </div>
       </div>
 
@@ -56,9 +59,6 @@
 
     <div class="row">
       <div class="col">&nbsp;</div>
-    </div>
-    <div class="row">
-      <div class="col"><button id="edit_my_account" class="btn btn-success col" (click)="edit()">Update</button></div>
     </div>
     
 

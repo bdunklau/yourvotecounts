@@ -6,6 +6,8 @@ import { UserService } from '../user/user.service'
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { FirebaseUserModel } from '../user/user.model';
+import * as _ from 'lodash'
+import { FunctionalTestService } from '../util/functional-test/functional-test.service';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +22,7 @@ export class LoginComponent implements OnInit {
   constructor(private afAuth: AngularFireAuth,
               private log: LogService,
               private router: Router,
+              private functionalTestService: FunctionalTestService,
               @Inject(PLATFORM_ID) private platformId,
               private userService: UserService) { }
 
@@ -42,18 +45,24 @@ export class LoginComponent implements OnInit {
 
             // https://headsupvideo.atlassian.net/browse/HEADSUP-59
             this.userSubscription = this.userService.subscribe(user.uid, async (users:[FirebaseUserModel]) => {
-                if(users && users.length > 0) {          
-                    let auser = users[0]
-        
-                    if(!auser.tosAccepted && !auser.privacyPolicyRead) {
-                      this.router.navigate(['/minimal-account-info'])
-                    }
-                    else {
-                      console.log('LoginComponent: going to /home')
-                      this.router.navigate(['/home'])
-                    }
-        
+                if(!users) return
+                if(users.length < 1) return                          
+                let auser = users[0]    
+
+                // Don't force this check just yet
+                // let needsToDoDeviceCheck = this.functionalTestService.needToCheckDevice(auser)
+                // if(needsToDoDeviceCheck) {
+                //   this.router.navigate(['/functional-test'])
+                //   return
+                // }
+
+                if(!auser.tosAccepted && !auser.privacyPolicyRead) {
+                  this.router.navigate(['/minimal-account-info'])
+                  return
                 }
+                
+                console.log('LoginComponent: going to /home')
+                this.router.navigate(['/home'])
             })
         }
 

@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { SettingsService } from '../settings/settings.service';
+import { isPlatformBrowser } from '@angular/common';
+import { Settings } from '../settings/settings.model';
 
 
 
@@ -12,9 +15,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GetStartedComponent implements OnInit {
 
-  constructor() { }
+    // user?: FirebaseUserModel
+    settings?: Settings
+    headsUpNumber: string
+    smsUrl: string 
 
-  ngOnInit(): void {
-  }
+
+    constructor(
+      private settingsService: SettingsService,     
+      @Inject(PLATFORM_ID) private platformId) { }
+
+    async ngOnInit() {
+        let isBrowser = isPlatformBrowser(this.platformId)
+        if(!isBrowser) return
+
+        this.settings = await this.settingsService.getSettingsDoc()
+        this.headsUpNumber = this.settings.from_sms
+        this.smsUrl = "sms://"+this.headsUpNumber+";?&body=START";
+    }
 
 }

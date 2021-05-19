@@ -166,6 +166,55 @@ export class InvitationService {
 
   
 
+
+    /**
+     * Write to the invitation doc the same elements that we write to the user doc whenever a problem is discovered with 
+     * cammera, mic or text messages not going out.
+     * When you write to the invitation doc, the changes will be detected by the host because everyone is monitoring
+     * all the invitations in video-call.component.ts monitorInvitations()
+     */
+    async writeEnablements(invitation: Invitation, webcamReady: {passed: boolean, camera: boolean, camResult: string, mic: boolean, micResult: string, userAgent: string}) {
+        // this happens for the host in video-call.guard.ts.
+        // This function is really intended for guests, when the invitation exists
+        if(!invitation) return 
+        if(!invitation.docId) return 
+
+        /**
+         * Write this to the invitation doc:
+         * cameraCheckDate
+         * cameraCheckDate_ms
+         * functional
+         * userAgent
+         */
+        let date = new Date()
+        let ms = date.getTime()
+        let cameraStatus = {cameraCheckDate: date, cameraCheckDate_ms: ms, functional: webcamReady.camera, userAgent: webcamReady.userAgent}
+        let micStatus = {micCheckDate: date, micCheckDate_ms: ms, functional: webcamReady.mic, userAgent: webcamReady.userAgent}
+        await this.afs.collection('invitation').doc(invitation.docId).update({cameraCheck: cameraStatus, micCheck: micStatus})
+    }
+
+
+    /**
+     * much better way to query when you only need one time results
+     * 
+     * IF YOU CHANGE THIS QUERY HERE, YOU NEED TO CHANGE THE SAME QUERY IN twilio-sms.js:sendSms()
+     * IT'S THE SAME QUERY
+     */
+    async queryOptIn(phoneNumber: string): Promise<boolean> {
+        //  twilio-sms.js : incomingSms()
+        let optInSnapshot = await this.afs.collection('sms_opt_in').doc(phoneNumber)
+                  .get({source: 'server'}) // makes sure you don't get cached results - I shouldn't have to do this
+                  .toPromise()
+        
+        if(!optInSnapshot) return false
+        if(!optInSnapshot.data) return false
+        if(!optInSnapshot.data()) return false
+
+        return optInSnapshot.data()['opt-in']
+    }
+
+  
+
   // TODO FIXME is this fixed?
   /************
   async getInvitation(invitationId: string) {

@@ -49,6 +49,7 @@ export class InvitationFormComponent implements OnInit {
       phoneNumber: string;
       email?: string
       photoURL?: string
+      optIn?: string
   }[]
 
   //invitation: Invitation;
@@ -195,7 +196,8 @@ export class InvitationFormComponent implements OnInit {
             displayName: new FormControl(displayName, [Validators.required]),
             phoneNumber: new FormControl(this.formatPhone2(phoneNumber), { validators: [Validators.required, this.ValidatePhone.bind(this)] /* DOES work   , updateOn: "blur" */ }),
             email: new FormControl(this.formatPhone2(email), { validators: [/*TODO should have email validation*/] /* DOES work   , updateOn: "blur" */ }),
-            photoURL: new FormControl(photoURL)         
+            photoURL: new FormControl(photoURL),
+            optIn: new FormControl('')      
           } 
           //, { updateOn: 'blur' }  // another option
       )
@@ -259,10 +261,29 @@ export class InvitationFormComponent implements OnInit {
     return this.invitationForm.get("email");
   }
 
+  get optIn() {
+    return this.invitationForm.get("optIn");
+  }
+
   get message() {
     return this.invitationForm.get("message");
   }
+
+
+  /**
+   * when validating one number at a time
+   */
+  private isValidPhone(numsAndChars: string): boolean {
+      if(!numsAndChars) return false
+      let myString = this.justNumbers(numsAndChars)  
+      if(myString.length < 10) return false
+      return true
+  }
+
   
+  /**
+   * just for form field validation
+   */
   ValidatePhone(control: AbstractControl): {[key: string]: any} | null  {
       if(!control || !control.value) return null
       let myString = this.justNumbers(control.value)  
@@ -284,7 +305,7 @@ export class InvitationFormComponent implements OnInit {
 
       // multiple invitation documents will all have this invitationId field
       let commonInvitationId = this.currentInvitations && this.currentInvitations.length > 0 ? this.currentInvitations[0].invitationId : this.invitationService.createId();
-
+      let settings = await this.settingsService.getSettingsDoc();
       for(var i=0; i < this.nameArray.length; i++) {
           //console.log('this.nameArray.at(i).value: ', this.nameArray.at(i).value)
           this.names[i] = this.nameArray.at(i).value
@@ -301,7 +322,8 @@ export class InvitationFormComponent implements OnInit {
               this.names[i] = {displayName: this.nameArray.at(i).value.displayName.displayName2, 
                                phoneNumber: this.nameArray.at(i).value.phoneNumber,
                                email: this.nameArray.at(i).value.email,
-                               photoURL: this.nameArray.at(i).value.photoURL}
+                               photoURL: this.nameArray.at(i).value.photoURL,
+                               optIn: this.nameArray.at(i).value.optIn}
           } 
 
           // create the invitation
@@ -311,6 +333,8 @@ export class InvitationFormComponent implements OnInit {
           invitation.displayName = this.names[i].displayName
           invitation.email = this.names[i].email
           invitation.photoURL = this.names[i].photoURL
+          // optIn also?
+
           // console.log('onSubmit(): this.names['+i+'] = ', this.names[i])
           // console.log('onSubmit(): this.names['+i+'].displayName = ', this.names[i].displayName)
          
@@ -339,7 +363,7 @@ export class InvitationFormComponent implements OnInit {
           this.outputInvitations.emit(invitation)
 
           //console.log('SMS COMMENTED OUT *****************')
-          this.smsService.sendSms({from: "+12673314843", to: invitation.phoneNumber, mediaUrl: "", message: invitation.message});
+          this.smsService.sendSms({from: settings.from_sms, to: invitation.phoneNumber, mediaUrl: "", message: invitation.message});
       }
 
 
@@ -364,9 +388,12 @@ export class InvitationFormComponent implements OnInit {
   
 
   /**
+   * Fires on every character entered
+   * field.value is the formatted phone number
+   * 
    * duplicated in friend-form.component.ts
    */
-  formatPhone(event) {
+  async formatPhone(event, loopIdx) {
       let field = event.target
       field.value = this.formatPhone2(field.value)
 
@@ -382,7 +409,28 @@ export class InvitationFormComponent implements OnInit {
       } 
 
       console.log('validatePhoneNo(): field.value = ', field.value)
+      let isValid = this.isValidPhone(field.value)
+      if(!isValid) {
+          this.nameArray.controls[loopIdx].patchValue({optIn: ''})
+          return
+      }
+
+      // query for opt-in...
+      let isOptIn = await this.queryForOptIn(field.value)
+      let optInFormValue = isOptIn ? 'optIn' : 'optOut'
+      this.nameArray.controls[loopIdx].patchValue({optIn: optInFormValue})
   }
+
+  
+    // arg is already validated
+    async queryForOptIn(numsAndChars: string): Promise<boolean> {
+        let justNums = this.justNumbers(numsAndChars)
+        if(justNums.length > 10) justNums = '+'+justNums
+        if(justNums.length === 10) justNums = '+1'+justNums
+        console.log('queryForOptIn(): check for opt in = ', justNums)
+        let optIn:boolean = await this.invitationService.queryOptIn(justNums)
+        return optIn
+    }
 
   /**
    * duplicated in   licensee-contact-form.component.ts
@@ -421,13 +469,15 @@ export class InvitationFormComponent implements OnInit {
   
 
   async onFriendSelected(friend: Friend, loopIdx: number) {
+      let optIn:boolean = await this.invitationService.queryOptIn(friend.phoneNumber2)
+      let optInFormValue = optIn ? 'optIn' : 'optOut'
+      console.log('onFriendSelected() '+friend.phoneNumber2+' :  optIn = ', optIn)
       let photoURL = ''
       let friendPerson = await this.userService.getUserWithPhone(friend.phoneNumber2)
       if(friendPerson && friendPerson.photoURL) photoURL = friendPerson.photoURL
       if(photoURL == '') photoURL = this.defaultProfilePicUrl
-      this.nameArray.controls[loopIdx].setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2), email: '', photoURL: photoURL })
-      console.log('onFriendSelected(): this.nameArray.at('+loopIdx+').value: ', this.nameArray.at(loopIdx).value)
-      // console.log('onFriendSelected() loopIdx = ', loopIdx)
+      this.nameArray.controls[loopIdx].setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2), email: '', photoURL: photoURL, optIn: optInFormValue })
+      // console.log('onFriendSelected(): this.nameArray.at('+loopIdx+').value: ', this.nameArray.at(loopIdx).value)
       // console.log('onFriendSelected() this.nameArray.at('+loopIdx+') = ', this.nameArray.at(loopIdx))
       // console.log('onFriendSelected() this.nameArray.at('+loopIdx+') = ',  )
       // this.nameArray.at(loopIdx).setValue({displayName: friend.displayName2, phoneNumber: this.formatPhone2(friend.phoneNumber2) })

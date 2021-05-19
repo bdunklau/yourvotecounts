@@ -17,6 +17,26 @@
 </div>
 
 
+<div class="row" *ngIf="editingInvitation.cameraCheck" style="margin-top:10px">
+    <div class="col-12">
+        <i [ngClass]="{'fas': true, 'fa-check-circle': editingInvitation.cameraCheck.functional, 'fa-times-circle': !editingInvitation.cameraCheck.functional}"  
+           [ngStyle]="{'color': editingInvitation.cameraCheck.functional ? 'green' : 'red'}" ></i>
+           &nbsp;&nbsp;&nbsp;
+           <i class="fas fa-video"></i> &nbsp; Camera <span *ngIf="!editingInvitation.cameraCheck.functional">not</span> ok
+    </div>
+</div> 
+
+
+<div class="row" *ngIf="editingInvitation.micCheck" style="margin-top:10px">
+    <div class="col-12">
+        <i [ngClass]="{'fas': true, 'fa-check-circle': editingInvitation.micCheck.functional, 'fa-times-circle': !editingInvitation.micCheck.functional}"  
+           [ngStyle]="{'color': editingInvitation.micCheck.functional ? 'green' : 'red'}" ></i>
+           &nbsp;&nbsp;&nbsp;
+           <i class="fas fa-video"></i> &nbsp; Mic <span *ngIf="!editingInvitation.micCheck.functional">not</span> ok
+    </div>
+</div> 
+
+
 <div class="row" style="margin-top:30px">
     <div class="col-6 small text-muted">
         Email
