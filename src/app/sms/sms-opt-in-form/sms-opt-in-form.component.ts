@@ -37,7 +37,6 @@ export class SmsOptInFormComponent implements OnInit {
         let isBrowser = isPlatformBrowser(this.platformId)
         if(!isBrowser) return
 
-        this.user = await this.userService.getCurrentUser()
         this.settings = await this.settingsService.getSettingsDoc()
         this.headsUpNumber = this.settings.from_sms
 

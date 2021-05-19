@@ -91,7 +91,7 @@ const routes: Routes = [
   { path: 'myaccount', component: MyAccountComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
   { path: 'my-videos/:uid', component: MyVideosComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
   { path: 'my-videos', component: MyVideosComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
-  { path: 'optin', component: SmsOptInFormComponent, canActivate: [AuthGuard, DisabledGuard, MinimalAccountInfoGuard] },
+  { path: 'optin', component: SmsOptInFormComponent },
   { path: 'privacy', component: PrivacyPolicyComponent, canActivate: [AuthGuard, DisabledGuard, RoleGuard], data: {role: 'admin'} },
   { path: 'promo-code', component: PromoCodeComponent, canActivate: [AuthGuard, DisabledGuard] },
   { path: 'search-officials', component: SearchOfficialsComponent, canActivate: [SearchOfficialsGuard] },
